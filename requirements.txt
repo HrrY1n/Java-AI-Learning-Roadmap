@@ -8,5 +8,5 @@ uvicorn>=0.27.0
 python-multipart>=0.0.9
 
 # Optional: FAISS can be difficult to install on Windows.
-# Use the sklearn fallback in stage06 first.
+# Use the sklearn fallback in Stage 12 examples first.
 # faiss-cpu

@@ -1,6 +1,6 @@
 # Stage 10：Python 基础与 AI 开发准备
 
-状态：**课程已存在，未开始**　优先级：**P0**
+状态：**课程已存在，未开始**　优先级：**P0-AI**
 
 ## 为什么要学
 
@@ -10,19 +10,21 @@ Python 是本路线的第二语言，用于文档处理、模型调用、RAG、�
 
 ## 前置知识
 
-- Java 后端主线至少完成一个可调用 REST API。
-- 具备基础 Git、命令行和依赖管理能力。
+- **轻量保温**：当前 Java 主线里程碑完成后，可偶尔做一个已有 Python 基础 TODO；这不代表正式进入 Stage 10，也不改变进度状态。
+- **系统学习**：项目 A 达到 Java Internship Ready Gate，且 Java 主线已有稳定可运行版本。
+- **进入 10C 联调**：Java 后端至少有一个可调用 REST API；具备基础 Git、命令行和依赖管理能力。
 
 ## 必须掌握（P0）
 
 - 变量、字符串、list/tuple/dict/set、分支与循环。
 - 函数、模块、class、typing、异常和文件处理。
 - pip、虚拟环境、requirements、环境变量。
-- requests、FastAPI、JSON/CSV、NumPy/Pandas 基础。
+- requests、FastAPI、JSON/CSV；能判断 NumPy/Pandas 何时值得使用。
 - 基础测试、日志和项目结构。
 
 ## 了解即可（P1）
 
+- NumPy/Pandas 的常用数组/表操作。
 - 生成器、装饰器、上下文管理器、异步 IO。
 - SQLite 作为本地演示存储。
 
@@ -33,7 +35,7 @@ Python 是本路线的第二语言，用于文档处理、模型调用、RAG、�
 ## 现有内容怎么用
 
 - `python_basics/`：教学模式最完整，含示例、TODO 练习、challenge、debug_task 和小项目；这是本阶段真正的起点。
-- `examples/data_and_api/`：Pandas、requests 和批量文本处理的完整参考示例；其中 `practice.py` 多为已写好的变体，不算你的完成证据。
+- `examples/data_and_api/`：Pandas、requests 和批量文本处理的 6 个 `example_variant.py` 参考变体；没有 `practice.py`，这些完整变体也不算你的完成证据。
 - `examples/fastapi_sqlite/`：FastAPI、SQLite 和静态 RAG API 示例；只作为参考，不能替代你自己实现接口。
 
 ## 三个子阶段
@@ -52,11 +54,11 @@ Python 是本路线的第二语言，用于文档处理、模型调用、RAG、�
 2. 在进入相应知识点时补齐 tuple/set、class、typing、module 和测试练习，再通过 10A 验收。
 3. 完成 10B：将 data/API 示例改造成一个可安装、可测试的文档批处理工具。
 4. 完成 10C：自己实现 `/health` 与 `/ask`，再对照 FastAPI 示例。
-5. 让 Java 后端通过 HTTP 调用最小 Python 服务，作为简历项目 B 的起点。
+5. 让 Java 后端通过 HTTP 调用最小 Python 服务，作为项目 B 的 V4；明确 schema、超时、错误和鉴权边界。
 
 ## 常见错误
 
-- 把生成的 `practice.py` 当作自己写过。
+- 把 `main.py` 或 `example_variant.py` 等完整参考实现当作自己写过。
 - 在代码中硬编码密钥。
 - 只会运行脚本，不会使用虚拟环境、测试和模块组织。
 - 用 Pandas 解决所有简单循环问题，却说不清数据结构。

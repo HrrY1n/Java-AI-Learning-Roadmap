@@ -24,4 +24,4 @@ stages/stage10_python_for_ai/python_basics/day07_mini_project_text_counter/outpu
 - 能修改 `keywords` 列表；
 - 能替换输入文件；
 - 能解释 `main.py` 为什么调用 `utils.py`；
-- 能把统计报告写进简历项目的“文档处理能力”描述。
+- 能把统计结果作为 Stage 10 学习证据，并说明输入、处理和输出；它本身是练习，不单独包装成简历项目。
