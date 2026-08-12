@@ -1,0 +1,10 @@
+# RAG Paper Reading Note
+
+RAG stands for Retrieval-Augmented Generation.
+A RAG system retrieves relevant document chunks before generating an answer.
+
+The retriever finds evidence. The generator writes the final answer.
+Good RAG applications show references so users can inspect the source.
+
+Evaluation checks whether the answer uses correct references and whether
+the response has possible hallucination risk.

@@ -1,0 +1,2 @@
+RAG combines retrieval and generation. It is useful when a model needs to answer
+questions based on private or domain-specific documents.

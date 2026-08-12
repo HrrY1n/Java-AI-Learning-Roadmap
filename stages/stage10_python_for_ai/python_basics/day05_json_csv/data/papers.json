@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP",
+    "year": 2020,
+    "keywords": ["RAG", "retrieval", "generation"]
+  },
+  {
+    "title": "RAG Evaluation for Document Question Answering",
+    "year": 2024,
+    "keywords": ["RAG", "evaluation", "question answering"]
+  },
+  {
+    "title": "Prompt Templates for Reliable AI Assistants",
+    "year": 2023,
+    "keywords": ["prompt", "LLM", "assistant"]
+  }
+]

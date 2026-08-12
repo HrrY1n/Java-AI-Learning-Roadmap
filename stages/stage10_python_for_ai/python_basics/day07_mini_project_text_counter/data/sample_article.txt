@@ -1,0 +1,4 @@
+Python is a practical language for AI application development.
+RAG systems use data from documents to answer questions.
+A good AI project should read files, process text, and explain results.
+This article is used for a simple text counter project.

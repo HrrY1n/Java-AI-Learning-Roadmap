@@ -1,0 +1,2 @@
+Python can process documents.
+RAG needs document chunks.

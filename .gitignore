@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.idea/
+*.iml
+*.class
+out/
+target/
+.audit-work/
+.streamlit/secrets.toml
+*.db
+output/
+reports/*.tmp
+archive/

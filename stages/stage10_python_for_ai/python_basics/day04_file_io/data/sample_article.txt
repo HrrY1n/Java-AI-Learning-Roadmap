@@ -1,0 +1,7 @@
+RAG systems answer questions by retrieving relevant document chunks.
+
+A document is usually split into smaller pieces before retrieval.
+Each chunk should keep enough context for the language model.
+
+A good report records file path, line count, word count, paragraph count,
+and important keyword frequencies.

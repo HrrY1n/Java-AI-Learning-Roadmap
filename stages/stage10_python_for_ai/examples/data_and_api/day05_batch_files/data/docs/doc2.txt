@@ -1,0 +1,1 @@
+API results can be saved as JSON or CSV.
