@@ -34,15 +34,17 @@ RAG 是最终知识库平台的 AI 核心，但必须从可解释的检索流水
 - `examples/vector_retrieval/`：TF-IDF/cosine fallback 和 FAISS 容器；不等同于真实 embedding/生产向量库。
 - `examples/streamlit_demo/`：只保留最终网页 mini-project，作为 UI 参考。
 - `examples/evaluation/`：简单 substring 引用命中规则和报告；不等同于完整评测体系。
-- `career_materials/legacy_resume_draft.md`：历史生成草稿，未达到本阶段验收前禁止直接写进简历。
+- `career_materials/legacy_resume_draft.md`：历史生成草稿，只用于事实核对；不能把生成内容冒充个人贡献。
 
 ## 教学与练习
+
+每个环节从一个检索失败场景开始，建立 `document → chunk → representation → retrieve → context → answer` 心智模型；先预测并运行最小代码，再改一个参数观察召回、引用或拒答如何变化。
 
 1. 先手写最小检索，解释每一步输入输出。
 2. TODO：接入真实 embedding 与一个向量数据库，保存 metadata。
 3. TODO：加入过滤、reranker 与 query rewrite，并做消融对比。
 4. TODO：实现文档版本、增量更新与删除，验证旧索引不会继续被检索。
-5. TODO：建立 20 条以上带期望引用/拒答条件的评测集。
+5. TODO：建立覆盖正常问题、边界、无答案与拒答条件的可重复小型评测集。
 6. TODO：评估 retrieval recall、引用正确性、回答相关性和拒答，形成可重复回归。
 7. Review：按解析、召回、精排、生成、引用分类失败样本，不用“换更大模型”掩盖检索问题。
 

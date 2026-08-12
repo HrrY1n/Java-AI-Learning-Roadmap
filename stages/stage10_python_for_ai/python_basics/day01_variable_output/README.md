@@ -22,7 +22,7 @@
 ## 运行命令
 
 ```powershell
-cd D:\Code\codex-learn
+# 在仓库根目录运行
 python .\stages\stage10_python_for_ai\python_basics\day01_variable_output\main.py
 python .\stages\stage10_python_for_ai\python_basics\day01_variable_output\practice.py
 python .\stages\stage10_python_for_ai\python_basics\day01_variable_output\challenge.py

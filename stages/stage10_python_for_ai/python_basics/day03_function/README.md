@@ -23,7 +23,7 @@ python .\stages\stage10_python_for_ai\python_basics\day03_function\debug_task.py
 
 ## 完成标准
 
-- 能写至少 3 个函数；
+- 能把不同职责拆成有参数和返回值的函数；
 - 能区分 print 和 return；
 - 能让函数返回 dict；
 - 能构造一个包含上下文和问题的 Prompt。

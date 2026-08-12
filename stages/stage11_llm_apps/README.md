@@ -34,8 +34,10 @@
 
 ## 教学与练习
 
-1. 运行 mock 示例并画出输入/输出数据流。
-2. TODO：用环境变量和一个真实 SDK 实现 `ask_real_llm`，不要把 Key 写入代码。
+每个能力从可复现的调用问题开始：先画 `messages → model → response` 心智模型，用 mock 预测和观察，再只改一个 message/schema/失败条件，最后接真实 API 并测试。
+
+1. 运行 mock 示例并画出输入/输出数据流；这一轮不修改 `common/real_llm_api.py`。
+2. 进入真实调用练习时，用环境变量和一个真实 SDK 实现预留的 `ask_real_llm` 接口，不要把 Key 写入代码。
 3. TODO：实现 Pydantic 结构化输出与校验失败重试。
 4. TODO：实现流式输出、用户取消和网络中断处理。
 5. TODO：实现一个无副作用工具调用，记录参数、返回值、超时和错误。

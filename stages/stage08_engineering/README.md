@@ -13,7 +13,7 @@
 - **项目 A MVP 后**：Docker/Compose、部署、Nginx、GitHub Actions、指标/日志/trace。
 - Python 的 venv/pip/pytest/logging 在 Stage 10 项目中再次实际验收，不用提前学完另一套工具链。
 
-## P0-J：Internship Gate 基线
+## P0-J：当前工程核心
 
 - Git：status/add/commit/branch/merge、冲突处理、小步清晰提交。
 - PowerShell/Linux：路径、文件/权限、进程、端口、日志、`curl` 和基本脚本。
@@ -21,7 +21,7 @@
 - JUnit、集成/API 测试、断点调试和从症状到根因的排错记录。
 - 日志、环境变量、配置 profile、README 和 OpenAPI；不硬编码密钥/机器路径。
 
-## P1：投递期项目加固
+## P1：项目后续加固
 
 - Docker / Docker Compose：应用、MySQL、Redis 的可复现本地环境。
 - 基本服务器部署、SSH/systemd、Nginx 与安全组边界。
@@ -40,11 +40,13 @@
 
 ## 随主线练习
 
+每次只围绕一个真实交付问题学习：先说明失败场景和工具心智模型，再运行最小命令，改一个条件观察差异，最后在当前代码中完成同类操作。
+
 1. **当前**：为自己完成的一次学习修改记录 `git status`、diff、提交意图和验证命令。
 2. **Stage 03/04**：给一个 Java 练习建立 Maven/JUnit 的最小可重复验证。
 3. **Stage 06**：给项目 A 加日志、校验、统一错误、接口测试、OpenAPI 和环境 profile。
 4. **Stage 07**：记录一次 MySQL/Redis/端口或配置问题的完整定位路径。
-5. **投递期**：用 Compose 启动项目 A 和依赖，完成一次部署与最小 CI。
+5. **项目加固**：用 Compose 启动项目 A 和依赖，完成一次部署与最小 CI。
 
 ## 面试重点
 
@@ -54,9 +56,9 @@
 - 镜像与容器、容器与虚拟机、环境变量和配置隔离。
 - CI 与部署的输入、失败反馈和回滚边界。
 
-## 分层完成标准
+## 分层能力证据
 
-### Internship Gate
+### 当前核心实践
 
 - [ ] 能独立完成一次分支开发、小步提交和安全合并/冲突处理。
 - [ ] Java 项目可用一条命令构建并运行测试。

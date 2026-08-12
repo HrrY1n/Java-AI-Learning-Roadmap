@@ -15,6 +15,17 @@
 - `archive/` is inactive legacy scaffolding and is ignored by Git. Do not edit or use it to infer current progress.
 - Keep paths repository-relative and text files UTF-8. Do not introduce machine-specific absolute paths.
 
+## Teaching model
+
+- New or revised lessons follow `Scenario → Why → Concept → Mental Model → Minimal Code → Observe → Modify → Exercise → Real Usage`; omit a step only when it genuinely adds no value.
+- Start from one concrete development problem and teach one primary concept at a time. Keep the first runnable example minimal, then revisit the concept in a later exercise or project.
+- Keep the concept close to the code: use a short file-level concept card for the scenario and mental model, block comments for **why** a choice exists, and line comments only for non-obvious details. Do not narrate every line's **what**.
+- `Observe` asks the learner to predict and run; `Modify` changes one meaningful condition; `Exercise` leaves the core implementation to the learner. Never prefill the exercise answer or replace a TODO with a reference solution.
+- Label reference/generated implementations clearly and keep them separate from learner-owned practice. Running or improving a reference example never changes learning status.
+- Stage README files are navigation maps: scope, order, concept relationships, learning entry, and evidence expectations. Put detailed local explanations beside the relevant code instead of duplicating long theory across Markdown files.
+- Prefer representative problems and transfer explanations over fixed problem counts. Do not add LeetCode quotas, check-in dashboards, mistake databases, or another progress-tracking system.
+- Learning priorities guide attention only. Do not introduce a repository-defined job-application Gate or claim that a checklist decides when the learner may apply.
+
 ## Validation
 
 There is currently no unified build, test, lint, or static-analysis entry point, and no test files are present. Never invent a passing test command or claim tests ran when they do not exist. Select the smallest real checks that cover the changed scope:

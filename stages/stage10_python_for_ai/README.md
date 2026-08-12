@@ -11,7 +11,7 @@ Python 是本路线的第二语言，用于文档处理、模型调用、RAG、�
 ## 前置知识
 
 - **轻量保温**：当前 Java 主线里程碑完成后，可偶尔做一个已有 Python 基础 TODO；这不代表正式进入 Stage 10，也不改变进度状态。
-- **系统学习**：项目 A 达到 Java Internship Ready Gate，且 Java 主线已有稳定可运行版本。
+- **系统学习建议**：项目 A 有稳定可运行版本后提高 Stage 10 比重；也可按个人目标更早调整。
 - **进入 10C 联调**：Java 后端至少有一个可调用 REST API；具备基础 Git、命令行和依赖管理能力。
 
 ## 必须掌握（P0）
@@ -46,9 +46,11 @@ Python 是本路线的第二语言，用于文档处理、模型调用、RAG、�
 | 10B Python 工程基础 | pip、venv、requirements、环境变量、pytest、日志、项目结构、requests | 有零散示例，未形成完整练习闭环 | 可安装、可测试的文档/API 工具 |
 | 10C AI 服务准备 | FastAPI、JSON API、NumPy/Pandas 的适用边界、Java 调用 Python | 有参考示例，尚未由你实现 | `/health`、`/ask`、测试与接口契约 |
 
-缺失单元会在真正进入 Stage 10 时按“教程 → 示例 → TODO → 测试 → Review”补齐，不在当前 Java 基础阶段提前生成一批空目录或答案。
+缺失单元会在真正进入 Stage 10 时按“场景 → 概念/心智模型 → 最小代码 → 观察/修改 → 独立练习 → 测试/Review”补齐，不在当前 Java 基础阶段提前生成一批空目录或答案。
 
 ## 推荐学习流程
+
+每个概念先回答“数据从哪里来、为什么需要这种结构、失败边界是什么”，再预测并运行最小代码、改一个条件，最后独立完成 TODO 并在工具/API 中复用。
 
 1. 先完成 10A：按 `python_basics/README.md` 完成 day01–day07 的 TODO，不修改完整示例来冒充练习。
 2. 在进入相应知识点时补齐 tuple/set、class、typing、module 和测试练习，再通过 10A 验收。
