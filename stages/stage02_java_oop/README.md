@@ -27,6 +27,18 @@ Java 后端通过对象表达业务，通过分层控制职责。Spring 的 Cont
 
 - 大量设计模式、反射框架源码、复杂 UML。
 
+## 当前目录与运行方式
+
+每日目录是一个独立 lesson 的源码根目录，里面的 `com/javaroadmap/...` 才是 package 路径。例如第一天的 `App` 与 `Student` 相互依赖，因此位于同一个 `com.javaroadmap.stage02.day01classobject` 包并一起编译：
+
+```powershell
+Set-Location existing_course/day01_class_object
+javac -encoding UTF-8 -d out com/javaroadmap/stage02/day01classobject/App.java com/javaroadmap/stage02/day01classobject/Student.java
+java -cp out com.javaroadmap.stage02.day01classobject.App
+```
+
+其他天可以继续使用 `App`、`Student`、`Animal` 等相同类名，因为每一天都有自己的 package。IntelliJ IDEA 中将对应的 `day*` 目录作为 Sources Root 后，直接运行该包中的 `main`；`existing_course/src/main/java/` 下的完整参考示例则以 `src/main/java` 为 Sources Root。
+
 ## 现有内容怎么用
 
 - `existing_course/day01_*` 到 `day06_*`：单知识点示例。

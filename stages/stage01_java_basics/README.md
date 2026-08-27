@@ -56,7 +56,7 @@ java -cp out com.javaroadmap.stage01.day01outputvariable.App
 
 ## 现有内容怎么用
 
-- `existing_course/day01_*` 到 `day06_*`：已有逐日示例，其中包含你的实际修改。
+- `existing_course/day01_*` 到 `day06_*`：已有逐日示例，其中包含你的实际修改；每个 `day*` 目录是该课的源码根目录，Java 文件位于与 package 对应的 `com/javaroadmap/...` 下。
 - `existing_course/answers/`：保留的练习实现；先自己写，再复盘，不要直接照抄。
 - `existing_course/src/`：由完整示例演示成绩统计、猜数字、菜单和计算器。
 - `existing_course/exercises/`：阶段练习。

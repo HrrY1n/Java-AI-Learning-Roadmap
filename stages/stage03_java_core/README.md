@@ -29,6 +29,18 @@
 
 - 响应式流、复杂序列化框架、分布式文件系统。
 
+## 当前目录与运行方式
+
+`existing_course/examples/legacy_fundamentals/` 下每个 `day*` 目录都是一个独立 lesson 的源码根目录；其内部 `com/javaroadmap/...` 与 Java 文件的 package 一一对应。第五天的 `App` 和 `Student` 属于同一个 package，需要一起编译：
+
+```powershell
+Set-Location existing_course/examples/legacy_fundamentals/collections_generics/day05_student_management_list
+javac -encoding UTF-8 -d out com/javaroadmap/stage03/collections/day05studentmanagement/App.java com/javaroadmap/stage03/collections/day05studentmanagement/Student.java
+java -cp out com.javaroadmap.stage03.collections.day05studentmanagement.App
+```
+
+IntelliJ IDEA 中将具体的 `day*` 目录作为 Sources Root 后运行包内 `main`；`existing_course/src/main/java/` 下的完整学生系统以 `src/main/java` 为 Sources Root。不同 lesson 的 `App` 或 `Student` 由不同 package 隔离，不会在整体构建时互相冲突。
+
 ## 现有内容怎么用
 
 - `existing_course/src/`：内存/文件 Repository、Service、`Result<T>`、业务异常与 Stream 的完整参考示例。
