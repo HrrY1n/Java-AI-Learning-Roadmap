@@ -39,6 +39,13 @@ If tests or build tooling are later added in the changed scope, run their local 
 
 ## Code and documentation conventions
 
+### Java package rule
+
+- Never use the Java default package for repository learning code.
+- Every Java lesson, example, exercise, and mini-project must use an explicit, unique package consistent with its source layout.
+- Classes belonging to one lesson must share its lesson package; separate lessons must use separate namespaces even when class names repeat, so IntelliJ IDEA whole-project builds cannot produce duplicate classes.
+- Keep Java main classes runnable in IntelliJ IDEA and with command-line `javac` / `java` without relying on `.idea/`, `.iml`, or machine-specific IDE configuration.
+
 - Follow nearby code style. Java uses package declarations where present, four-space indentation, small explicit methods, and concise Chinese teaching comments/output. Python uses four-space indentation, UTF-8, `pathlib` for paths, a `main()` entry point with an `if __name__ == "__main__"` guard, and paths derived from the script/repository rather than a local machine.
 - Keep learning prose factual. Do not mark TODOs, stages, skills, projects, or résumé claims complete without user-produced implementation and validation evidence.
 - Do not replace exercises with reference answers or treat edits to generated examples as proof of mastery.
