@@ -29,6 +29,31 @@
 - 反射、注解处理器、复杂 JVM 参数。
 - 为简单练习引入框架或设计模式。
 
+## 先理解：包是类的“完整地址”
+
+**Scenario → Why**：多个逐日练习都可以叫 `App`，但如果都没有包声明，Java 会把它们都当成同一个 `App`，IntelliJ 编译整个模块时就会报告重复类。
+
+**Concept → Mental Model**：`package` 声明类属于哪个包；没有 `package` 的类位于 **default package（默认包）**。把“包名 + 类名”连起来就是 **fully qualified class name（FQCN，全限定类名）**，它像类的完整地址，例如 `com.javaroadmap.stage01.day01outputvariable.App`。
+
+**Minimal Code**：`package` 要写在源文件最前面（注释除外），并让目录与包名逐级对应。
+
+```java
+package com.javaroadmap.stage01.day01outputvariable;
+
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Hello Java");
+    }
+}
+```
+
+**Observe → Modify → Exercise → Real Usage**：先从 `existing_course/day01_output_variable/` 运行下面两条命令并观察输出，再只修改打印内容重新运行；最后解释为什么另一天也能有自己的 `App`。IntelliJ 中应把包含 `com/` 的课程目录作为 Sources Root，然后可直接点击 `main` 旁的绿色三角。
+
+```powershell
+javac -encoding UTF-8 -d out com/javaroadmap/stage01/day01outputvariable/App.java
+java -cp out com.javaroadmap.stage01.day01outputvariable.App
+```
+
 ## 现有内容怎么用
 
 - `existing_course/day01_*` 到 `day06_*`：已有逐日示例，其中包含你的实际修改。

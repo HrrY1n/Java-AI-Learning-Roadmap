@@ -32,7 +32,7 @@ There is currently no unified build, test, lint, or static-analysis entry point,
 
 - Documentation or configuration only: run `git diff --check`, inspect the rendered/plain diff, and verify changed relative paths and links against the repository tree.
 - Python syntax: from the repository root, run the documented `python -m compileall .`; for behavior changes, also run the directly affected script using the command documented in its nearby README. Do not retain or commit generated `__pycache__/` or `*.pyc` artifacts.
-- Standalone Java examples: enter the specific example source directory, run `javac -encoding UTF-8 App.java`, then `java App` when the program is non-destructive and does not require interactive or external resources. For packaged examples, compile to a disposable ignored output directory and run the documented fully qualified class.
+- Java examples: enter the lesson source-root directory containing `com/`, compile the lesson's package-path sources together with `javac -encoding UTF-8 -d out <package-path>/*.java`, then run a non-destructive entry point with `java -cp out <fully-qualified-class-name>`. Use a disposable ignored output directory.
 - Run service, network, real-LLM, database, Streamlit, FastAPI, or dependency-install commands only when the task directly requires them and the needed environment/credentials are available. Never hard-code or expose secrets.
 
 If tests or build tooling are later added in the changed scope, run their local documented command in addition to the checks above.

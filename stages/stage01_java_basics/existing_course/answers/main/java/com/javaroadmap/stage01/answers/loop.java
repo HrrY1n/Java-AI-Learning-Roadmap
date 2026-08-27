@@ -1,3 +1,5 @@
+package com.javaroadmap.stage01.answers;
+
 import java.util.Scanner;
 
 public class loop {
