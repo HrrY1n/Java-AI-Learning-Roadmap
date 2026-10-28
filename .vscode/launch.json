@@ -1,0 +1,24 @@
+{
+  // 两个模板：日常运行请直接点 main 上方的 Run | Debug（无需本文件）。
+  // 需要固定参数或断点调试时，复制一条并把 mainClass 改成目标类的完整类名。
+  // console 必须是 integratedTerminal：默认 Debug Console 不支持 Scanner 输入。
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "示例：非交互程序（Stage01 day01）",
+      "request": "launch",
+      "mainClass": "com.javaroadmap.stage01.day01outputvariable.App",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "java",
+      "name": "示例：Scanner 交互程序（计算器）",
+      "request": "launch",
+      "mainClass": "com.javaroadmap.stage01.console.SimpleCalculatorApp",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

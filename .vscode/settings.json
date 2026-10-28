@@ -1,0 +1,9 @@
+{
+  // 仓库级设置：只放与机器无关的项目约定。
+  // 含本机路径的 JDK 配置（java.jdt.ls.java.home / java.configuration.runtimes）
+  // 放在用户级设置中，见 docs/环境搭建.md 第五节。
+  "files.encoding": "utf8",
+  "java.errors.incompleteClasspath.severity": "warning",
+  // Scanner 交互程序调试时必须能在终端输入；Debug Console 不支持输入
+  "java.debug.settings.console": "integratedTerminal"
+}
