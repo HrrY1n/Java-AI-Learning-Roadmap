@@ -57,3 +57,9 @@ stages/stage02_java_oop/deep_dives/03_encapsulation_why	com.javaroadmap.stage02.
 stages/stage02_java_oop/deep_dives/04_inheritance_composition	com.javaroadmap.stage02.deepdives.inheritance.InheritanceCompositionDemo	-	out	实际：16	车辆出发
 stages/stage02_java_oop/deep_dives/05_polymorphism_interface	com.javaroadmap.stage02.deepdives.polymorphism.PolymorphismDemo	-	out	[旺财] 汪	机器人 R2 上线	我是狗
 stages/stage02_java_oop/deep_dives/06_entity_service	com.javaroadmap.stage02.deepdives.entityservice.EntityServiceDemo	-	out	平均分：	入口层捕获：分数必须在 0 到 100：150	拒绝非法学生后人数：3
+stages/stage03_java_core/deep_dives/01_choose_collection	com.javaroadmap.stage03.deepdives.collectionchoice.CollectionChoiceDemo	-	out	第 2 个是：小红	到馆人数：2
+stages/stage03_java_core/deep_dives/02_generics_why	com.javaroadmap.stage03.deepdives.genericswhy.GenericsWhyDemo	-	out	raw 取出并强转：字符串	7
+stages/stage03_java_core/deep_dives/03_exception_design	com.javaroadmap.stage03.deepdives.exceptiondesign.ExceptionDesignDemo	-	out	2) null	受检异常被处理	除数不能为 0
+stages/stage03_java_core/deep_dives/04_utf8_io	com.javaroadmap.stage03.deepdives.utf8io.Utf8IoDemo	-	out	UTF-8 读回：小红,95	演示文件已删除
+stages/stage03_java_core/deep_dives/05_lambda_stream	com.javaroadmap.stage03.deepdives.lambdastream.LambdaStreamDemo	-	out	较长的名字：张三丰	是否全都不超过 3 个字：true
+stages/stage03_java_core/deep_dives/06_repository_evolution	com.javaroadmap.stage03.deepdives.repoevolution.RepositoryEvolutionDemo	-	out	人数：2，2号：小红	人数：0，2号：(不存在)
