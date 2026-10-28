@@ -18,7 +18,7 @@ public class LoopBoundsDemo {
         printRange(1, 5);       // 想打印 1..5，实际打印什么？
         printRangeFixed(1, 5);
         printEveryOther(2, 9);  // 打印哪些数？
-        countdownWrong();       // 这段想打印 3 2 1，实际打印什么？
+        countdownWrong();       // 想打印 3 2 1，实际打印什么？
         countOneToThree();
     }
 
@@ -46,12 +46,12 @@ public class LoopBoundsDemo {
         System.out.println(" <- printEveryOther");
     }
 
-    // 有 bug 的 while：递减写在了错误的位置，导致多打一轮 0。
+    // 有 bug 的 while：终点条件差一——n = 0 那一轮不应执行，却多打了一个 0。
     static void countdownWrong() {
         int n = 3;
-        while (n > 0) {
+        while (n >= 0) {
             System.out.print(n + " ");
-            n--;                    // 正确。若把 n-- 挪进打印后又会如何？
+            n--;
         }
         System.out.println(" <- countdownWrong");
     }

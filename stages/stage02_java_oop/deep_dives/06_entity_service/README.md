@@ -1,7 +1,7 @@
 # 深化课 06：Entity 与 Service 的职责边界——为什么 main 不该写业务
 
 对应示例：`com/javaroadmap/stage02/deepdives/entityservice/EntityServiceDemo.java`
-配套对照参考：`existing_course/src/main/java/com/javaroadmap/stage02/student/`（同一结构在完整示例中的样子）
+配套对照参考：`stages/stage02_java_oop/existing_course/src/main/java/com/javaroadmap/stage02/student/`（同一结构在完整示例中的样子）
 
 **运行后你会看到什么**：4 行输出，其中第 3、4 行证明非法学生进不了系统、且失败如何呈现由入口层决定。看完本文你应该能把任意一段代码归类到"入口 / Entity / Service"，并说明理由。
 

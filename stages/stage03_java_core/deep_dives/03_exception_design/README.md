@@ -1,7 +1,7 @@
 # 深化课 03：异常体系——什么错误用异常，什么错误不用
 
 对应示例：`com/javaroadmap/stage03/deepdives/exceptiondesign/ExceptionDesignDemo.java`
-配套对照参考：`existing_course/src/main/java/com/javaroadmap/stage03/common/Result.java` 与 `exception/BusinessException.java`
+配套对照参考：`stages/stage03_java_core/existing_course/src/main/java/com/javaroadmap/stage03/common/Result.java` 与同目录树下的 `exception/BusinessException.java`
 
 **运行后你会看到什么**：4 行输出，覆盖三种错误表达方式。看完本文你应该能为任何一个"失败场景"选择正确的表达方式并说明理由。
 
@@ -15,7 +15,7 @@ Java 的错误表达有三种，判据是**调用方能不能处理、以及"失
 
 | 表达方式 | 适用场景 | 例子 |
 | --- | --- | --- |
-| 返回值（`Result<T>`、`boolean`、null+文档） | 失败是**常规分支**，调用方理应处理 | 按	id 查学生没查到 |
+| 返回值（`Result<T>`、`boolean`、null+文档） | 失败是**常规分支**，调用方理应处理 | 按 id 查学生没查到 |
 | 受检异常（`extends Exception`） | 可预期、调用方**必须表态**才能编译通过 | 文件不存在、日期格式错 |
 | 非受检异常（`extends RuntimeException`） | 编程错误或现场**无法处理** | 除零、空指针、`IllegalArgument` |
 

@@ -1,7 +1,7 @@
 # 深化课 06：Repository 演进——接口这一步买到了什么
 
 对应示例：`com/javaroadmap/stage03/deepdives/repoevolution/RepositoryEvolutionDemo.java`
-配套对照参考：`existing_course/src/main/java/com/javaroadmap/stage03/student/`（接口 + 内存/文件双实现的完整版）
+配套对照参考：`stages/stage03_java_core/existing_course/src/main/java/com/javaroadmap/stage03/student/`（接口 + 内存/文件双实现的完整版）
 
 **运行后你会看到什么**：两行统计输出——同一套业务代码分别跑在"真仓库"和"空仓库"上。看完本文你应该能解释 `StudentRepository` 接口存在的理由，并重述"数组 → List → 接口"每一步解决什么问题。
 

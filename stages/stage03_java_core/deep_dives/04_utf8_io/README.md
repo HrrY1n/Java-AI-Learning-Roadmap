@@ -1,13 +1,13 @@
 # 深化课 04：UTF-8 与文件 IO——"字符"如何变成磁盘上的"字节"
 
 对应示例：`com/javaroadmap/stage03/deepdives/utf8io/Utf8IoDemo.java`
-配套对照参考：`existing_course/src/main/java/com/javaroadmap/stage03/student/FileStudentRepository.java`
+配套对照参考：`stages/stage03_java_core/existing_course/src/main/java/com/javaroadmap/stage03/student/FileStudentRepository.java`
 
 **运行后你会看到什么**：6 行输出，其中第 4 行是故意用错编码表的"乱码现场"。看完本文你应该能解释乱码的产生机制、说清相对路径相对于谁，并理解 `try-with-resources` 解决什么问题。
 
 ## 场景
 
-`FileStudentRepository` 每一行都写了 `StandardCharsets.UTF_8`。不写行不行？大多数时候行（JDK 18+ 默认 UTF-8），**但 Windows 上 JDK 17 默认还是 GBK**——同一个文件在一台电脑读写正常、另一台乱码。数据可靠性不能建立在"大多数时候"上。
+`FileStudentRepository` 每一行都写了 `StandardCharsets.UTF_8`。不写行不行？大多数时候行（JDK 18+ 默认 UTF-8），**但中文区域的 Windows 上 JDK 17 默认还是 GBK**——同一个文件在一台电脑读写正常、另一台乱码。数据可靠性不能建立在"大多数时候"上。
 
 ## 必须理解
 
@@ -27,7 +27,7 @@
 
 **try-with-resources**：`new BufferedReader(...)` 放进 `try (...)` 括号里，作用域结束（无论正常结束还是抛异常）自动调用 `close()`。传统写法的 `close()` 在异常路径上可能被跳过——文件句柄泄漏，程序开久了"打不开新文件"。凡是实现了 `AutoCloseable` 的资源（流、连接），一律用这个语法。
 
-**Observe（先预测再运行）**：预测第 2 行"7 个字符"对应多少字节（提示：UTF-8 里 ASCII 字符 1 字节、常用汉字 3 字节）；预测第 4 行乱码的**形态**（问号？生僻汉字？还是直接抛异常）——乱码形态取决于两张表的差异，答案不唯一，重点是能解释。
+**Observe（先预测再运行）**：预测第 2 行——"小红,95" 是 5 个字符，写成 UTF-8 后是多少字节？（提示：UTF-8 里 ASCII 字符 1 字节、常用汉字 3 字节；答案应是 9。）预测第 4 行乱码的**形态**（问号？生僻汉字？还是直接抛异常）——乱码形态取决于两张表的差异，答案不唯一，重点是能解释。
 
 ## 动手：修改一个条件
 

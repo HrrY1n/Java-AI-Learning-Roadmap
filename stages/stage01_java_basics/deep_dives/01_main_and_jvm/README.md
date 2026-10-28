@@ -17,16 +17,16 @@ App.java --javac--> App.class（字节码） --java--> JVM 加载 --> 调用 mai
 
 ## 必须理解
 
-`public static void main(String[] args)` 不是一个整体，是四个要求叠在一起：
+`public static void main(String[] args)` 不是一个整体，是四个成分叠在一起。注意它们的**强制性不同**：
 
-| 成分 | 作用 | 缺了会怎样 |
+| 成分 | 作用 | 强制性 |
 | --- | --- | --- |
-| `public` | JVM 要从外部调用它 | 运行时报"main 方法不适用" |
-| `static` | 调用时没有任何对象存在，方法必须属于类 | 同上 |
-| `void` | 程序入口不需要返回值 | 写 `int` 会直接不匹配签名 |
-| `String[] args` | 命令行参数容器 | 参数写成 `String args`（少 `[]`）即不匹配 |
+| `String[] args` | 命令行参数容器（无参数时是长度 0 的数组） | 所有版本硬要求；写成 `String args`（少 `[]`）或 `int[] args` 都无法作为入口启动 |
+| `void` | 程序入口不需要返回值 | 写 `int` 会不匹配入口约定 |
+| `public` | JVM 要能从外部调用它 | JDK 24 及以前硬要求；JDK 25 起放宽（JEP 512） |
+| `static` | 调用时还没有对象存在，方法属于类 | 同上——JDK 25 起连实例方法 main 也能启动 |
 
-**心智模型**：JVM 像"只认识固定门铃的访客"——它只会按 `public static void main(String[])` 这个门铃。你写别的签名，编译能通过（语法没错），但按不响。
+**心智模型**：JVM 要按"门铃"找入口。传统门铃是 `public static void main(String[])`，所有 JDK 都认识；JDK 25 起它多认了几种门铃（实例 main 等）。**本仓库所有课程代码统一写全 `public static void main(String[])`**——它在 JDK 17 到 25 上行为完全一致，不为单个版本的宽松特性放弃可移植性。
 
 `args` 是字符串数组：`java MainAnatomyDemo hello 42` 中 JVM 把 `hello`、`42` 放进数组，**注意 42 也是字符串**，需要数字要自己转换。无参数时它是长度为 0 的数组，不是 null。
 
@@ -49,7 +49,7 @@ java -cp out com.javaroadmap.stage01.deepdives.jvmstart.MainAnatomyDemo hello 42
 ## 动手：修改一个条件
 
 1. 把 `String[] args` 改名为 `String[] anything`——运行不受影响。**参数名是给你看的，类型才是给 JVM 看的**。
-2. 删掉 `static` 再运行——把报错信息与 [排查手册第 5 条](../../../../docs/跨平台问题排查.md) 对照，确认你能从报错读出"签名不匹配"。
+2. 删掉 `static` 再运行，记录你的 JDK 版本与结果：JDK 24 及以前会报"在类中找不到 main 方法"；本机 JDK 25 因为 JEP 512 **可能仍能运行**。无论哪种结果，用一句话回答：课程代码为什么统一写全 `public static`？（答案在上面的心智模型里。）
 3. （拓展）运行 `javap -cp out com.javaroadmap.stage01.deepdives.jvmstart.MainAnatomyDemo`，看 JVM 眼中的类长什么样——这是你第一次直接观察字节码。
 
 ## 常见错误

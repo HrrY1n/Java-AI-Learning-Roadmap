@@ -11,8 +11,9 @@ package com.javaroadmap.stage01.deepdives.jvmstart;
  *   1) java -cp out com.javaroadmap.stage01.deepdives.jvmstart.MainAnatomyDemo
  *   2) 同上，但在末尾追加参数： hello 42
  *
- * Modify：把 main 的参数 String[] args 改名 anything 试试（应无影响），
- *         再删掉 static 运行（观察报错信息与 docs/跨平台问题排查.md 第 5 条是否一致）。
+ * Modify：把 main 的参数 String[] args 改名 anything 试试（应无影响）；
+ *         再删掉 static 运行并记录你的 JDK 版本与结果——JDK 24 及以前报"找不到 main 方法"，
+ *         JDK 25 起因 JEP 512 放宽而可能仍能运行。课程代码统一写全 public static 以保证可移植。
  */
 public class MainAnatomyDemo {
 

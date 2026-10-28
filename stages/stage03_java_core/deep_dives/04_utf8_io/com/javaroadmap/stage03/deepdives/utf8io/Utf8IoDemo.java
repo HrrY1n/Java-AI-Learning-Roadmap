@@ -29,7 +29,7 @@ public class Utf8IoDemo {
         Files.write(path, "小红,95".getBytes(StandardCharsets.UTF_8));
 
         byte[] raw = Files.readAllBytes(path);
-        System.out.println("2) 文件字节数：" + raw.length + "（\"小红,95\" 是 7 个字符）");
+        System.out.println("2) 文件字节数：" + raw.length + "（\"小红,95\" 是 5 个字符）");
 
         // 用同一张表读回：字符完好。
         String text = new String(raw, StandardCharsets.UTF_8);
