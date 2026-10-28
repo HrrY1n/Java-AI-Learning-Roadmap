@@ -56,7 +56,7 @@
 
 **验收条件**
 - [ ] 完整会话演示：两次正常操作 + 一次非法数字 + 一次非数字 + 退出。
-- [ ] 把上面会话的输入存成文本，用重定向跑一遍仍正确：`java -cp out 你的FQCN < input.txt`（这就是 [scripts/fixtures](../../../../../scripts/README.md) 的工作方式）。
+- [ ] 把上面会话的输入存成文本，用重定向跑一遍仍正确：`java -cp out 你的FQCN < input.txt`（这就是 [scripts/fixtures](../../../../scripts/README.md) 的工作方式）。
 - [ ] 循环条件、break 位置与 [深化课 05](../../deep_dives/05_loop_bounds/README.md) 的"三问答"一致。
 
 **需要独立思考的部分**：用 `while (true) + break` 还是用布尔变量控制循环？说明取舍。

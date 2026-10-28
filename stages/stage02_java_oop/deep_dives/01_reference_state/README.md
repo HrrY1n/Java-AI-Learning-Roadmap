@@ -10,7 +10,7 @@ day01 建了 `Student` 对象并赋字段。接下来写 `StudentService` 时会
 
 ## 必须理解
 
-**对象本体住在内存里，变量里存的只是它的地址**（Stage 01 [数组深化课](../../stage01_java_basics/deep_dives/03_array_memory/README.md) 已经见过数组版）。
+**对象本体住在内存里，变量里存的只是它的地址**（Stage 01 [数组深化课](../../../stage01_java_basics/deep_dives/03_array_memory/README.md) 已经见过数组版）。
 
 由此三个推论覆盖绝大多数场景：
 
@@ -22,7 +22,7 @@ day01 建了 `Student` 对象并赋字段。接下来写 `StudentService` 时会
 
 ## 理解原理：与参数传递是同一件事
 
-Stage 01 [深化课 04](../../stage01_java_basics/deep_dives/04_argument_passing/README.md) 的 case3（方法里 `arr = 新数组` 不影响外面）就是本课第二段的现象：**给变量重新赋值，只是换掉这张纸条上的门牌号，不影响其他纸条，更不影响旧房子**。
+Stage 01 [深化课 04](../../../stage01_java_basics/deep_dives/04_argument_passing/README.md) 的 case3（方法里 `arr = 新数组` 不影响外面）就是本课第二段的现象：**给变量重新赋值，只是换掉这张纸条上的门牌号，不影响其他纸条，更不影响旧房子**。
 
 把两条规则合起来，读任何对象代码都可以自问两问：
 

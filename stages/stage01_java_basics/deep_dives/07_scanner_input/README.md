@@ -67,5 +67,5 @@ echo "abc + 3"   | java -cp out 你的FQCN     → 重新询问（程序不崩�
 
 ## 与后面学习的联系
 
-- `try/catch` 的完整规则（受检/非受检、自定义异常、资源关闭）在 Stage 03 [异常设计深化课](../../stage03_java_core/deep_dives/03_exception_design/README.md) 展开；今天你只需要"只捕获可恢复的、知道如何处理的异常"这一条直觉。
+- `try/catch` 的完整规则（受检/非受检、自定义异常、资源关闭）在 Stage 03 [异常设计深化课](../../../stage03_java_core/deep_dives/03_exception_design/README.md) 展开；今天你只需要"只捕获可恢复的、知道如何处理的异常"这一条直觉。
 - 交互程序自动化测试的思路（重定向输入 + 检查输出）就是 `scripts/fixtures/` 的工作方式——你现在可以读懂那些 fixture 文件了。

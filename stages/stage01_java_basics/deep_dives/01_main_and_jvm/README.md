@@ -33,7 +33,7 @@ App.java --javac--> App.class（字节码） --java--> JVM 加载 --> 调用 mai
 ## 理解原理：三个阶段各自由谁负责
 
 1. **编译阶段（javac）**：检查语法和类型，把源码翻译成字节码。此时**不运行任何逻辑**——除零、数组越界、死循环它一概不管，所以"编译通过"只等于"语法合格"。
-2. **类加载（java 启动时）**：JVM 按 `-cp` 给出的位置，用**完整类名**逐级找目录（`com.javaroadmap...` → `com/javaroadmap/...`），把 `.class` 读进内存。找不到就是 `ClassNotFoundException`（见 [排查手册第 4 条](../../../docs/跨平台问题排查.md)）。
+2. **类加载（java 启动时）**：JVM 按 `-cp` 给出的位置，用**完整类名**逐级找目录（`com.javaroadmap...` → `com/javaroadmap/...`），把 `.class` 读进内存。找不到就是 `ClassNotFoundException`（见 [排查手册第 4 条](../../../../docs/跨平台问题排查.md)）。
 3. **执行阶段**：JVM 调用 main，程序逐行执行，`System.out.println` 把字符交给"标准输出流"，显示在终端上。
 
 **Observe（先预测再运行）**：
@@ -49,14 +49,14 @@ java -cp out com.javaroadmap.stage01.deepdives.jvmstart.MainAnatomyDemo hello 42
 ## 动手：修改一个条件
 
 1. 把 `String[] args` 改名为 `String[] anything`——运行不受影响。**参数名是给你看的，类型才是给 JVM 看的**。
-2. 删掉 `static` 再运行——把报错信息与 [排查手册第 5 条](../../../docs/跨平台问题排查.md) 对照，确认你能从报错读出"签名不匹配"。
+2. 删掉 `static` 再运行——把报错信息与 [排查手册第 5 条](../../../../docs/跨平台问题排查.md) 对照，确认你能从报错读出"签名不匹配"。
 3. （拓展）运行 `javap -cp out com.javaroadmap.stage01.deepdives.jvmstart.MainAnatomyDemo`，看 JVM 眼中的类长什么样——这是你第一次直接观察字节码。
 
 ## 常见错误
 
-- 在 IntelliJ 里能跑、命令行跑不了：IDE 帮你拼了 `-cp` 和 FQCN，命令行必须自己写对。两者差异见 [环境搭建第四节](../../../docs/环境搭建.md#四编译并运行一个课程程序)。
+- 在 IntelliJ 里能跑、命令行跑不了：IDE 帮你拼了 `-cp` 和 FQCN，命令行必须自己写对。两者差异见 [环境搭建第四节](../../../../docs/环境搭建.md#四编译并运行一个课程程序)。
 - 以为 `main` 里的代码"自动执行"：任何代码都要么在 main 调用链上执行，要么属于类/对象定义本身。
-- 修改代码后直接运行：跳过了重新编译，跑的还是旧 `.class`（[排查手册第 6 条](../../../docs/跨平台问题排查.md)）。
+- 修改代码后直接运行：跳过了重新编译，跑的还是旧 `.class`（[排查手册第 6 条](../../../../docs/跨平台问题排查.md)）。
 
 ## 独立练习
 

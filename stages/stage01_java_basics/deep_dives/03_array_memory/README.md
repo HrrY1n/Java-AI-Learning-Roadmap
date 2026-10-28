@@ -52,6 +52,6 @@ for (int i = 0; i <= scores.length; i++)  // 错：最后一次越界
 
 ## 与后面学习的联系
 
-- "变量存的是地址"这条线索在 Stage 02 [引用与对象状态](../../stage02_java_oop/deep_dives/01_reference_state/README.md) 全面展开——数组只是它的第一个例子。
+- "变量存的是地址"这条线索在 Stage 02 [引用与对象状态](../../../stage02_java_oop/deep_dives/01_reference_state/README.md) 全面展开——数组只是它的第一个例子。
 - Stage 03 的 `ArrayList` 封装了"扩容 + 有效长度"，越界问题变成"用 `get(i)` 前先判断 `size()`"，但你仍需要理解今天的内容才能读懂它的报错。
 - 算法并行线的双指针、滑动窗口全部建立在"下标 = 偏移"的图像上。

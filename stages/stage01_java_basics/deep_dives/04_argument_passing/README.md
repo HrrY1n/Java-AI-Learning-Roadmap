@@ -61,6 +61,6 @@ d) int[] data = {5};     bumpThenReplace(data);         // 先 arr[0]++ 再 arr 
 
 ## 与后面学习的联系
 
-- Stage 02 第一课（[引用与对象状态](../../stage02_java_oop/deep_dives/01_reference_state/README.md)）把"地址"换成"对象引用"，讲解两个对象变量指向同一对象时的共享与别名问题。
+- Stage 02 第一课（[引用与对象状态](../../../stage02_java_oop/deep_dives/01_reference_state/README.md)）把"地址"换成"对象引用"，讲解两个对象变量指向同一对象时的共享与别名问题。
 - 面试高频："Java 为什么只有值传递"——case3 就是你答题的核心证据。
 - 返回值 vs 副作用：case2 的方法其实应该"返回新值"而不是偷改入参，Stage 03 的 `Result<T>` 会把这个取舍正规化。

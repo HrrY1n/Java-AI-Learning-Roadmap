@@ -29,7 +29,7 @@ Stage 01 的程序把所有逻辑写在 main 里也能跑。Stage 02 的三个�
 
 1. **同一份业务答案有多种消费者**：控制台要打印，未来的 Web 接口要转 JSON，测试要断言——只有"返回数据"能同时服务三者。
 2. **可测试**：返回值能被自动验证；`System.out` 只能靠人眼（或重定向，就是 `scripts/` 干的事）。
-3. **职责单一**（呼应 Stage 01 [方法深化课](../../stage01_java_basics/deep_dives/06_method_scope/README.md)）：显示方式变化不应迫使业务代码改动。
+3. **职责单一**（呼应 Stage 01 [方法深化课](../../../stage01_java_basics/deep_dives/06_method_scope/README.md)）：显示方式变化不应迫使业务代码改动。
 
 "分数 0~100" 放在 Entity（构造器校验）而不在 Service：因为**这是学生自身的天性行为**，无论谁来创建学生都该成立。而"优秀线 90 分"放 Entity 的 `isExcellent()` 或 Service 均可——判断标准是"这是单个学生的属性，还是一组学生的政策"，本例两种都讲得通，**能说出理由比站对位置更重要**。
 
@@ -52,5 +52,5 @@ Stage 01 的程序把所有逻辑写在 main 里也能跑。Stage 02 的三个�
 
 ## 与后面学习的联系
 
-- Stage 03 会把 `ArrayList` 替换成 `StudentRepository` 接口（内存/文件两个实现），Service 层一行不改——[Repository 演进深化课](../../stage03_java_core/deep_dives/06_repository_evolution/README.md) 完整重走这条重构路。
+- Stage 03 会把 `ArrayList` 替换成 `StudentRepository` 接口（内存/文件两个实现），Service 层一行不改——[Repository 演进深化课](../../../stage03_java_core/deep_dives/06_repository_evolution/README.md) 完整重走这条重构路。
 - Stage 06 的 `Controller/Service/Mapper` 就是今天三层换上框架名字：Controller=入口，Service=业务，Mapper=存取。
