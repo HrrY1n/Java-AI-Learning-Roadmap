@@ -50,8 +50,12 @@ public class ExceptionDesignDemo {
         try {
             return Integer.parseInt(text);
         } catch (NumberFormatException e) {
-            // 转换异常类型时必须保留原因（cause），否则排错线索丢失。
-            throw new ParseException("年龄不是合法数字：" + text, 0);
+            // 转换异常类型时保留原始异常作为 cause，否则底层堆栈丢失、排错断线索。
+            // ParseException 的构造器没有 cause 参数，用 initCause 补上；
+            // 自定义异常则直接写 new XxxException(msg, e)。
+            ParseException parsed = new ParseException("年龄不是合法数字：" + text, 0);
+            parsed.initCause(e);
+            throw parsed;
         }
     }
 

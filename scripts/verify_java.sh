@@ -23,6 +23,11 @@ echo ""
 WORK_DIR="$(mktemp -d)"
 trap 'rm -rf "$WORK_DIR"' EXIT
 
+# 清单先剥离 CR 再读取：即使检出配置把该文件转成 CRLF，也不会把 \r 带进断言列。
+# （.gitattributes 已强制 *.tsv eol=lf，这里是第二道保险。）
+MANIFEST="$WORK_DIR/manifest.tsv"
+tr -d '\r' < "$REPO_ROOT/scripts/verify_manifest.tsv" > "$MANIFEST"
+
 TOTAL=0
 PASSED=0
 FAILED=0
@@ -64,6 +69,7 @@ while IFS=$'\t' read -r root fqcn stdin_fix cleanup expects_rest || [ -n "${root
     if [ $? -ne 0 ]; then
         echo "FAIL $label —— 编译失败："
         tail -n 15 "$WORK_DIR/javac_err.txt"
+        cleanup_paths "$src_root" "$cleanup"
         FAILED=$((FAILED + 1))
         continue
     fi
@@ -120,6 +126,7 @@ while IFS=$'\t' read -r root fqcn stdin_fix cleanup expects_rest || [ -n "${root
         FAILED=$((FAILED + 1))
     fi
 done < "$MANIFEST"
+
 
 echo ""
 echo "== 结果：$PASSED 通过 / $FAILED 失败 / 共 $TOTAL 项 =="
