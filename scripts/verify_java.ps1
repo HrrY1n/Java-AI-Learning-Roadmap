@@ -101,10 +101,19 @@ foreach ($line in $Lines) {
     $timedOut = $false
     if (-not $proc.WaitForExit($TimeoutSeconds * 1000)) {
         $timedOut = $true
-        try { $proc.Kill() } catch { }
+        # java 可能经 Oracle javapath 垫片再启动真实 JVM：Kill 只能杀掉垫片，
+        # 真实 JVM 会存活并持有输出管道，导致 ReadToEndAsync 永不结束。必须整树终止。
+        & taskkill /PID $proc.Id /T /F 2>&1 | Out-Null
+        try { $proc.WaitForExit(5000) | Out-Null } catch { }
     }
-    $stdout = $outTask.GetAwaiter().GetResult()
-    $stderrText = $errTask.GetAwaiter().GetResult()
+    # 有界等待读取完成（正常路径下进程已退出，管道立即关闭）
+    $waited = 0
+    while ((-not $outTask.IsCompleted -or -not $errTask.IsCompleted) -and $waited -lt 50) {
+        Start-Sleep -Milliseconds 100
+        $waited++
+    }
+    $stdout = if ($outTask.IsCompleted) { $outTask.GetAwaiter().GetResult() } else { "" }
+    $stderrText = if ($errTask.IsCompleted) { $errTask.GetAwaiter().GetResult() } else { "" }
 
     Remove-CleanupPaths $SrcRoot $Cleanup
 

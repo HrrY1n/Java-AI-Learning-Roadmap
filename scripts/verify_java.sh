@@ -74,8 +74,9 @@ while IFS=$'\t' read -r root fqcn stdin_fix cleanup expects_rest || [ -n "${root
         continue
     fi
 
-    # 运行：工作目录 = 源码根；交互程序从 fixture 提供输入
-    # 注意：timeout 只能启动外部程序，不能执行 shell 函数，因此这里不用函数包装。
+    # 运行：工作目录 = 源码根；交互程序从 fixture 提供输入。
+    # 后台启动 + 轮询等待，超时时整树终止：java 可能经 Oracle javapath 垫片
+    # 再启动真实 JVM，timeout/kill 只能杀掉垫片，真实 JVM 会变成孤儿继续运行。
     stdout_file="$WORK_DIR/stdout.txt"
     stderr_file="$WORK_DIR/stderr.txt"
     redirect_in="/dev/null"
@@ -83,19 +84,45 @@ while IFS=$'\t' read -r root fqcn stdin_fix cleanup expects_rest || [ -n "${root
         redirect_in="$REPO_ROOT/scripts/$stdin_fix"
     fi
 
-    if command -v timeout >/dev/null 2>&1; then
-        ( cd "$src_root" && timeout "$TIMEOUT_SECONDS" java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -Dfile.encoding=UTF-8 -cp out "$fqcn" \
-            < "$redirect_in" ) > "$stdout_file" 2> "$stderr_file"
-        run_rc=$?
-    else
-        # macOS 无 timeout 命令：直接运行。清单中的交互程序在输入耗尽后都会自然结束。
-        ( cd "$src_root" && java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -Dfile.encoding=UTF-8 -cp out "$fqcn" \
-            < "$redirect_in" ) > "$stdout_file" 2> "$stderr_file"
-        run_rc=$?
+    ( cd "$src_root" && exec java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -Dfile.encoding=UTF-8 -cp out "$fqcn" \
+        < "$redirect_in" ) > "$stdout_file" 2> "$stderr_file" &
+    java_pid=$!
+    waited=0
+    while kill -0 "$java_pid" 2>/dev/null && [ "$waited" -lt "$TIMEOUT_SECONDS" ]; do
+        if sleep 0.1 2>/dev/null; then
+            waited=$((waited + 1))
+        else
+            # 极少数平台不支持小数 sleep：退化为 1 秒粒度
+            sleep 1
+            waited=$((waited + 10))
+        fi
+    done
+
+    timed_out=0
+    if kill -0 "$java_pid" 2>/dev/null; then
+        timed_out=1
+        case "$(uname -s)" in
+            *MINGW*|*MSYS*|*CYGWIN*)
+                # Git Bash：把 MSYS pid 换算成 Windows pid 后整树终止（含 javapath 垫片的真实 JVM）
+                win_pid="$(ps -W | awk -v p="$java_pid" '$1 == p { print $4; exit }')"
+                [ -n "$win_pid" ] && taskkill //PID "$win_pid" //T //F >/dev/null 2>&1
+                ;;
+        esac
+        kill "$java_pid" 2>/dev/null
+        sleep 1
+    fi
+    wait "$java_pid" 2>/dev/null
+    run_rc=$?
+
+    if [ "$timed_out" -eq 1 ]; then
+        echo "FAIL $label —— 运行超时（${TIMEOUT_SECONDS}s），可能存在死循环或菜单等待"
+        FAILED=$((FAILED + 1))
+        cleanup_paths "$src_root" "$cleanup"
+        continue
     fi
 
     if [ $run_rc -ne 0 ]; then
-        echo "FAIL $label —— 运行失败（exit=$run_rc，124 表示超时）："
+        echo "FAIL $label —— 运行失败（exit=$run_rc）："
         tail -n 15 "$stderr_file"
         FAILED=$((FAILED + 1))
         cleanup_paths "$src_root" "$cleanup"
