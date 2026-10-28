@@ -51,3 +51,9 @@ stages/stage01_java_basics/deep_dives/04_argument_passing	com.javaroadmap.stage0
 stages/stage01_java_basics/deep_dives/05_loop_bounds	com.javaroadmap.stage01.deepdives.loops.LoopBoundsDemo	-	out	1 2 3 4  <- printRange	1 2 4  <- countOneToThree
 stages/stage01_java_basics/deep_dives/06_method_scope	com.javaroadmap.stage01.deepdives.methods.MethodScopeDemo	-	out	total = 7	3) callCount = 0	4) callCount = 2
 stages/stage01_java_basics/deep_dives/07_scanner_input	com.javaroadmap.stage01.deepdives.scanner.ScannerGuardDemo	fixtures/scanner_guard.txt	out	商 = 2	程序正常结束
+stages/stage02_java_oop/deep_dives/01_reference_state	com.javaroadmap.stage02.deepdives.refstate.ReferenceStateDemo	-	out	a.score = 95	a == c：false
+stages/stage02_java_oop/deep_dives/02_constructor_this	com.javaroadmap.stage02.deepdives.constructorthis.ConstructorThisDemo	-	out	姓名：明仔，年龄：18
+stages/stage02_java_oop/deep_dives/03_encapsulation_why	com.javaroadmap.stage02.deepdives.encapsulation.EncapsulationDemo	-	out	的余额：-500	的余额：120.0
+stages/stage02_java_oop/deep_dives/04_inheritance_composition	com.javaroadmap.stage02.deepdives.inheritance.InheritanceCompositionDemo	-	out	实际：16	车辆出发
+stages/stage02_java_oop/deep_dives/05_polymorphism_interface	com.javaroadmap.stage02.deepdives.polymorphism.PolymorphismDemo	-	out	[旺财] 汪	机器人 R2 上线	我是狗
+stages/stage02_java_oop/deep_dives/06_entity_service	com.javaroadmap.stage02.deepdives.entityservice.EntityServiceDemo	-	out	平均分：	入口层捕获：分数必须在 0 到 100：150	拒绝非法学生后人数：3
