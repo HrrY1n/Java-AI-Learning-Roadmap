@@ -1,0 +1,46 @@
+# Java 课程验证清单（TAB 分隔，# 开头为注释）
+# 列：源码根目录 | 完整类名(FQCN) | 输入fixture(-为无) | 运行前后清理路径(;分隔,相对源码根) | 必须出现的输出子串(1~N列)
+# 说明：
+# - 每行 = 编译源码根下全部 .java → 在源码根目录以 java -cp out 运行 → 校验输出子串。
+# - answers/ 与学员个人练习不在清单内：它们不是参考实现的回归对象（见 scripts/README.md）。
+# 修改课程输出后，请同步更新对应行的预期子串。
+stages/stage01_java_basics/existing_course/day01_output_variable	com.javaroadmap.stage01.day01outputvariable.App	-	out	姓名：	年龄：
+stages/stage01_java_basics/existing_course/day02_data_type_operator	com.javaroadmap.stage01.day02datatypeoperator.App	-	out	a / b = 3	a % b = 1
+stages/stage01_java_basics/existing_course/day03_if_switch	com.javaroadmap.stage01.day03ifswitch.App	-	out	perfect	星期三
+stages/stage01_java_basics/existing_course/day04_loop	com.javaroadmap.stage01.day04loop.App	-	out	1 到 100 的和：5050
+stages/stage01_java_basics/existing_course/day05_array	com.javaroadmap.stage01.day05array.App	-	out	数组长度：4	平均分：
+stages/stage01_java_basics/existing_course/day06_method	com.javaroadmap.stage01.day06method.App	-	out	10 + 20 = 30	较大值：15
+stages/stage01_java_basics/existing_course/src/main/java	com.javaroadmap.stage01.console.ScoreStatisticsApp	-	out	总分：402	及格人数：4
+stages/stage01_java_basics/existing_course/src/main/java	com.javaroadmap.stage01.console.SimpleCalculatorApp	fixtures/calculator_basic.txt	out	结果：2.0
+stages/stage01_java_basics/existing_course/src/main/java	com.javaroadmap.stage01.console.MenuDemoApp	fixtures/menu_demo.txt	out	程序结束。
+stages/stage01_java_basics/existing_course/src/main/java	com.javaroadmap.stage01.console.GuessNumberApp	fixtures/guess_1_to_100.txt	out	猜对了
+stages/stage01_java_basics/mini_project/guess_number	com.javaroadmap.stage01.guessnumber.GuessNumber	fixtures/guess_1_to_100.txt	out	猜对了！
+stages/stage02_java_oop/existing_course/day01_class_object	com.javaroadmap.stage02.day01classobject.App	-	out	大家好，我是小明
+stages/stage02_java_oop/existing_course/day02_constructor_this	com.javaroadmap.stage02.day02constructorthis.App	-	out	姓名：小明，年龄：18
+stages/stage02_java_oop/existing_course/day03_encapsulation	com.javaroadmap.stage02.day03encapsulation.App	-	out	小明 的余额：120.0
+stages/stage02_java_oop/existing_course/day04_inheritance	com.javaroadmap.stage02.day04inheritance.App	-	out	旺财 正在吃东西	汪汪叫
+stages/stage02_java_oop/existing_course/day05_polymorphism	com.javaroadmap.stage02.day05polymorphism.App	-	out	旺财 正在吃骨头	咪咪 正在吃鱼
+stages/stage02_java_oop/existing_course/day06_interface_abstract	com.javaroadmap.stage02.day06interfaceabstract.App	-	out	正在吃谷子	正在低空飞行
+stages/stage02_java_oop/existing_course/examples/common_api/day01_string	com.javaroadmap.stage02.commonapi.day01string.App	-	out	长度：11	内容是否相同：true
+stages/stage02_java_oop/existing_course/examples/common_api/day02_stringbuilder	com.javaroadmap.stage02.commonapi.day02stringbuilder.App	-	out	反转：
+stages/stage02_java_oop/existing_course/examples/common_api/day03_date_time	com.javaroadmap.stage02.commonapi.day03datetime.App	-	out	今天：	当前时间：
+stages/stage02_java_oop/existing_course/examples/common_api/day04_math_random	com.javaroadmap.stage02.commonapi.day04mathrandom.App	-	out	最大值：20	绝对值：5	四舍五入：4
+stages/stage02_java_oop/existing_course/src/main/java	com.javaroadmap.stage02.student.StudentManagementApp	-	out	平均分：	找到学号为 2 的学生
+stages/stage02_java_oop/existing_course/src/main/java	com.javaroadmap.stage02.bank.BankApp	-	out	转账成功。
+stages/stage02_java_oop/existing_course/src/main/java	com.javaroadmap.stage02.library.LibraryApp	-	out	借书成功。	还书成功。
+stages/stage02_java_oop/existing_course/mini_projects/early_console_projects/project02_student_score_manager	com.javaroadmap.stage02.earlyprojects.project02studentscoremanager.App	fixtures/score_manager.txt	out	添加成功	平均分：90.0
+stages/stage02_java_oop/existing_course/mini_projects/early_console_projects/project03_simple_bank_system	com.javaroadmap.stage02.earlyprojects.project03simplebanksystem.App	fixtures/bank_system.txt	out	存钱成功	取钱成功	的当前余额：100.0	感谢使用
+stages/stage02_java_oop/existing_course/mini_projects/early_console_projects/project04_library_manager	com.javaroadmap.stage02.earlyprojects.project04librarymanager.App	fixtures/library_manager.txt	out	添加成功	程序结束
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day01_arraylist	com.javaroadmap.stage03.collections.day01arraylist.App	-	out	列表长度：3	第一个名字：小明
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day02_hashmap	com.javaroadmap.stage03.collections.day02hashmap.App	-	out	小明的分数：90	找到了小红
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day03_hashset	com.javaroadmap.stage03.collections.day03hashset.App	-	out	集合大小：2	是否包含小明：true
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day04_generic	com.javaroadmap.stage03.collections.day04generic.App	-	out	Java 学习	100
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day05_student_management_list	com.javaroadmap.stage03.collections.day05studentmanagement.App	-	out	姓名：小红，分数：96
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day01_exception	com.javaroadmap.stage03.exceptionsio.day01exception.App	-	out	发生错误：除数不能为 0	异常演示结束
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day02_file_read	com.javaroadmap.stage03.exceptionsio.day02fileread.App	-	out	总行数：	读取文件：
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day03_file_write	com.javaroadmap.stage03.exceptionsio.day03filewrite.App	-	out;output.txt	写入成功：
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day04_simple_note_app	com.javaroadmap.stage03.exceptionsio.day04simplenote.App	-	out;notes.txt	当前全部笔记：	今天学习了 Java 文件读写。
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day01_lambda	com.javaroadmap.stage03.lambdastream.day01lambda.App	-	out	结果：30
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day02_stream_filter_map	com.javaroadmap.stage03.lambdastream.day02streamfiltermap.App	-	out	张三丰	学生：小明
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day03_stream_collect	com.javaroadmap.stage03.lambdastream.day03streamcollect.App	-	out	筛选后的新列表：[小明, 小红, 小刚]
+stages/stage03_java_core/existing_course/src/main/java	com.javaroadmap.stage03.student.StudentManagementApp	-	out;data	平均分：	不重复姓名：	文件版学生管理
