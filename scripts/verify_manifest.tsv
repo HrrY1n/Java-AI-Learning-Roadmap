@@ -44,3 +44,10 @@ stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_str
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day02_stream_filter_map	com.javaroadmap.stage03.lambdastream.day02streamfiltermap.App	-	out	张三丰	学生：小明
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day03_stream_collect	com.javaroadmap.stage03.lambdastream.day03streamcollect.App	-	out	筛选后的新列表：[小明, 小红, 小刚]
 stages/stage03_java_core/existing_course/src/main/java	com.javaroadmap.stage03.student.StudentManagementApp	-	out;data	平均分：	不重复姓名：	文件版学生管理
+stages/stage01_java_basics/deep_dives/01_main_and_jvm	com.javaroadmap.stage01.deepdives.jvmstart.MainAnatomyDemo	-	out	main 被调用了，args 长度 = 0
+stages/stage01_java_basics/deep_dives/02_integer_division	com.javaroadmap.stage01.deepdives.integertype.IntegerDivisionDemo	-	out	1) 3	3.3333333333333335
+stages/stage01_java_basics/deep_dives/03_array_memory	com.javaroadmap.stage01.deepdives.arrays.ArrayMemoryDemo	-	out	scores[0] = 0	sum = 261
+stages/stage01_java_basics/deep_dives/04_argument_passing	com.javaroadmap.stage01.deepdives.argpassing.ArgumentPassingDemo	-	out	number = 10	scores[0] = 0	scores2[0] = 90
+stages/stage01_java_basics/deep_dives/05_loop_bounds	com.javaroadmap.stage01.deepdives.loops.LoopBoundsDemo	-	out	1 2 3 4  <- printRange	1 2 4  <- countOneToThree
+stages/stage01_java_basics/deep_dives/06_method_scope	com.javaroadmap.stage01.deepdives.methods.MethodScopeDemo	-	out	total = 7	3) callCount = 0	4) callCount = 2
+stages/stage01_java_basics/deep_dives/07_scanner_input	com.javaroadmap.stage01.deepdives.scanner.ScannerGuardDemo	fixtures/scanner_guard.txt	out	商 = 2	程序正常结束
