@@ -42,8 +42,11 @@ java -cp out com.javaroadmap.stage02.day01classobject.App
 ## 现有内容怎么用
 
 - `existing_course/day01_*` 到 `day06_*`：单知识点示例。
+- [`deep_dives/`](deep_dives/01_reference_state/README.md)：6 个 OOP 深化课（引用与对象状态、构造器与 this、封装、继承与组合、多态与接口、Entity/Service 职责），重点回答"为什么这样设计"。
+- `existing_course/exercises/`：结构化综合练习（三方向任选其一做深，含验收条件与分级提示）。
+- [`practice/`](practice/predict_and_modify.md)：预测与修改练习集，答案独立成档（[answers.md](practice/answers.md)）。
+- [`my_practices/`](my_practices/README.md)：你的独立练习区，验证脚本不检查这里。
 - `existing_course/src/`：学生、图书、银行三个分层示例，属于参考代码，不代表已完成项目。
-- `existing_course/exercises/`：需要你独立完成的 OOP 练习。
 - `existing_course/examples/common_api/`：String、StringBuilder、日期时间、Math/Random 旧示例。
 - `existing_course/mini_projects/early_console_projects/`：早期控制台项目，保留为练习素材，不作为多个简历项目。
 

@@ -57,9 +57,12 @@ java -cp out com.javaroadmap.stage01.day01outputvariable.App
 ## 现有内容怎么用
 
 - `existing_course/day01_*` 到 `day06_*`：已有逐日示例，其中包含你的实际修改；每个 `day*` 目录是该课的源码根目录，Java 文件位于与 package 对应的 `com/javaroadmap/...` 下。
+- [`deep_dives/`](deep_dives/01_main_and_jvm/README.md)：7 个概念深化课（main 与 JVM、整数除法、数组内存、参数传递、循环边界、方法作用域、Scanner 输入），每篇含可运行示例；"看起来简单但容易理解错误"的问题集中在这里。
+- `existing_course/exercises/`：结构化练习（含边界用例、验收条件与分级提示）。
+- [`practice/`](practice/predict_and_modify.md)：预测与修改练习集，答案独立成档（[answers.md](practice/answers.md)），先预测再看。
+- [`my_practices/`](my_practices/README.md)：你的独立练习区，验证脚本不检查这里。
 - `existing_course/answers/`：保留的练习实现；先自己写，再复盘，不要直接照抄。
 - `existing_course/src/`：由完整示例演示成绩统计、猜数字、菜单和计算器。
-- `existing_course/exercises/`：阶段练习。
 - `mini_project/guess_number/`：早期控制台小项目，只作为综合练习，不计作简历项目。
 
 ## 推荐学习流程
