@@ -42,6 +42,7 @@ java -cp out com.javaroadmap.stage02.day01classobject.App
 
 ## 主要入口
 
+- [JavaRoadmap Lab](web/README.md)：本地交互式学习平台，接入 Stage 01 课程、预测、独立练习、草稿与复盘；[交付与验收文档](docs/javaroadmap_lab/README.md)。网站记录不自动修改仓库学习状态。
 - [学习执行计划](学习执行计划.md)：唯一的“现在做什么”入口，包含 CURRENT / NEXT / PARALLEL / LATER。
 - [环境搭建](docs/环境搭建.md)：Windows / macOS（Apple Silicon）双平台 JDK 与 VS Code 配置；问题查 [跨平台问题排查](docs/跨平台问题排查.md)，双机协作规则见 [终端与 Git 双设备协作](docs/终端与Git双设备协作.md)。
 - [统一学习路线](统一学习路线.md)：完整知识地图、14 Stage、双项目和框架取舍。

@@ -11,7 +11,7 @@ for dirpath, dirnames, filenames in os.walk('.'):
     norm = dirpath.replace(os.sep, '/')
     skip = False
     for seg in norm.split('/'):
-        if seg in ('.git', 'archive', '.venv', 'output', '.idea', 'out', '.audit-work'):
+        if seg in ('.git', 'archive', '.venv', 'output', '.idea', 'out', '.audit-work', 'node_modules', 'dist', 'test-results', 'playwright-report', 'coverage'):
             skip = True
     if skip:
         dirnames[:] = []
