@@ -38,9 +38,9 @@
 
 ## Validation
 
-There is currently no unified build, test, lint, or static-analysis entry point, and no test files are present. Never invent a passing test command or claim tests ran when they do not exist. Select the smallest real checks that cover the changed scope:
+There is no repository-wide application build. Java reference-code regression and Markdown link checks have the entry points below; they do not verify all future stages or learner-owned exercises. Never invent a passing test command or claim tests ran when they do not exist. Select the smallest real checks that cover the changed scope:
 
-- Documentation or configuration only: run `git diff --check`, inspect the rendered/plain diff, and verify changed relative paths and links against the repository tree.
+- Documentation or configuration only: run `git diff --check` and `python scripts/check_links.py` (macOS: `python3`), inspect the rendered/plain diff, and verify changed relative paths and links against the repository tree.
 - Python syntax: from the repository root, run the documented `python -m compileall .`; for behavior changes, also run the directly affected script using the command documented in its nearby README. Do not retain or commit generated `__pycache__/` or `*.pyc` artifacts.
 - Java course regression (recommended first check): from the repository root run `bash scripts/verify_java.sh` or `powershell -ExecutionPolicy Bypass -File scripts\verify_java.ps1`. They compile and run every lesson listed in `scripts/verify_manifest.tsv` with UTF-8 flags and clean generated files. Learner practice (`my_practices/`) and `answers/` are intentionally outside this regression.
 - Java examples: enter the lesson source-root directory containing `com/`, compile the lesson's package-path sources together with `javac -encoding UTF-8 -d out <package-path>/*.java`, then run a non-destructive entry point with `java -cp out <fully-qualified-class-name>`. Use a disposable ignored output directory.
@@ -49,6 +49,10 @@ There is currently no unified build, test, lint, or static-analysis entry point,
 If tests or build tooling are later added in the changed scope, run their local documented command in addition to the checks above.
 
 ## Code and documentation conventions
+
+- Keep Chinese learning-management document names. Technical directories and Python files use lowercase `snake_case`; keep ordered lesson prefixes and use `README.md` as the navigation entry for major directories.
+- New Java classes use `PascalCase` and lowercase packages consistent with the source tree. Do not mechanically rename historical classes, learner work or packages; change a name only to fix a demonstrated navigation or runtime issue and update every reference.
+- Name verification files for the behavior they check. Keep exercises, graded hints, prediction answers and reference implementations distinct; link shared explanations instead of copying a full tutorial.
 
 ### Java package rule
 

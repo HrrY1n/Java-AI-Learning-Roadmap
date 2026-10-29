@@ -14,6 +14,10 @@ bash scripts/verify_java.sh
 
 环境要求只有 JDK 17+（本机 JDK 25 已验证；macOS 使用系统自带 bash 3.2 即可运行）。
 
+文档改动另跑 `python scripts/check_links.py`（macOS 使用 `python3`）与 `git diff --check`。链接脚本检查本地 Markdown 目标是否存在，不校验外部网页或标题锚点。
+
+修改 Bash 超时逻辑时，再跑 `python scripts/test_verify_timeout.py`（macOS 使用 `python3`；Windows 需 Git for Windows）。该回归在带空格的临时目录里使用 CRLF 清单：验证运行 4 秒的程序不会被提前结束，运行 60 秒的程序会按 30 秒限制终止，且不残留 JVM 或 `out/`；不会操作课程或个人练习。
+
 ## 它做什么
 
 1. 读取 `verify_manifest.tsv` 清单，每一行 = 一节课：**源码根目录 → 编译该目录全部 `.java`（`javac -encoding UTF-8 -d out`）→ 在源码根目录运行指定 FQCN → 校验输出包含预期子串 → 删除 `out/` 与程序生成的文件**。
@@ -33,6 +37,6 @@ manifest 每列含义见文件头注释；修改课程输出后同步更新对�
 
 ## 平台说明（诚实边界）
 
-- Windows 11 + JDK 25：`verify_java.sh`（Git Bash）与 `verify_java.ps1`（PowerShell 5.1）均已实际运行，40/40 通过。
-- macOS：脚本已按 bash 3.2（macOS 自带版本）编写，但**作者只在 Windows 上运行过**；macOS 无 `timeout` 命令时脚本自动降级为直接运行（清单中的交互程序在输入耗尽后都会自然结束，不会挂死）。`.ps1` 需 UTF-8 BOM（已带），macOS 上请用 `.sh` 版。
-- GitHub Actions 工作流见 `.github/workflows/verify.yml`，它会在 Windows 与 macOS 运行器上执行同一脚本；第一次推送后请在 Actions 页面确认真实结果。
+- 清单当前含 59 项：40 个原课程/项目入口 + 19 个深化示例。已有 Windows 11 + JDK 25 的 59/59 通过记录；本次集成检查结果另按实际运行记录，不将历史结果当作本次结果。
+- macOS：脚本按 bash 3.2（macOS 自带版本）编写，但**尚未在 Apple Silicon 实机验证**。Bash 版自行轮询并执行超时终止，不依赖外部 `timeout` 命令，也不降级为无限等待。`.ps1` 保留 UTF-8 BOM，Windows PowerShell 5.1 可正确读取中文；macOS 使用 `.sh` 版。
+- GitHub Actions 工作流见 [verify.yml](../.github/workflows/verify.yml)：`main` / `codex/**` 分支 push、Pull Request 和手动触发均可运行 Windows/macOS × JDK 21/25 四组检查。配置存在不代表已通过，首次推送后必须查看真实结果；云端 macOS 通过也不能替代自己的 MacBook 实机验证。

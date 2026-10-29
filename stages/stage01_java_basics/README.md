@@ -57,13 +57,27 @@ java -cp out com.javaroadmap.stage01.day01outputvariable.App
 ## 现有内容怎么用
 
 - `existing_course/day01_*` 到 `day06_*`：已有逐日示例，其中包含你的实际修改；每个 `day*` 目录是该课的源码根目录，Java 文件位于与 package 对应的 `com/javaroadmap/...` 下。
-- [`deep_dives/`](deep_dives/01_main_and_jvm/README.md)：7 个概念深化课（main 与 JVM、整数除法、数组内存、参数传递、循环边界、方法作用域、Scanner 输入），每篇含可运行示例；"看起来简单但容易理解错误"的问题集中在这里。
-- `existing_course/exercises/`：结构化练习（含边界用例、验收条件与分级提示）。
+- `deep_dives/`：7 个概念深化课，按下面的主题导航进入；每篇含可运行示例。
+- [结构化练习](existing_course/exercises/basic_syntax_exercises.md)：含边界用例、验收条件与分级提示；[随堂小练习](supplemental_exercises.md)仅用于语法热身，不必另做一轮完整课程。
 - [`practice/`](practice/predict_and_modify.md)：预测与修改练习集，答案独立成档（[answers.md](practice/answers.md)），先预测再看。
 - [`my_practices/`](my_practices/README.md)：你的独立练习区，验证脚本不检查这里。
-- `existing_course/answers/`：保留的练习实现；先自己写，再复盘，不要直接照抄。
+- [实现参考答案](existing_course/answers/)：保留的练习实现；先自己写，再复盘，不要直接照抄。
 - `existing_course/src/`：由完整示例演示成绩统计、猜数字、菜单和计算器。
 - `mini_project/guess_number/`：早期控制台小项目，只作为综合练习，不计作简历项目。
+
+### 概念深化导航
+
+| 基础课程 / 遇到的问题 | 对应深化课 |
+| --- | --- |
+| [day01 输出与变量](existing_course/day01_output_variable/)：编译成功却不能启动 | [01 main 与 JVM](deep_dives/01_main_and_jvm/README.md) |
+| [day02 类型与运算](existing_course/day02_data_type_operator/)：平均分丢失小数 | [02 整数除法与类型转换](deep_dives/02_integer_division/README.md) |
+| [day05 数组](existing_course/day05_array/)：下标越界、共享数组 | [03 数组与内存](deep_dives/03_array_memory/README.md) |
+| [day06 方法](existing_course/day06_method/)：方法内修改参数是否影响外部 | [04 参数传递](deep_dives/04_argument_passing/README.md) |
+| [day04 循环](existing_course/day04_loop/)：少一次或多一次 | [05 循环边界](deep_dives/05_loop_bounds/README.md) |
+| day06 方法：局部变量、返回值与职责 | [06 方法与作用域](deep_dives/06_method_scope/README.md) |
+| [day03 分支](existing_course/day03_if_switch/)与菜单：非法输入、读取换行 | [07 Scanner 输入](deep_dives/07_scanner_input/README.md) |
+
+从当天基础示例进入，只查当前问题的深化课，再做预测与独立练习；不需要把两套材料从头各读一遍。独立实现按练习内的验收清单验证；参考代码回归见根目录 [验证说明](../../scripts/README.md)。
 
 ## 推荐学习流程
 

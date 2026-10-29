@@ -87,14 +87,12 @@ while IFS=$'\t' read -r root fqcn stdin_fix cleanup expects_rest || [ -n "${root
     ( cd "$src_root" && exec java -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -Dfile.encoding=UTF-8 -cp out "$fqcn" \
         < "$redirect_in" ) > "$stdout_file" 2> "$stderr_file" &
     java_pid=$!
-    waited=0
-    while kill -0 "$java_pid" 2>/dev/null && [ "$waited" -lt "$TIMEOUT_SECONDS" ]; do
-        if sleep 0.1 2>/dev/null; then
-            waited=$((waited + 1))
-        else
+    # 按实际经过的秒数计时，避免 Git Bash 启动 sleep 的开销放大超时时间。
+    deadline=$((SECONDS + TIMEOUT_SECONDS))
+    while kill -0 "$java_pid" 2>/dev/null && [ "$SECONDS" -lt "$deadline" ]; do
+        if ! sleep 0.1 2>/dev/null; then
             # 极少数平台不支持小数 sleep：退化为 1 秒粒度
             sleep 1
-            waited=$((waited + 10))
         fi
     done
 
