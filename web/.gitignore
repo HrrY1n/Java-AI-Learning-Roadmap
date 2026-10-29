@@ -1,0 +1,15 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+coverage/
+.lighthouse/
+src/generated/
+public/reference/
+*.local
+*.log
+.env
+.env.*
+!.env.example
+*.evidence.json
+*.backup.json
