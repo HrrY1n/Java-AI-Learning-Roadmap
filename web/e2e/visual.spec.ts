@@ -3,7 +3,9 @@ import AxeBuilder from "@axe-core/playwright";
 import { mkdir, readdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const output = resolve("../docs/javaroadmap_lab/artifacts");
+const output = resolve(
+  process.env.LAB_ARTIFACT_DIR || "../docs/javaroadmap_lab/artifacts",
+);
 
 test.afterAll(async () => {
   await mkdir(resolve(output, "screenshots"), { recursive: true });
@@ -134,24 +136,36 @@ test("放大排版、减少动态效果和键盘标签导航", async ({ page }) 
 });
 
 test("实际课程提示抽屉与手机编辑区截图", async ({ page }) => {
+  test.setTimeout(120_000);
   await mkdir(resolve(output, "screenshots"), { recursive: true });
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
-  await page.goto("/#/lab/scores");
-  await page.getByRole("button", { name: /^课程辅导/ }).click();
-  const dialog = page.getByRole("dialog", { name: "课程辅导" });
-  await dialog.getByRole("button", { name: /^解锁 L1/ }).click();
-  await dialog.getByRole("button", { name: /^解锁 L2/ }).click();
-  await expect(dialog.locator(".hint-step.unlocked")).toHaveCount(2);
-  const dialogScan = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
-    .analyze();
-  expect(dialogScan.violations).toEqual([]);
-  await page.screenshot({
-    path: resolve(output, "screenshots/tutor-1440-dark.png"),
-    animations: "disabled",
-  });
-  await page.keyboard.press("Escape");
+  for (const width of [1440, 390]) {
+    for (const theme of ["light", "dark"] as const) {
+      await page.setViewportSize({ width, height: width === 1440 ? 900 : 844 });
+      await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
+      await page.goto("/#/lab/scores");
+      await page.getByRole("button", { name: /^课程辅导/ }).click();
+      const dialog = page.getByRole("dialog", { name: "课程辅导" });
+      for (const level of [1, 2]) {
+        const unlock = dialog.getByRole("button", {
+          name: new RegExp(`^解锁 L${level}`),
+        });
+        if (await unlock.isVisible()) await unlock.click();
+      }
+      await expect(dialog.locator(".hint-step.unlocked")).toHaveCount(2);
+      const dialogScan = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+        .analyze();
+      expect(dialogScan.violations).toEqual([]);
+      await page.screenshot({
+        path: resolve(output, `screenshots/tutor-${width}-${theme}.png`),
+        animations: "disabled",
+      });
+      await page.keyboard.press("Escape");
+      await expect(page.locator(".topbar .save-status")).toContainText(
+        "已保存到此浏览器",
+      );
+    }
+  }
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/#/lab/scores");
