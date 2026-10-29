@@ -43,11 +43,28 @@ java -cp out com.javaroadmap.stage02.day01classobject.App
 ## 主要入口
 
 - [学习执行计划](学习执行计划.md)：唯一的“现在做什么”入口，包含 CURRENT / NEXT / PARALLEL / LATER。
+- [环境搭建](docs/环境搭建.md)：Windows / macOS（Apple Silicon）双平台 JDK 与 VS Code 配置；问题查 [跨平台问题排查](docs/跨平台问题排查.md)，双机协作规则见 [终端与 Git 双设备协作](docs/终端与Git双设备协作.md)。
 - [统一学习路线](统一学习路线.md)：完整知识地图、14 Stage、双项目和框架取舍。
 - [真实学习进度](真实学习进度.md)：只按自己的代码、验证结果和复盘记录状态。
 - [求职能力矩阵](求职能力矩阵.md)：Java 后端、AI 应用能力与 P0-J / P0-AI / P1 / P2 缺口参考。
-- [参考路线审计](docs/参考路线审计.md)：指定成熟仓库中吸收与不吸收的内容。
-- [`stages/`](stages/)：现有教程、练习、TODO、参考实现和阶段验收要求。
+- [项目 A 学习路线](docs/项目A学习路线.md)：校园预约系统在 Stage 01–05 的预研演进与衔接方式。
+- [参考路线审计](docs/参考路线审计.md)与[教学参考取舍](docs/教学参考取舍.md)：外部仓库吸收与不吸收的内容。
+- [`stages/`](stages/)：现有教程、概念深化课（`deep_dives/`）、练习（含验收与分级提示）、个人练习区（`my_practices/`）与参考实现。
+- [AI 教学协作细则](docs/教学协作细则.md)：Codex 在概念讲解 / 练习指导 / Debug / Review 中的默认行为。
+
+## 一键验证课程
+
+```powershell
+# Windows PowerShell
+powershell -ExecutionPolicy Bypass -File scripts\verify_java.ps1
+```
+
+```bash
+# macOS / Windows Git Bash
+bash scripts/verify_java.sh
+```
+
+脚本按 `scripts/verify_manifest.tsv` 逐课编译、运行并校验输出，详见 [scripts/README.md](scripts/README.md)。通过只说明参考代码可运行，不代表学习状态变化。
 
 ## 求职项目
 

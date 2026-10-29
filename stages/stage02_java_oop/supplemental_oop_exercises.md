@@ -1,4 +1,6 @@
-# 面向对象练习
+# 面向对象练习（每日小题库）
+
+随堂小练习：每个主题挑 1–2 题，目的是让 OOP 语法过手。**验收标准：编译运行通过 + 能说出"这个设计防住了什么问题"**（例如封装题要能指出 public 字段会出的事故，见 [封装深化课](deep_dives/03_encapsulation_why/README.md)）。综合性的结构化练习见 [existing_course/exercises](existing_course/exercises/oop_project_exercises.md)。做完的代码放 `my_practices/`（Stage 02 下）。
 
 ## 类与对象
 

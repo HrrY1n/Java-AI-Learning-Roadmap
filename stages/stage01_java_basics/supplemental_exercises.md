@@ -1,4 +1,6 @@
-# Java 基础语法练习
+# Java 基础语法练习（每日小题库）
+
+这是随堂小练习清单：每个主题挑 1–2 题做即可，目的是让语法过手，不追求刷完。**验收标准统一为：编译运行通过 + 你能解释每一行为什么这么写**；输出类题目同时检查与预期一致。完整的结构化练习（含边界与验收清单）见 [existing_course/exercises](existing_course/exercises/basic_syntax_exercises.md)。做完的代码放 [my_practices/](my_practices/README.md)。
 
 ## 输出与变量
 

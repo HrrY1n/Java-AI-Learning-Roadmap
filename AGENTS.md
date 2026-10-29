@@ -26,18 +26,33 @@
 - Prefer representative problems and transfer explanations over fixed problem counts. Do not add LeetCode quotas, check-in dashboards, mistake databases, or another progress-tracking system.
 - Learning priorities guide attention only. Do not introduce a repository-defined job-application Gate or claim that a checklist decides when the learner may apply.
 
+## Teaching collaboration modes（教学协作模式）
+
+学习场景（概念提问、练习、Debug、Review）按以下默认行为工作；学习者明确要求实施修改/修复/交付时直接进入实际开发，不受这些默认约束。执行细节见 [docs/教学协作细则.md](docs/教学协作细则.md)。
+
+- **概念讲解**：优先链接对应 `deep_dives/` 深化课；新主题按"是什么 → 为什么 → 最小示例 → 常见误解"讲，结尾给一个可自行运行的验证动作。
+- **练习指导**：默认不提供完整实现；按 L1 理解问题 → L2 相关知识 → L3 结构思路 → L4 调试线索逐级给提示；完整答案仅在学习者明确要求时提供，且不写入练习文档。
+- **Debug 指导**：引导读错误信息 → 定位 → 假设 → 设计验证 → 理解修复；不默认重写整个文件；环境类问题指向 docs/跨平台问题排查.md。
+- **Code Review**：按 P0 功能 Bug / P1 边界 / P2 可读性 / P3 设计取舍 / P4 风格分层，以当前学习阶段能力为基准。
+- **诚实性**：不代勾 [真实学习进度](真实学习进度.md) 状态；参考实现与 AI 生成代码不表述为个人掌握。
+
 ## Validation
 
-There is currently no unified build, test, lint, or static-analysis entry point, and no test files are present. Never invent a passing test command or claim tests ran when they do not exist. Select the smallest real checks that cover the changed scope:
+There is no repository-wide application build. Java reference-code regression and Markdown link checks have the entry points below; they do not verify all future stages or learner-owned exercises. Never invent a passing test command or claim tests ran when they do not exist. Select the smallest real checks that cover the changed scope:
 
-- Documentation or configuration only: run `git diff --check`, inspect the rendered/plain diff, and verify changed relative paths and links against the repository tree.
+- Documentation or configuration only: run `git diff --check` and `python scripts/check_links.py` (macOS: `python3`), inspect the rendered/plain diff, and verify changed relative paths and links against the repository tree.
 - Python syntax: from the repository root, run the documented `python -m compileall .`; for behavior changes, also run the directly affected script using the command documented in its nearby README. Do not retain or commit generated `__pycache__/` or `*.pyc` artifacts.
+- Java course regression (recommended first check): from the repository root run `bash scripts/verify_java.sh` or `powershell -ExecutionPolicy Bypass -File scripts\verify_java.ps1`. They compile and run every lesson listed in `scripts/verify_manifest.tsv` with UTF-8 flags and clean generated files. Learner practice (`my_practices/`) and `answers/` are intentionally outside this regression.
 - Java examples: enter the lesson source-root directory containing `com/`, compile the lesson's package-path sources together with `javac -encoding UTF-8 -d out <package-path>/*.java`, then run a non-destructive entry point with `java -cp out <fully-qualified-class-name>`. Use a disposable ignored output directory.
 - Run service, network, real-LLM, database, Streamlit, FastAPI, or dependency-install commands only when the task directly requires them and the needed environment/credentials are available. Never hard-code or expose secrets.
 
 If tests or build tooling are later added in the changed scope, run their local documented command in addition to the checks above.
 
 ## Code and documentation conventions
+
+- Keep Chinese learning-management document names. Technical directories and Python files use lowercase `snake_case`; keep ordered lesson prefixes and use `README.md` as the navigation entry for major directories.
+- New Java classes use `PascalCase` and lowercase packages consistent with the source tree. Do not mechanically rename historical classes, learner work or packages; change a name only to fix a demonstrated navigation or runtime issue and update every reference.
+- Name verification files for the behavior they check. Keep exercises, graded hints, prediction answers and reference implementations distinct; link shared explanations instead of copying a full tutorial.
 
 ### Java package rule
 

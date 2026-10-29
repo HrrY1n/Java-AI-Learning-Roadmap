@@ -1,0 +1,31 @@
+name: verify
+
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-java:
+    strategy:
+      fail-fast: false
+      matrix:
+        # macos-latest 是 ARM64 运行器；它验证脚本的 macOS 兼容性，
+        # 不能替代在自己 Apple Silicon 电脑上的实际运行验证。
+        # JDK 21 是文档声明的 CI 基线；JDK 25 覆盖学习机当前版本。
+        os: [windows-latest, macos-latest]
+        java: ['21', '25']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - name: Run Java course verification
+        shell: bash
+        run: bash scripts/verify_java.sh

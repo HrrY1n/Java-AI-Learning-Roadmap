@@ -42,10 +42,27 @@ java -cp out com.javaroadmap.stage02.day01classobject.App
 ## 现有内容怎么用
 
 - `existing_course/day01_*` 到 `day06_*`：单知识点示例。
+- `deep_dives/`：6 个 OOP 深化课，按下面的主题导航进入，重点回答"为什么这样设计"。
+- [结构化综合练习](existing_course/exercises/oop_project_exercises.md)：三方向任选其一做深，含验收条件与分级提示；[随堂小练习](supplemental_oop_exercises.md)与[项目变式](supplemental_project_exercises.md)用于按需补练，不是额外必修路线。
+- [`practice/`](practice/predict_and_modify.md)：预测与修改练习集，答案独立成档（[answers.md](practice/answers.md)）。
+- [`my_practices/`](my_practices/README.md)：你的独立练习区，验证脚本不检查这里。
+- [实现参考答案](existing_course/answers/)：完成独立实现后再对照；与预测题答案分开保留。
 - `existing_course/src/`：学生、图书、银行三个分层示例，属于参考代码，不代表已完成项目。
-- `existing_course/exercises/`：需要你独立完成的 OOP 练习。
 - `existing_course/examples/common_api/`：String、StringBuilder、日期时间、Math/Random 旧示例。
 - `existing_course/mini_projects/early_console_projects/`：早期控制台项目，保留为练习素材，不作为多个简历项目。
+
+### 概念深化导航
+
+| 基础课程 / 遇到的问题 | 对应深化课 |
+| --- | --- |
+| [day01 类与对象](existing_course/day01_class_object/)：两个变量是否指向同一对象 | [01 引用与对象状态](deep_dives/01_reference_state/README.md) |
+| [day02 构造器](existing_course/day02_constructor_this/)：初始化顺序与同名参数 | [02 构造器与 this](deep_dives/02_constructor_this/README.md) |
+| [day03 封装](existing_course/day03_encapsulation/)：怎样阻止非法状态 | [03 封装的作用](deep_dives/03_encapsulation_why/README.md) |
+| [day04 继承](existing_course/day04_inheritance/)：继承还是组合 | [04 继承与组合](deep_dives/04_inheritance_composition/README.md) |
+| [day05 多态](existing_course/day05_polymorphism/) / [day06 接口](existing_course/day06_interface_abstract/)：调用谁的方法 | [05 多态与接口](deep_dives/05_polymorphism_interface/README.md) |
+| [完整分层示例](existing_course/src/main/java/)：业务规则放在哪一层 | [06 Entity / Service 职责](deep_dives/06_entity_service/README.md) |
+
+先运行当前基础示例，遇到设计疑问再进入深化课，然后回到结构化练习独立实现。个人代码按练习验收清单验证；参考代码回归见根目录 [验证说明](../../scripts/README.md)。
 
 ## 推荐学习流程
 

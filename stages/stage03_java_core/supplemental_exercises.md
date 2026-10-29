@@ -1,4 +1,6 @@
-# 集合与泛型练习
+# 集合与泛型练习（每日小题库）
+
+随堂小练习：每个主题挑 1–2 题。**验收标准：编译运行通过 + 能说出选择该结构的理由**（"怎么访问数据就选什么"，见 [集合选择深化课](deep_dives/01_choose_collection/README.md)）。结构化的综合练习见 [existing_course/exercises](existing_course/exercises/collection_exception_io_exercises.md)。做完的代码放 `my_practices/`（Stage 03 下）。
 
 ## ArrayList
 

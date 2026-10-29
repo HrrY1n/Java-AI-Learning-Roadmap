@@ -1,0 +1,19 @@
+# 统一换行符处理：两台电脑（Windows / macOS）与 CI 共用一份规则。
+# 文本文件入库一律 LF；工作区行尾交给各自的 Git 配置（core.autocrlf）。
+* text=auto
+
+# shell 脚本必须 LF，否则 macOS/Linux 上报 '\r' 错误
+*.sh text eol=lf
+
+# 验证脚本读取的数据文件必须 LF：
+# Windows 检出为 CRLF 时，bash read 会把行尾 \r 带进最后一个断言列，导致全部误报失败
+*.tsv text eol=lf
+scripts/fixtures/*.txt text eol=lf
+
+# 二进制文件不做任何转换
+*.pdf binary
+*.png binary
+*.jpg binary
+*.zip binary
+*.jar binary
+*.class binary

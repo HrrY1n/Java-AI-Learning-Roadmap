@@ -43,12 +43,30 @@ IntelliJ IDEA 中将具体的 `day*` 目录作为 Sources Root 后运行包内 `
 
 ## 现有内容怎么用
 
-- `existing_course/src/`：内存/文件 Repository、Service、`Result<T>`、业务异常与 Stream 的完整参考示例。
-- `existing_course/exercises/`：删除学生、更新分数、优秀学生筛选、email 持久化；当前均未完成。
+- `existing_course/src/`：内存/文件 Repository、Service、`Result<T>`、业务异常与 Stream 的完整参考示例（回归由 `scripts/` 保护，扩展练习先复制到 my_practices）。
+- `deep_dives/`：6 个核心深化课，按下面的主题导航进入，含方案取舍与可运行对照实验。
+- [结构化扩展练习](existing_course/exercises/collection_exception_io_exercises.md)：删除/改分/筛选/持久化，含错误输入与分级提示；[随堂小练习](supplemental_exercises.md)用于按需补练集合语法。
+- [`practice/`](practice/predict_and_modify.md)：预测与修改练习集，答案独立成档（[answers.md](practice/answers.md)）。
+- [`my_practices/`](my_practices/README.md)：你的独立练习区（先复制参考实现再扩展）。
 - `existing_course/examples/legacy_fundamentals/`：集合、异常/IO、Lambda/Stream 的早期最小示例。
-- `existing_course/answers/`：文件持久化参考答案，完成练习后再看。
+- [实现参考答案](existing_course/answers/)：文件持久化参考答案，完成练习后再看。
 
 `existing_course/` 中的 `summary.md`、`mistakes.md` 等是保留的原课程记录，其中旧目录名和“下一阶段”文字不作为当前路线入口；阶段顺序始终以根目录 [学习执行计划](../../学习执行计划.md) 和 [统一学习路线](../../统一学习路线.md) 为准。
+
+### 概念深化导航
+
+下表的基础课程均位于 `existing_course/examples/legacy_fundamentals/`；详细理论按需查阅，不重复完整阅读两轮。
+
+| 基础课程 / 遇到的问题 | 对应深化课 |
+| --- | --- |
+| [集合最小示例](existing_course/examples/legacy_fundamentals/collections_generics/)：List / Map / Set 怎么选 | [01 集合选择](deep_dives/01_choose_collection/README.md) |
+| [day04 泛型](existing_course/examples/legacy_fundamentals/collections_generics/day04_generic/)：尖括号约束了什么 | [02 泛型的作用](deep_dives/02_generics_why/README.md) |
+| [day01 异常](existing_course/examples/legacy_fundamentals/exceptions_io/day01_exception/)：返回失败还是抛异常 | [03 异常设计](deep_dives/03_exception_design/README.md) |
+| [文件读写与笔记示例](existing_course/examples/legacy_fundamentals/exceptions_io/)：乱码、相对路径、资源关闭 | [04 UTF-8 与 IO](deep_dives/04_utf8_io/README.md) |
+| [Lambda / Stream 最小示例](existing_course/examples/legacy_fundamentals/lambda_stream/)：流水线何时执行 | [05 Lambda 与 Stream](deep_dives/05_lambda_stream/README.md) |
+| [完整学生系统](existing_course/src/main/java/)：存储替换为什么不改业务 | [06 Repository 演进](deep_dives/06_repository_evolution/README.md) |
+
+个人代码仍按练习验收清单验证；参考代码回归见根目录 [验证说明](../../scripts/README.md)。完成本阶段后，下一项主线以根目录 [学习执行计划](../../学习执行计划.md) 的 NEXT 为准，Stage 04 按并行线推进。
 
 ## 推荐学习流程
 
