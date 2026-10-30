@@ -1,0 +1,25 @@
+{
+  "$comment": "工作台固定入口：currentTaskRoutes 与 学习执行计划.md CURRENT 列表逐项对应；reviewPicks 是首页『值得再看一遍』的推荐课程 ID。",
+  "currentTaskRoutes": [
+    "#/document/environment",
+    "#/lesson/day01",
+    "#/lab/scores",
+    "#/practice",
+    "#/document/teaching-rules",
+    "#/review"
+  ],
+  "reviewPicks": [
+    {
+      "id": "day03",
+      "label": "分支与条件判断"
+    },
+    {
+      "id": "deep02",
+      "label": "整数除法与类型转换"
+    },
+    {
+      "id": "deep07",
+      "label": "Scanner 的错误输入"
+    }
+  ]
+}

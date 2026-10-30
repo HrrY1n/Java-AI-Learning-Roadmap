@@ -1,0 +1,53 @@
+{
+  "id": "day02",
+  "stageId": "01",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "数据类型与运算符",
+  "summary": "同样一个除号，为什么平均分会少掉小数？",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "deep02"
+  ],
+  "exerciseIds": [
+    "scores",
+    "calculator"
+  ],
+  "predictionIds": [
+    "A1",
+    "A2",
+    "A7"
+  ],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "把三次测验成绩汇总成平均分，结果却少了小数。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "Java 根据操作数的类型决定计算方式。看起来正确的表达式，也可能在运行时悄悄丢失信息。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "把运算符看作只认类型标签的机器：int / int 仍是 int；先有 double 参与，才能在除法时保留小数。取余 % 与商 / 回答不同问题。"
+    },
+    {
+      "label": "预测运行",
+      "body": "运行前写出 a / b 与 a % b 的结果。再观察比较运算的结果类型，以及 char 与 String 的区别。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "仅把 int b = 3 改成 double b = 3.0。逐行比较含 b 的表达式：数值、显示的小数点与结果类型分别有没有变化？"
+    },
+    {
+      "label": "独立练习",
+      "body": "用一组不能整除的数据计算平均值，并用自己的话解释转换发生在除法之前与之后的差异。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "后续计算成绩、价格与比例都会碰到类型选择。金额的精确表示属于后续工程问题，当前先识别整数截断。"
+    }
+  ],
+  "bodyPath": null,
+  "codeDirectory": "stages/stage01_java_basics/existing_course/day02_data_type_operator/com/javaroadmap/stage01/day02datatypeoperator"
+}

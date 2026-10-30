@@ -1,0 +1,22 @@
+{
+  "id": "deep06",
+  "stageId": "01",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "方法、作用域与职责",
+  "summary": "局部变量、返回值和“一次只做一件事”的拆分判断。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "day06"
+  ],
+  "exerciseIds": [
+    "refactor",
+    "scores"
+  ],
+  "predictionIds": [
+    "A6"
+  ],
+  "steps": [],
+  "bodyPath": "stages/stage01_java_basics/deep_dives/06_method_scope/README.md",
+  "codeDirectory": "stages/stage01_java_basics/deep_dives/06_method_scope/com/javaroadmap/stage01/deepdives/methods"
+}

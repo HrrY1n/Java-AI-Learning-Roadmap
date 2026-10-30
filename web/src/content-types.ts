@@ -6,6 +6,10 @@ export interface LessonStep {
 export interface Lesson {
   id: string;
   kind: "foundation" | "deep-dive";
+  /** 所属 Stage（V1.2 起提供，用于跨阶段导航与目录分组） */
+  stageId: string;
+  /** 所属 Module（V1.2 起提供，对应 web/content/stages.json 的 modules） */
+  moduleId: string;
   title: string;
   summary: string;
   sourcePath: string;
@@ -65,6 +69,17 @@ export interface Modification {
   note?: string;
 }
 
+export type ContentState =
+  | "published"
+  | "materials"
+  | "draft"
+  | "planned";
+
+export interface StageModule {
+  id: string;
+  title: string;
+}
+
 export interface Stage {
   id: string;
   title: string;
@@ -72,6 +87,10 @@ export interface Stage {
   status: string;
   materialState: string;
   sourcePath?: string;
+  /** 内容发布状态（V1.2 起提供；与学习者的掌握状态无关） */
+  contentState: ContentState;
+  /** 阶段内专题模块（V1.2 起提供） */
+  modules: StageModule[];
   prerequisites: string;
   evidence: string;
 }
@@ -88,6 +107,13 @@ export interface ReferenceResource {
   url: string;
 }
 
+export interface WorkspaceConfig {
+  /** 工作台 CURRENT 任务逐项对应的站内路由 */
+  currentTaskRoutes: string[];
+  /** 首页『值得再看一遍』推荐（课程 ID + 展示文案） */
+  reviewPicks: Array<{ id: string; label: string }>;
+}
+
 export interface Catalog {
   lessons: Lesson[];
   exercises: Exercise[];
@@ -97,4 +123,6 @@ export interface Catalog {
   documents: SourceDocument[];
   currentTasks: string[];
   references: ReferenceResource[];
+  /** 工作台固定入口配置（V1.2 起提供） */
+  workspace: WorkspaceConfig;
 }

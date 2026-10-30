@@ -1,0 +1,53 @@
+{
+  "id": "day05",
+  "stageId": "01",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "数组与遍历",
+  "summary": "把一组成绩放在一起，理解长度、下标与累计状态。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "deep03",
+    "deep02"
+  ],
+  "exerciseIds": [
+    "scores",
+    "refactor"
+  ],
+  "predictionIds": [
+    "A5",
+    "A8"
+  ],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "老师给出一组成绩，需要总分与平均分。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "分别创建 score1、score2 很难遍历。数组让同类型的一组数据共享一个名字，并通过下标访问。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "数组像一排连续的格子；length 是格子的数量，合法下标从 0 到 length - 1。遍历时累计 sum，最后再根据类型规则求平均值。"
+    },
+    {
+      "label": "预测运行",
+      "body": "先笔算源码中四个分数的总分与平均分。预测最后一个合法下标，再运行核对。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "只把第一个成绩从 90 改成 60；预测总分与平均分分别变化多少。另一次实验把数组改为空，定位最先发生的问题。"
+    },
+    {
+      "label": "独立练习",
+      "body": "进入成绩统计练习，自己设计求和、最值、计数的方法。空数组的处理位置由你决定，并解释理由。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "固定数据集合适合用数组建立直觉；后续 List 会管理可变数量，但遍历、判空与边界仍然适用。"
+    }
+  ],
+  "bodyPath": null,
+  "codeDirectory": "stages/stage01_java_basics/existing_course/day05_array/com/javaroadmap/stage01/day05array"
+}

@@ -1,0 +1,41 @@
+{
+  "id": "refactor",
+  "stageId": "01",
+  "title": "方法拆分（重构练习）",
+  "className": "ScoreRefactor",
+  "contentState": "published",
+  "lessonIds": [
+    "day06",
+    "deep04",
+    "deep06"
+  ],
+  "statementSource": "stages/stage01_java_basics/existing_course/exercises/basic_syntax_exercises.md",
+  "hintSource": "stages/stage01_java_basics/existing_course/exercises/basic_syntax_exercises.md",
+  "todo": "先保留重构前的实现与输出，再独立拆分方法；记录及格线的归属选择。",
+  "note": "本题需要对比你自己的两个版本；没有唯一方法划分。原 L3 的 PASS_LINE 常量只是一种方案，及格线作为参数、常量或由哪个方法持有，都由你选择并解释。历史 method.java 可比较职责，但它不包含重构前版本与空数组验证。",
+  "cases": [
+    {
+      "label": "行为一致",
+      "input": "{88, 92, 67, 100, 55}",
+      "expected": "重构前后使用相同数据，标准输出逐字符一致。",
+      "kind": "normal"
+    },
+    {
+      "label": "及格线变化",
+      "input": "把及格线60改成70",
+      "expected": "记录两个版本分别修改几处，并解释规则归属。",
+      "kind": "boundary"
+    },
+    {
+      "label": "空数组回归",
+      "input": "{}",
+      "expected": "两版均按练习1要求输出“暂无成绩数据”，不越界。",
+      "kind": "invalid"
+    }
+  ],
+  "referenceFiles": [
+    "method.java"
+  ],
+  "statementAnchor": "练习 4",
+  "order": 4
+}

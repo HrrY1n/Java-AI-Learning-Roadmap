@@ -1,0 +1,20 @@
+{
+  "id": "deep07",
+  "stageId": "01",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "Scanner 与非法输入",
+  "summary": "坏记号没有被消费，为什么会形成重复报错？",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "day03"
+  ],
+  "exerciseIds": [
+    "calculator",
+    "menu"
+  ],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage01_java_basics/deep_dives/07_scanner_input/README.md",
+  "codeDirectory": "stages/stage01_java_basics/deep_dives/07_scanner_input/com/javaroadmap/stage01/deepdives/scanner"
+}

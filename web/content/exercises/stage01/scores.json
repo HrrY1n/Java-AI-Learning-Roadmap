@@ -1,0 +1,46 @@
+{
+  "id": "scores",
+  "stageId": "01",
+  "title": "成绩统计",
+  "className": "ScoreStatistics",
+  "contentState": "published",
+  "lessonIds": [
+    "day02",
+    "day04",
+    "day05",
+    "day06",
+    "deep02",
+    "deep03",
+    "deep06"
+  ],
+  "statementSource": "stages/stage01_java_basics/existing_course/exercises/basic_syntax_exercises.md",
+  "hintSource": "stages/stage01_java_basics/existing_course/exercises/basic_syntax_exercises.md",
+  "todo": "独立完成成绩统计。先选择空数组的处理位置，再拆分求和、最值与计数方法。",
+  "note": "数组在源码中定义，下面各组输入需要分别修改数组后重新编译运行。历史参考代码未覆盖本题全部要求（例如空数组与方法拆分），仅用于比较。",
+  "cases": [
+    {
+      "label": "正常成绩",
+      "input": "{88, 92, 67, 100, 55}",
+      "expected": "总分：402\n平均分：80.4\n最高分：100\n最低分：55\n及格人数：4",
+      "kind": "normal"
+    },
+    {
+      "label": "单元素",
+      "input": "{100}",
+      "expected": "总分：100\n平均分：100.0\n最高分：100\n最低分：100\n及格人数：1",
+      "kind": "boundary"
+    },
+    {
+      "label": "空数组",
+      "input": "{}",
+      "expected": "暂无成绩数据",
+      "kind": "invalid"
+    }
+  ],
+  "referenceFiles": [
+    "ScoreStatisticsAnswer.java",
+    "method.java"
+  ],
+  "statementAnchor": "练习 1",
+  "order": 1
+}
