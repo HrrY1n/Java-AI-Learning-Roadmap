@@ -25,6 +25,7 @@ npm run dev
 | [本地 Java 运行与验证](local-java.md) | 下载源码、准备输入和预期、Windows/macOS JDK 命令、导入真实记录 |
 | [功能、自动化与视觉验收](validation.md) | 实际执行结果、环境、截图、修订记录与已知限制 |
 | [V1.0 第二轮质量加固](quality_v1/README.md) | 网站CI、真实缺陷修复、学习闭环、数据安全、跨平台与第二轮视觉证据 |
+| [GitHub Pages 发布与线上验收](pages.md) | 正式入口、受保护main发布、自动冒烟、截图和本地数据迁移 |
 | [执行计划](planning/task_plan.md) | 这次工程任务的阶段与交付状态，不是学习者能力进度 |
 | [过程事实](planning/findings.md)与[工作记录](planning/progress.md) | 仓库审计、工程决策和验证过程 |
 
