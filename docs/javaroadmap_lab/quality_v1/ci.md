@@ -4,6 +4,8 @@
 
 `.github/workflows/web.yml`与原`verify.yml`独立。原Windows/macOS × JDK21/25 Java参考回归不改动。
 
+网站工作流在PR、main推送和手动执行时运行；不同时给同一分支push再跑重复矩阵。完整视觉在PR与手动执行中运行，main push只跑核心矩阵。
+
 `web-core`在Ubuntu、Windows、macOS分别运行：
 
 1. 官方setup-node配置Node24及基于`web/package-lock.json`的npm下载缓存（不缓存node_modules）。

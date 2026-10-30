@@ -58,12 +58,17 @@ npm run typecheck
 npm test
 npm run test:e2e
 npm run build
+npm run check:build
 npm run preview
 ```
 
 首次运行浏览器测试时，若 Playwright 提示缺少浏览器，执行 `npx playwright install chromium`；系统浏览器或额外引擎的实际使用方式以 Playwright 配置和[验收记录](../docs/javaroadmap_lab/validation.md)为准。Java CLI 测试需要 `java` 与 `javac`；缺少 JDK 时相关测试的真实状态应保留在测试报告中。
 
 `npm test` 覆盖数据、服务、内容转换与本地验证工具；`test:e2e` 覆盖实际浏览器流程。`build` 先生成内容并执行严格 TypeScript 检查，再生成 `dist/`。生产预览默认是 [http://127.0.0.1:4173](http://127.0.0.1:4173)。请通过 HTTP 服务访问，不直接双击 `dist/index.html`。
+
+`check:build`检查构建后的相对入口资源、Monaco/worker及懒加载参考文件。网站CI在Ubuntu、Windows、macOS显式配置Node24和Temurin25，运行核心浏览器测试；PR另运行完整视觉扫描。失败日志、截图与trace通过Artifact保留。配置、实测结果与追加main必需检查的步骤见[V1.0质量验收](../docs/javaroadmap_lab/quality_v1/README.md)。
+
+默认浏览器报告仍写入原验收产物目录；新一轮验收应设置独立`LAB_ARTIFACT_DIR`避免覆盖历史。设置`CI=true`时测试生产preview，先执行build；原命令顺序适用于默认开发模式。工具和E2E需要真实JDK；推荐JAVA_HOME指向完整JDK，运行原课程脚本时还应让PATH优先解析到同一JDK。
 
 原 Java 课程回归仍从仓库根执行：
 
