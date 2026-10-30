@@ -141,41 +141,36 @@ function Navigation({
       href: "#/home",
       icon: Home,
       label: "学习工作台",
-      en: "Workspace",
     },
     {
       page: "roadmap",
       href: "#/roadmap",
       icon: ListTree,
       label: "学习路线",
-      en: "Roadmap",
     },
     {
       page: "lesson",
       href: lessonLink(state.lastLessonId ?? "day01"),
       icon: BookOpen,
       label: "课程阅读",
-      en: "Learn",
     },
     {
       page: "lab",
       href: labLink(),
       icon: Code2,
       label: "编程实验室",
-      en: "Build",
     },
     {
       page: "review",
       href: "#/review",
       icon: FolderOpen,
       label: "学习复盘",
-      en: "Understand",
     },
   ];
   return (
     <>
       <nav className="primary-nav" aria-label="主要导航">
-        {links.map(({ page, href, icon: Icon, label, en }) => (
+        {links.map(({ page, href, icon: Icon, label }) => (
           <a
             key={page}
             href={href}
@@ -189,10 +184,7 @@ function Navigation({
             aria-current={route.page === page ? "page" : undefined}
           >
             <Icon size={19} />
-            <span>
-              {label}
-              <small>{en}</small>
-            </span>
+            <span>{label}</span>
             {route.page === page && <span className="nav-dot" />}
           </a>
         ))}
@@ -423,7 +415,7 @@ export default function App() {
     const doc = catalog.documents.find((item) => item.id === route.id)!;
     content = (
       <article className="document-page">
-        <Eyebrow>REPOSITORY / SOURCE OF TRUTH</Eyebrow>
+        <Eyebrow>仓库原文 · 学习底稿</Eyebrow>
         <h1>{doc.title}</h1>
         <p className="source-path">{doc.sourcePath}</p>
         <div className="notice">
@@ -478,7 +470,7 @@ export default function App() {
             本地优先 · 私人学习空间
           </span>
           <div className="rail-bottom">
-            <span>Learn · Build · Understand</span>
+            <span>阶段 01 / 14</span>
             <button
               className="icon-button"
               aria-label={dark ? "切换到浅色主题" : "切换到深色主题"}
@@ -670,7 +662,7 @@ function HomePage({ state }: PageProps) {
       <div className="page-heading">
         <div>
           <Eyebrow>
-            YOUR LEARNING SPACE <span>01 / JAVA FOUNDATIONS</span>
+            个人学习空间 <span>01 · JAVA 基础</span>
           </Eyebrow>
           <h1>
             把基础，写成自己的能力<span className="heading-period">。</span>
@@ -685,7 +677,7 @@ function HomePage({ state }: PageProps) {
         <div className="continue-copy">
           <div className="card-kicker">
             <span className="status-dot" />
-            STAGE 01 <span>正在学习</span>
+            阶段 01 <span>正在学习</span>
           </div>
           <h2 id="continue-title">
             {state.lastLessonId ? "接着上次的思路。" : "先让第一行代码运行。"}
@@ -769,7 +761,7 @@ function HomePage({ state }: PageProps) {
             title="当前该做什么"
             action={
               <a href="#/document/execution-plan" className="text-link">
-                CURRENT <ArrowUpRight size={14} />
+                执行计划 <ArrowUpRight size={14} />
               </a>
             }
           />
@@ -863,7 +855,7 @@ function HomePage({ state }: PageProps) {
             <Play size={21} />
           </span>
           <div>
-            <Eyebrow>PREDICT → OBSERVE</Eyebrow>
+            <Eyebrow>预测与观察</Eyebrow>
             <h3>先预测，再运行。</h3>
             <p>8 道预测题 · 4 个条件修改</p>
           </div>
@@ -874,7 +866,7 @@ function HomePage({ state }: PageProps) {
             <Code2 size={23} />
           </span>
           <div>
-            <Eyebrow>WRITE IT YOURSELF</Eyebrow>
+            <Eyebrow>亲手实现</Eyebrow>
             <h3>给理解一个出口。</h3>
             <p>4 道独立练习 · 逐级课程提示</p>
           </div>
@@ -889,15 +881,15 @@ function RoadmapPage() {
   const [selected, setSelected] = useState("01");
   const stage = catalog.stages.find((item) => item.id === selected)!;
   const groups = [
-    { title: "语言与思维", en: "FOUNDATIONS", range: ["01", "02", "03", "04"] },
+    { title: "语言与思维", note: "地基", range: ["01", "02", "03", "04"] },
     {
       title: "后端与工程",
-      en: "BACKEND & ENGINEERING",
+      note: "工程与交付",
       range: ["05", "06", "07", "08", "09"],
     },
     {
       title: "Python 与 AI 应用",
-      en: "INTELLIGENCE",
+      note: "智能应用",
       range: ["10", "11", "12", "13", "14"],
     },
   ];
@@ -906,7 +898,7 @@ function RoadmapPage() {
       <div className="page-heading">
         <div>
           <Eyebrow>
-            THE BIG PICTURE <span>14 STAGES · ONE DIRECTION</span>
+            知识地图 <span>14 个阶段 · 一条主线</span>
           </Eyebrow>
           <h1>看见全貌，走好当前一步。</h1>
           <p>Java 是主线，AI 是延伸。知识地图不等于今天的任务清单。</p>
@@ -930,11 +922,11 @@ function RoadmapPage() {
       <div className="roadmap-layout">
         <div className="roadmap-stages">
           {groups.map((group, index) => (
-            <section key={group.en} className="stage-group">
+            <section key={group.title} className="stage-group">
               <div className="group-label">
                 <span>0{index + 1}</span>
                 <h2>{group.title}</h2>
-                <small>{group.en}</small>
+                <small>{group.note}</small>
               </div>
               {catalog.stages
                 .filter((item) => group.range.includes(item.id))
@@ -988,7 +980,7 @@ function RoadmapPage() {
           className="stage-detail"
           aria-live="polite"
         >
-          <Eyebrow>STAGE {stage.id}</Eyebrow>
+          <Eyebrow>阶段 {stage.id}</Eyebrow>
           <button
             className="text-link mobile-stage-back"
             onClick={() => {
@@ -1153,9 +1145,9 @@ function LessonPage({
           <header className="lesson-heading">
             <Eyebrow>
               {lesson.id.startsWith("day")
-                ? `LESSON ${lesson.id.slice(3)}`
-                : `DEEP DIVE ${lesson.id.slice(4)}`}{" "}
-              <span>LEARN → UNDERSTAND</span>
+                ? `基础课 ${lesson.id.slice(3)}`
+                : `深化课 ${lesson.id.slice(4)}`}{" "}
+              <span>课程阅读</span>
             </Eyebrow>
             <h1>{lesson.title}</h1>
             <p>{lesson.summary}</p>
@@ -1339,7 +1331,7 @@ function LessonPage({
         </article>
         <aside className="lesson-margin">
           <div className="margin-sticky">
-            <Eyebrow>IN THIS LESSON</Eyebrow>
+            <Eyebrow>本节脉络</Eyebrow>
             <div className="margin-toc">
               {lesson.steps.map((step, i) => (
                 <button
@@ -1414,7 +1406,7 @@ function PracticePage(
     <>
       <div className="page-heading">
         <div>
-          <Eyebrow>PREDICT → OBSERVE → MODIFY</Eyebrow>
+          <Eyebrow>预测 · 观察 · 修改</Eyebrow>
           <h1>在运行之前，先有自己的判断。</h1>
           <p>预测可以确定性判定；修改题请在自己的副本运行，再记录差异。</p>
         </div>
@@ -1482,7 +1474,7 @@ function PracticePage(
             />
           ) : (
             <>
-              <Eyebrow>{item.id} / MODIFY ONE THING</Eyebrow>
+              <Eyebrow>条件修改 · {item.id.toUpperCase()}</Eyebrow>
               <h2>{item.title}</h2>
               {item.note && (
                 <div className="notice warning">
@@ -1569,7 +1561,7 @@ function PredictionCard({
   return (
     <>
       <div className="practice-title">
-        <Eyebrow>{prediction.id} / READ THE CODE</Eyebrow>
+        <Eyebrow>预测题 · {prediction.id.toUpperCase()}</Eyebrow>
         <Badge tone="current">确定性判定</Badge>
       </div>
       <h2>{prediction.title}</h2>
@@ -1771,7 +1763,7 @@ function LabPage({
       <div className="lab-heading">
         <div>
           <Eyebrow>
-            THE PROGRAMMING LAB <span>STAGE 01 / BUILD</span>
+            编程实验室 <span>01 · 动手构建</span>
           </Eyebrow>
           <h1>让思路，经得起运行。</h1>
         </div>
@@ -1803,7 +1795,7 @@ function LabPage({
         <section className="problem-pane">
           <div className="problem-heading">
             <Eyebrow>
-              EXERCISE{" "}
+              练习 {" "}
               {String(catalog.exercises.indexOf(exercise) + 1).padStart(2, "0")}
             </Eyebrow>
             <Badge>独立实现</Badge>
@@ -2251,7 +2243,7 @@ function ReviewPage({ state, onData }: PageProps & { onData: () => void }) {
       <div className="page-heading">
         <div>
           <Eyebrow>
-            YOUR LEARNING EVIDENCE <span>UNDERSTAND / REFLECT</span>
+            学习证据 <span>复盘 · 反思</span>
           </Eyebrow>
           <h1>用证据，看见理解的形状。</h1>
           <p>记录做过什么、遇见什么。掌握程度，留给独立实现来回答。</p>
