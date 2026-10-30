@@ -229,4 +229,15 @@ describe("IndexedDB 持久化", () => {
     database.close();
     await expect(saveState(state)).rejects.toThrow("另一标签页");
   });
+  it("无效的新快照返回可捕获的保存失败，保留最后有效草稿", async () => {
+    const state = await loadState();
+    state.drafts.scores = { code: "// 保留的草稿", updatedAt: late };
+    await saveState(state);
+    const invalid = {
+      ...state,
+      drafts: { scores: { code: "x".repeat(1_000_001), updatedAt: late } },
+    };
+    await expect(saveState(invalid)).rejects.toThrow("过长");
+    expect((await loadState()).drafts.scores?.code).toBe("// 保留的草稿");
+  });
 });

@@ -69,8 +69,19 @@ export function runProcess(
       terminated = reason;
       if (!child.pid) return;
       if (process.platform === "win32") {
-        // shortcut: Windows kills only this process; use an OS sandbox before accepting untrusted programs.
-        child.kill();
+        // JDK launchers can own a second JVM that keeps the output pipes open.
+        const killer = spawn(
+          "taskkill",
+          ["/PID", String(child.pid), "/T", "/F"],
+          {
+            windowsHide: true,
+            stdio: "ignore",
+          },
+        );
+        killer.on("error", () => child.kill());
+        killer.on("exit", (code) => {
+          if (code !== 0) child.kill();
+        });
       } else {
         try {
           process.kill(-child.pid, "SIGKILL");
@@ -159,10 +170,14 @@ export async function verifyPractice(options, catalog) {
   if (!sourcePath.endsWith(".java"))
     throw new Error("--source 必须指向 .java 文件。");
   const source = await readSmall(sourcePath, "Java 源码", 128 * 1024);
-  const expected = (await readSmall(resolve(options.expectFile), "预期输出"))
-    .text;
+  const expected = (
+    await readSmall(resolve(options.expectFile), "预期输出")
+  ).text.replace(/^\uFEFF/, "");
   const input = options.inputFile
-    ? (await readSmall(resolve(options.inputFile), "测试输入")).text
+    ? (await readSmall(resolve(options.inputFile), "测试输入")).text.replace(
+        /^\uFEFF/,
+        "",
+      )
     : "";
   const packagePattern = new RegExp(
     `^\\s*package\\s+${exercise.packageName.replaceAll(".", "\\.")}\\s*;`,

@@ -24,6 +24,7 @@ npm run dev
 | [依赖、许可证与体积](dependencies.md) | 每项依赖的用途、维护检查、许可证与真实打包成本 |
 | [本地 Java 运行与验证](local-java.md) | 下载源码、准备输入和预期、Windows/macOS JDK 命令、导入真实记录 |
 | [功能、自动化与视觉验收](validation.md) | 实际执行结果、环境、截图、修订记录与已知限制 |
+| [V1.0 第二轮质量加固](quality_v1/README.md) | 网站CI、真实缺陷修复、学习闭环、数据安全、跨平台与第二轮视觉证据 |
 | [执行计划](planning/task_plan.md) | 这次工程任务的阶段与交付状态，不是学习者能力进度 |
 | [过程事实](planning/findings.md)与[工作记录](planning/progress.md) | 仓库审计、工程决策和验证过程 |
 

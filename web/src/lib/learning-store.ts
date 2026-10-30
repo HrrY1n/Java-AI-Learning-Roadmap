@@ -511,7 +511,7 @@ export async function loadState(): Promise<LearningState> {
 
 let saveQueue: Promise<void> = Promise.resolve();
 
-export function saveState(state: LearningState): Promise<void> {
+export async function saveState(state: LearningState): Promise<void> {
   const snapshot = validateBackup(state);
   const pending = saveQueue
     .catch(() => undefined)

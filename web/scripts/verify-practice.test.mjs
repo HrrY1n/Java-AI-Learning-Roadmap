@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { test } from "node:test";
@@ -40,6 +40,78 @@ test("process time and output limits produce a failure", async () => {
   assert.match(large.stderr, /超过/);
 });
 
+test(
+  "timed process trees close inherited pipes and leave no running child",
+  { timeout: 12_000 },
+  async () => {
+    const root = await mkdtemp(join(tmpdir(), "lab-process-tree-"));
+    const pidFile = join(root, "owned-processes.json");
+    const script = `
+    const { spawn } = require('node:child_process');
+    const { writeFileSync } = require('node:fs');
+    const child = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], {
+      stdio: ['ignore', 'inherit', 'inherit'], windowsHide: true,
+      // Model a Windows JDK launcher whose real JVM outlives the wrapper.
+      detached: process.platform === 'win32'
+    });
+    writeFileSync(process.argv[1], JSON.stringify([process.pid, child.pid]));
+    setInterval(() => {}, 1000);
+  `;
+    let deadline;
+    const execution = runProcess(process.execPath, ["-e", script, pidFile], {
+      timeout: 2_000,
+    });
+    try {
+      const result = await Promise.race([
+        execution,
+        new Promise((_, reject) => {
+          deadline = setTimeout(
+            () =>
+              reject(
+                new Error("child inherited pipes remained open after timeout"),
+              ),
+            7_000,
+          );
+        }),
+      ]);
+      assert.equal(result.exitCode, -1);
+      assert.match(result.stderr, /超时/);
+      const [, childPid] = JSON.parse(await readFile(pidFile, "utf8"));
+      let alive = true;
+      for (let attempt = 0; attempt < 40 && alive; attempt++) {
+        try {
+          process.kill(childPid, 0);
+        } catch (error) {
+          assert.equal(error.code, "ESRCH");
+          alive = false;
+        }
+        if (alive) await new Promise((resolve) => setTimeout(resolve, 25));
+      }
+      assert.equal(alive, false, "the launcher child must terminate too");
+    } finally {
+      clearTimeout(deadline);
+      // Only PIDs created by this fixture are candidates for cleanup.
+      try {
+        for (const pid of JSON.parse(await readFile(pidFile, "utf8"))) {
+          try {
+            process.kill(pid, "SIGKILL");
+          } catch {
+            /* already terminated */
+          }
+        }
+      } catch {
+        /* fixture failed before creating the file */
+      }
+      await execution.catch(() => undefined);
+      if (
+        dirname(root) === resolve(tmpdir()) &&
+        basename(root).startsWith("lab-process-tree-")
+      )
+        await rm(root, { recursive: true, force: true });
+    }
+  },
+);
+
 test("real JDK execution records passing, wrong and compilation results without altering source", async () => {
   const root = await mkdtemp(join(tmpdir(), "lab-runner-test-"));
   const source = join(root, "SelfCheck.java");
@@ -76,6 +148,22 @@ test("real JDK execution records passing, wrong and compilation results without 
     assert.equal(normalizeOutput(passed.cases[0].stdout), "验证✓");
     assert.equal(passed.cases[0].match, "exact");
     assert.ok(passed.javaVersion.includes("version"));
+    await writeFile(expected, "\uFEFF验证✓\r\n", "utf8");
+    const bomExpected = await verifyPractice(options, catalog);
+    assert.equal(
+      bomExpected.allPassed,
+      true,
+      "Windows UTF-8 BOM in expected text is not program output",
+    );
+    await writeFile(expected, "验证✓\n", "utf8");
+    await writeFile(input, "\uFEFF验证✓\r\n", "utf8");
+    const bomInput = await verifyPractice(options, catalog);
+    assert.equal(
+      bomInput.allPassed,
+      true,
+      "Windows UTF-8 BOM must not become the first input character",
+    );
+    await writeFile(input, "验证✓\n", "utf8");
     await writeFile(expected, "错误的预期\n", "utf8");
     const wrong = await verifyPractice(options, catalog);
     assert.equal(wrong.allPassed, false);

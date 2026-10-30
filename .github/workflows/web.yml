@@ -1,0 +1,112 @@
+name: JavaRoadmap Lab
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lab-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web-core:
+    name: web-core (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+        shell: bash
+    env:
+      LAB_ARTIFACT_DIR: test-artifacts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Install locked dependencies
+        run: |
+          mkdir -p test-artifacts/logs
+          npm ci 2>&1 | tee test-artifacts/logs/install.log
+      - name: TypeScript strict
+        run: npm run typecheck 2>&1 | tee test-artifacts/logs/typecheck.log
+      - name: Unit and real JDK tool tests
+        run: npm test 2>&1 | tee test-artifacts/logs/unit.log
+      - name: Production build
+        run: npm run build 2>&1 | tee test-artifacts/logs/build.log
+      - name: Verify distributable assets
+        run: npm run check:build 2>&1 | tee test-artifacts/logs/artifacts.log
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium 2>&1 | tee test-artifacts/logs/browser-install.log
+      - name: Chromium core E2E against production preview
+        run: npx playwright test e2e/core.spec.ts 2>&1 | tee test-artifacts/logs/e2e.log
+      - name: Upload test reports and failure evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lab-core-${{ matrix.os }}-${{ github.run_attempt }}
+          path: web/test-artifacts/
+          retention-days: 14
+          compression-level: 1
+          if-no-files-found: warn
+      - name: Upload checked static build
+        if: success()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lab-dist-${{ matrix.os }}
+          path: web/dist/
+          retention-days: 7
+          if-no-files-found: error
+
+  web-visual:
+    name: web-visual
+    # Full scan measured ~96s locally; keep it on PRs and available manually.
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+        shell: bash
+    env:
+      LAB_ARTIFACT_DIR: test-artifacts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install and build
+        run: |
+          mkdir -p test-artifacts/logs
+          npm ci 2>&1 | tee test-artifacts/logs/install.log
+          npm run build 2>&1 | tee test-artifacts/logs/build.log
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Full six viewport and two theme audit
+        run: npx playwright test e2e/visual.spec.ts 2>&1 | tee test-artifacts/logs/visual.log
+      - name: Upload reproducible visual evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lab-visual-${{ github.run_attempt }}
+          path: web/test-artifacts/
+          retention-days: 14
+          compression-level: 1
+          if-no-files-found: warn

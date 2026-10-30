@@ -403,7 +403,16 @@ export default function App() {
     );
   else if (route.page === "practice")
     content = (
-      <PracticePage key={route.id} {...props} onReference={setReference} />
+      <PracticePage
+        key={route.id}
+        {...props}
+        routeId={route.id}
+        onSelect={(id) => {
+          location.hash = `#/practice/${id}`;
+          setRoute({ page: "practice", id });
+        }}
+        onReference={setReference}
+      />
     );
   else if (route.page === "review")
     content = <ReviewPage {...props} onData={() => setDataDialog(true)} />;
@@ -1381,9 +1390,13 @@ function LessonPage({
 }
 
 function PracticePage(
-  props: PageProps & { onReference: (path: string) => void },
+  props: PageProps & {
+    routeId: string;
+    onSelect: (id: string) => void;
+    onReference: (path: string) => void;
+  },
 ) {
-  const routeId = getRoute().id;
+  const routeId = props.routeId;
   const tab = routeId.startsWith("B") ? "modify" : "predict";
   const selected = catalog.predictions.some(
     (item) => item.id === routeId.replace("-modified", ""),
@@ -1414,7 +1427,7 @@ function PracticePage(
           role="tab"
           aria-selected={tab === "predict"}
           onClick={() => {
-            location.hash = "#/practice/A1";
+            props.onSelect("A1");
           }}
         >
           输出预测 <span>08</span>
@@ -1423,7 +1436,7 @@ function PracticePage(
           role="tab"
           aria-selected={tab === "modify"}
           onClick={() => {
-            location.hash = "#/practice/B1";
+            props.onSelect("B1");
           }}
         >
           条件修改 <span>04</span>
@@ -1446,7 +1459,7 @@ function PracticePage(
                   : ""
               }
               onClick={() => {
-                location.hash = `#/practice/${entry.id}`;
+                props.onSelect(entry.id);
               }}
             >
               <span>{entry.id}</span>
@@ -1465,6 +1478,7 @@ function PracticePage(
               key={prediction.id}
               {...props}
               prediction={prediction}
+              routeId={routeId}
             />
           ) : (
             <>
@@ -1515,8 +1529,14 @@ function PredictionCard({
   state,
   change,
   prediction,
-}: PageProps & { prediction: Prediction }) {
-  const initialId = getRoute().id.endsWith("-modified")
+  routeId,
+  onSelect,
+}: PageProps & {
+  prediction: Prediction;
+  routeId: string;
+  onSelect: (id: string) => void;
+}) {
+  const initialId = routeId.endsWith("-modified")
     ? `${prediction.id}-modified`
     : prediction.id;
   const [answer, setAnswer] = useState(
@@ -1574,7 +1594,7 @@ function PredictionCard({
               setAnswer(state.predictions[nextId]?.answer ?? "");
               setResult(state.predictions[nextId]?.correct ?? null);
               setRevealed(false);
-              location.hash = `#/practice/${nextId}`;
+              onSelect(nextId);
             }}
           />
           修改一个条件：将 &lt; 改为 &lt;=，再预测一次
@@ -1695,6 +1715,7 @@ function LabPage({
   onReference: (path: string) => void;
 }) {
   const code = state.drafts[exercise.id]?.code ?? exercise.starterCode;
+  const needsInput = exercise.id === "calculator" || exercise.id === "menu";
   const [tab, setTab] = useState<"cases" | "local" | "evidence">("cases");
   const [evidenceError, setEvidenceError] = useState("");
   const [reset, setReset] = useState(false);
@@ -1981,24 +2002,35 @@ function LabPage({
             ) : tab === "local" ? (
               <>
                 <Eyebrow>01 下载源码 → 02 本地验证 → 03 导入记录</Eyebrow>
-                <p>安装 JDK 后，在下载文件所在目录编译；包名不需要删除。</p>
-                <Code
-                  language="text"
-                  code={`javac -encoding UTF-8 -d out ${exercise.className}.java\njava -cp out ${exercise.packageName}.${exercise.className}`}
-                />
                 <p>
-                  回到仓库 web 目录，为实际输入和预期各准备一个 UTF-8
-                  文本文件，然后运行：
+                  推荐：在仓库 web
+                  目录运行下面一条命令。工具会编译、运行并生成记录，无需先手动编译。
+                </p>
+                <p>
+                  {needsInput
+                    ? "本题读取键盘输入，请准备 input.txt 和运行前推导的 expected.txt。"
+                    : "本题的数组在源码中，只需准备运行前推导的 expected.txt，无需输入文件。"}
+                  文件使用 UTF-8；将示例目录替换为你保存文件的位置。
                 </p>
                 <Code
                   language="text"
-                  code={`npm run verify:practice -- --exercise ${exercise.id} --source "你的源码路径/${exercise.className}.java" --expect-file expected.txt --label "正常案例" --evidence result.evidence.json`}
+                  code={`npm run verify:practice -- --exercise ${exercise.id} --source "你的文件目录/${exercise.className}.java"${needsInput ? ' --input-file "你的文件目录/input.txt"' : ""} --expect-file "你的文件目录/expected.txt" --label "正常案例" --evidence "你的文件目录/result.evidence.json"`}
                 />
                 <p className="fine-print">
-                  有交互输入时增加 --input-file
-                  input.txt；数组题需自己修改数组并分别运行。记录只对应所列案例。此
+                  数组题需自己修改数组并分别运行，重复验证请使用新的记录文件名。记录只对应所列案例。此
                   CLI 在本机以你的权限运行，仅运行自己信任的源码。
                 </p>
+                <details className="test-case">
+                  <summary>
+                    直接使用 javac / java（可选，不生成实测记录）
+                    <ChevronDown size={14} />
+                  </summary>
+                  <p>在源码所在目录执行；包名不需要删除。</p>
+                  <Code
+                    language="text"
+                    code={`javac -encoding UTF-8 -d out ${exercise.className}.java\njava -cp out ${exercise.packageName}.${exercise.className}`}
+                  />
+                </details>
                 <a className="text-link" href="#/document/lab-local-java">
                   完整运行指南 <ArrowUpRight size={14} />
                 </a>

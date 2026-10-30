@@ -1,6 +1,7 @@
 node_modules/
 dist/
 test-results/
+test-artifacts/
 playwright-report/
 coverage/
 .lighthouse/
