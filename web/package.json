@@ -19,6 +19,7 @@
     "test": "npm run content && vitest run && node --test scripts/content.test.mjs scripts/verify-practice.test.mjs scripts/prediction-semantics.test.mjs",
     "test:unit": "npm run content && vitest run",
     "test:e2e": "npm run content && playwright test",
+    "test:pages": "playwright test --config playwright.pages.config.ts",
     "verify:practice": "node scripts/verify-practice.mjs"
   },
   "dependencies": {

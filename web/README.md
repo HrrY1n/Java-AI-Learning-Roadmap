@@ -2,6 +2,8 @@
 
 **Learn · Build · Understand**
 
+正式访问：[GitHub Pages](https://hrry1n.github.io/Java-AI-Learning-Roadmap/)。发布流程、线上验证和本地数据迁移见[Pages说明](../docs/javaroadmap_lab/pages.md)。
+
 本地优先的 Java 学习工作台。围绕当前 Stage 01，把仓库课程、预测与修改、独立编程、课程提示和真实运行复盘串起来。网站不自动修改真实学习进度，不把参考实现算作独立完成。
 
 ## 环境与启动
@@ -84,7 +86,7 @@ bash scripts/verify_java.sh
 
 ## 静态部署
 
-本次不自动部署公网。部署时在包含完整仓库课程资产的检出目录内，以 `web/` 为构建工作目录执行 `npm ci`、`npm run build`，把 `web/dist/` 作为静态站点根目录上传。不要上传源码树中的用户备份、草稿、证据、`node_modules/` 或系统环境文件。
+GitHub Pages使用独立Actions工作流，从受保护的main自动构建、验证、部署并执行线上冒烟。以 `web/` 为构建工作目录执行 `npm ci`、`npm run build`，仅将 `web/dist/` 上传为Pages Artifact；不会提交构建产物或公开本地Java CLI。不要上传源码树中的用户备份、草稿、证据、`node_modules/` 或系统环境文件。
 
 Vite 使用 `base: './'`，页面使用 `#/...` 哈希导航；可以部署到域名根路径或例如 `/lab/` 的静态子目录，无需为课程路由配置服务端重写。保留整个 `dist/` 的相对目录结构，包括编辑器 worker、chunks 和 `reference/`。静态构建已包含当时的课程快照；仓库课程更新后需要重新构建。
 

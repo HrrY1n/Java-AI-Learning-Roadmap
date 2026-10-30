@@ -1,0 +1,117 @@
+name: Deploy JavaRoadmap Lab Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main' && github.ref_protected
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+        shell: bash
+    env:
+      LAB_ARTIFACT_DIR: test-artifacts/pages-preflight
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Install and validate production build
+        run: |
+          mkdir -p test-artifacts/pages-preflight/logs
+          npm ci 2>&1 | tee test-artifacts/pages-preflight/logs/install.log
+          npm run typecheck 2>&1 | tee test-artifacts/pages-preflight/logs/typecheck.log
+          npm test 2>&1 | tee test-artifacts/pages-preflight/logs/unit.log
+          npm run build 2>&1 | tee test-artifacts/pages-preflight/logs/build.log
+          npm run check:build 2>&1 | tee test-artifacts/pages-preflight/logs/assets.log
+      - name: Chromium core against production preview
+        run: |
+          npx playwright install --with-deps chromium
+          npx playwright test e2e/core.spec.ts 2>&1 | tee test-artifacts/pages-preflight/logs/e2e.log
+      - name: Record public deployment identity
+        run: |
+          node -e "require('node:fs').writeFileSync('dist/deployment.json', JSON.stringify({ commit: process.env.GITHUB_SHA, runId: process.env.GITHUB_RUN_ID }))"
+      - name: Keep validation evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: pages-preflight-${{ github.run_attempt }}
+          path: web/test-artifacts/pages-preflight/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Upload only the static site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      site_url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  smoke:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web
+        shell: bash
+    env:
+      LAB_SITE_URL: ${{ needs.deploy.outputs.site_url }}
+      LAB_EXPECTED_SHA: ${{ github.sha }}
+      LAB_ARTIFACT_DIR: test-artifacts/pages-online
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Prepare browser checks
+        run: |
+          npm ci
+          npm run content
+          npx playwright install --with-deps chromium
+      - name: Test the actual HTTPS deployment
+        run: npm run test:pages
+      - name: Keep online report and screenshots
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: pages-online-${{ github.run_attempt }}
+          path: web/test-artifacts/pages-online/
+          retention-days: 14
+          if-no-files-found: warn
