@@ -75,7 +75,7 @@ jobs:
 
   web-visual:
     name: web-visual
-    # Measure on the PR before deciding whether a separate manual-only run is necessary.
+    # Full scan measured ~96s locally; keep it on PRs and available manually.
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 15

@@ -357,11 +357,13 @@ test("剪贴板不可用时提示下载，保留源码", async ({ page }) => {
   await expect(editor).toHaveValue(original);
 });
 
-test("真实本地 JDK 记录关联当前草稿；重复、冲突和错误指纹受控", async ({
+test("课程到真实下载/JDK/导入/复盘闭环；编译失败、重复和指纹受控", async ({
   page,
 }) => {
   test.setTimeout(60_000);
-  await open(page, "#/lab/scores");
+  await open(page, "#/lesson/day05");
+  await page.getByRole("link", { name: /^成绩统计/ }).click();
+  await expect(page.locator(".lab-heading")).toBeVisible();
   const editor = await lightEditor(page);
   const source = `${await editor.inputValue()}\n// e2e：仅编译空 TODO 骨架，不代表题目实现或验收。\n`;
   await editor.fill(source);
@@ -372,7 +374,12 @@ test("真实本地 JDK 记录关联当前草稿；重复、冲突和错误指纹
     const sourcePath = join(temporary, `${exercise.className}.java`);
     const expectedPath = join(temporary, "expected.txt");
     const evidencePath = join(temporary, "actual.evidence.json");
-    await writeFile(sourcePath, source, "utf8");
+    const downloadEvent = page.waitForEvent("download");
+    await page.getByRole("button", { name: "下载 Java", exact: true }).click();
+    const downloaded = await downloadEvent;
+    const downloadedBytes = await readFile((await downloaded.path())!);
+    expect(downloadedBytes.toString("utf8")).toBe(source);
+    await writeFile(sourcePath, downloadedBytes);
     await writeFile(expectedPath, "", "utf8");
     const runner = fileURLToPath(
       new URL("../scripts/verify-practice.mjs", import.meta.url),
@@ -440,20 +447,73 @@ test("真实本地 JDK 记录关联当前草稿；重复、冲突和错误指纹
       page.locator(".output-panel").getByRole("alert"),
     ).toContainText("指纹");
     await expect(page.locator(".evidence-record")).toHaveCount(1);
+    const invalidSource = source.replace(
+      "public static void main(String[] args) {",
+      "public static void main(String[] args) { int n = ;",
+    );
+    await editor.fill(invalidSource);
+    await saved(page);
+    await writeFile(sourcePath, invalidSource, "utf8");
+    const failurePath = join(temporary, "compilation.evidence.json");
+    await expect(
+      executeFile(
+        process.execPath,
+        [
+          runner,
+          "--exercise",
+          "scores",
+          "--source",
+          sourcePath,
+          "--expect-file",
+          expectedPath,
+          "--label",
+          "QA编译失败",
+          "--evidence",
+          failurePath,
+        ],
+        { timeout: 40_000, windowsHide: true },
+      ),
+    ).rejects.toThrow();
+    const failureBuffer = await readFile(failurePath);
+    const failureRecord = JSON.parse(failureBuffer.toString("utf8"));
+    expect(failureRecord.allPassed).toBe(false);
+    expect(failureRecord.cases[0].label).toBe("编译");
+    await upload.setInputFiles({
+      name: "compilation.evidence.json",
+      mimeType: "application/json",
+      buffer: failureBuffer,
+    });
+    await expect(page.locator(".evidence-record")).toHaveCount(2);
+    await expect(
+      page.locator(".evidence-record").filter({ hasText: "存在失败案例" }),
+    ).toContainText("与当前源码一致");
     await editor.fill(`${source}// e2e：验证之后只改一条注释。\n`);
-    await expect(page.locator(".evidence-record")).toContainText(
+    await expect(page.locator(".evidence-record").first()).toContainText(
       "源码已变化，请重新验证",
     );
     await upload.setInputFiles(file);
     await expect(
       page.locator(".output-panel").getByRole("alert"),
     ).toContainText("指纹");
+    await page
+      .getByRole("textbox", { name: "现在怎么理解？", exact: true })
+      .fill("QA空骨架与故意语法错误只验证工具链路，不代表成绩统计完成。");
+    await page
+      .getByRole("textbox", { name: "下一次验证什么？", exact: true })
+      .fill("由本人独立完成业务逻辑后，再验证正常、单元素与空数组。");
     await saved(page);
     await open(page, "#/review");
     await expect(page.locator(".notice")).toContainText("Stage 01 · 学习中");
     await expect(
       page.locator(".evidence-row").filter({ hasText: "成绩统计" }),
     ).toContainText("有实测记录");
+    await expect(page.locator(".reflection-note")).toContainText(
+      "不代表成绩统计完成",
+    );
+    await page.getByRole("link", { name: "返回现场", exact: true }).click();
+    await expect(await lightEditor(page)).toHaveValue(
+      `${source}// e2e：验证之后只改一条注释。\n`,
+    );
   } finally {
     if (
       dirname(temporary) === resolve(tmpdir()) &&
@@ -530,13 +590,11 @@ test("备份导出、重复合并、明确替换；坏 JSON 和未来版本不�
   await saved(page);
   await page.getByRole("button", { name: "数据与备份", exact: true }).click();
   dialog = page.getByRole("dialog", { name: "学习数据与备份" });
-  await dialog
-    .getByLabel("选择学习备份文件")
-    .setInputFiles({
-      name: "broken.json",
-      mimeType: "application/json",
-      buffer: Buffer.from("{broken"),
-    });
+  await dialog.getByLabel("选择学习备份文件").setInputFiles({
+    name: "broken.json",
+    mimeType: "application/json",
+    buffer: Buffer.from("{broken"),
+  });
   await expect(dialog.getByRole("alert")).toBeVisible();
   await expect(
     dialog.getByRole("button", { name: "确认合并学习记录" }),
@@ -545,13 +603,11 @@ test("备份导出、重复合并、明确替换；坏 JSON 和未来版本不�
     ...(JSON.parse(backup.toString("utf8")) as Record<string, unknown>),
     schemaVersion: 999,
   };
-  await dialog
-    .getByLabel("选择学习备份文件")
-    .setInputFiles({
-      name: "future.json",
-      mimeType: "application/json",
-      buffer: Buffer.from(JSON.stringify(future)),
-    });
+  await dialog.getByLabel("选择学习备份文件").setInputFiles({
+    name: "future.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(future)),
+  });
   await expect(dialog.getByRole("alert")).toContainText("版本不受支持");
   await page.keyboard.press("Escape");
   await expect(editor).toHaveValue(newer);
@@ -700,4 +756,93 @@ test("同时打开两页时拒绝静默覆盖另一页的保存", async ({ page,
     `${starter}\n// 第一页已经保存。\n`,
   );
   await second.close();
+});
+
+test("离线编辑与编辑器资源失败仍能保存和恢复草稿", async ({
+  page,
+  context,
+}) => {
+  await page.route(/MonacoEditor.*\.(?:js|tsx)(?:\?|$)/, (route) =>
+    route.abort(),
+  );
+  await open(page, "#/lab/scores");
+  await expect(
+    page.getByText("专业编辑器加载失败，已提供轻量编辑。"),
+  ).toBeVisible();
+  const editor = page.getByRole("textbox", {
+    name: "Java 代码草稿",
+    exact: true,
+  });
+  const source = `${await editor.inputValue()}\n// QA：断网时的草稿，不是练习解答。\n`;
+  await context.setOffline(true);
+  await editor.fill(source);
+  await saved(page);
+  await context.setOffline(false);
+  await page.reload();
+  await expect(editor).toHaveValue(source);
+});
+
+test("保存失败清晰反馈并保留上次有效版本，当前源码仍可下载", async ({
+  page,
+}) => {
+  await open(page, "#/lab/scores");
+  const editor = await lightEditor(page);
+  const original = `${await editor.inputValue()}\n// QA：最后一次有效保存。\n`;
+  await editor.fill(original);
+  await saved(page);
+  const oversized = "x".repeat(1_000_001);
+  await editor.fill(oversized);
+  await expect(page.locator(".storage-warning")).toContainText("过长");
+  await expect(page.locator(".topbar .save-status")).toContainText("保存失败");
+  const downloadEvent = page.waitForEvent("download");
+  await page.getByRole("button", { name: "下载 Java", exact: true }).click();
+  expect(await readFile((await (await downloadEvent).path())!, "utf8")).toBe(
+    oversized,
+  );
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.reload();
+  await expect(await lightEditor(page)).toHaveValue(original);
+});
+
+test("尚未完成异步保存时离开有保护，取消后可保存并刷新", async ({ page }) => {
+  await page.clock.install({ time: new Date("2026-11-01T00:00:00Z") });
+  await open(page, "#/lab/scores");
+  const editor = await lightEditor(page);
+  await saved(page);
+  await page.clock.pauseAt(new Date("2026-11-01T01:00:00Z"));
+  const source = `${await editor.inputValue()}\n// QA：尚未落盘的编辑。\n`;
+  await editor.fill(source);
+  await expect(page.locator(".topbar .save-status")).toContainText("正在保存");
+  const dialogEvent = page.waitForEvent("dialog");
+  await page.close({ runBeforeUnload: true });
+  const dialog = await dialogEvent;
+  expect(dialog.type()).toBe("beforeunload");
+  await dialog.dismiss();
+  expect(page.isClosed()).toBe(false);
+  await page.clock.runFor(250);
+  await saved(page);
+  await page.clock.resume();
+  await page.reload();
+  await expect(await lightEditor(page)).toHaveValue(source);
+});
+
+test("本地验证说明只有一条推荐路径，按题型包含必需输入文件", async ({
+  page,
+}) => {
+  for (const id of ["scores", "calculator"]) {
+    await open(page, `#/lab/${id}`);
+    await page.getByRole("tab", { name: "本地运行", exact: true }).click();
+    const panel = page.locator(".output-panel");
+    await expect(panel).toContainText("无需先手动编译");
+    const command = panel
+      .locator("code")
+      .filter({ hasText: "verify:practice" });
+    if (id === "calculator")
+      await expect(command).toContainText("--input-file");
+    else await expect(command).not.toContainText("--input-file");
+    const direct = panel.locator("details");
+    await expect(direct).not.toHaveAttribute("open");
+    await direct.locator("summary").click();
+    await expect(direct).toContainText("javac -encoding UTF-8");
+  }
 });
