@@ -34,6 +34,7 @@ async function saved(page: Page) {
 }
 
 async function lightEditor(page: Page) {
+  await expect(page.locator(".editor-mode")).toBeVisible();
   const toggle = page.getByRole("button", { name: "轻量编辑", exact: true });
   if (await toggle.isVisible()) await toggle.click();
   const editor = page.getByRole("textbox", {
