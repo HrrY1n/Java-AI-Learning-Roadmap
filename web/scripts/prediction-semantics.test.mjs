@@ -20,9 +20,14 @@ const javaTool = (name) =>
     : name;
 
 test("all objective predictions match real Java output, including the modified loop", async () => {
+  // 语义自动验证覆盖 Stage 01 的完整可运行片段；
+  // Stage 02（S02*）片段依赖课堂补充类（如 Student/Point），不在此自动运行。
+  const objective = catalog.predictions.filter(
+    (prediction) => !prediction.id.startsWith("S02"),
+  );
   const temporary = await mkdtemp(join(tmpdir(), "javaroadmap-predictions-"));
   try {
-    const cases = catalog.predictions.flatMap((prediction) => [
+    const cases = objective.flatMap((prediction) => [
       prediction,
       ...(prediction.modifiedAnswer
         ? [

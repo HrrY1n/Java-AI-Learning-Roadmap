@@ -1,0 +1,19 @@
+{
+  "id": "s02-encapsulation-why",
+  "stageId": "02",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "封装——为什么字段要 private",
+  "summary": "用公开字段作对照，理解封装防的是什么、getter/setter 不等于封装。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-encapsulation-basics"
+  ],
+  "exerciseIds": [
+    "s02-bank-account"
+  ],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage02_java_oop/deep_dives/03_encapsulation_why/README.md",
+  "codeDirectory": "stages/stage02_java_oop/deep_dives/03_encapsulation_why"
+}

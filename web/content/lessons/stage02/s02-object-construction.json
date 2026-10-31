@@ -1,0 +1,20 @@
+{
+  "id": "s02-object-construction",
+  "stageId": "02",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "构造方法、this 与对象初始化",
+  "summary": "从 new 的三步到 this 的三种用法，理解对象如何带着合法状态出生。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-constructor-this"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [
+    "S02A3",
+    "S02A5"
+  ],
+  "steps": [],
+  "bodyPath": "stages/stage02_java_oop/deep_dives/02_constructor_this/README.md",
+  "codeDirectory": "stages/stage02_java_oop/deep_dives/02_constructor_this"
+}

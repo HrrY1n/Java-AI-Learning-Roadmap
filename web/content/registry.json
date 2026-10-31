@@ -15,6 +15,13 @@
     "B2",
     "B3",
     "B4",
+    "S02A1",
+    "S02A2",
+    "S02A3",
+    "S02A5",
+    "S02B1",
+    "S02B2",
+    "S02B4",
     "calculator",
     "day01",
     "day02",
@@ -31,6 +38,13 @@
     "deep07",
     "menu",
     "refactor",
+    "s02-bank-account",
+    "s02-class-basics",
+    "s02-constructor-this",
+    "s02-encapsulation-basics",
+    "s02-encapsulation-why",
+    "s02-object-construction",
+    "s02-reference-state",
     "scores"
   ]
 }

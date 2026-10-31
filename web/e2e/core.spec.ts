@@ -78,7 +78,7 @@ test("初访继续学习、完整课程切换与阅读记录保持真实语义",
   await saved(page);
   await page.getByRole("button", { name: "课程目录" }).click();
   const picker = page.locator(".chapter-picker");
-  await expect(picker.getByRole("link")).toHaveCount(13);
+  await expect(picker.getByRole("link")).toHaveCount(19);
   await picker.getByRole("link", { name: /DAY 02.*数据类型与运算符/ }).click();
   await expect(
     page.getByRole("heading", { level: 1, name: "数据类型与运算符" }),
@@ -99,6 +99,7 @@ test("初访继续学习、完整课程切换与阅读记录保持真实语义",
 test("14 阶段路线展示真实材料状态，无课程阶段只显示知识地图", async ({
   page,
 }) => {
+  test.setTimeout(60_000);
   await open(page, "#/roadmap");
   await expect(page.locator(".stage-row")).toHaveCount(14);
   await page
@@ -115,24 +116,38 @@ test("14 阶段路线展示真实材料状态，无课程阶段只显示知识�
     .locator(".stage-row")
     .filter({ has: page.locator(".stage-index", { hasText: /^02$/ }) })
     .click();
+  // V1.3：Stage 02 首批课程已发布——详情面板列出课程链接并标注持续建设
   await expect(page.locator(".stage-detail")).toContainText("未验证");
+  await expect(
+    page.locator(".stage-lesson-links").getByRole("link"),
+  ).toHaveCount(6);
+  await expect(
+    page.locator(".stage-detail").getByText("本阶段内容仍在持续建设"),
+  ).toBeVisible();
   await page
-    .locator(".stage-detail")
-    .getByRole("link", { name: "查看现有资料" })
+    .locator(".stage-lesson-links")
+    .getByRole("link", { name: /类与对象入门/ })
     .click();
-  await expect(page).toHaveURL(/#\/document\/stage02-guide$/);
-  await expect(page.locator("main h1")).toContainText("Stage 02");
+  await expect(page).toHaveURL(/#\/lesson\/s02-class-basics$/);
+  await expect(page.locator("main h1")).toContainText("类与对象入门");
 });
 
 test("6 节基础课与 7 节深化课均可读取原文和源码", async ({ page }) => {
   test.setTimeout(60_000);
   expect(
-    catalog.lessons.filter((lesson) => lesson.kind === "foundation"),
+    catalog.lessons.filter(
+      (lesson) => lesson.stageId === "01" && lesson.kind === "foundation",
+    ),
   ).toHaveLength(6);
   expect(
-    catalog.lessons.filter((lesson) => lesson.kind === "deep-dive"),
+    catalog.lessons.filter(
+      (lesson) => lesson.stageId === "01" && lesson.kind === "deep-dive",
+    ),
   ).toHaveLength(7);
-  for (const { id, title } of catalog.lessons) {
+  // 遍历范围限定 Stage 01（V1.3 起 Stage 02 有独立导航冒烟）
+  for (const { id, title } of catalog.lessons.filter(
+    (lesson) => lesson.stageId === "01",
+  )) {
     await open(page, `#/lesson/${id}`);
     await expect(
       page.getByRole("heading", { level: 1, name: title, exact: true }),

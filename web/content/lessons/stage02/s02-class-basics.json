@@ -1,0 +1,45 @@
+{
+  "id": "s02-class-basics",
+  "stageId": "02",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "类与对象入门",
+  "summary": "把一类事物的数据和行为放进一个模板，用 new 创建具体对象。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-reference-state"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "点名册上的每个学生都有姓名和年龄。用零散变量描述一个学生容易混乱，用一个“学生类型”描述所有学生才清晰。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "类把数据（字段）和行为（方法）装进同一个模板。对象是模板的一次具体化——new 一次，就多一个独立的学生。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "类是图纸，对象是按图纸造出的房子。字段是房子里的状态，方法是房子能做的事。访问字段用 student.name，调用方法用 student.sayHello()。"
+    },
+    {
+      "label": "预测运行",
+      "body": "先预测 main 会打印什么。再说明 student.name = \"小明\" 改的是哪一个对象的状态。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "再 new 一个 Student 并赋不同字段：两个对象的状态会互相影响吗？先预测再运行（答案在配套深化课）。"
+    },
+    {
+      "label": "独立练习",
+      "body": "不看示例，定义一个 Book 类（书名、价格）和打印方法，并在 main 中创建两本书。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "Stage 03 起集合里装的就是对象；Spring 的 Bean 也是对象。先把“字段+方法”的边界想清楚。"
+    }
+  ],
+  "codeDirectory": "stages/stage02_java_oop/existing_course/day01_class_object"
+}

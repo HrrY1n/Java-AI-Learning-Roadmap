@@ -1,0 +1,51 @@
+{
+  "id": "s02-bank-account",
+  "stageId": "02",
+  "title": "银行账户守门",
+  "className": "BankAccount",
+  "order": 1,
+  "contentState": "published",
+  "lessonIds": [
+    "s02-encapsulation-basics",
+    "s02-encapsulation-why",
+    "s02-reference-state"
+  ],
+  "statementSource": "stages/stage02_java_oop/practice/s02-exercises.md",
+  "statementAnchor": "练习 1",
+  "hintSource": "stages/stage02_java_oop/practice/s02-exercises.md",
+  "todo": "独立实现私有余额与守门规则：存款、取钱、查看余额，非法输入必须被明确拒绝。",
+  "note": "本题验收以题面规则为准。历史参考示例（day03 的 Account）只演示了最小守门，不含全部非法输入处理，仅用于对照。",
+  "cases": [
+    [
+      "normal",
+      "存款与查询",
+      "1\n100\n1\n",
+      "存入后余额正确增加并打印"
+    ],
+    [
+      "normal",
+      "取款与查询",
+      "2\n30\n1\n",
+      "取款后余额正确减少并打印"
+    ],
+    [
+      "boundary",
+      "全额取出",
+      "2\n100\n1\n",
+      "余额恰好为 0 时取款成功"
+    ],
+    [
+      "invalid",
+      "非法存款金额",
+      "1\n-50\n",
+      "提示金额必须大于 0，余额不变"
+    ],
+    [
+      "invalid",
+      "余额不足",
+      "2\n99999\n",
+      "提示余额不足，余额不变"
+    ]
+  ],
+  "referenceFiles": []
+}

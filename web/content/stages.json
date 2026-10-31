@@ -27,11 +27,25 @@
     },
     {
       "id": "02",
-      "contentState": "materials",
+      "contentState": "published",
       "prerequisites": "Stage 01 的变量、分支、循环、数组与方法基础。",
-      "modules": [],
+      "modules": [
+        {
+          "id": "foundations",
+          "title": "基础课程"
+        },
+        {
+          "id": "deep-dives",
+          "title": "概念深化"
+        }
+      ],
       "referenceRoots": [],
-      "referenceDocuments": []
+      "referenceDocuments": [
+        "stages/stage02_java_oop/practice/answers.md"
+      ],
+      "building": true,
+      "slug": "stage02_java_oop",
+      "packageNamePrefix": "com.javaroadmap.lab.stage02"
     },
     {
       "id": "03",

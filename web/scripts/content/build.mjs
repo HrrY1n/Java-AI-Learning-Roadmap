@@ -62,10 +62,20 @@ async function buildLessons(repoRoot, contentRoot, stageEntries) {
       );
     if (meta.contentState !== "published") continue; // 未发布课程不进入 Catalog
     const codeDirectory = meta.codeDirectory;
-    const [codePath] = await javaFiles(repoRoot, codeDirectory);
-    if (!codePath)
+    const directoryFiles = await javaFiles(repoRoot, codeDirectory);
+    if (directoryFiles.length === 0)
       throw contentError("课程目录中没有 Java 源码", { ...context, codeDirectory });
-    const code = await readSource(repoRoot, codePath, context);
+    const codeContents = [];
+    for (const codePath of directoryFiles) {
+      const code = await readSource(repoRoot, codePath, context);
+      codeContents.push({ codePath, code, ...javaIdentity(code, codePath) });
+    }
+    // 主文件 = 包含 main 方法的文件（多文件课程）；否则取第一个
+    const primary =
+      codeContents.find((item) => /public\s+static\s+void\s+main/.test(item.code)) ??
+      codeContents[0];
+    const codePath = primary.codePath;
+    const code = primary.code;
     const markdown = meta.bodyPath
       ? await readSource(repoRoot, meta.bodyPath, context)
       : "";
@@ -81,6 +91,12 @@ async function buildLessons(repoRoot, contentRoot, stageEntries) {
       code,
       codePath,
       ...javaIdentity(code, codePath),
+      codeFiles: codeContents.map((item) => ({
+        path: item.codePath,
+        className: item.className,
+        packageName: item.packageName,
+        code: item.code,
+      })),
       relatedLessonIds: meta.relatedLessonIds ?? [],
       exerciseIds: meta.exerciseIds ?? [],
       predictionIds: meta.predictionIds ?? [],
@@ -235,13 +251,17 @@ async function buildPredictionsAndModifications(
       answers.map((section) => [section.title, section.body]),
     );
     for (const section of sections(source, 3)) {
-      const id = section.title.match(/^([AB]\d+)/)?.[1];
+      const id = section.title.match(/^((?:S\d{2})?[AB]\d+)/)?.[1];
       if (!id) continue;
       const body = section.body.split("\n## ")[0].trim();
-      if (id.startsWith("A")) {
+      // 预测题以 A 结尾（含阶段命名空间 S02A1），修改题以 B 结尾
+      const isPrediction = /A\d+$/.test(id);
+      if (isPrediction) {
         const config = manifest.predictions[id];
         if (!config)
           throw contentError(`预测题 ${id} 缺少元数据注册`, context);
+        if (config.contentState && config.contentState !== "published")
+          continue; // 未发布预测题不进入 Catalog
         const answerBody = answerMap.get(id);
         const textBlocks = [
           ...(answerBody ?? "").matchAll(/```text\n([\s\S]*?)```/g),
@@ -254,7 +274,7 @@ async function buildPredictionsAndModifications(
           : answerBody.replace(/```text\n[\s\S]*?```/g, "").trim();
         predictions.push({
           id,
-          title: section.title.replace(/^A\d+\s*/, ""),
+          title: section.title.replace(/^(?:S\d{2})?[AB]\d+\s*/, ""),
           sourcePath: manifest.statementSource,
           code,
           prompt: body.replace(/```java\n[\s\S]*?```\n?/, "").trim(),
@@ -267,9 +287,11 @@ async function buildPredictionsAndModifications(
         const config = manifest.modifications[id];
         if (!config)
           throw contentError(`修改题 ${id} 缺少元数据注册`, context);
+        if (config.contentState && config.contentState !== "published")
+          continue; // 未发布修改题不进入 Catalog
         modifications.push({
           id,
-          title: section.title.replace(/^B\d+\s*/, ""),
+          title: section.title.replace(/^(?:S\d{2})?[AB]\d+\s*/, ""),
           sourcePath: manifest.statementSource,
           markdown: body.split("\n---")[0].trim(),
           lessonIds: config.lessonIds ?? [],
@@ -353,6 +375,7 @@ async function buildStages(repoRoot, contentRoot) {
       ...(sourcePath ? { sourcePath } : {}),
       contentState: entry.contentState,
       modules: entry.modules ?? [],
+      building: entry.building ?? false,
       prerequisites: entry.prerequisites ?? "",
       evidence: cells[3],
     });
@@ -421,11 +444,12 @@ function checkRegistry(contentRoot, catalog, { allowUnknownIds = false } = {}) {
     ...catalog.modifications.map((item) => item.id),
   ]);
   const problems = [];
-  for (const id of current)
-    if (!known.has(id))
-      problems.push(
-        `新 ID「${id}」尚未登记进稳定 ID 契约：首次正式发布前请运行 npm run content -- --update-registry 显式登记`,
-      );
+  if (!allowUnknownIds)
+    for (const id of current)
+      if (!known.has(id))
+        problems.push(
+          `新 ID「${id}」尚未登记进稳定 ID 契约：首次正式发布前请运行 npm run content -- --update-registry 显式登记`,
+        );
   for (const id of known)
     if (!current.has(id) && !retired.has(id) && !Object.keys(renames).includes(id))
       problems.push(`ID「${id}」从目录中消失：请在 registry.json 显式登记 retired 或 renames`);

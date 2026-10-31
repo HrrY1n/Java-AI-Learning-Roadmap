@@ -3464,6 +3464,25 @@ h2 {
 .stage-detail .button {
   margin-top: 10px;
 }
+.stage-lesson-links {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+}
+.stage-lesson-links .related-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.stage-lesson-links .related-link small {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--faint);
+}
+.stage-detail > .notice {
+  margin: 14px 0;
+}
 .fine-print {
   color: var(--faint);
   font-size: 11.5px;

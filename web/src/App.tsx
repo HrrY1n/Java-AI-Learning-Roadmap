@@ -884,6 +884,9 @@ function HomePage({ state }: PageProps) {
 function RoadmapPage() {
   const [selected, setSelected] = useState("01");
   const stage = catalog.stages.find((item) => item.id === selected)!;
+  const stageLessons = catalog.lessons.filter(
+    (lesson) => lesson.stageId === selected,
+  );
   const groups = [
     { title: "语言与思维", note: "地基", range: ["01", "02", "03", "04"] },
     {
@@ -1013,6 +1016,36 @@ function RoadmapPage() {
             <a href={lessonLink()} className="button primary">
               进入当前课程 <ArrowRight size={17} />
             </a>
+          ) : stageLessons.length > 0 ? (
+            <>
+              {stage.building && (
+                <div className="notice">
+                  <Circle size={17} />
+                  <span>
+                    首批课程已发布；本阶段内容仍在持续建设，后续课程会逐步加入。
+                  </span>
+                </div>
+              )}
+              <div className="stage-lesson-links">
+                {stageLessons.map((lesson) => (
+                  <a key={lesson.id} href={lessonLink(lesson.id)} className="related-link">
+                    <span>{lesson.title}</span>
+                    <small>
+                      {lesson.kind === "foundation" ? "基础课程" : "概念深化"}
+                    </small>
+                    <ArrowUpRight size={15} />
+                  </a>
+                ))}
+              </div>
+              {stage.sourcePath && (
+                <a
+                  href={`#/document/stage${stage.id}-guide`}
+                  className="text-link"
+                >
+                  查看本阶段资料 <BookOpen size={15} />
+                </a>
+              )}
+            </>
           ) : stage.sourcePath ? (
             <a
               href={`#/document/stage${stage.id}-guide`}
@@ -1105,7 +1138,7 @@ function LessonPage({
           <ChevronDown size={14} />
         </button>
         <span>
-          STAGE 01 <i>/</i>{" "}
+          STAGE {lesson.stageId} <i>/</i>{" "}
           {lesson.kind === "foundation" ? "基础课程" : "概念深化"}
         </span>
         <button
@@ -1150,9 +1183,7 @@ function LessonPage({
         <article className="lesson-article">
           <header className="lesson-heading">
             <Eyebrow>
-              {lesson.id.startsWith("day")
-                ? `基础课 ${lesson.id.slice(3)}`
-                : `深化课 ${lesson.id.slice(4)}`}{" "}
+              {lesson.kind === "foundation" ? "基础课程" : "概念深化"}{" "}
               <span>课程阅读</span>
             </Eyebrow>
             <h1>{lesson.title}</h1>
@@ -1220,6 +1251,20 @@ function LessonPage({
                 : "参考示例用于观察概念；运行成功不代表已独立掌握。"}
             </p>
           </section>
+          {lesson.codeFiles
+            .filter((file) => file.path !== lesson.codePath)
+            .map((file) => (
+              <section className="lesson-code" key={file.path}>
+                <div className="code-caption">
+                  <span>
+                    <FileCode2 size={16} />
+                    {file.className}.java
+                  </span>
+                  <Badge>同包依赖类</Badge>
+                </div>
+                <Code code={file.code} />
+              </section>
+            ))}
           <details className="run-instructions">
             <summary>
               <Laptop size={17} />
@@ -1230,7 +1275,12 @@ function LessonPage({
             </p>
             <Code
               language="text"
-              code={`javac -encoding UTF-8 -d out ${lesson.packageName.replaceAll(".", "/")}/${lesson.className}.java\njava -cp out ${lesson.packageName}.${lesson.className}`}
+              code={`javac -encoding UTF-8 -d out ${lesson.codeFiles
+                .map(
+                  (file) =>
+                    file.path.slice(file.path.indexOf("/com/") + 1),
+                )
+                .join(" ")}\njava -cp out ${lesson.packageName}.${lesson.className}`}
             />
             <p className="source-path">仓库来源：{lesson.codePath}</p>
             <a href="#/document/environment" className="text-link">

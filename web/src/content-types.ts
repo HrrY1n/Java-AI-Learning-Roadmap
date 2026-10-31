@@ -3,6 +3,13 @@ export interface LessonStep {
   body: string;
 }
 
+export interface LessonCodeFile {
+  path: string;
+  className: string;
+  packageName: string;
+  code: string;
+}
+
 export interface Lesson {
   id: string;
   kind: "foundation" | "deep-dive";
@@ -18,6 +25,8 @@ export interface Lesson {
   codePath: string;
   packageName: string;
   className: string;
+  /** 课程目录内全部 Java 文件（主文件在前；V1.3 起提供，多文件课程用） */
+  codeFiles: LessonCodeFile[];
   relatedLessonIds: string[];
   exerciseIds: string[];
   predictionIds: string[];
@@ -89,6 +98,8 @@ export interface Stage {
   sourcePath?: string;
   /** 内容发布状态（V1.2 起提供；与学习者的掌握状态无关） */
   contentState: ContentState;
+  /** 首批课程已发布、阶段内容仍在持续建设（V1.3 起提供） */
+  building?: boolean;
   /** 阶段内专题模块（V1.2 起提供） */
   modules: StageModule[];
   prerequisites: string;
