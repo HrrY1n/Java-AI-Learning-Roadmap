@@ -136,6 +136,7 @@ async function makeRepo({ stage02State = "published", withRegistry = true } = {}
         stageId: "02",
         title: "账户守门",
         className: "AccountGuard",
+        packageSegment: "guard",
         order: 1,
         contentState: "published",
         lessonIds: ["s02-encapsulation"],

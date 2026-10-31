@@ -33,6 +33,7 @@ const pages = [
   ["lab", "#/lab/scores"],
   ["review", "#/review"],
   ["prediction", "#/practice/A1"],
+  ["oop-lesson", "#/lesson/s02-class-basics"],
 ];
 
 for (const [width, height] of viewports) {

@@ -62,5 +62,6 @@
     "SimpleCalculatorAnswer.java"
   ],
   "statementAnchor": "练习 2",
-  "order": 2
+  "order": 2,
+  "needsInput": true
 }

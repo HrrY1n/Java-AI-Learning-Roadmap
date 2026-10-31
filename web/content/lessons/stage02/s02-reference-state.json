@@ -1,0 +1,22 @@
+{
+  "id": "s02-reference-state",
+  "stageId": "02",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "引用与对象状态",
+  "summary": "两个变量指向同一个对象意味着什么？用别名实验建立引用模型。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-class-basics"
+  ],
+  "exerciseIds": [
+    "s02-bank-account"
+  ],
+  "predictionIds": [
+    "S02A1",
+    "S02A2"
+  ],
+  "steps": [],
+  "bodyPath": "stages/stage02_java_oop/deep_dives/01_reference_state/README.md",
+  "codeDirectory": "stages/stage02_java_oop/deep_dives/01_reference_state"
+}

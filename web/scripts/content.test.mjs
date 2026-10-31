@@ -12,17 +12,33 @@ const repoRoot = path.resolve(
 );
 
 test("catalog mirrors the actual Stage 01 learning assets", () => {
+  // 断言收窄到 Stage 01 作用域（V1.3 起 Stage 02 也有已发布课程）
+  const stage01Lessons = catalog.lessons.filter(
+    (lesson) => lesson.stageId === "01",
+  );
   assert.equal(
-    catalog.lessons.filter((lesson) => lesson.kind === "foundation").length,
+    stage01Lessons.filter((lesson) => lesson.kind === "foundation").length,
     6,
   );
   assert.equal(
-    catalog.lessons.filter((lesson) => lesson.kind === "deep-dive").length,
+    stage01Lessons.filter((lesson) => lesson.kind === "deep-dive").length,
     7,
   );
-  assert.equal(catalog.exercises.length, 4);
-  assert.equal(catalog.predictions.length, 8);
-  assert.equal(catalog.modifications.length, 4);
+  assert.equal(
+    catalog.exercises.filter((exercise) => !exercise.id.startsWith("s02-"))
+      .length,
+    4,
+  );
+  assert.equal(
+    catalog.predictions.filter((prediction) => !prediction.id.startsWith("S02"))
+      .length,
+    8,
+  );
+  assert.equal(
+    catalog.modifications.filter((modification) => !modification.id.startsWith("S02"))
+      .length,
+    4,
+  );
   assert.equal(catalog.stages.length, 14);
   assert.equal(catalog.stages[0].status, "学习中");
   assert.ok(catalog.stages.every((stage) => !stage.status.includes("已完成")));
@@ -68,7 +84,9 @@ test("exercise core implementations stay empty and hints stay outside statements
 
 test("prediction answers use the first answer block; modified outputs are distinct", () => {
   const answers = Object.fromEntries(
-    catalog.predictions.map((prediction) => [prediction.id, prediction.answer]),
+    catalog.predictions
+      .filter((prediction) => !prediction.id.startsWith("S02"))
+      .map((prediction) => [prediction.id, prediction.answer]),
   );
   assert.deepEqual(answers, {
     A1: "3 / 1\n3.5",
@@ -219,4 +237,108 @@ test("all relative Markdown links in imported documents and exercise statements 
     }
   }
   assert.ok(checked > 100);
+});
+
+test("V1.3：Stage 02 首批课程接入且与 Stage 01 命名空间零冲突", () => {
+  const stage02Lessons = catalog.lessons.filter(
+    (lesson) => lesson.stageId === "02",
+  );
+  assert.equal(stage02Lessons.length, 6);
+  assert.deepEqual(
+    stage02Lessons.map((lesson) => lesson.id),
+    [
+      "s02-class-basics",
+      "s02-constructor-this",
+      "s02-encapsulation-basics",
+      "s02-encapsulation-why",
+      "s02-object-construction",
+      "s02-reference-state",
+    ],
+  );
+  const stage02 = catalog.stages.find((stage) => stage.id === "02");
+  assert.equal(stage02.contentState, "published");
+  assert.equal(stage02.building, true);
+  assert.equal(
+    catalog.exercises.filter((exercise) => exercise.id.startsWith("s02-"))
+      .length,
+    1,
+  );
+  // 命名空间：Stage 02 预测/修改题不与 Stage 01 历史短编号冲突
+  const stage01Ids = new Set(
+    [...catalog.predictions, ...catalog.modifications]
+      .filter((item) => !item.id.startsWith("S02"))
+      .map((item) => item.id),
+  );
+  const stage02Ids = new Set(
+    [...catalog.predictions, ...catalog.modifications]
+      .filter((item) => item.id.startsWith("S02"))
+      .map((item) => item.id),
+  );
+  assert.equal(stage02Ids.size, 6);
+  for (const id of stage02Ids) assert.ok(!stage01Ids.has(id));
+  // 草稿内容被门禁拦截（S02A4 多态、S02B3 综合练习、S02B1 多态修改题属后续批次）
+  for (const draftId of ["S02A4", "S02B3", "S02B1"])
+    assert.ok(!stage02Ids.has(draftId), draftId);
+});
+
+test("V1.3：多文件 Java 示例完整进入目录且主文件含 main", () => {
+  for (const lesson of catalog.lessons) {
+    assert.ok(lesson.codeFiles.length >= 1);
+    const primary = lesson.codeFiles.find(
+      (file) => file.path === lesson.codePath,
+    );
+    assert.ok(primary, "主文件必须在 codeFiles 中");
+    assert.match(primary.code, /static void main/);
+    for (const file of lesson.codeFiles)
+      assert.match(
+        file.code,
+        new RegExp(`package ${file.packageName.replaceAll(".", "\.")};`),
+      );
+  }
+  const multi = catalog.lessons.find(
+    (lesson) => lesson.id === "s02-class-basics",
+  );
+  assert.equal(multi.codeFiles.length, 2, "day01 课程应包含 App 与 Student");
+  const dependencies = multi.codeFiles.filter(
+    (file) => file.path !== multi.codePath,
+  );
+  assert.ok(
+    dependencies.some((file) => file.className === "Student"),
+    "依赖类 Student 不得遗漏",
+  );
+});
+
+test("V1.3 修补：Java 包名合法、用例契约完整、stdin 标记正确", () => {
+  for (const exercise of catalog.exercises) {
+    // Java 包段与练习 ID 分离后，包名必须完全合法
+    assert.match(
+      exercise.packageName,
+      /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$/,
+      `${exercise.id} 的包名非法：${exercise.packageName}`,
+    );
+    assert.ok(!exercise.packageName.includes("-"));
+    // 用例契约：对象结构、非空、kind 枚举
+    for (const entry of exercise.cases) {
+      for (const field of ["label", "input", "expected"])
+        assert.ok(
+          typeof entry[field] === "string" && entry[field].trim() !== "",
+          `${exercise.id} 用例 ${entry.label ?? entry.id} 字段 ${field} 非空`,
+        );
+      assert.ok(
+        ["normal", "boundary", "invalid"].includes(entry.kind),
+        `${exercise.id} 用例 kind 非法`,
+      );
+      assert.match(entry.expected, /\S/, "预期输出不能是纯描述");
+    }
+    assert.equal(
+      exercise.needsInput,
+      ["calculator", "menu", "s02-bank-account"].includes(exercise.id),
+    );
+  }
+  const bank = catalog.exercises.find((item) => item.id === "s02-bank-account");
+  assert.equal(bank.packageName, "com.javaroadmap.lab.stage02.bankaccount");
+  // 非法操作用例必须证明状态未变：预期输出包含操作前余额
+  for (const entry of bank.cases.filter((item) => item.kind === "invalid")) {
+    assert.match(entry.expected, /当前余额：100\.0/);
+  }
 });

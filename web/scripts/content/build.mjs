@@ -62,10 +62,20 @@ async function buildLessons(repoRoot, contentRoot, stageEntries) {
       );
     if (meta.contentState !== "published") continue; // 未发布课程不进入 Catalog
     const codeDirectory = meta.codeDirectory;
-    const [codePath] = await javaFiles(repoRoot, codeDirectory);
-    if (!codePath)
+    const directoryFiles = await javaFiles(repoRoot, codeDirectory);
+    if (directoryFiles.length === 0)
       throw contentError("课程目录中没有 Java 源码", { ...context, codeDirectory });
-    const code = await readSource(repoRoot, codePath, context);
+    const codeContents = [];
+    for (const codePath of directoryFiles) {
+      const code = await readSource(repoRoot, codePath, context);
+      codeContents.push({ codePath, code, ...javaIdentity(code, codePath) });
+    }
+    // 主文件 = 包含 main 方法的文件（多文件课程）；否则取第一个
+    const primary =
+      codeContents.find((item) => /public\s+static\s+void\s+main/.test(item.code)) ??
+      codeContents[0];
+    const codePath = primary.codePath;
+    const code = primary.code;
     const markdown = meta.bodyPath
       ? await readSource(repoRoot, meta.bodyPath, context)
       : "";
@@ -81,6 +91,12 @@ async function buildLessons(repoRoot, contentRoot, stageEntries) {
       code,
       codePath,
       ...javaIdentity(code, codePath),
+      codeFiles: codeContents.map((item) => ({
+        path: item.codePath,
+        className: item.className,
+        packageName: item.packageName,
+        code: item.code,
+      })),
       relatedLessonIds: meta.relatedLessonIds ?? [],
       exerciseIds: meta.exerciseIds ?? [],
       predictionIds: meta.predictionIds ?? [],
@@ -123,6 +139,35 @@ async function buildExercises(repoRoot, contentRoot, stageEntries) {
       ])
         if (meta[field] === undefined)
           throw contentError(`练习元数据缺少字段 ${field}`, context);
+      // 用例契约校验：对象结构、字段类型、非空、kind 枚举
+      if (!Array.isArray(meta.cases) || meta.cases.length < 3)
+        throw contentError("练习至少需要 3 组用例（正常/边界/非法）", context);
+      for (const [caseIndex, entry] of meta.cases.entries()) {
+        const caseContext = { ...context, case: caseIndex + 1 };
+        if (
+          !entry ||
+          typeof entry !== "object" ||
+          Array.isArray(entry) ||
+          !("label" in entry) ||
+          !("input" in entry) ||
+          !("expected" in entry) ||
+          !("kind" in entry)
+        )
+          throw contentError(
+            "用例必须是包含 label/input/expected/kind 字段的对象",
+            caseContext,
+          );
+        for (const field of ["label", "input", "expected"])
+          if (typeof entry[field] !== "string" || entry[field].trim() === "")
+            throw contentError(`用例字段 ${field} 必须是非空字符串`, caseContext);
+        if (!["normal", "boundary", "invalid"].includes(entry.kind))
+          throw contentError(
+            `用例 kind 必须是 normal/boundary/invalid，实际 ${entry.kind}`,
+            caseContext,
+          );
+        if (entry.input.length > 100_000 || entry.expected.length > 100_000)
+          throw contentError("用例输入/预期输出过长", caseContext);
+      }
       const statementSource = await readSource(
         repoRoot,
         meta.statementSource,
@@ -164,7 +209,17 @@ async function buildExercises(repoRoot, contentRoot, stageEntries) {
         throw contentError("阶段清单缺少 slug（stages/ 下的目录名）", {
           stage: stage.id,
         });
-      const packageName = `${packageNamePrefix}.${meta.id}`;
+      // Java 包段与练习 ID 分离：ID 可含连字符（s02-bank-account），
+      // 包段必须是合法 Java 标识符（显式声明或回退到 ID 本身）。
+      const packageSegment = meta.packageSegment ?? meta.id;
+      if (!/^[a-z][a-z0-9_]*$/.test(packageSegment))
+        throw contentError(
+          `Java 包段非法：${packageSegment}（只允许小写字母/数字/下划线，且以字母开头）。请在练习元数据中提供 packageSegment`,
+          context,
+        );
+      const packageName = `${packageNamePrefix}.${packageSegment}`;
+      if (!/^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$/.test(packageName))
+        throw contentError(`生成的 Java 包名非法：${packageName}`, context);
       built.push({
         stageId: stage.id,
         order: meta.order,
@@ -179,6 +234,7 @@ async function buildExercises(repoRoot, contentRoot, stageEntries) {
         packageName,
         lessonIds: meta.lessonIds ?? [],
         note: meta.note ?? null,
+        needsInput: meta.needsInput === true,
         cases: meta.cases.map(
           ({ label, input, expected, kind }, caseIndex) => ({
             id: `${meta.id}-${caseIndex + 1}`,
@@ -235,13 +291,17 @@ async function buildPredictionsAndModifications(
       answers.map((section) => [section.title, section.body]),
     );
     for (const section of sections(source, 3)) {
-      const id = section.title.match(/^([AB]\d+)/)?.[1];
+      const id = section.title.match(/^((?:S\d{2})?[AB]\d+)/)?.[1];
       if (!id) continue;
       const body = section.body.split("\n## ")[0].trim();
-      if (id.startsWith("A")) {
+      // 预测题以 A 结尾（含阶段命名空间 S02A1），修改题以 B 结尾
+      const isPrediction = /A\d+$/.test(id);
+      if (isPrediction) {
         const config = manifest.predictions[id];
         if (!config)
           throw contentError(`预测题 ${id} 缺少元数据注册`, context);
+        if (config.contentState && config.contentState !== "published")
+          continue; // 未发布预测题不进入 Catalog
         const answerBody = answerMap.get(id);
         const textBlocks = [
           ...(answerBody ?? "").matchAll(/```text\n([\s\S]*?)```/g),
@@ -254,7 +314,7 @@ async function buildPredictionsAndModifications(
           : answerBody.replace(/```text\n[\s\S]*?```/g, "").trim();
         predictions.push({
           id,
-          title: section.title.replace(/^A\d+\s*/, ""),
+          title: section.title.replace(/^(?:S\d{2})?[AB]\d+\s*/, ""),
           sourcePath: manifest.statementSource,
           code,
           prompt: body.replace(/```java\n[\s\S]*?```\n?/, "").trim(),
@@ -267,9 +327,11 @@ async function buildPredictionsAndModifications(
         const config = manifest.modifications[id];
         if (!config)
           throw contentError(`修改题 ${id} 缺少元数据注册`, context);
+        if (config.contentState && config.contentState !== "published")
+          continue; // 未发布修改题不进入 Catalog
         modifications.push({
           id,
-          title: section.title.replace(/^B\d+\s*/, ""),
+          title: section.title.replace(/^(?:S\d{2})?[AB]\d+\s*/, ""),
           sourcePath: manifest.statementSource,
           markdown: body.split("\n---")[0].trim(),
           lessonIds: config.lessonIds ?? [],
@@ -353,6 +415,7 @@ async function buildStages(repoRoot, contentRoot) {
       ...(sourcePath ? { sourcePath } : {}),
       contentState: entry.contentState,
       modules: entry.modules ?? [],
+      building: entry.building ?? false,
       prerequisites: entry.prerequisites ?? "",
       evidence: cells[3],
     });
@@ -413,6 +476,8 @@ function checkRegistry(contentRoot, catalog, { allowUnknownIds = false } = {}) {
   }
   const known = new Set(registry.knownIds ?? []);
   const retired = new Set(registry.retired ?? []);
+  // suspended：已登记但暂时下线（如 draft 阶段），允许日后回归
+  const suspended = new Set(registry.suspended ?? []);
   const renames = registry.renames ?? {};
   const current = new Set([
     ...catalog.lessons.map((item) => item.id),
@@ -421,14 +486,22 @@ function checkRegistry(contentRoot, catalog, { allowUnknownIds = false } = {}) {
     ...catalog.modifications.map((item) => item.id),
   ]);
   const problems = [];
-  for (const id of current)
-    if (!known.has(id))
-      problems.push(
-        `新 ID「${id}」尚未登记进稳定 ID 契约：首次正式发布前请运行 npm run content -- --update-registry 显式登记`,
-      );
+  if (!allowUnknownIds)
+    for (const id of current)
+      if (!known.has(id))
+        problems.push(
+          `新 ID「${id}」尚未登记进稳定 ID 契约：首次正式发布前请运行 npm run content -- --update-registry 显式登记`,
+        );
   for (const id of known)
-    if (!current.has(id) && !retired.has(id) && !Object.keys(renames).includes(id))
-      problems.push(`ID「${id}」从目录中消失：请在 registry.json 显式登记 retired 或 renames`);
+    if (
+      !current.has(id) &&
+      !retired.has(id) &&
+      !suspended.has(id) &&
+      !Object.keys(renames).includes(id)
+    )
+      problems.push(
+        `ID「${id}」从目录中消失：请在 registry.json 显式登记 retired、suspended 或 renames`,
+      );
   for (const id of retired)
     if (current.has(id)) problems.push(`已下线 ID「${id}」重新出现`);
   for (const [oldId, newId] of Object.entries(renames)) {

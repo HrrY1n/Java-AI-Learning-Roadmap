@@ -1,0 +1,45 @@
+{
+  "id": "s02-constructor-this",
+  "stageId": "02",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "构造方法与 this 入门",
+  "summary": "对象出生时就把字段准备好：构造器的参数进、赋值出。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-object-construction"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "创建 Person 时要求姓名和年龄立刻可用，而不是 new 之后再一个个补字段。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "构造方法在 new 时执行，保证对象一出生字段就有值；this 用来区分“这个对象的字段”与“同名的参数”。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "new 做三件事：分配内存（字段为默认值）→ 调用构造器 → 返回对象地址。this.name 是字段，单独的 name 是参数。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测 show() 打印的姓名与年龄来自哪里；再说出构造器参数与字段各自的作用。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 this.name = name 改成 name = name：对象状态会怎样？这是构造器最高频的错误。"
+    },
+    {
+      "label": "独立练习",
+      "body": "给 Person 增加第二个构造器 Person(String name)，用 this(name, 0) 委托。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "Spring 的依赖注入本质是“替你调用构造器”。构造器参数就是依赖清单。"
+    }
+  ],
+  "codeDirectory": "stages/stage02_java_oop/existing_course/day02_constructor_this"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "s02-bank-account",
+  "stageId": "02",
+  "title": "银行账户守门",
+  "className": "BankAccount",
+  "order": 1,
+  "contentState": "published",
+  "lessonIds": [
+    "s02-encapsulation-basics",
+    "s02-encapsulation-why",
+    "s02-reference-state"
+  ],
+  "statementSource": "stages/stage02_java_oop/practice/s02-exercises.md",
+  "statementAnchor": "练习 1",
+  "hintSource": "stages/stage02_java_oop/practice/s02-exercises.md",
+  "todo": "独立实现私有余额与守门规则：存款、取钱、查看余额，非法输入必须被明确拒绝。",
+  "note": "本题验收以题面规则为准。历史参考示例（day03 的 Account）只演示了最小守门，不含全部非法输入处理，仅用于对照。",
+  "cases": [
+    {
+      "label": "存款并查询",
+      "input": "1\n100\n3\n0\n",
+      "expected": "存入后余额：200.0\n小明 的当前余额：200.0",
+      "kind": "normal"
+    },
+    {
+      "label": "取款并查询",
+      "input": "2\n30\n3\n0\n",
+      "expected": "取款后余额：70.0\n小明 的当前余额：70.0",
+      "kind": "normal"
+    },
+    {
+      "label": "全额取出",
+      "input": "2\n100\n3\n0\n",
+      "expected": "取款后余额：0.0\n小明 的当前余额：0.0",
+      "kind": "boundary"
+    },
+    {
+      "label": "非法存款金额",
+      "input": "1\n-50\n3\n0\n",
+      "expected": "金额必须大于 0\n小明 的当前余额：100.0",
+      "kind": "invalid"
+    },
+    {
+      "label": "余额不足",
+      "input": "2\n99999\n3\n0\n",
+      "expected": "余额不足\n小明 的当前余额：100.0",
+      "kind": "invalid"
+    }
+  ],
+  "referenceFiles": [],
+  "packageSegment": "bankaccount",
+  "needsInput": true
+}

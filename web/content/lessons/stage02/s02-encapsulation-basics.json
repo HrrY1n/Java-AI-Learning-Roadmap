@@ -1,0 +1,47 @@
+{
+  "id": "s02-encapsulation-basics",
+  "stageId": "02",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "封装入门",
+  "summary": "字段私有、方法守门：让非法状态进不了对象。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-encapsulation-why"
+  ],
+  "exerciseIds": [
+    "s02-bank-account"
+  ],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "账户余额不允许被随手改成负数。存款、取钱都要经过检查。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "public 字段谁都能改，规则无处安放；private 字段 + 方法把修改入口收拢到类内，规则写一次处处生效。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "类是带前台的服务窗口：private 字段是库房，public 方法是前台。改状态必须经前台验证。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测 deposit(50) 与 withdraw(30) 后的余额；说明非法金额会被哪一行拦下。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 withdraw 的余额检查删掉，预测并观察透支事故。运行后把检查恢复。"
+    },
+    {
+      "label": "独立练习",
+      "body": "进入银行账户练习，独立实现守门规则。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "Stage 03 的 Result 与业务校验、Stage 06 的参数校验注解，都是这条原则的延伸。"
+    }
+  ],
+  "codeDirectory": "stages/stage02_java_oop/existing_course/day03_encapsulation"
+}

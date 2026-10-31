@@ -1,0 +1,52 @@
+{
+  "stageId": "02",
+  "statementSource": "stages/stage02_java_oop/practice/predict_and_modify.md",
+  "answerSource": "stages/stage02_java_oop/practice/answers.md",
+  "predictions": {
+    "S02A1": {
+      "lessonIds": [
+        "s02-reference-state"
+      ]
+    },
+    "S02A2": {
+      "lessonIds": [
+        "s02-reference-state"
+      ]
+    },
+    "S02A3": {
+      "lessonIds": [
+        "s02-object-construction"
+      ]
+    },
+    "S02A4": {
+      "lessonIds": [],
+      "contentState": "draft"
+    },
+    "S02A5": {
+      "lessonIds": [
+        "s02-object-construction",
+        "s02-constructor-this"
+      ]
+    }
+  },
+  "modifications": {
+    "S02B1": {
+      "lessonIds": [],
+      "contentState": "draft"
+    },
+    "S02B2": {
+      "lessonIds": [
+        "s02-encapsulation-basics"
+      ]
+    },
+    "S02B3": {
+      "lessonIds": [],
+      "contentState": "draft"
+    },
+    "S02B4": {
+      "lessonIds": [
+        "s02-encapsulation-why"
+      ]
+    }
+  }
+}
