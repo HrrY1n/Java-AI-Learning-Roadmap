@@ -70,23 +70,62 @@ async function editor(page: Page) {
   return field;
 }
 
-test("正式子路径：首页、路线、目录与13节Stage01原课", async ({ page }) => {
+test("正式子路径：首页、路线、目录与19节正式课程", async ({ page }) => {
   await open(page, "home");
   await page.getByRole("link", { name: "继续学习", exact: true }).click();
   await expect(page).toHaveURL(/#\/lesson\/day01$/);
   await page.getByRole("button", { name: "课程目录", exact: true }).click();
-  await expect(page.locator(".chapter-picker").getByRole("link")).toHaveCount(13);
-  expect(catalog.lessons).toHaveLength(13);
+  await expect(page.locator(".chapter-picker").getByRole("link")).toHaveCount(19);
+  expect(catalog.lessons).toHaveLength(19);
+  expect(catalog.lessons.filter((lesson) => lesson.stageId === "01")).toHaveLength(13);
+  expect(catalog.lessons.filter((lesson) => lesson.stageId === "02")).toHaveLength(6);
   for (const lesson of catalog.lessons) {
     await open(page, `lesson/${lesson.id}`);
     await expect(page.getByRole("heading", { level: 1, name: lesson.title, exact: true })).toBeVisible();
-    await expect(page.locator(".lesson-code pre")).toContainText("package com.javaroadmap.stage01");
+    await expect(page.locator(".lesson-code pre").first()).toContainText(
+      lesson.stageId === "02"
+        ? "package com.javaroadmap.stage02"
+        : "package com.javaroadmap.stage01",
+    );
     await saved(page);
   }
   await open(page, "roadmap");
   await expect(page.locator(".stage-row")).toHaveCount(14);
   await open(page, "review");
   await expect(page.locator(".notice")).toContainText("Stage 01 · 学习中");
+});
+
+test("Stage 02 首批课程：多文件展示、预测判定与银行练习", async ({ page }) => {
+  // 多文件课程：主类之外还有同包依赖类，本地运行命令覆盖全部文件
+  await open(page, "lesson/s02-class-basics");
+  const companion = page.locator(".lesson-code").filter({ hasText: "同包依赖类" });
+  await expect(companion).toHaveCount(1);
+  await expect(companion.locator(".code-caption")).toContainText("Student.java");
+  await expect(page.locator(".run-instructions")).toContainText("Student.java");
+  await saved(page);
+
+  // Stage 02 预测题真实判定
+  await open(page, "practice/S02A1");
+  const answer = page.getByRole("textbox", { name: "你预测的输出" });
+  await answer.fill("明仔");
+  await page.getByRole("button", { name: "检查预测", exact: true }).click();
+  await expect(page.getByText("预测与真实语义一致。")).toBeVisible();
+  await saved(page);
+
+  // 银行账户练习：五组精确用例契约与分级提示门禁
+  await open(page, "lab/s02-bank-account");
+  await expect(page.getByText("任务背景")).toBeVisible();
+  await expect(page.locator(".test-case")).toHaveCount(5);
+  await expect(page.locator(".test-case").first()).toContainText("存款并查询");
+  await expect(page.locator(".test-case").first()).toContainText("存入后余额：200.0");
+  await expect(page.locator(".test-case").nth(3)).toContainText("非法存款金额");
+  await expect(page.locator(".test-case").nth(4)).toContainText("余额不足");
+  // L1 提示未解锁时不显示内容
+  await expect(page.getByText("带守门规则的状态机")).toHaveCount(0);
+  await page.getByRole("button", { name: "课程辅导" }).click();
+  const dialog = page.getByRole("dialog", { name: "课程辅导" });
+  await dialog.getByRole("button", { name: /解锁 L1/ }).click();
+  await expect(dialog.getByText("带守门规则的状态机")).toBeVisible();
 });
 
 test("预测真实判定、刷新恢复与深浅主题", async ({ page }) => {
