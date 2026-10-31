@@ -1,0 +1,22 @@
+{
+  "id": "deep05",
+  "stageId": "01",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "循环边界",
+  "summary": "用起点、终点、步进定位差一错误。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "day04"
+  ],
+  "exerciseIds": [
+    "menu"
+  ],
+  "predictionIds": [
+    "A3",
+    "A4"
+  ],
+  "steps": [],
+  "bodyPath": "stages/stage01_java_basics/deep_dives/05_loop_bounds/README.md",
+  "codeDirectory": "stages/stage01_java_basics/deep_dives/05_loop_bounds/com/javaroadmap/stage01/deepdives/loops"
+}

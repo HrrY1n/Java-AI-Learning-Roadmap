@@ -1,0 +1,50 @@
+{
+  "id": "day01",
+  "stageId": "01",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "输出与变量",
+  "summary": "从一张个人信息卡开始，让数据有名字，让程序有输出。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "deep01"
+  ],
+  "exerciseIds": [
+    "scores"
+  ],
+  "predictionIds": [
+    "A2"
+  ],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "为命令行个人信息卡保存姓名、年龄和城市，并把它们打印出来。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "直接重复打印文字难以维护。变量给数据一个名字，信息变化时可以只改定义处。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "变量像一个带类型标签的格子；String 保存文本，int 保存整数。println 把表达式的值交给标准输出。package 与类名共同组成类的完整地址。"
+    },
+    {
+      "label": "预测运行",
+      "body": "先预测下面源码会打印几行，每行有哪些内容；再用本课给出的 javac / java 命令运行，对照你的预测。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "仅修改 age 的值，再次编译运行。预测哪些输出会变；跳过编译时又会看到什么？"
+    },
+    {
+      "label": "独立练习",
+      "body": "新建自己的 Java 类，输出一件商品的名称、单价与数量。核心逻辑由你填写，不复制参考代码。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "以后请求中的参数、数据库中的字段都需要名字与类型。现在先练习让变量名表达它保存的含义。"
+    }
+  ],
+  "bodyPath": null,
+  "codeDirectory": "stages/stage01_java_basics/existing_course/day01_output_variable/com/javaroadmap/stage01/day01outputvariable"
+}

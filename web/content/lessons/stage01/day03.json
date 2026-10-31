@@ -1,0 +1,51 @@
+{
+  "id": "day03",
+  "stageId": "01",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "条件分支",
+  "summary": "把“满足什么条件，做什么事”写成清晰的决策路径。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "deep07"
+  ],
+  "exerciseIds": [
+    "calculator",
+    "menu"
+  ],
+  "predictionIds": [
+    "A8"
+  ],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "根据成绩打印评价，并把菜单选项映射成不同的操作。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "程序不能对所有输入做同一件事。分支把业务规则转成可验证的条件与路径。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "if-else 从上到下寻找第一个满足条件的分支；switch 按值选择入口。把每条路径想成一条需要单独验证的道路。"
+    },
+    {
+      "label": "预测运行",
+      "body": "先预测 score 为 95、day 为 3 时会走哪些分支。运行后说明为什么其他分支没有执行。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "只把 score 改成 60，再改成 59；比较 >= 60 与 > 60 的边界。另一次实验只删除一个 break，观察 switch 的变化。"
+    },
+    {
+      "label": "独立练习",
+      "body": "实现年龄判断或月份到季节的转换；自己选择 if 或 switch，并补一组非法输入。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "输入校验、权限检查、库存判断都依赖分支。先检查失败条件，再继续计算，可以避免无效数据流入后续步骤。"
+    }
+  ],
+  "bodyPath": null,
+  "codeDirectory": "stages/stage01_java_basics/existing_course/day03_if_switch/com/javaroadmap/stage01/day03ifswitch"
+}

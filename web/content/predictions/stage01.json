@@ -1,0 +1,101 @@
+{
+  "stageId": "01",
+  "statementSource": "stages/stage01_java_basics/practice/predict_and_modify.md",
+  "answerSource": "stages/stage01_java_basics/practice/answers.md",
+  "predictions": {
+    "A1": {
+      "lessonIds": [
+        "day02",
+        "deep02"
+      ],
+      "modifiedAnswer": false
+    },
+    "A2": {
+      "lessonIds": [
+        "day01",
+        "day02"
+      ],
+      "modifiedAnswer": false
+    },
+    "A3": {
+      "lessonIds": [
+        "day04",
+        "deep05"
+      ],
+      "modifiedAnswer": true
+    },
+    "A4": {
+      "lessonIds": [
+        "day04",
+        "deep05"
+      ],
+      "modifiedAnswer": false
+    },
+    "A5": {
+      "lessonIds": [
+        "day05",
+        "deep03"
+      ],
+      "modifiedAnswer": false
+    },
+    "A6": {
+      "lessonIds": [
+        "day06",
+        "deep04"
+      ],
+      "modifiedAnswer": false
+    },
+    "A7": {
+      "lessonIds": [
+        "day02",
+        "deep02"
+      ],
+      "modifiedAnswer": false
+    },
+    "A8": {
+      "lessonIds": [
+        "day03",
+        "day05",
+        "deep03"
+      ],
+      "modifiedAnswer": false
+    }
+  },
+  "modifications": {
+    "B1": {
+      "lessonIds": [
+        "day02",
+        "deep02"
+      ],
+      "note": "当前源码 b 为 int；改为 double 后，含 b 的加减乘除和取余的结果类型与显示都可能变化。历史答案“其余行不变”不够准确，请逐行对照真实输出。",
+      "referencePaths": []
+    },
+    "B2": {
+      "lessonIds": [
+        "day05"
+      ],
+      "note": "以 day05 当前源码数组 {90,85,76,100} 为准；不要把结构化练习的另一组成绩数据混进来。",
+      "referencePaths": []
+    },
+    "B3": {
+      "lessonIds": [
+        "day03",
+        "day04",
+        "deep05"
+      ],
+      "note": "当前 MenuDemoApp 的退出分支使用 return，不是题干所说的 break。先确认实际退出语句；可在自己的副本中比较 return 与 break 对 while/switch 的影响。",
+      "referencePaths": [
+        "stages/stage01_java_basics/existing_course/src/main/java/com/javaroadmap/stage01/console/MenuDemoApp.java"
+      ]
+    },
+    "B4": {
+      "lessonIds": [
+        "day03",
+        "deep07"
+      ],
+      "referencePaths": [
+        "stages/stage01_java_basics/existing_course/src/main/java/com/javaroadmap/stage01/console/SimpleCalculatorApp.java"
+      ]
+    }
+  }
+}

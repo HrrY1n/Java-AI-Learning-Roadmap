@@ -241,3 +241,100 @@ describe("IndexedDB 持久化", () => {
     expect((await loadState()).drafts.scores?.code).toBe("// 保留的草稿");
   });
 });
+
+describe("V1.1 学习数据兼容性（V1.2 内容架构不得破坏）", () => {
+  // 这份备份模拟 V1.1（main@36046ee）时期真实导出的结构：
+  // 课程/草稿/提示/预测/复盘/证据/参考查看全部以稳定 ID 为键。
+  const v11Backup = {
+    schemaVersion: 1,
+    updatedAt: late,
+    theme: "dark",
+    lastLessonId: "day05",
+    lessons: {
+      day01: { read: true, position: 0.42, updatedAt: early },
+      day05: { read: true, position: 0.1, updatedAt: late },
+      deep02: { read: false, position: 0, updatedAt: early },
+    },
+    drafts: {
+      scores: { code: "public class ScoreStatistics { }", updatedAt: late },
+    },
+    hints: { scores: 2, calculator: 1 },
+    predictions: {
+      A1: { answer: "3 / 1\n3.5", correct: true, attempts: 1, updatedAt: early },
+      A5: { answer: "99", correct: true, attempts: 2, updatedAt: late },
+    },
+    reflections: {
+      scores: {
+        error: "空数组越界",
+        understanding: "max 应初始化为 scores[0]",
+        nextStep: "补空数组分支",
+        needsReview: true,
+        updatedAt: late,
+      },
+    },
+    evidence: [
+      {
+        id: "run-scores-1",
+        exerciseId: "scores",
+        sourceHash: "a".repeat(64),
+        createdAt: late,
+        origin: "local-jdk",
+        command: "java -cp out com.javaroadmap.lab.stage01.scores.ScoreStatistics",
+        javaVersion: "25.0.3",
+        cases: [
+          {
+            label: "正常成绩",
+            input: "{88, 92, 67, 100, 55}",
+            expected: "总分：402",
+            stdout: "总分：402\n平均分：80.4",
+            stderr: "",
+            exitCode: 0,
+            passed: true,
+            match: "contains",
+          },
+        ],
+        allPassed: true,
+      },
+    ],
+    referenceViews: { "reference-01": late },
+  };
+
+  it("V1.1 备份可直接通过 V1.2 校验，逐字段保留", () => {
+    const state = validateBackup(v11Backup);
+    expect(state.lessons.day05?.read).toBe(true);
+    expect(state.drafts.scores?.code).toContain("ScoreStatistics");
+    expect(state.hints.scores).toBe(2);
+    expect(state.predictions.A5?.correct).toBe(true);
+    expect(state.reflections.scores?.needsReview).toBe(true);
+    expect(state.evidence[0].exerciseId).toBe("scores");
+    expect(state.referenceViews["reference-01"]).toBe(late);
+  });
+
+  it("导出 → 再导入的往返不丢失任何 V1.1 记录", () => {
+    const exported = exportBackup(validateBackup(v11Backup));
+    const roundTrip = validateBackup(JSON.parse(exported));
+    expect(roundTrip).toEqual(validateBackup(v11Backup));
+  });
+
+  it("V1.2 新增课程后，V1.1 记录与新 ID 记录可以在合并中共存", () => {
+    const current = validateBackup(v11Backup);
+    const incoming = {
+      ...validateBackup(v11Backup),
+      updatedAt: late,
+      lessons: {
+        ...v11Backup.lessons,
+        "s02-oop-encapsulation": {
+          read: true,
+          position: 0.5,
+          updatedAt: late,
+        },
+      },
+      hints: { ...v11Backup.hints, "s02-guard": 3 },
+    };
+    const merged = mergeBackup(current, incoming);
+    expect(merged.lessons.day01?.read).toBe(true);
+    expect(merged.lessons["s02-oop-encapsulation"]?.position).toBe(0.5);
+    expect(merged.hints["s02-guard"]).toBe(3);
+    expect(merged.hints.scores).toBe(2);
+  });
+});

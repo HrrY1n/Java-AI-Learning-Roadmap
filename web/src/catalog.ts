@@ -27,6 +27,14 @@ export function sourceHref(href: string, sourcePath: string): string {
         item.codePath.slice(0, item.codePath.indexOf("/com/") + 1),
   );
   if (lesson) return `#/lesson/${lesson.id}`;
+  // V1.2：练习与预测/修改题的来源文档按 catalog 数据路由，不再按文件名特判
+  const exercise = catalog.exercises.find((item) => item.sourcePath === path);
+  if (exercise) return `#/lab/${exercise.id}`;
+  if (
+    catalog.predictions.some((item) => item.sourcePath === path) ||
+    catalog.modifications.some((item) => item.sourcePath === path)
+  )
+    return "#/practice";
   if (path.endsWith("/predict_and_modify.md")) return "#/practice";
   if (path.endsWith("/basic_syntax_exercises.md")) return "#/lab/scores";
   const doc = catalog.documents.find(

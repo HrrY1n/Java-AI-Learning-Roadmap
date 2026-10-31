@@ -1,0 +1,52 @@
+{
+  "id": "day06",
+  "stageId": "01",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "方法与职责",
+  "summary": "参数进、返回值出，让 main 只负责串起流程。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "deep04",
+    "deep06"
+  ],
+  "exerciseIds": [
+    "scores",
+    "refactor"
+  ],
+  "predictionIds": [
+    "A6"
+  ],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "问候、相加、求较大值都挤在 main 中，修改其中一件事时很难确认影响范围。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "方法为一段有独立含义的行为命名。调用方可以关注目标，方法内部负责计算细节。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "把方法看作“参数进、返回值出”的小工具。void 不返回结果；有返回值的方法通过 return 把结果交回调用处。局部变量只在所属作用域里有效。"
+    },
+    {
+      "label": "预测运行",
+      "body": "先沿着 main 中的调用顺序写出输出。区分 result 的赋值、方法的返回值与直接打印这三件事。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "只改变 add 的一个实参，预测哪些行会变。再尝试不接收返回值，观察计算与输出是否是一回事。"
+    },
+    {
+      "label": "独立练习",
+      "body": "进入方法拆分练习，先冻结重构前的输出，再自己拆分职责。用一句不含“然后”的话描述每个方法。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "以后 Controller、Service 与 Repository 也通过参数与返回值合作。当前先练习清晰的职责与可验证的输入输出。"
+    }
+  ],
+  "bodyPath": null,
+  "codeDirectory": "stages/stage01_java_basics/existing_course/day06_method/com/javaroadmap/stage01/day06method"
+}

@@ -1,0 +1,28 @@
+{
+  "$comment": "只读文档视图清单：id 稳定（参与 Hash 路由），sourcePath 为仓库相对路径的权威 Markdown。",
+  "documents": [
+    { "id": "execution-plan", "sourcePath": "学习执行计划.md" },
+    { "id": "roadmap-source", "sourcePath": "统一学习路线.md" },
+    { "id": "progress-source", "sourcePath": "真实学习进度.md" },
+    { "id": "stage01-guide", "sourcePath": "stages/stage01_java_basics/README.md" },
+    { "id": "teaching-rules", "sourcePath": "docs/教学协作细则.md" },
+    { "id": "environment", "sourcePath": "docs/环境搭建.md" },
+    { "id": "troubleshooting", "sourcePath": "docs/跨平台问题排查.md" },
+    { "id": "lab-local-java", "sourcePath": "docs/javaroadmap_lab/local-java.md" },
+    { "id": "lab-user-guide", "sourcePath": "web/README.md" },
+    { "id": "lab-delivery", "sourcePath": "docs/javaroadmap_lab/README.md" },
+    { "id": "lab-design", "sourcePath": "docs/javaroadmap_lab/design.md" },
+    { "id": "lab-architecture", "sourcePath": "docs/javaroadmap_lab/architecture.md" },
+    { "id": "lab-content", "sourcePath": "docs/javaroadmap_lab/content.md" },
+    { "id": "lab-data-services", "sourcePath": "docs/javaroadmap_lab/data-and-services.md" },
+    { "id": "lab-validation", "sourcePath": "docs/javaroadmap_lab/validation.md" },
+    { "id": "lab-dependencies", "sourcePath": "docs/javaroadmap_lab/dependencies.md" },
+    { "id": "lab-task-plan", "sourcePath": "docs/javaroadmap_lab/planning/task_plan.md" },
+    { "id": "lab-findings", "sourcePath": "docs/javaroadmap_lab/planning/findings.md" },
+    { "id": "lab-progress", "sourcePath": "docs/javaroadmap_lab/planning/progress.md" },
+    { "id": "stage01-warmup", "sourcePath": "stages/stage01_java_basics/supplemental_exercises.md" },
+    { "id": "stage01-notes", "sourcePath": "stages/stage01_java_basics/existing_course/notes.md" },
+    { "id": "stage01-summary", "sourcePath": "stages/stage01_java_basics/existing_course/summary.md" },
+    { "id": "stage01-mistakes", "sourcePath": "stages/stage01_java_basics/existing_course/mistakes.md" }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "deep04",
+  "stageId": "01",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "Java 只有值传递",
+  "summary": "复制数值与复制地址，如何影响方法外的状态？",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "day06"
+  ],
+  "exerciseIds": [
+    "refactor"
+  ],
+  "predictionIds": [
+    "A6"
+  ],
+  "steps": [],
+  "bodyPath": "stages/stage01_java_basics/deep_dives/04_argument_passing/README.md",
+  "codeDirectory": "stages/stage01_java_basics/deep_dives/04_argument_passing/com/javaroadmap/stage01/deepdives/argpassing"
+}

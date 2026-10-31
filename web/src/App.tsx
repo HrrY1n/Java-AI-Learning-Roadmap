@@ -34,6 +34,7 @@ import {
   X,
 } from "lucide-react";
 import { catalog } from "./catalog";
+import type { Stage } from "./content-types";
 import type { Exercise, Lesson, Prediction } from "./content-types";
 import {
   createInitialState,
@@ -129,10 +130,12 @@ function SectionTitle({
 function Navigation({
   route,
   state,
+  currentStage,
   close,
 }: {
   route: Route;
   state: LearningState;
+  currentStage: Stage;
   close?: () => void;
 }) {
   const links = [
@@ -191,20 +194,26 @@ function Navigation({
       </nav>
       <div className="rail-course">
         <div className="rail-label">
-          正在学习 <span>01</span>
+          正在学习 <span>{currentStage.id}</span>
         </div>
         <a href="#/roadmap" className="rail-stage">
-          Java 基础 <ArrowUpRight size={15} />
+          {currentStage.title} <ArrowUpRight size={15} />
         </a>
         <div className="rail-stage-meta">
-          <span className="status-dot" /> 学习中 · 以独立练习验收
+          <span className="status-dot" /> {currentStage.status} · 以独立练习验收
         </div>
         <details open={route.page === "lesson"}>
           <summary>
-            基础课程 <ChevronDown size={14} />
+            {currentStage.modules.find((m) => m.id === "foundations")?.title ??
+              "基础课程"}{" "}
+            <ChevronDown size={14} />
           </summary>
           {catalog.lessons
-            .filter((lesson) => lesson.kind === "foundation")
+            .filter(
+              (lesson) =>
+                lesson.stageId === currentStage.id &&
+                lesson.kind === "foundation",
+            )
             .map((lesson, i) => (
               <a
                 key={lesson.id}
@@ -349,6 +358,9 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [toast]);
   const props: PageProps = { state, change, notify: setToast };
+  const currentStage: Stage =
+    catalog.stages.find((stage) => stage.status === "学习中") ??
+    catalog.stages[0];
   const currentExercise =
     catalog.exercises.find((item) => item.id === route.id) ??
     catalog.exercises[0];
@@ -463,7 +475,7 @@ export default function App() {
             JavaRoadmap <b>Lab</b>
           </span>
         </a>
-        <Navigation route={route} state={state} />
+        <Navigation route={route} state={state} currentStage={currentStage} />
         <footer className="rail-footer">
           <span className="local-status">
             <span className={`status-dot ${storageError ? "warning" : ""}`} />
@@ -505,7 +517,7 @@ export default function App() {
                     ? "学习复盘"
                     : route.page === "lab"
                       ? "编程实验室"
-                      : "Stage 01 · Java 基础"}
+                      : `Stage ${currentStage.id} · ${currentStage.title}`}
               </strong>
             </span>
           </div>
@@ -599,6 +611,7 @@ export default function App() {
           <Navigation
             route={route}
             state={state}
+            currentStage={currentStage}
             close={() => setMobileNav(false)}
           />
         </Dialog>
@@ -778,17 +791,7 @@ function HomePage({ state }: PageProps) {
                   className="icon-button"
                   aria-label={`打开当前任务 ${index}`}
                   href={
-                    index < 2
-                      ? index === 0
-                        ? "#/document/environment"
-                        : lessonLink("day01")
-                      : index === 2
-                        ? labLink()
-                        : index === 3
-                          ? "#/practice"
-                          : index === 4
-                            ? "#/document/teaching-rules"
-                            : "#/review"
+                    catalog.workspace.currentTaskRoutes[index] ?? "#/review"
                   }
                 >
                   <ArrowUpRight size={16} />
@@ -803,18 +806,19 @@ function HomePage({ state }: PageProps) {
             <span className="note-mark">↗</span>
             <h3>值得再看一遍</h3>
             <p>来自仓库“需要复习”与自己的复盘。</p>
-            <a href={lessonLink("day03")}>
-              <span>分支与条件判断</span>
-              <ChevronRight size={16} />
-            </a>
-            <a href={lessonLink("deep02")}>
-              <span>整数除法与类型转换</span>
-              <ChevronRight size={16} />
-            </a>
-            <a href={lessonLink("deep07")}>
-              <span>Scanner 的错误输入</span>
-              <ChevronRight size={16} />
-            </a>
+            {catalog.workspace.reviewPicks.map((pick) => (
+              <a
+                key={pick.id}
+                href={
+                  catalog.exercises.some((item) => item.id === pick.id)
+                    ? labLink(pick.id)
+                    : lessonLink(pick.id)
+                }
+              >
+                <span>{pick.label}</span>
+                <ChevronRight size={16} />
+              </a>
+            ))}
             {reflectionList.slice(0, 2).map(([id]) => (
               <a
                 key={id}
@@ -857,7 +861,7 @@ function HomePage({ state }: PageProps) {
           <div>
             <Eyebrow>预测与观察</Eyebrow>
             <h3>先预测，再运行。</h3>
-            <p>8 道预测题 · 4 个条件修改</p>
+            <p>{catalog.predictions.length} 道预测题 · {catalog.modifications.length} 个条件修改</p>
           </div>
           <ArrowUpRight size={22} />
         </a>
@@ -868,7 +872,7 @@ function HomePage({ state }: PageProps) {
           <div>
             <Eyebrow>亲手实现</Eyebrow>
             <h3>给理解一个出口。</h3>
-            <p>4 道独立练习 · 逐级课程提示</p>
+            <p>{catalog.exercises.length} 道独立练习 · 逐级课程提示</p>
           </div>
           <ArrowUpRight size={22} />
         </a>
@@ -1117,7 +1121,9 @@ function LessonPage({
           {["foundation", "deep-dive"].map((kind) => (
             <section key={kind}>
               <h2>
-                {kind === "foundation" ? "基础课程 · 06" : "概念深化 · 07"}
+                {kind === "foundation"
+                  ? `基础课程 · ${String(catalog.lessons.filter((item) => item.kind === "foundation").length).padStart(2, "0")}`
+                  : `概念深化 · ${String(catalog.lessons.filter((item) => item.kind === "deep-dive").length).padStart(2, "0")}`}
               </h2>
               {catalog.lessons
                 .filter((item) => item.kind === kind)
@@ -1153,7 +1159,10 @@ function LessonPage({
             <p>{lesson.summary}</p>
             <div className="lesson-meta">
               <Badge tone="current">
-                {lesson.kind === "foundation" ? "Java 基础" : "深化理解"}
+                {lesson.kind === "foundation"
+                ? (catalog.stages.find((stage) => stage.id === lesson.stageId)
+                    ?.title ?? "课程")
+                : "深化理解"}
               </Badge>
               <span>
                 <BookOpen size={15} />

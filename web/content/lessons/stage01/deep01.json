@@ -1,0 +1,19 @@
+{
+  "id": "deep01",
+  "stageId": "01",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "main 与 JVM",
+  "summary": "从源码、字节码到程序入口，分清编译与运行。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "day01"
+  ],
+  "exerciseIds": [
+    "scores"
+  ],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage01_java_basics/deep_dives/01_main_and_jvm/README.md",
+  "codeDirectory": "stages/stage01_java_basics/deep_dives/01_main_and_jvm/com/javaroadmap/stage01/deepdives/jvmstart"
+}

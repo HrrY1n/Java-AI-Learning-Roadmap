@@ -1,0 +1,22 @@
+{
+  "id": "deep03",
+  "stageId": "01",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "数组、下标与内存",
+  "summary": "用连续格子的模型解释越界、别名与最值初始化。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "day05"
+  ],
+  "exerciseIds": [
+    "scores"
+  ],
+  "predictionIds": [
+    "A5",
+    "A8"
+  ],
+  "steps": [],
+  "bodyPath": "stages/stage01_java_basics/deep_dives/03_array_memory/README.md",
+  "codeDirectory": "stages/stage01_java_basics/deep_dives/03_array_memory/com/javaroadmap/stage01/deepdives/arrays"
+}

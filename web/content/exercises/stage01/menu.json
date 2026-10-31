@@ -1,0 +1,48 @@
+{
+  "id": "menu",
+  "stageId": "01",
+  "title": "循环菜单",
+  "className": "LearningMenu",
+  "contentState": "published",
+  "lessonIds": [
+    "day03",
+    "day04",
+    "deep05",
+    "deep07"
+  ],
+  "statementSource": "stages/stage01_java_basics/existing_course/exercises/basic_syntax_exercises.md",
+  "hintSource": "stages/stage01_java_basics/existing_course/exercises/basic_syntax_exercises.md",
+  "todo": "独立设计菜单循环、非法输入处理与退出流程。不要让坏记号留在输入中。",
+  "note": "题干要求非法数字与非数字输入都反馈后回到菜单，不应由“只接受0–2”的读取方法静默吞掉非法项。历史参考会因非数字输入抛异常，需要你独立补齐边界。",
+  "cases": [
+    {
+      "label": "正常会话",
+      "input": "1\n2\n0\n",
+      "expected": "两次正常操作分别得到反馈，随后打印“程序结束。”并退出。",
+      "kind": "normal"
+    },
+    {
+      "label": "非法数字",
+      "input": "9\n0\n",
+      "expected": "没有这个选项，请重新输入\n程序结束。",
+      "kind": "invalid"
+    },
+    {
+      "label": "非数字",
+      "input": "abc\n0\n",
+      "expected": "提示非法输入并回菜单；下一次输入0正常退出，不能崩溃或卡死。",
+      "kind": "invalid"
+    },
+    {
+      "label": "完整重定向会话",
+      "input": "1\n2\n9\nabc\n0\n",
+      "expected": "两次正常操作、非法数字、非数字均有反馈，最终退出。",
+      "kind": "boundary"
+    }
+  ],
+  "referenceFiles": [
+    "loop.java"
+  ],
+  "statementAnchor": "练习 3",
+  "order": 3
+}

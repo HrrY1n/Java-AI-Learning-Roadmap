@@ -1,0 +1,24 @@
+{
+  "id": "deep02",
+  "stageId": "01",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "整数除法与类型转换",
+  "summary": "转换的位置，决定小数是在计算前保留还是已经丢失。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "day02",
+    "day05"
+  ],
+  "exerciseIds": [
+    "scores",
+    "calculator"
+  ],
+  "predictionIds": [
+    "A1",
+    "A7"
+  ],
+  "steps": [],
+  "bodyPath": "stages/stage01_java_basics/deep_dives/02_integer_division/README.md",
+  "codeDirectory": "stages/stage01_java_basics/deep_dives/02_integer_division/com/javaroadmap/stage01/deepdives/integertype"
+}

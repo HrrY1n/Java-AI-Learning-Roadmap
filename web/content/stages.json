@@ -1,0 +1,133 @@
+{
+  "$comment": "内容发布清单：contentState 描述内容整理程度（published=已正式发布 / materials=已有材料未成课 / draft=草稿 / planned=尚未开始），与学习者在 真实学习进度.md 中的掌握状态是两回事。prerequisites 是教学内容，title/scope/status 一律以 仓库路线与进度文档 为唯一权威来源，这里不得复制。",
+  "stages": [
+    {
+      "id": "01",
+      "contentState": "published",
+      "packageNamePrefix": "com.javaroadmap.lab.stage01",
+      "prerequisites": "已安装 JDK；会在命令行进入目录并运行 java / javac。",
+      "modules": [
+        {
+          "id": "foundations",
+          "title": "基础课程"
+        },
+        {
+          "id": "deep-dives",
+          "title": "概念深化"
+        }
+      ],
+      "referenceRoots": [
+        "stages/stage01_java_basics/existing_course/src/main/java",
+        "stages/stage01_java_basics/mini_project"
+      ],
+      "referenceDocuments": [
+        "stages/stage01_java_basics/practice/answers.md"
+      ],
+      "slug": "stage01_java_basics"
+    },
+    {
+      "id": "02",
+      "contentState": "materials",
+      "prerequisites": "Stage 01 的变量、分支、循环、数组与方法基础。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "03",
+      "contentState": "materials",
+      "prerequisites": "Stage 02 的对象、封装、接口与职责划分。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "04",
+      "contentState": "planned",
+      "prerequisites": "Stage 03 之后随主线并行补齐；不阻塞 MySQL。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "05",
+      "contentState": "planned",
+      "prerequisites": "Java Core 基础；准备项目 A 的业务与数据约束。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "06",
+      "contentState": "planned",
+      "prerequisites": "Stage 05 的数据模型、SQL 与事务基础。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "07",
+      "contentState": "planned",
+      "prerequisites": "Stage 06 的 REST 业务闭环；先识别真实缓存或会话需求。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "08",
+      "contentState": "planned",
+      "prerequisites": "随主线持续积累；从当前 Git、编译与排错开始。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "09",
+      "contentState": "planned",
+      "prerequisites": "项目 A 稳定 MVP；后续按真实需求加固。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "10",
+      "contentState": "planned",
+      "prerequisites": "建议项目 A 稳定后系统投入；先 Python 核心语法，再工程与 FastAPI。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "11",
+      "contentState": "planned",
+      "prerequisites": "Python 函数、模块、class、typing、异常、环境与基础测试。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "12",
+      "contentState": "planned",
+      "prerequisites": "可测试的真实 LLM 调用层、结构化输出与可靠性基础。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "13",
+      "contentState": "planned",
+      "prerequisites": "可评测的 LLM、工具与 RAG；先受控单 Agent。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    },
+    {
+      "id": "14",
+      "contentState": "planned",
+      "prerequisites": "Java 业务系统与 Python AI Service 的渐进联调能力。",
+      "modules": [],
+      "referenceRoots": [],
+      "referenceDocuments": []
+    }
+  ]
+}

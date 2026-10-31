@@ -1,0 +1,52 @@
+{
+  "id": "day04",
+  "stageId": "01",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "循环与边界",
+  "summary": "起点、终点、步进：写循环之前，先回答这三个问题。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "deep05"
+  ],
+  "exerciseIds": [
+    "scores",
+    "menu"
+  ],
+  "predictionIds": [
+    "A3",
+    "A4"
+  ],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "打印一段连续数字，并求 1 到 100 的和。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "重复写一百次既难维护也容易遗漏。循环把相同操作和变化的状态分开。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "循环条件是一道每轮都要经过的闸门。先确定第一轮、最后一轮和步进；while 还要确认状态每轮都向结束靠近。"
+    },
+    {
+      "label": "预测运行",
+      "body": "先写出两个倒计时的第一项、最后一项与打印次数，再预测求和的结果。运行时只对比，不把运行成功当作独立掌握。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "只把一个 <= 改成 <，预测少处理哪一项。再单独尝试 continue，观察它是否跳过 for 的步进。"
+    },
+    {
+      "label": "独立练习",
+      "body": "输出一段范围内的偶数。写下起点、终点、步进，再补“范围为空”和“只有一个数”的验证。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "菜单、批量计算和数组遍历都用循环。边界推理会在双指针、滑动窗口与分页处理中反复使用。"
+    }
+  ],
+  "bodyPath": null,
+  "codeDirectory": "stages/stage01_java_basics/existing_course/day04_loop/com/javaroadmap/stage01/day04loop"
+}
