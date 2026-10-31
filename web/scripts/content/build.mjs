@@ -52,6 +52,14 @@ async function buildLessons(repoRoot, contentRoot, stageEntries) {
         `课程声明的 stageId(${meta.stageId}) 与所在目录/清单(${stage.id})不一致`,
         context,
       );
+    if (!["foundation", "deep-dive"].includes(meta.kind))
+      throw contentError(`非法课程类型 kind=${meta.kind}`, context);
+    const moduleIds = (stage.modules ?? []).map((module) => module.id);
+    if (!moduleIds.includes(meta.moduleId))
+      throw contentError(
+        `moduleId=${meta.moduleId} 不属于 Stage ${stage.id} 已注册的模块（${moduleIds.join("、") || "无"}）`,
+        context,
+      );
     if (meta.contentState !== "published") continue; // 未发布课程不进入 Catalog
     const codeDirectory = meta.codeDirectory;
     const [codePath] = await javaFiles(repoRoot, codeDirectory);
@@ -279,12 +287,31 @@ async function buildPredictionsAndModifications(
 async function buildStages(repoRoot, contentRoot) {
   const manifest = await readJson(contentRoot, "stages.json");
   const stageEntries = manifest.stages;
+  const seenStageIds = new Set();
   for (const stage of stageEntries) {
+    if (seenStageIds.has(stage.id))
+      throw contentError(`Stage ${stage.id} 在 stages.json 中重复注册`, {
+        stage: stage.id,
+      });
+    seenStageIds.add(stage.id);
     if (!CONTENT_STATES.includes(stage.contentState))
       throw contentError(
         `contentState 必须是 ${CONTENT_STATES.join("/")}`,
         { stage: stage.id, actual: stage.contentState },
       );
+    const seenModuleIds = new Set();
+    for (const module of stage.modules ?? []) {
+      if (!module.id || !module.title)
+        throw contentError("Module 必须包含 id 与 title", {
+          stage: stage.id,
+        });
+      if (seenModuleIds.has(module.id))
+        throw contentError(
+          `Stage ${stage.id} 存在重复 Module ID：${module.id}`,
+          { stage: stage.id },
+        );
+      seenModuleIds.add(module.id);
+    }
   }
   const roadmap = await readSource(repoRoot, "统一学习路线.md");
   const progress = await readSource(repoRoot, "真实学习进度.md");
@@ -376,7 +403,7 @@ async function buildDocuments(repoRoot, contentRoot, stages, lessons, extras) {
 
 /* ---------- 稳定 ID 契约（防静默删除/改名） ---------- */
 
-function checkRegistry(contentRoot, catalog) {
+function checkRegistry(contentRoot, catalog, { allowUnknownIds = false } = {}) {
   let registry;
   try {
     registry = readJsonSync(contentRoot, "registry.json");
@@ -394,6 +421,11 @@ function checkRegistry(contentRoot, catalog) {
     ...catalog.modifications.map((item) => item.id),
   ]);
   const problems = [];
+  for (const id of current)
+    if (!known.has(id))
+      problems.push(
+        `新 ID「${id}」尚未登记进稳定 ID 契约：首次正式发布前请运行 npm run content -- --update-registry 显式登记`,
+      );
   for (const id of known)
     if (!current.has(id) && !retired.has(id) && !Object.keys(renames).includes(id))
       problems.push(`ID「${id}」从目录中消失：请在 registry.json 显式登记 retired 或 renames`);
@@ -404,6 +436,8 @@ function checkRegistry(contentRoot, catalog) {
       problems.push(`改名映射中的旧 ID「${oldId}」仍在目录中`);
     if (!current.has(newId))
       problems.push(`改名映射的新 ID「${newId}」不在目录中`);
+    // 改名登记只约束目录 ID 集合：用户 IndexedDB 记录以 ID 为键保留原样，
+    // 不会（也不应）被构建过程静默改写；见 new-lesson-guide.md 第 9 节。
   }
   for (const id of current)
     if (retired.has(id)) problems.push(`ID「${id}」已登记下线却仍在目录中`);
@@ -423,6 +457,7 @@ export async function buildCatalog({
   repoRoot,
   contentRoot,
   roadmapSource = "统一学习路线.md",
+  allowUnknownIds = false,
 } = {}) {
   const { stages, stageEntries } = await buildStages(repoRoot, contentRoot);
   const lessons = await buildLessons(repoRoot, contentRoot, stageEntries);
@@ -479,7 +514,10 @@ export async function buildCatalog({
   const referenceSources = [
     ...new Set([
       ...exercises.flatMap((exercise) => exercise.referencePaths),
-      ...stageEntries.flatMap((stage) => stage.referenceDocuments ?? []),
+      // 发布边界：只有正式发布 Stage 的参考文档/参考目录进入公开 Catalog
+      ...stageEntries
+        .filter((stage) => stage.contentState === "published")
+        .flatMap((stage) => stage.referenceDocuments ?? []),
       ...(await Promise.all(
         stageEntries
           .filter((stage) => stage.contentState === "published")
@@ -508,7 +546,7 @@ export async function buildCatalog({
   };
   validateCatalog(catalog);
   await validateResources(repoRoot, catalog);
-  checkRegistry(contentRoot, catalog);
+  checkRegistry(contentRoot, catalog, { allowUnknownIds });
   return catalog;
 }
 

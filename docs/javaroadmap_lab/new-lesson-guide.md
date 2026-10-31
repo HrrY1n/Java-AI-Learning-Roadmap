@@ -44,6 +44,13 @@ node scripts/create-lesson.mjs --stage 02 --kind deep-dive --slug encapsulation 
 
 脚手架会生成：`stages/<slug>/deep_dives/<NN>_<slug>/README.md`（含教学结构模板）、`Demo.java` 占位（包名自动）、`web/content/lessons/stageNN/<id>.json`（**contentState=draft**）、练习与 L1–L4 提示模板（可选）。手工新增也完全合法：按第 4 节的元数据规范写 JSON 即可。
 
+脚手架安全规则（2026-10-31 起强制）：
+
+- 目标路径已有任何文件（正文/Java/元数据/练习 JSON）或目标目录已存在时**拒绝覆盖**并列出全部冲突，不写入任何文件（事务性）；
+- `--slug` 必须是合法包段（小写字母开头、小写字母/数字/连字符），`packageNamePrefix` 必须是合法 Java 包名，否则明确拒绝；
+- 同一 Stage 追加多道练习时采用"章节追加"：新练习章节插入 `## 渐进提示` 之前、新提示小节追加到提示节末尾——`## 渐进提示` 永远只有一个，不会产生解析错误；
+- 同一题面锚点（`练习 NN`）重复出现会被拒绝。
+
 ## 4. 课程元数据规范（`web/content/lessons/stageNN/<id>.json`）
 
 ```json
@@ -98,7 +105,7 @@ node scripts/create-lesson.mjs --stage 02 --kind deep-dive --slug encapsulation 
 ```bash
 cd web
 npm run content                    # 生成 + 全量校验（关系/ID/资源/数量契约）
-npm run content -- --update-registry   # 新课程稳定 ID 登记进 registry.json（显式动作）
+npm run content -- --update-registry   # 新课程稳定 ID 登记进 registry.json（显式动作；未登记时构建会失败并提示本命令）
 npm test && npm run build && npm run test:e2e
 ```
 
@@ -108,7 +115,7 @@ npm test && npm run build && npm run test:e2e
 
 - **改正文 / 改标题 / 调整顺序**：直接改，稳定 ID 不变则用户记录自动保持关联。
 - **下线课程**：先删除课程（与关联练习），构建会**显式报错**并列出消失的 ID；在 `web/content/registry.json` 的 `retired` 登记后放行。retired ID 重新出现也会报错。
-- **课程改名**：旧 ID 从目录消失 + `registry.json.renames` 登记 `{ "旧ID": "新ID" }`。用户历史按键保留，不做静默迁移。
+- **课程改名**：旧 ID 从目录消失 + `registry.json.renames` 登记 `{ "旧ID": "新ID" }`。**注意：renames 只登记目录层的 ID 映射，不会自动迁移用户 IndexedDB 里的历史记录**（记录以旧 ID 为键原样保留）；是否需要数据层面的迁移由你显式决定，构建器不代做。用户历史按键保留，不做静默迁移。
 - 用户的学习数据（IndexedDB）永远以 ID 为键，本轮及以后的内容变更都不触碰 `LearningState` schema。
 
 ## 10. 教学质量红线

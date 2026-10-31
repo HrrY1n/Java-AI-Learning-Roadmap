@@ -314,6 +314,18 @@ test("模拟增量更新：改正文/改标题/新增课程/调整顺序均不�
       ),
       "utf8",
     );
+    // 新 ID 首次发布需要显式登记：未登记时构建失败并给出指引
+    await assert.rejects(
+      () => buildCatalog({ repoRoot, contentRoot }),
+      (error) =>
+        error.name === "ContentError" &&
+        /尚未登记进稳定 ID 契约/.test(error.message) &&
+        /--update-registry/.test(error.message),
+    );
+    // 模拟 --update-registry 之后的契约状态：登记后构建通过
+    await patchJson(path.join(contentRoot, "registry.json"), {
+      knownIds: ["s02-encapsulation", "s02-polymorphism", "s02-guard"],
+    });
     const grown = await buildCatalog({ repoRoot, contentRoot });
     assert.equal(grown.lessons.length, 2);
     assert.ok(grown.lessons.some((item) => item.id === "s02-polymorphism"));

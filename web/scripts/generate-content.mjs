@@ -18,25 +18,31 @@ const repoRoot = path.resolve(webRoot, "..");
 const contentRoot = path.join(webRoot, "content");
 
 export async function generateCatalog({ write = true, updateRegistry = false } = {}) {
-  const catalog = await buildCatalog({ repoRoot, contentRoot });
+  // --update-registry 是新 ID 的显式登记动作：先带豁免构建出 ID 集合，
+  // 同步契约文件后复验（不带豁免），确保登记后的目录满足完整契约。
   if (updateRegistry) {
+    const preview = await buildCatalog({
+      repoRoot,
+      contentRoot,
+      allowUnknownIds: true,
+    });
     const registry = await readJson(contentRoot, "registry.json");
     const current = [
-      ...catalog.lessons.map((item) => item.id),
-      ...catalog.exercises.map((item) => item.id),
-      ...catalog.predictions.map((item) => item.id),
-      ...catalog.modifications.map((item) => item.id),
+      ...preview.lessons.map((item) => item.id),
+      ...preview.exercises.map((item) => item.id),
+      ...preview.predictions.map((item) => item.id),
+      ...preview.modifications.map((item) => item.id),
     ].sort();
     const known = [...new Set([...(registry.knownIds ?? []), ...current])].sort();
-    if (known.join(",") !== (registry.knownIds ?? []).join(",")) {
-      await writeFile(
-        path.join(contentRoot, "registry.json"),
-        `${JSON.stringify({ ...registry, knownIds: known }, null, 2)}\n`,
-        "utf8",
-      );
-      console.log(`registry.json updated: ${known.length} known IDs`);
-    }
+    await writeFile(
+      path.join(contentRoot, "registry.json"),
+      `${JSON.stringify({ ...registry, knownIds: known }, null, 2)}
+`,
+      "utf8",
+    );
+    console.log(`registry.json updated: ${known.length} known IDs`);
   }
+  const catalog = await buildCatalog({ repoRoot, contentRoot });
   if (write) {
     await mkdir(path.join(webRoot, "src/generated"), { recursive: true });
     await mkdir(path.join(webRoot, "public/reference"), { recursive: true });
