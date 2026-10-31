@@ -1448,15 +1448,18 @@ function PracticePage(
   },
 ) {
   const routeId = props.routeId;
-  const tab = routeId.startsWith("B") ? "modify" : "predict";
+  // 修改题 ID 可能带 Stage 前缀（如 S02B2），以 catalog 归属而非首字母判定 tab。
+  const modification = catalog.modifications.some((item) => item.id === routeId)
+    ? routeId
+    : "B1";
+  const tab = catalog.modifications.some((item) => item.id === routeId)
+    ? "modify"
+    : "predict";
   const selected = catalog.predictions.some(
     (item) => item.id === routeId.replace("-modified", ""),
   )
     ? routeId.replace("-modified", "")
     : "A1";
-  const modification = catalog.modifications.some((item) => item.id === routeId)
-    ? routeId
-    : "B1";
   const prediction = catalog.predictions.find((item) => item.id === selected)!;
   const item = catalog.modifications.find(
     (entry) => entry.id === modification,
@@ -1481,7 +1484,7 @@ function PracticePage(
             props.onSelect("A1");
           }}
         >
-          输出预测 <span>08</span>
+          输出预测 <span>{catalog.predictions.length}</span>
         </button>
         <button
           role="tab"
@@ -1490,7 +1493,7 @@ function PracticePage(
             props.onSelect("B1");
           }}
         >
-          条件修改 <span>04</span>
+          条件修改 <span>{catalog.modifications.length}</span>
         </button>
       </div>
       <div className="practice-layout">
