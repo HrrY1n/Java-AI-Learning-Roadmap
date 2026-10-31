@@ -48,4 +48,23 @@ test.describe("Stage 02 首批课程", () => {
     await dialog.getByRole("button", { name: /解锁 L1/ }).click();
     await expect(dialog.getByText("带守门规则的状态机")).toBeVisible();
   });
+
+  test("Stage 02 修改题路由直达修改 tab 且计数随目录更新", async ({ page }) => {
+    await page.goto("/#/practice/S02B2");
+    await expect(page.locator("main h1").first()).toBeVisible();
+    // S02B2 不以 B 开头，tab 必须按 catalog 归属判定而非 ID 首字母
+    await expect(page.getByRole("tab", { name: /条件修改/ })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    await expect(
+      page.locator(".practice-picker").getByRole("button", { name: /封装/ }),
+    ).toBeVisible();
+    await expect(page.locator(".practice-work")).toContainText(
+      "amount > balance",
+    );
+    // tab 计数来自 catalog（12 预测 + 6 修改），不再硬编码 Stage 01 数量
+    await expect(page.getByRole("tab", { name: /输出预测/ })).toContainText("12");
+    await expect(page.getByRole("tab", { name: /条件修改/ })).toContainText("6");
+  });
 });
