@@ -274,11 +274,11 @@ test("V1.3：Stage 02 首批课程接入且与 Stage 01 命名空间零冲突", 
       .filter((item) => item.id.startsWith("S02"))
       .map((item) => item.id),
   );
-  assert.equal(stage02Ids.size, 7);
+  assert.equal(stage02Ids.size, 6);
   for (const id of stage02Ids) assert.ok(!stage01Ids.has(id));
-  // 草稿内容被门禁拦截
-  assert.ok(!stage02Ids.has("S02A4"));
-  assert.ok(!stage02Ids.has("S02B3"));
+  // 草稿内容被门禁拦截（S02A4 多态、S02B3 综合练习、S02B1 多态修改题属后续批次）
+  for (const draftId of ["S02A4", "S02B3", "S02B1"])
+    assert.ok(!stage02Ids.has(draftId), draftId);
 });
 
 test("V1.3：多文件 Java 示例完整进入目录且主文件含 main", () => {
@@ -306,4 +306,39 @@ test("V1.3：多文件 Java 示例完整进入目录且主文件含 main", () =>
     dependencies.some((file) => file.className === "Student"),
     "依赖类 Student 不得遗漏",
   );
+});
+
+test("V1.3 修补：Java 包名合法、用例契约完整、stdin 标记正确", () => {
+  for (const exercise of catalog.exercises) {
+    // Java 包段与练习 ID 分离后，包名必须完全合法
+    assert.match(
+      exercise.packageName,
+      /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$/,
+      `${exercise.id} 的包名非法：${exercise.packageName}`,
+    );
+    assert.ok(!exercise.packageName.includes("-"));
+    // 用例契约：对象结构、非空、kind 枚举
+    for (const entry of exercise.cases) {
+      for (const field of ["label", "input", "expected"])
+        assert.ok(
+          typeof entry[field] === "string" && entry[field].trim() !== "",
+          `${exercise.id} 用例 ${entry.label ?? entry.id} 字段 ${field} 非空`,
+        );
+      assert.ok(
+        ["normal", "boundary", "invalid"].includes(entry.kind),
+        `${exercise.id} 用例 kind 非法`,
+      );
+      assert.match(entry.expected, /\S/, "预期输出不能是纯描述");
+    }
+    assert.equal(
+      exercise.needsInput,
+      ["calculator", "menu", "s02-bank-account"].includes(exercise.id),
+    );
+  }
+  const bank = catalog.exercises.find((item) => item.id === "s02-bank-account");
+  assert.equal(bank.packageName, "com.javaroadmap.lab.stage02.bankaccount");
+  // 非法操作用例必须证明状态未变：预期输出包含操作前余额
+  for (const entry of bank.cases.filter((item) => item.kind === "invalid")) {
+    assert.match(entry.expected, /当前余额：100\.0/);
+  }
 });

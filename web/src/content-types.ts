@@ -54,6 +54,8 @@ export interface Exercise {
   cases: ExerciseCase[];
   referencePaths: string[];
   note?: string;
+  /** 练习需要 stdin 输入（V1.3 起提供；决定本地运行说明是否包含 --input-file） */
+  needsInput?: boolean;
 }
 
 export interface Prediction {

@@ -46,5 +46,8 @@
     "s02-object-construction",
     "s02-reference-state",
     "scores"
+  ],
+  "suspended": [
+    "S02B1"
   ]
 }

@@ -42,10 +42,15 @@ class Point {
     int x;
     String label;
 }
-// main 中：
-Point p = new Point();
-System.out.println(p.x + " / " + p.label);
+
+public class DefaultValueDemo {
+    public static void main(String[] args) {
+        Point p = new Point();
+        System.out.println(p.x + " / " + p.label);
+    }
+}
 ```
+（片段自包含：复制到 `DefaultValueDemo.java` 即可编译运行。）
 预测输出。`int` 和 `String` 的默认值为什么不同？
 
 ### S02A4 多态分发
@@ -61,11 +66,18 @@ a.eat();
 class A {
     A() { System.out.println("A 诞生"); }
 }
+
 class B extends A {
     B() { System.out.println("B 诞生"); }
 }
-// main：new B();
+
+public class ConstructionOrderDemo {
+    public static void main(String[] args) {
+        new B();
+    }
+}
 ```
+（片段自包含：复制到 `ConstructionOrderDemo.java` 即可编译运行。）
 预测输出顺序。
 
 ## B. 修改题

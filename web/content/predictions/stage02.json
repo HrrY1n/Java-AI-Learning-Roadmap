@@ -31,9 +31,8 @@
   },
   "modifications": {
     "S02B1": {
-      "lessonIds": [
-        "s02-reference-state"
-      ]
+      "lessonIds": [],
+      "contentState": "draft"
     },
     "S02B2": {
       "lessonIds": [

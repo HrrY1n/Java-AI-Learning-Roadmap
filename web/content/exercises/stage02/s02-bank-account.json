@@ -16,36 +16,38 @@
   "todo": "独立实现私有余额与守门规则：存款、取钱、查看余额，非法输入必须被明确拒绝。",
   "note": "本题验收以题面规则为准。历史参考示例（day03 的 Account）只演示了最小守门，不含全部非法输入处理，仅用于对照。",
   "cases": [
-    [
-      "normal",
-      "存款与查询",
-      "1\n100\n1\n",
-      "存入后余额正确增加并打印"
-    ],
-    [
-      "normal",
-      "取款与查询",
-      "2\n30\n1\n",
-      "取款后余额正确减少并打印"
-    ],
-    [
-      "boundary",
-      "全额取出",
-      "2\n100\n1\n",
-      "余额恰好为 0 时取款成功"
-    ],
-    [
-      "invalid",
-      "非法存款金额",
-      "1\n-50\n",
-      "提示金额必须大于 0，余额不变"
-    ],
-    [
-      "invalid",
-      "余额不足",
-      "2\n99999\n",
-      "提示余额不足，余额不变"
-    ]
+    {
+      "label": "存款并查询",
+      "input": "1\n100\n3\n0\n",
+      "expected": "存入后余额：200.0\n小明 的当前余额：200.0",
+      "kind": "normal"
+    },
+    {
+      "label": "取款并查询",
+      "input": "2\n30\n3\n0\n",
+      "expected": "取款后余额：70.0\n小明 的当前余额：70.0",
+      "kind": "normal"
+    },
+    {
+      "label": "全额取出",
+      "input": "2\n100\n3\n0\n",
+      "expected": "取款后余额：0.0\n小明 的当前余额：0.0",
+      "kind": "boundary"
+    },
+    {
+      "label": "非法存款金额",
+      "input": "1\n-50\n3\n0\n",
+      "expected": "金额必须大于 0\n小明 的当前余额：100.0",
+      "kind": "invalid"
+    },
+    {
+      "label": "余额不足",
+      "input": "2\n99999\n3\n0\n",
+      "expected": "余额不足\n小明 的当前余额：100.0",
+      "kind": "invalid"
+    }
   ],
-  "referenceFiles": []
+  "referenceFiles": [],
+  "packageSegment": "bankaccount",
+  "needsInput": true
 }

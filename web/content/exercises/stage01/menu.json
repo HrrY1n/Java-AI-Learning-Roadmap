@@ -44,5 +44,6 @@
     "loop.java"
   ],
   "statementAnchor": "练习 3",
-  "order": 3
+  "order": 3,
+  "needsInput": true
 }

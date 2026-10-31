@@ -20,11 +20,8 @@ const javaTool = (name) =>
     : name;
 
 test("all objective predictions match real Java output, including the modified loop", async () => {
-  // 语义自动验证覆盖 Stage 01 的完整可运行片段；
-  // Stage 02（S02*）片段依赖课堂补充类（如 Student/Point），不在此自动运行。
-  const objective = catalog.predictions.filter(
-    (prediction) => !prediction.id.startsWith("S02"),
-  );
+  // V1.3 起 Stage 02 片段（S02A1/A2/A3/A5）均已自包含，纳入 JVM 实测。
+  const objective = catalog.predictions;
   const temporary = await mkdtemp(join(tmpdir(), "javaroadmap-predictions-"));
   try {
     const cases = objective.flatMap((prediction) => [
@@ -82,7 +79,8 @@ test("all objective predictions match real Java output, including the modified l
         item.id,
       );
     }
-    assert.equal(entries.length, 9);
+    // A1-A8 + S02A1/A2/A3/A5（draft 的 S02A4 不在目录）；A3modified 使 entries 多 1
+    assert.equal(entries.length, 13);
   } finally {
     if (
       dirname(temporary) === resolve(tmpdir()) &&

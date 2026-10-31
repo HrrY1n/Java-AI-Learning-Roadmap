@@ -1766,7 +1766,8 @@ function LabPage({
   onReference: (path: string) => void;
 }) {
   const code = state.drafts[exercise.id]?.code ?? exercise.starterCode;
-  const needsInput = exercise.id === "calculator" || exercise.id === "menu";
+  // 未来需要 stdin 的练习只需在元数据中声明 needsInput: true
+  const needsInput = exercise.needsInput === true;
   const [tab, setTab] = useState<"cases" | "local" | "evidence">("cases");
   const [evidenceError, setEvidenceError] = useState("");
   const [reset, setReset] = useState(false);
