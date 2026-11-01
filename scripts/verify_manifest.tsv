@@ -63,3 +63,11 @@ stages/stage03_java_core/deep_dives/03_exception_design	com.javaroadmap.stage03.
 stages/stage03_java_core/deep_dives/04_utf8_io	com.javaroadmap.stage03.deepdives.utf8io.Utf8IoDemo	-	out	UTF-8 读回：小红,95	演示文件已删除
 stages/stage03_java_core/deep_dives/05_lambda_stream	com.javaroadmap.stage03.deepdives.lambdastream.LambdaStreamDemo	-	out	较长的名字：张三丰	是否全都不超过 3 个字：true
 stages/stage03_java_core/deep_dives/06_repository_evolution	com.javaroadmap.stage03.deepdives.repoevolution.RepositoryEvolutionDemo	-	out	人数：2，2号：小红	人数：0，2号：(不存在)
+stages/topics/algorithms/complexity	com.javaroadmap.algo.complexity.App	-	out	线性累加 O(n) 结果：500500	数学公式 O(1) 结果：500500	复杂度启示
+stages/topics/algorithms/recursion	com.javaroadmap.algo.recursion.App	-	out	迭代求和(1..10)：55	递归求和(1..10)：55	斐波那契第 7 项：13
+stages/topics/algorithms/big_o	com.javaroadmap.algo.bigo.App	-	out	O(1) 常数阶首元素：42	O(log n) 折半步数(n=16)：4	大 O 规则
+stages/topics/algorithms/space	com.javaroadmap.algo.space.App	-	out	O(1) 辅助空间最大值：9	O(n) 堆空间数组长度：5	空间优化准则
+stages/topics/algorithms/array	com.javaroadmap.algo.array.App	-	out	初始随机访问 index=1：20	插入后 index=1：15	设计启示
+stages/topics/algorithms/linkedlist	com.javaroadmap.algo.linkedlist.App	-	out	初始链表第二节点：3	插入后第二节点变为：2	权衡总结
+stages/topics/algorithms/stack	com.javaroadmap.algo.stack.App	-	out	栈顶元素 peek：30	出栈元素 pop：30	括号合法性 {[()]}：true
+stages/topics/algorithms/queue	com.javaroadmap.algo.queue.App	-	out	队首 peek：100	出队 pop：100	核心思考
