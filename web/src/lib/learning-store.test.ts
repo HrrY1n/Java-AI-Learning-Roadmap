@@ -338,3 +338,86 @@ describe("V1.1 学习数据兼容性（V1.2 内容架构不得破坏）", () => 
     expect(merged.hints.scores).toBe(2);
   });
 });
+
+describe("V1.4 专题学习与历史数据向后兼容性", () => {
+  it("原始 Stage 01/02 备份可成功导入并完全保留全部字段", () => {
+    const historicalBackup = {
+      schemaVersion: 1,
+      updatedAt: "2026-10-31T12:00:00.000Z",
+      theme: "light",
+      lastLessonId: "s02-day01",
+      lessons: {
+        day01: { read: true, position: 1.0, updatedAt: "2026-10-30T10:00:00.000Z" },
+        day04: { read: true, position: 0.8, updatedAt: "2026-10-30T11:00:00.000Z" },
+        "s02-day01": { read: true, position: 0.5, updatedAt: "2026-10-31T12:00:00.000Z" },
+      },
+      drafts: {
+        scores: { code: "// 基础语法练习草稿\n", updatedAt: "2026-10-30T10:30:00.000Z" },
+        "s02-bank-account": { code: "// 银行账户类草稿\n", updatedAt: "2026-10-31T11:00:00.000Z" },
+      },
+      hints: {
+        scores: 2,
+        "s02-bank-account": 1,
+      },
+      predictions: {
+        A1: { answer: "3 / 1\n3.5", correct: true, attempts: 1, updatedAt: "2026-10-30T09:00:00.000Z" },
+      },
+      reflections: {
+        day01: {
+          error: "变量类型溢出",
+          understanding: "byte 只有 8 位",
+          nextStep: "使用 int 或 long",
+          needsReview: false,
+          updatedAt: "2026-10-30T10:00:00.000Z",
+        },
+      },
+      evidence: [evidence()],
+      referenceViews: {
+        scores: "2026-10-30T10:00:00.000Z",
+      },
+    };
+
+    const validated = validateBackup(historicalBackup);
+    expect(validated.lessons.day01?.read).toBe(true);
+    expect(validated.lessons["s02-day01"]?.position).toBe(0.5);
+    expect(validated.drafts["s02-bank-account"]?.code).toBe("// 银行账户类草稿\n");
+    expect(validated.evidence).toHaveLength(1);
+  });
+
+  it("新专题 ID 具备独立命名空间，与 Stage 01/02 零冲突并支持无损导出", () => {
+    const state = createInitialState();
+    // 现有主线课程
+    state.lessons.day01 = { read: true, position: 1.0, updatedAt: early };
+    state.lessons["s02-day01"] = { read: true, position: 0.9, updatedAt: early };
+    // 新专题课程
+    state.lessons["algo-complexity-eval"] = { read: true, position: 1.0, updatedAt: late };
+    state.lessons["algo-linkedlist"] = { read: true, position: 0.6, updatedAt: late };
+    state.lessons["git-intro-basics"] = { read: true, position: 1.0, updatedAt: late };
+    state.drafts["git-intro-basics"] = { code: "# git init\n", updatedAt: late };
+
+    const exportedJson = exportBackup(state);
+    const restored = validateBackup(JSON.parse(exportedJson) as unknown);
+
+    expect(restored.lessons["algo-complexity-eval"]?.read).toBe(true);
+    expect(restored.lessons["git-intro-basics"]?.position).toBe(1.0);
+    expect(restored.lessons.day01?.read).toBe(true);
+    expect(restored.lessons["s02-day01"]?.position).toBe(0.9);
+    expect(restored.drafts["git-intro-basics"]?.code).toBe("# git init\n");
+  });
+
+  it("合并备份时正确保留历史 Stage 01/02 记录与新专题学习记录", () => {
+    const stateA = createInitialState();
+    stateA.lessons.day01 = { read: true, position: 1.0, updatedAt: early };
+    stateA.drafts.scores = { code: "// 练习草稿 A", updatedAt: early };
+
+    const stateB = createInitialState();
+    stateB.lessons["algo-complexity-eval"] = { read: true, position: 0.8, updatedAt: late };
+    stateB.drafts["algo-complexity-eval"] = { code: "// 算法草稿 B", updatedAt: late };
+
+    const merged = mergeBackup(stateA, stateB);
+    expect(merged.lessons.day01?.read).toBe(true);
+    expect(merged.lessons["algo-complexity-eval"]?.position).toBe(0.8);
+    expect(merged.drafts.scores?.code).toBe("// 练习草稿 A");
+    expect(merged.drafts["algo-complexity-eval"]?.code).toBe("// 算法草稿 B");
+  });
+});

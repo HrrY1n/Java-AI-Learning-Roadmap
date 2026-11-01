@@ -16,7 +16,7 @@
     "build": "npm run typecheck && vite build",
     "check:build": "node scripts/check-build.mjs",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "npm run content && vitest run && node --test scripts/content.test.mjs scripts/content-architecture.test.mjs scripts/create-lesson.test.mjs scripts/exercise-java.test.mjs scripts/verify-practice.test.mjs scripts/prediction-semantics.test.mjs",
+    "test": "npm run content && vitest run && node --test scripts/content.test.mjs scripts/content-architecture.test.mjs scripts/create-lesson.test.mjs scripts/exercise-java.test.mjs scripts/verify-practice.test.mjs scripts/prediction-semantics.test.mjs scripts/git-lab.test.mjs scripts/topic-content.test.mjs",
     "test:unit": "npm run content && vitest run",
     "test:e2e": "npm run content && playwright test",
     "test:pages": "playwright test --config playwright.pages.config.ts",
