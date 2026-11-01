@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
+  Binary,
   BookOpen,
   Braces,
   Check,
@@ -17,9 +18,11 @@ import {
   FileCode2,
   FileJson,
   FolderOpen,
+  GitBranch,
   HelpCircle,
   Home,
   Laptop,
+  Layout,
   Lightbulb,
   ListTree,
   Menu,
@@ -27,6 +30,7 @@ import {
   PanelLeftClose,
   Play,
   RotateCcw,
+  Search,
   ShieldCheck,
   Sparkles,
   Sun,
@@ -55,6 +59,10 @@ import {
 import { Markdown, Code } from "./components/Markdown";
 import { Dialog, handleTabKeys } from "./components/Dialog";
 import { CodeEditor } from "./components/CodeEditor";
+import { SearchDialog } from "./components/SearchDialog";
+import { OnJavaCard } from "./components/OnJavaCard";
+import { TopicView } from "./components/TopicView";
+import { DesignPrototypeView } from "./components/DesignPrototypeView";
 
 type Change = (recipe: (current: LearningState) => LearningState) => void;
 type PageProps = {
@@ -62,7 +70,7 @@ type PageProps = {
   change: Change;
   notify: (message: string) => void;
 };
-type Route = { page: string; id: string };
+type Route = { page: string; id: string; subId?: string };
 const timestamp = () => new Date().toISOString();
 const lessonLink = (id = "day01") => `#/lesson/${id}`;
 const labLink = (id = "scores") => `#/lab/${id}`;
@@ -85,13 +93,18 @@ function download(name: string, text: string, type = "application/json") {
 }
 
 function getRoute(): Route {
-  const [page = "home", rawId = ""] = location.hash
-    .replace(/^#\/?/, "")
-    .split("/");
+  const parts = location.hash.replace(/^#\/?/, "").split("/");
+  const page = parts[0] || "home";
+  const id = parts[1] || "";
+  const subId = parts[2] || "";
   try {
-    return { page: page || "home", id: decodeURIComponent(rawId) };
+    return {
+      page: page || "home",
+      id: decodeURIComponent(id),
+      subId: decodeURIComponent(subId),
+    };
   } catch {
-    return { page: "missing", id: "" };
+    return { page: "missing", id: "", subId: "" };
   }
 }
 
@@ -152,10 +165,10 @@ function Navigation({
       label: "学习路线",
     },
     {
-      page: "lesson",
-      href: lessonLink(state.lastLessonId ?? "day01"),
-      icon: BookOpen,
-      label: "课程阅读",
+      page: "topics",
+      href: "#/topics",
+      icon: Binary,
+      label: "专题学习",
     },
     {
       page: "lab",
@@ -167,30 +180,34 @@ function Navigation({
       page: "review",
       href: "#/review",
       icon: FolderOpen,
-      label: "学习复盘",
+      label: "学习记录",
     },
   ];
   return (
     <>
       <nav className="primary-nav" aria-label="主要导航">
-        {links.map(({ page, href, icon: Icon, label }) => (
-          <a
-            key={page}
-            href={href}
-            onClick={close}
-            className={
-              route.page === page ||
-              (page === "lab" && route.page === "practice")
-                ? "active"
-                : ""
-            }
-            aria-current={route.page === page ? "page" : undefined}
-          >
-            <Icon size={19} />
-            <span>{label}</span>
-            {route.page === page && <span className="nav-dot" />}
-          </a>
-        ))}
+        {links.map(({ page, href, icon: Icon, label }) => {
+          const isActive =
+            route.page === page ||
+            (page === "roadmap" && route.page === "lesson") ||
+            (page === "topics" &&
+              (route.page === "topic" || route.page === "topics")) ||
+            (page === "lab" && route.page === "practice");
+
+          return (
+            <a
+              key={page}
+              href={href}
+              onClick={close}
+              className={isActive ? "active" : ""}
+              aria-current={isActive ? "page" : undefined}
+            >
+              <Icon size={19} />
+              <span>{label}</span>
+              {isActive && <span className="nav-dot" />}
+            </a>
+          );
+        })}
       </nav>
       <div className="rail-course">
         <div className="rail-label">
@@ -230,6 +247,16 @@ function Navigation({
             ))}
         </details>
       </div>
+      <div className="rail-extra-links">
+        <a
+          className={`rail-prototype-link ${route.page === "prototype" ? "active" : ""}`}
+          href="#/prototype"
+          onClick={close}
+        >
+          <Layout size={16} />
+          <span>双原型选型论证 (V1.4)</span>
+        </a>
+      </div>
       <a
         className="rail-principle"
         href="#/document/teaching-rules"
@@ -256,6 +283,7 @@ export default function App() {
   );
   const [mobileNav, setMobileNav] = useState(false);
   const [dataDialog, setDataDialog] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [tutor, setTutor] = useState<string | null>(null);
   const [reference, setReference] = useState<string | null>(null);
   const [toast, setToast] = useState("");
@@ -267,6 +295,34 @@ export default function App() {
     setSaveStatus(canSave ? "正在保存" : "尚未保存");
     setState((current) => ({ ...recipe(current), updatedAt: timestamp() }));
   };
+
+  const toggleTopicLessonRead = (lessonId: string) => {
+    change((current) => {
+      const isRead = !!current.lessons[lessonId]?.read;
+      return {
+        ...current,
+        lessons: {
+          ...current.lessons,
+          [lessonId]: {
+            read: !isRead,
+            position: !isRead ? 1.0 : 0,
+            updatedAt: timestamp(),
+          },
+        },
+      };
+    });
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
   useEffect(() => {
     let active = true;
     loadState()
@@ -341,13 +397,16 @@ export default function App() {
     const name =
       {
         home: "学习工作台",
-        roadmap: "学习路线",
+        roadmap: "主线课程",
         lesson:
           catalog.lessons.find((item) => item.id === route.id)?.title ??
           "课程阅读",
+        topics: "专题学习体系",
+        topic: "专题学习体系",
         lab: "编程实验室",
         practice: "预测与修改",
-        review: "学习复盘",
+        review: "学习记录",
+        prototype: "双原型设计论证",
         document: "仓库资料",
       }[route.page] ?? "页面未找到";
     document.title = `${name} · JavaRoadmap Lab`;
@@ -377,6 +436,17 @@ export default function App() {
     );
   else if (route.page === "home") content = <HomePage {...props} />;
   else if (route.page === "roadmap") content = <RoadmapPage />;
+  else if (route.page === "topics" || route.page === "topic")
+    content = (
+      <TopicView
+        topicId={route.id}
+        lessonId={route.subId}
+        state={state}
+        onToggleRead={toggleTopicLessonRead}
+      />
+    );
+  else if (route.page === "prototype")
+    content = <DesignPrototypeView />;
   else if (
     route.page === "lesson" &&
     catalog.lessons.some((item) => item.id === route.id)
@@ -512,16 +582,30 @@ export default function App() {
               个人学习空间 <ChevronRight size={14} />
               <strong>
                 {route.page === "roadmap"
-                  ? "知识地图"
+                  ? "主线课程"
                   : route.page === "review"
-                    ? "学习复盘"
+                    ? "学习记录"
                     : route.page === "lab"
                       ? "编程实验室"
-                      : `Stage ${currentStage.id} · ${currentStage.title}`}
+                      : route.page === "topics" || route.page === "topic"
+                        ? "专题学习体系"
+                        : route.page === "prototype"
+                          ? "双设计原型论证"
+                          : `Stage ${currentStage.id} · ${currentStage.title}`}
               </strong>
             </span>
           </div>
           <div className="topbar-actions">
+            <button
+              type="button"
+              className="button subtle small search-trigger-btn"
+              aria-label="全局快速检索"
+              onClick={() => setSearchOpen(true)}
+            >
+              <Search size={15} />
+              <span>搜索课程/资料</span>
+              <kbd className="topbar-kbd">⌘K</kbd>
+            </button>
             <span className="save-status" role="status">
               <span className={`status-dot ${storageError ? "warning" : ""}`} />
               {saveStatus}
@@ -577,6 +661,7 @@ export default function App() {
           </a>
         </footer>
       </div>
+      <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} />
       <nav className="mobile-bottom-nav" aria-label="移动快捷导航">
         {[
           { page: "home", href: "#/home", label: "工作台", icon: Home },
@@ -587,17 +672,22 @@ export default function App() {
             label: "课程",
             icon: BookOpen,
           },
+          { page: "topics", href: "#/topics", label: "专题", icon: Binary },
           { page: "lab", href: labLink(), label: "实验室", icon: Code2 },
-          { page: "review", href: "#/review", label: "复盘", icon: FolderOpen },
+          { page: "review", href: "#/review", label: "记录", icon: FolderOpen },
         ].map(({ page, href, label, icon: Icon }) => (
           <a
+            key={page}
             className={
               route.page === page ||
+              (page === "roadmap" && route.page === "roadmap") ||
+              (page === "lesson" && route.page === "lesson") ||
+              (page === "topics" &&
+                (route.page === "topic" || route.page === "topics")) ||
               (page === "lab" && route.page === "practice")
                 ? "active"
                 : ""
             }
-            key={page}
             href={href}
             aria-current={route.page === page ? "page" : undefined}
           >
@@ -876,6 +966,46 @@ function HomePage({ state }: PageProps) {
           </div>
           <ArrowUpRight size={22} />
         </a>
+      </section>
+      <section className="workbench-topics-section">
+        <SectionTitle
+          index="03"
+          title="专题学习并行通道（V1.4 升级）"
+          action={
+            <a href="#/topics" className="text-link">
+              查看全部专题与教材索引 <ArrowUpRight size={14} />
+            </a>
+          }
+        />
+        <div className="workbench-topics-grid">
+          <a href="#/topic/topic-algo/algo-complexity-eval" className="wb-topic-card">
+            <div className="wb-topic-icon algo-theme">
+              <Binary size={22} />
+            </div>
+            <div className="wb-topic-info">
+              <div className="wb-topic-tag">
+                <span>《Hello 算法》· 8 门已发布</span>
+              </div>
+              <h3>数据结构与算法专题</h3>
+              <p>从复杂度分析到数组、链表、栈与队列，Java 源码实现与交互图解</p>
+            </div>
+            <ArrowRight size={18} className="wb-topic-arrow" />
+          </a>
+
+          <a href="#/topic/topic-git/git-intro-basics" className="wb-topic-card">
+            <div className="wb-topic-icon git-theme">
+              <GitBranch size={22} />
+            </div>
+            <div className="wb-topic-info">
+              <div className="wb-topic-tag">
+                <span>《Pro Git》· 5 门已发布</span>
+              </div>
+              <h3>Git 工程实践专题</h3>
+              <p>三大工作区、提交快照、分支与三方合并，配套临时沙箱实验</p>
+            </div>
+            <ArrowRight size={18} className="wb-topic-arrow" />
+          </a>
+        </div>
       </section>
     </>
   );
@@ -1304,6 +1434,7 @@ function LessonPage({
               />
             </section>
           ))}
+          <OnJavaCard lessonId={lesson.id} />
           <div className="lesson-related">
             <SectionTitle title="把理解带进练习" />
             {lesson.predictionIds.length > 0 && (
