@@ -1,0 +1,635 @@
+{
+  "topics": [
+    {
+      "id": "topic-algo",
+      "title": "数据结构与算法",
+      "subtitle": "基于《Hello 算法》的高频数据结构与核心算法思想",
+      "icon": "Binary",
+      "status": "published",
+      "description": "算法是一条随 Java 主线并行的思维训练线。本专题以 Java 为主要实现语言，从具体问题出发，结合图解心智模型，掌握时间/空间复杂度分析、线性结构、树堆图与算法策略。",
+      "stageLinks": [
+        "01",
+        "02",
+        "03",
+        "04"
+      ],
+      "sourceBook": {
+        "title": "Hello 算法 (1.0.0)",
+        "version": "1.0.0",
+        "totalPages": 378,
+        "format": "开源教材 (CC BY-NC-SA 4.0)"
+      },
+      "modules": [
+        {
+          "id": "algo-complexity",
+          "title": "复杂度分析",
+          "description": "脱离具体硬件环境，以渐近复杂度评估算法的运行时间与内存开销增长趋势。",
+          "status": "published",
+          "lessons": [
+            {
+              "id": "algo-complexity-eval",
+              "topicId": "topic-algo",
+              "moduleId": "algo-complexity",
+              "title": "算法效率评估与渐近复杂度",
+              "summary": "为什么实际运行计时存在硬件与输入局限？理解时间/空间渐近复杂度作为算法标尺的核心意图。",
+              "status": "published",
+              "kind": "concept",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 2 章 2.1 节",
+                "pdfPageStart": 24,
+                "pdfPageEnd": 25,
+                "printPage": "18-19"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 算法效率评估与渐近复杂度\n\n## 1. 业务场景与需要解决的问题\n在开发中，对于同一个业务需求（例如统计用户前 N 天的积分总和），工程师可以写出多种不同的解法。如何客观、公正地评价哪一种解法更优秀？\n\n## 2. 为什么需要理论估算？\n直觉上，找一台电脑运行两个算法并记录耗时（Benchmark）看似最直接，但这存在致命缺陷：\n- **硬件环境干扰**：在高端服务器和低端嵌入式设备上测试，甚至在 CPU 频率波动的笔记本上测试，结果可能完全不同。\n- **数据规模敏感性**：规模小（如 n=10）时，算法 A 可能因为常数开销较小比算法 B 快；但在海量数据（如 n=1,000,000）时，算法 B 的优势才展现出来。\n\n因此，我们需要一种**独立于测试环境、反映数据增长时资源消耗趋势的理论估算方法**——这就是「渐近复杂度分析（Asymptotic Analysis）」。\n\n## 3. 核心概念与心智模型\n- **时间效率**：算法运行的运算操作总次数随数据规模 n 的增长曲线。\n- **空间效率**：算法运行额外申请的内存大小随数据规模 n 的增长曲线。\n\n```text\n输入规模 n 增长 ───> 运算操作次数 f(n) ───> 忽略常数与低阶项 ───> 渐近时间复杂度 O(f(n))\n```\n\n## 4. 最小 Java 代码对照\n```java\npackage com.javaroadmap.algo.complexity;\n\npublic class App {\n    // 算法 A：逐个累加，运算次数随 n 线性增加 O(n)\n    public static long sumLinear(long n) {\n        long sum = 0;\n        for (long i = 1; i <= n; i++) {\n            sum += i;\n        }\n        return sum;\n    }\n\n    // 算法 B：数学公式计算，恒定执行 3 次运算 O(1)\n    public static long sumConstant(long n) {\n        return n * (n + 1) / 2;\n    }\n}\n```\n\n## 5. 执行观察与复杂度对比\n- 当 `n = 1,000` 时，算法 A 循环 1,000 次，算法 B 仅 1 次运算，耗时差异在纳秒级别难以察觉。\n- 当 `n = 1,000,000,000` 时，算法 A 需要 10 亿次循环（约 1 秒），而算法 B 仍仅需 1 纳秒完成。\n- **结论**：算法复杂度决定了系统在大数据量下的生命力。\n\n## 6. 独立练习与思考\n- **修改条件**：如果需求变为计算 `1^2 + 2^2 + ... + n^2`，算法 A 与算法 B 的复杂度分别会发生什么变化？\n- **来源出处**：《Hello 算法》第 2 章 2.1 节（PDF 第 24-25 页）。",
+              "packageName": "com.javaroadmap.algo.complexity",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.complexity;\n\npublic class App {\n    public static long sumLinear(long n) {\n        long sum = 0;\n        for (long i = 1; i <= n; i++) sum += i;\n        return sum;\n    }\n    public static long sumConstant(long n) {\n        return n * (n + 1) / 2;\n    }\n    public static void main(String[] args) {\n        System.out.println(\"线性累加 O(n) 结果：\" + sumLinear(1000L));\n        System.out.println(\"数学公式 O(1) 结果：\" + sumConstant(1000L));\n    }\n}"
+            },
+            {
+              "id": "algo-iteration-recursion",
+              "topicId": "topic-algo",
+              "moduleId": "algo-complexity",
+              "title": "迭代与递归的控制流与开销",
+              "summary": "掌握循环迭代与递归函数在 JVM 调用栈中的物理开销，理解递归终止条件与栈溢出风险。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 2 章 2.2 节",
+                "pdfPageStart": 25,
+                "pdfPageEnd": 34,
+                "printPage": "19-28"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 迭代与递归的控制流与开销\n\n## 1. 业务场景与需要解决的问题\n在计算机程序中，重复执行任务是最常见的逻辑。我们既可以使用 `for`/`while` 循环进行**迭代**，也可以让函数直接调用自身的**递归**。它们在语义和底层资源开销上有什么本质差异？\n\n## 2. 为什么需要理解底层栈帧？\n- 很多初学者误以为递归只是循环的“优雅写法”。\n- 实际上，每次进入递归函数，JVM 都会在线程**栈（Thread Stack）**中分配一个新的栈帧（Stack Frame），用来保存局部变量、操作数栈和返回地址。\n- 如果递归过深而没有及时返回，会导致调用栈耗尽，抛出著名的 `StackOverflowError`。\n\n## 3. 核心概念与心智模型\n- **迭代（Iteration）**：在同一个方法栈帧内，变量值随着条件判断反复更新，额外空间开销通常为 $O(1)$。\n- **递归（Recursion）**：通过“递（分解问题入栈）”与“归（返回结果出栈）”完成计算。必须包含两个要素：\n  1. **终止条件（Base Case）**：什么时候停止向下调用。\n  2. **递推关系（Recursive Step）**：如何将大问题拆分为规模更小的子问题。\n\n```text\nsum(3) ── 压栈 ──> sum(2) ── 压栈 ──> sum(1) [Base Case: 返回 1]\n  │                  │                  │ 出栈\n  │                  └─ 返回 1+2=3 <────┘\n  └─ 返回 3+3=6 <─────┘\n```\n\n## 4. 最小 Java 代码实现\n```java\npackage com.javaroadmap.algo.recursion;\n\npublic class App {\n    public static int sumByLoop(int n) {\n        int res = 0;\n        for (int i = 1; i <= n; i++) res += i;\n        return res;\n    }\n\n    public static int sumByRecursion(int n) {\n        if (n <= 1) return n; // 终止条件\n        return n + sumByRecursion(n - 1); // 递推\n    }\n}\n```\n\n## 5. 执行观察与修改实验\n- 运行求和 `sum(10)`，迭代与递归均返回 `55`。\n- **修改实验**：将输入改为 `n = 100,000`，观察发现循环正常秒级返回，而递归立即崩溃抛出 `java.lang.StackOverflowError`。\n- **来源出处**：《Hello 算法》第 2 章 2.2 节（PDF 第 25-34 页）。",
+              "packageName": "com.javaroadmap.algo.recursion",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.recursion;\n\npublic class App {\n    public static int sumByLoop(int n) {\n        int res = 0;\n        for (int i = 1; i <= n; i++) res += i;\n        return res;\n    }\n    public static int sumByRecursion(int n) {\n        if (n <= 1) return n;\n        return n + sumByRecursion(n - 1);\n    }\n    public static void main(String[] args) {\n        System.out.println(\"迭代求和(1..10)：\" + sumByLoop(10));\n        System.out.println(\"递归求和(1..10)：\" + sumByRecursion(10));\n    }\n}"
+            },
+            {
+              "id": "algo-time-complexity",
+              "topicId": "topic-algo",
+              "moduleId": "algo-complexity",
+              "title": "常见时间复杂度与大 O 阶梯",
+              "summary": "掌握常数阶 O(1)、对数阶 O(log n)、线性阶 O(n)、平方阶 O(n^2) 的增长阶梯与化简法则。",
+              "status": "published",
+              "kind": "concept",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 2 章 2.3 节",
+                "pdfPageStart": 34,
+                "pdfPageEnd": 47,
+                "printPage": "28-41"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 常见时间复杂度与大 O 阶梯\n\n## 1. 业务场景与需要解决的问题\n在对算法操作次数进行计数时，常常得到形如 $T(n) = 3n^2 + 5n + 100$ 的多项式。在渐近分析中，我们该如何提取最具决定意义的特征？\n\n## 2. 为什么需要大 O 化简法则？\n在算法理论分析中，为什么我们要舍弃具体的运算常数和低阶多项式？因为随着数据规模 $ 的爆炸式增长，最高阶项的增长速度呈压倒性优势，而硬件处理速度的微小提升在更高复杂度的算法面前几乎微不足道。大 O 记号帮助工程师抓住算法时间增长的最本质矛盾。\n\n## 3. 大 O 记号的化简法则\n- **忽略低阶项**：当 $n$ 趋近于无穷大时，最高阶项的增长速度压倒性地超越所有低阶项。例如在 $3n^2 + 5n$ 中，$5n$ 可以忽略。\n- **忽略常数系数**：大 O 关注的是增长速度的曲线形状，而不是固定倍数。$3n^2$ 化简为 $O(n^2)$。\n\n## 3. 常见时间复杂度阶梯（从快到慢）\n$$O(1) < O(\\log n) < O(n) < O(n \\log n) < O(n^2) < O(2^n) < O(n!)$$\n\n| 复杂度 | 名称 | 典型场景示例 |\n| :--- | :--- | :--- |\n| $O(1)$ | 常数阶 | 数组下标直接寻址、哈希表理想查找 |\n| $O(\\log n)$ | 对数阶 | 二分查找（每次操作将问题规模减半） |\n| $O(n)$ | 线性阶 | 单层遍历数组或链表寻找特定值 |\n| $O(n \\log n)$ | 线性对数阶 | 快速排序、归并排序、堆排序的平均情况 |\n| $O(n^2)$ | 平方阶 | 冒泡排序、选择排序的两层嵌套循环 |\n| $O(2^n)$ | 指数阶 | 暴力递归全排列、汉诺塔问题 |\n\n## 4. 最小 Java 代码演示\n```java\npackage com.javaroadmap.algo.bigo;\n\npublic class App {\n    // O(1) 常数阶：取数组首个元素\n    public static int constantOrder(int[] arr) { return arr[0]; }\n\n    // O(log n) 对数阶：折半缩减\n    public static int logOrder(int n) {\n        int count = 0;\n        while (n > 1) { n /= 2; count++; }\n        return count;\n    }\n}\n```\n\n## 5. 来源与延伸阅读\n- 《Hello 算法》第 2 章 2.3 节（PDF 第 34-47 页）。",
+              "packageName": "com.javaroadmap.algo.bigo",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.bigo;\n\npublic class App {\n    public static int logOrder(int n) {\n        int count = 0;\n        while (n > 1) { n /= 2; count++; }\n        return count;\n    }\n    public static void main(String[] args) {\n        System.out.println(\"O(log n) 折半步数(n=16)：\" + logOrder(16));\n    }\n}"
+            },
+            {
+              "id": "algo-space-complexity",
+              "topicId": "topic-algo",
+              "moduleId": "algo-complexity",
+              "title": "空间复杂度分析与内存分布",
+              "summary": "区分算法输入空间与辅助空间，掌握堆内存容器与递归栈帧的空间消耗估算。",
+              "status": "published",
+              "kind": "concept",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 2 章 2.4 节",
+                "pdfPageStart": 47,
+                "pdfPageEnd": 54,
+                "printPage": "41-48"
+              },
+              "stageLinks": [
+                "01",
+                "02"
+              ],
+              "markdown": "# 空间复杂度分析与内存分布\n\n## 1. 业务场景与需要解决的问题\n随着系统并发量提升，内存占用不仅影响单机吞吐量，还可能频繁触发垃圾回收（GC）甚至导致 OOM（内存溢出）。如何在编码前估算算法的额外内存占用？\n\n## 2. 为什么需要单独评估辅助空间？\n很多初学者会疑惑：如果输入一个长度为 $ 的数组，算法空间复杂度是不是天然就是 (n)$？并非如此！输入数据所占用的空间是业务上游决定的固有开销，空间复杂度重点衡量的是**算法在运行过程中为了达成目标所额外申请的辅助内存（Auxiliary Space）**。优秀的算法应当在满足时间要求的前提下尽量节省堆栈开销。\n\n## 3. 空间复杂度的组成\n算法占用的内存可以拆解为两大部分：\n1. **输入空间**：用来存储算法输入数据所需的内存（由调用方决定，不计入算法本身的额外开销）。\n2. **暂存空间（辅助空间 Auxiliary Space）**：算法在执行过程中为完成逻辑所临时开辟的内存（这是空间复杂度分析的核心对象）。\n   - **局部变量**：常量或标量计数器，通常为 $O(1)$。\n   - **堆中动态对象**：如 `new int[n]`、`new HashMap<>()`，空间与输入规模相关，为 $O(n)$。\n   - **递归调用栈帧**：递归深度达到 $d$ 时占用 $O(d)$ 栈内存。\n\n## 3. 原地算法（In-place Algorithm）\n- 如果一个算法的辅助空间复杂度为 $O(1)$，仅在原有输入容器上通过变量交换完成任务，称为**原地算法**。\n- 生产级代码通常在时间与空间之间寻求最佳权衡（例如空间换时间，或为了降低内存峰值选择原地操作）。\n\n## 4. 来源与延伸阅读\n- 《Hello 算法》第 2 章 2.4 节（PDF 第 47-54 页）。",
+              "packageName": "com.javaroadmap.algo.space",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.space;\n\npublic class App {\n    public static int constantSpace(int[] arr) {\n        int maxVal = Integer.MIN_VALUE;\n        for (int v : arr) if (v > maxVal) maxVal = v;\n        return maxVal;\n    }\n    public static void main(String[] args) {\n        System.out.println(\"O(1) 辅助空间最大值：\" + constantSpace(new int[]{3, 7, 2, 9, 5}));\n    }\n}"
+            }
+          ]
+        },
+        {
+          "id": "algo-linear",
+          "title": "数组与链表",
+          "description": "探讨连续内存布局与离散指针结构在随机访问、增删效率与 CPU 缓存上的根本对立。",
+          "status": "published",
+          "lessons": [
+            {
+              "id": "algo-array",
+              "topicId": "topic-algo",
+              "moduleId": "algo-linear",
+              "title": "数组原理与连续内存分析",
+              "summary": "掌握数组的物理连续存储、寻址公式推导，以及元素插入/删除为什么伴随 O(n) 数据搬移。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 4 章 4.1 节",
+                "pdfPageStart": 73,
+                "pdfPageEnd": 78,
+                "printPage": "67-72"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 数组原理与连续内存分析\n\n## 1. 业务场景与需要解决的问题\n数组是几乎所有编程语言中最基础的数据结构。为什么通过下标 `arr[i]` 访问元素可以做到瞬间完成？而在中间插入一个元素却非常耗时？\n\n## 2. 连续内存与寻址公式\n数组在内存中占据一段连续的物理地址。已知首元素地址为 $Base$，每个元素占用 $S$ 字节，则第 $i$ 个元素的内存地址可以直接算出来：\n$$\\text{Address}(i) = Base + i \\times S$$\n这就是为什么数组的**随机访问时间复杂度为恒定的 $O(1)$**。\n\n## 3. 插入与删除的代价\n- 连续性是一把双刃剑：如果要在索引 `k` 处插入新值，为了保持连续性，必须将索引 `k` 及之后的所有元素向后顺移一位。\n- 平均需要移动 $n/2$ 个元素，时间复杂度为 $O(n)$。\n\n```text\n初始数组: [10, 20, 30,  _,  _]\n在 1 插入 15:\n第 1 步后移: [10,  _, 20, 30,  _]\n第 2 步填入: [10, 15, 20, 30,  _]\n```\n\n## 4. 最小 Java 代码实现\n```java\npackage com.javaroadmap.algo.array;\n\npublic class App {\n    public static void insert(int[] arr, int size, int index, int element) {\n        for (int i = size; i > index; i--) {\n            arr[i] = arr[i - 1]; // 后移\n        }\n        arr[index] = element;\n    }\n}\n```\n\n## 5. 来源与延伸阅读\n- 《Hello 算法》第 4 章 4.1 节（PDF 第 73-78 页）。",
+              "packageName": "com.javaroadmap.algo.array",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.array;\n\npublic class App {\n    public static void main(String[] args) {\n        int[] buffer = new int[]{10, 20, 30, 0, 0};\n        System.out.println(\"初始随机访问 index=1：\" + buffer[1]);\n    }\n}"
+            },
+            {
+              "id": "algo-linkedlist",
+              "topicId": "topic-algo",
+              "moduleId": "algo-linear",
+              "title": "单向与双向链表的设计与实现",
+              "summary": "掌握离散节点与引用指针模型，理解 O(1) 头尾插入与 O(n) 顺序查找的性能取舍。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 4 章 4.2 节",
+                "pdfPageStart": 78,
+                "pdfPageEnd": 84,
+                "printPage": "72-78"
+              },
+              "stageLinks": [
+                "02",
+                "03"
+              ],
+              "markdown": "# 单向与双向链表的设计与实现\n\n## 1. 业务场景与需要解决的问题\n在需要频繁在数据集合头部插入或删除元素、且事先无法预知元素总量的场景下，传统定长数组每次扩容与搬移的代价极高。如何摆脱连续内存的束缚？\n\n## 2. 为什么需要链表？突破数组的物理限制\n在内存受限或数据动态频繁变动的场景中，为什么数组往往捉襟见肘？\n- **数组要求连续内存**：若系统剩余 100MB 内存但碎片化，无法分配一个连续 10MB 的大数组；而链表节点离散存储，只要有零散空间即可分配。\n- **插入删除高代价**：数组头部插入需要将所有元素后移 (n)$，而链表只需改动两个节点的引用指针即可在 (1)$ 时间内完成接入。\n\n## 3. 核心原理：离散节点与指针变迁\n- 链表通过一个个相互独立的节点（Node）组成。\n- 每个节点包含两部分：\n  1. `val`：存储真实业务数据；\n  2. `next`：指向下一个节点的内存引用（C++ 中为指针，Java 中为对象引用）。\n- **增删优势**：在已知前驱节点时，插入或删除操作仅需调整引用的指向（2 行赋值），时间复杂度为 $O(1)$。\n- **查找代价**：不能通过下标直接计算地址，必须从 `head` 开始逐个 `curr = curr.next` 推进，时间复杂度为 $O(n)$。\n\n```text\n插入前: [Node A | next] ──────────────> [Node B | next]\n插入中: [Node A | next] ──> [NewNode | next] ──> [Node B | next]\n```\n\n## 3. 最小 Java 代码实现\n```java\npackage com.javaroadmap.algo.linkedlist;\n\npublic class ListNode {\n    public int val;\n    public ListNode next;\n    public ListNode(int val) { this.val = val; }\n}\n```\n\n## 4. 来源与延伸阅读\n- 《Hello 算法》第 4 章 4.2 节（PDF 第 78-84 页）。",
+              "packageName": "com.javaroadmap.algo.linkedlist",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.linkedlist;\n\npublic class App {\n    public static void main(String[] args) {\n        ListNode head = new ListNode(1);\n        head.next = new ListNode(3);\n        System.out.println(\"初始链表第二节点：\" + head.next.val);\n    }\n}"
+            }
+          ]
+        },
+        {
+          "id": "algo-stack-queue",
+          "title": "栈与队列",
+          "description": "掌握操作受限但极具特异性的线性数据结构：LIFO 栈与 FIFO 队列及环形数组优化。",
+          "status": "published",
+          "lessons": [
+            {
+              "id": "algo-stack",
+              "topicId": "topic-algo",
+              "moduleId": "algo-stack-queue",
+              "title": "栈结构与后进先出应用",
+              "summary": "掌握栈的 LIFO 特性、基于数组的高性能栈实现，以及经典括号匹配与调用栈回溯应用。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 5 章 5.1 节",
+                "pdfPageStart": 96,
+                "pdfPageEnd": 102,
+                "printPage": "90-96"
+              },
+              "stageLinks": [
+                "01",
+                "03"
+              ],
+              "markdown": "# 栈结构与后进先出应用\n\n## 1. 业务场景与需要解决的问题\n在编辑器撤销重做（Undo）、浏览器回退前进、语法解析中检查括号是否配对等场景中，最后发生的操作往往需要最先被处理。这种规律如何用数据结构抽象？\n\n## 2. 为什么需要栈结构？天然契合嵌套与状态回溯\n在现实软件工程中，为什么许多核心底层机制都基于栈？\n- **函数调用上下文**：JVM 在执行嵌套方法调用时，后调用的子方法必须先执行完毕并返回，调用栈（Call Stack）天然就是栈结构。\n- **操作撤销与括号匹配**：最近发生的操作最先被撤销（Undo），最内层的左括号必须最先与右括号闭合匹配。后进先出（LIFO）是最直观的心智模型。\n\n## 3. 栈的核心原理（LIFO）\n- 栈（Stack）是一种“后进先出（Last In, First Out）”的受限线性表。\n- 只能在表的一端（称为**栈顶 Top**）添加元素（`push`）或移除元素（`pop`）。另一端称为**栈底 Bottom**。\n- 访问、插入和删除栈顶元素的操作耗时均为 $O(1)$。\n\n## 3. 经典实战：括号匹配算法\n- 遍历字符串：\n  - 遇到左括号 `(`、`[`、`{` 时压入栈中；\n  - 遇到右括号 `)`、`]`、`}` 时弹出栈顶元素，检查左右是否匹配；\n  - 若遍历结束且栈为空，说明完全对称合法。\n\n## 4. 来源与延伸阅读\n- 《Hello 算法》第 5 章 5.1 节（PDF 第 96-102 页）。",
+              "packageName": "com.javaroadmap.algo.stack",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.stack;\n\npublic class App {\n    public static void main(String[] args) {\n        System.out.println(\"栈结构演示已就绪\");\n    }\n}"
+            },
+            {
+              "id": "algo-queue",
+              "topicId": "topic-algo",
+              "moduleId": "algo-stack-queue",
+              "title": "队列原理与环形数组实现",
+              "summary": "掌握 FIFO 先进先出模型、普通数组出队的假溢出缺陷，以及双指针模运算实现的环形队列。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 5 章 5.2 节",
+                "pdfPageStart": 102,
+                "pdfPageEnd": 109,
+                "printPage": "96-103"
+              },
+              "stageLinks": [
+                "01",
+                "03"
+              ],
+              "markdown": "# 队列原理与环形数组实现\n\n## 1. 业务场景与需要解决的问题\n在多线程任务调度、消息排队处理（如线程池阻塞队列）、按顺序打印文件等场景中，最先到达的任务应当最先被执行。如何设计高并发下无锁高性能队列？\n\n## 2. 为什么需要队列与环形设计？解耦削峰与避免空间假溢出\n在并发与异步系统设计中，为什么队列不可或缺？\n- **时间解耦与流量削峰**：生产者和消费者的处理速率往往不对等，先进先出（FIFO）队列保证了任务请求按到达顺序公平处理，避免瞬间高并发冲垮下游服务。\n- **避免普通数组的假溢出**：若用普通数组实现队列，出队后队首留出的空位无法复用，随着元素不断入队很快触发越界；采用**环形数组取模计算**，可以让指针循环回转，实现极致的内存复用。\n\n## 3. 队列的核心原理（FIFO）\n- 队列（Queue）是一种“先进先出（First In, First Out）”的线性表。\n- 元素只能从**队尾（Rear/Tail）**入队，从**队首（Front/Head）**出队。\n\n## 3. 环形数组的巧妙设计\n- 如果用普通数组实现队列，每次队首元素出队后，为了复用空间，必须把后面所有元素前移一位（$O(n)$ 开销）。\n- 若不前移，`front` 指针不断右移，导致数组前面出现大片无法利用的空洞（假溢出）。\n- **环形数组方案**：利用模运算（Modulo）将线性数组首尾逻辑相连：\n  $$\\text{rear} = (\\text{front} + \\text{size}) \\% \\text{capacity}$$\n  $$\\text{front} = (\\text{front} + 1) \\% \\text{capacity}$$\n  使得入队和出队均可在 $O(1)$ 常数时间完成。\n\n## 4. 来源与延伸阅读\n- 《Hello 算法》第 5 章 5.2 节（PDF 第 102-109 页）。",
+              "packageName": "com.javaroadmap.algo.queue",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.queue;\n\npublic class App {\n    public static void main(String[] args) {\n        System.out.println(\"环形队列演示已就绪\");\n    }\n}"
+            }
+          ]
+        },
+        {
+          "id": "algo-hashtable",
+          "title": "哈希表",
+          "description": "基于散列函数的键值快速检索机制、冲突解决策略与扩容重哈希。",
+          "status": "building",
+          "lessons": []
+        },
+        {
+          "id": "algo-trees-heaps",
+          "title": "树与堆",
+          "description": "二叉树遍历递归与迭代、二叉搜索树平衡性、大顶堆/小顶堆与 Top-K 优先队列。",
+          "status": "planned",
+          "lessons": []
+        },
+        {
+          "id": "algo-graphs",
+          "title": "图结构与遍历",
+          "description": "邻接表与邻接矩阵、广度优先遍历 (BFS)、深度优先遍历 (DFS) 与拓扑排序。",
+          "status": "planned",
+          "lessons": []
+        },
+        {
+          "id": "algo-search-sort",
+          "title": "经典排序与搜索",
+          "description": "二分查找边界判定、快速排序分治划分、归并排序合并与堆排序实战。",
+          "status": "planned",
+          "lessons": []
+        },
+        {
+          "id": "algo-advanced",
+          "title": "高级算法思想",
+          "description": "分治法、回溯剪枝 (N 皇后)、动态规划状态转移方程与贪心策略选择。",
+          "status": "planned",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": "topic-git",
+      "title": "Git 工程实践",
+      "subtitle": "基于《Pro Git》的现代团队协作与版本控制实战",
+      "icon": "GitBranch",
+      "status": "published",
+      "description": "在真实工程中，版本控制是代码交付与团队协作的基石。本专题以《Pro Git》为依托，通过可复现的快照心智模型、命令前后的仓库状态图解与临时仓库动手实验，彻底攻克日常开发与冲突解决难题。",
+      "stageLinks": [
+        "08"
+      ],
+      "sourceBook": {
+        "title": "Pro Git (第 2 版中文版)",
+        "version": "2nd Edition",
+        "totalPages": 501,
+        "format": "官方开源教材 (CC BY-NC-SA 3.0)"
+      },
+      "modules": [
+        {
+          "id": "git-basics",
+          "title": "Git 入门与版本模型",
+          "description": "深入理解 Git 内容寻址与快照流（Snapshot Stream）本质，掌握三大区域日常提交流程与差异检索。",
+          "status": "published",
+          "lessons": [
+            {
+              "id": "git-intro-basics",
+              "topicId": "topic-git",
+              "moduleId": "git-basics",
+              "title": "Git 核心心智模型：快照流与三大工作区",
+              "summary": "Git 不是差异比对工具，而是文件快照流系统。掌握工作区、暂存区与 Git 仓库（HEAD）的转换流转。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 1 章 1.3 节 & 第 2 章 2.1 节",
+                "pdfPageStart": 23,
+                "pdfPageEnd": 35,
+                "printPage": "5-17"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# Git 核心心智模型：快照流与三大工作区\n\n## 1. 业务场景与需要解决的问题\n很多新手在学习 Git 时常常死记命令，一旦遇到 `git status` 显示红绿混合、或者不小心改错了文件就手足无措。根本原因是没有建立起 Git 的底层**快照心智模型**。\n\n## 2. 关键区别：差异比对 vs 快照流\n- 传统版本控制系统（如 SVN）把信息看作是**一组基本文件和每个文件随时间累积的差异（Delta-based）**。\n- **Git 截然不同**：Git 把数据看作是**微型文件系统的一组快照（Snapshots）**。每次提交更新时，Git 对全部文件的当前状态生成快照，并保存指向该快照的索引。若文件未改动，Git 不重复存储，仅保留一个链接指向之前存储的文件。\n\n## 3. Git 的三大工作区域与状态机\n理解 Git 的所有操作本质上就是在以下三个区域之间流转：\n1. **工作区（Working Directory）**：对计算机磁盘上特定目录内容的本地修改（你肉眼看到的、编辑器正在编辑的文件）。\n2. **暂存区（Staging Area / Index）**：一个准备包含在下次提交快照中的文件清单文件（在 `.git/index` 中）。\n3. **Git 仓库（Repository / HEAD）**：Git 用来保存项目元数据和对象数据库的地方（最终落地永久记录的快照）。\n\n```text\n+-----------------------+     git add      +----------------------+    git commit    +---------------------+\n| 工作区 Working Dir   | ───────────────> | 暂存区 Staging Index | ───────────────> | Git 仓库 (HEAD)     |\n| (修改后，未跟踪/未暂存) | <─────────────── | (待提交的微型快照清单)  | <─────────────── | (永久存储的对象数据库) |\n+-----------------------+   git restore    +----------------------+   git reset/diff +---------------------+\n```\n\n## 4. 最小命令流与前后状态\n- `git init`：在当前目录创建 `.git` 隐藏子目录，初始化全新版本库。\n- `git status`：检查当前三个区域的状态一致性。\n\n## 5. 常见误区与恢复锦囊\n- **误区**：“把代码写完了才想起来要做版本控制”。\n- **原则**：项目创建伊始第一步即 `git init`，并建立 `.gitignore` 排除本地 IDE 缓存与编译生成物。\n- **来源出处**：《Pro Git》第 1 章 1.3 节与第 2 章 2.1 节（PDF 第 23-35 页）。",
+              "gitSteps": [
+                {
+                  "command": "git init",
+                  "explanation": "在空目录中初始化 Git 仓库，生成 .git 结构",
+                  "repoStateBefore": "空工作区，无版本管理",
+                  "repoStateAfter": "工作区就绪，分支默认为 main 或 master，暂存区与 HEAD 为空"
+                },
+                {
+                  "command": "git status",
+                  "explanation": "查看三大区域的一致性状态",
+                  "repoStateBefore": "未添加任何文件",
+                  "repoStateAfter": "显示 On branch main, nothing to commit"
+                }
+              ]
+            },
+            {
+              "id": "git-record-changes",
+              "topicId": "topic-git",
+              "moduleId": "git-basics",
+              "title": "记录每次更新：从 git add 到语义化 commit",
+              "summary": "掌握工作区向暂存区提交的精确颗粒度控制，编写有理有据的 Conventional Commits 提交消息。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 2 章 2.2 节",
+                "pdfPageStart": 35,
+                "pdfPageEnd": 48,
+                "printPage": "17-30"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 记录每次更新：从 git add 到语义化 commit\n\n## 1. 业务场景与需要解决的问题\n在完成一个功能模块后，代码往往涉及多个文件的修改。如果一古脑儿全选提交，一旦某部分代码存在 Bug，排查和回滚将变得极难。如何做到**原子性提交（Atomic Commit）**？\n\n## 2. 为什么需要「暂存区」这一层缓冲？\n- 暂存区赋予开发者自由编排提交的能力。\n- 你可以在工作区修改了 5 个文件，但使用 `git add file1 file2` 仅将其中相关的两个文件放入本次提交，使每次提交都有单一清晰的意图。\n\n## 3. 提交状态转换图\n```text\n未跟踪 (Untracked) ── git add ──> 已暂存 (Staged)\n已修改 (Modified)  ── git add ──> 已暂存 (Staged)\n已暂存 (Staged)    ── git commit ─> 未修改 (Unmodified, 已落盘)\n```\n\n## 4. 语义化提交规范（Conventional Commits）\n一条合格的工业级提交信息应遵循：\n- `feat: 新增功能`\n- `fix: 修复缺陷`\n- `docs: 文档变更`\n- `refactor: 重构代码（不改变对外行为）`\n- `test: 补充或修复自动化测试`\n\n## 5. 来源与延伸阅读\n- 《Pro Git》第 2 章 2.2 节（PDF 第 35-48 页）。",
+              "gitSteps": [
+                {
+                  "command": "git add README.md",
+                  "explanation": "将工作区指定文件的修改存入暂存区",
+                  "repoStateBefore": "README.md 处于 Untracked 或 Modified 状态",
+                  "repoStateAfter": "README.md 处于 Staged 状态，准备作为快照的一部分"
+                },
+                {
+                  "command": "git commit -m \"docs: initialize project readme\"",
+                  "explanation": "将暂存区内容永久记录为一个新的提交对象，HEAD 指针推进",
+                  "repoStateBefore": "暂存区有待提交的变更",
+                  "repoStateAfter": "新提交节点生成，工作区与 HEAD 保持干净（Clean）"
+                }
+              ]
+            },
+            {
+              "id": "git-history-diff",
+              "topicId": "topic-git",
+              "moduleId": "git-basics",
+              "title": "查看历史与差异：git log、diff 与 HEAD 探秘",
+              "summary": "掌握 git log 图谱查看技巧，使用 git diff 精准比对不同区域的内容差异，理解 HEAD 游标指针。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 2 章 2.3 节",
+                "pdfPageStart": 48,
+                "pdfPageEnd": 55,
+                "printPage": "30-37"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 查看历史与差异：git log、diff 与 HEAD 探秘\n\n## 1. 业务场景与需要解决的问题\n在排查生产线上出现的新 Bug 时，第一步就是确定“这行代码是谁在什么时候因为什么原因改动的”。如何快速检视项目的历史流变与细微差异？\n\n## 2. git diff 的三种经典比对模式\n1. `git diff`：比对**工作区**与**暂存区**之间的差异（还没 `git add` 的内容）。\n2. `git diff --staged`（或 `--cached`）：比对**暂存区**与**最后一次提交（HEAD）**的差异（马上要 commit 的内容）。\n3. `git diff HEAD`：比对**工作区**与**最后一次提交（HEAD）**的全部累积差异。\n\n## 3. 高效浏览提交历史图谱\n使用以下组合参数可直观呈现 ASCII 提交图：\n```bash\ngit log --oneline --graph --all --decorate\n```\n\n## 4. 来源与延伸阅读\n- 《Pro Git》第 2 章 2.3 节（PDF 第 48-55 页）。",
+              "gitSteps": [
+                {
+                  "command": "git diff",
+                  "explanation": "比对工作区和暂存区差异",
+                  "repoStateBefore": "工作区有修改但未暂存",
+                  "repoStateAfter": "逐行显示新增(+)与删除(-)差异"
+                },
+                {
+                  "command": "git log --oneline -n 3",
+                  "explanation": "以单行紧凑形式查看最近 3 次提交",
+                  "repoStateBefore": "仓库包含多个历史提交",
+                  "repoStateAfter": "输出 7 位短哈希与提交标题"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "git-branching",
+          "title": "分支与合并实践",
+          "description": "理解 Git 分支作为轻量级移动指针的低开销特性，掌握快进合并、三方合并与远程协作规约。",
+          "status": "published",
+          "lessons": [
+            {
+              "id": "git-branch-create-merge",
+              "topicId": "topic-git",
+              "moduleId": "git-branching",
+              "title": "分支生命周期与合并策略：Fast-Forward vs 三方合并",
+              "summary": "掌握 git switch/branch 创建切换分支机制，透视快进合并（Fast-Forward）与三方合并节点（Merge Commit）的生成过程。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 3 章 3.1 & 3.2 节",
+                "pdfPageStart": 70,
+                "pdfPageEnd": 85,
+                "printPage": "52-67"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 分支生命周期与合并策略：Fast-Forward vs 三方合并\n\n## 1. 业务场景与需要解决的问题\n在多人协同开发或多特性并行演进时，直接在主干分支修改代码极易导致线上生产故障。Git 如何做到创建分支只需要 1 微秒、却能完美隔离开发上下文？\n\n## 2. 核心原理：分支仅仅是一个 41 字节的引用指针\n- 在很多传统版本库中，创建分支意味着把整个项目的全部文件拷贝一份到新目录。\n- 在 Git 中，**分支仅仅是一个指向某次提交对象（Commit Object）的可变指针**。\n- 创建一个分支，只是在 `.git/refs/heads/` 下写入一个 40 字符的 SHA-1 哈希值文件（加上一个换行符共 41 字节）。\n\n## 3. 两种合并策略对比\n1. **快进合并（Fast-Forward）**：目标分支在分叉后没有任何新提交，合并仅需简单地将主分支指针向前移动到最新提交上，不产生额外的合并节点。\n2. **三方合并（Three-way Merge）**：两个分支在分叉后各自有了新的独立提交。Git 找到它们最近的共同祖先（Common Ancestor），对两个分支的顶端提交做三方比对，并自动生成一个新的「合并提交（Merge Commit）」，该提交具有两个父节点。\n\n```text\n三方合并前:\nC1 ─── C2 ─── C4 (main)\n        └── C3 ─── C5 (feature)\n\n三方合并后:\nC1 ─── C2 ─── C4 ─────── C6 (main, 双父节点)\n        └── C3 ─── C5 ───┘\n```\n\n## 4. 现代推荐命令\n- 推荐使用更直观的 `git switch -c feature` 替代容易引起歧义的 `git checkout -b feature`。\n\n## 5. 来源与延伸阅读\n- 《Pro Git》第 3 章 3.1-3.2 节（PDF 第 70-85 页）。",
+              "gitSteps": [
+                {
+                  "command": "git switch -c feature/user-auth",
+                  "explanation": "创建并切换到新的特性分支",
+                  "repoStateBefore": "处于 main 分支，HEAD 指向 main",
+                  "repoStateAfter": "新分支指针创建完成，HEAD 切换指向 feature/user-auth"
+                },
+                {
+                  "command": "git merge feature/user-auth",
+                  "explanation": "将特性分支合并回主干",
+                  "repoStateBefore": "在 main 分支准备并入 feature 代码",
+                  "repoStateAfter": "合并完成，代码汇入主线"
+                }
+              ]
+            },
+            {
+              "id": "git-remote-collab",
+              "topicId": "topic-git",
+              "moduleId": "git-branching",
+              "title": "远程协作与同步：git remote、fetch、pull 与安全边界",
+              "summary": "掌握远程追踪分支（origin/main）心智模型，区分 fetch 与 pull 的差别，严守禁止在公共分支 force push 的安全底线。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 2 章 2.5 节 & 第 3 章 3.5 节",
+                "pdfPageStart": 58,
+                "pdfPageEnd": 62,
+                "printPage": "40-44"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 远程协作与同步：git remote、fetch、pull 与安全边界\n\n## 1. 业务场景与需要解决的问题\n在团队协作中，每个开发者在自己的本地机器都有完整的版本库。如何把本地的提交同步到 GitHub/GitLab 中央仓库，同时不破坏其他同事的代码？\n\n## 2. 核心原理：远程追踪分支（Remote-tracking Branches）\n- 远程追踪分支（如 `origin/main`）是保存在本地的一组只读指针，记录了上次与远程服务器通信时远程分支的位置。\n- `git fetch origin`：从远程服务器拉取所有新数据并更新本地的 `origin/main` 指针，**但完全不会修改你当前工作区的文件**（安全探索）。\n- `git pull origin main`：等价于 `git fetch` 加上立即尝试把 `origin/main` 合并进当前分支（可能引发意外合并冲突）。\n\n## 3. Git 操作安全铁律\n- **禁止在公共共享分支执行 `git push --force`**：强推会改写远程提交历史，导致其他协作者的分支历史被严重破坏。\n- **小步提交、及时同步**：在准备发起 PR 或推送前，先基于最新的目标主干做本地验证。\n\n## 4. 来源与延伸阅读\n- 《Pro Git》第 2 章 2.5 节（PDF 第 58-62 页）。",
+              "gitSteps": [
+                {
+                  "command": "git remote -v",
+                  "explanation": "查看当前配置的远程仓库别名与通信地址",
+                  "repoStateBefore": "已连接远程源",
+                  "repoStateAfter": "输出 origin 对应的 fetch 和 push 地址"
+                },
+                {
+                  "command": "git fetch origin",
+                  "explanation": "同步远程更新到本地追踪分支，不触碰工作区",
+                  "repoStateBefore": "本地 origin/main 可能落后于中央仓库",
+                  "repoStateAfter": "本地 origin/main 移动到最新位置，随时可供 diff 查看"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "git-conflict-undo",
+          "title": "冲突解决与撤销时光机",
+          "description": "掌握合并冲突标记解读、撤销暂存区与工作区修改，以及使用 git revert 安全撤销线上提交。",
+          "status": "building",
+          "lessons": []
+        },
+        {
+          "id": "git-advanced-tools",
+          "title": "高级工具与变基 Rebase",
+          "description": "变基心智模型与线性历史维护、git stash 暂存上下文切换、git cherry-pick 挑选提交与 git bisect 二分定位故障。",
+          "status": "planned",
+          "lessons": []
+        },
+        {
+          "id": "git-internals",
+          "title": "Git 内部原理与对象模型",
+          "description": "揭秘 .git 目录底层结构：blob 文件内容对象、tree 目录树对象、commit 提交节点、tag 标签对象与 packfile 垃圾回收压缩。",
+          "status": "planned",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": "topic-csapp",
+      "title": "计算机系统要素 (CS:APP)",
+      "subtitle": "以程序员的视角深入理解计算机体系、内存模型与系统级 I/O",
+      "icon": "Cpu",
+      "status": "materials",
+      "description": "基于《Computer Systems: A Programmer's Perspective (3rd Global Edition)》，涵盖程序的机器级表示、指令集、存储器层次结构、链接原理、虚拟内存与系统级 I/O。当前仅建立资料与大纲索引，课程正在规划中。",
+      "stageLinks": [
+        "01",
+        "04"
+      ],
+      "sourceBook": {
+        "title": "CS:APP (深入理解计算机系统 第 3 版)",
+        "version": "3rd Global Edition",
+        "totalPages": 1122,
+        "format": "英文原版教材"
+      },
+      "modules": [
+        {
+          "id": "csapp-info-rep",
+          "title": "信息的表示与处理",
+          "description": "整数、浮点数编码与溢出特性",
+          "status": "materials",
+          "lessons": []
+        },
+        {
+          "id": "csapp-machine-code",
+          "title": "程序的机器级表示",
+          "description": "汇编指令、控制转移与函数调用栈帧",
+          "status": "materials",
+          "lessons": []
+        },
+        {
+          "id": "csapp-memory-hierarchy",
+          "title": "存储器层次结构与缓存",
+          "description": "局部性原理与 Cache 命中率分析",
+          "status": "materials",
+          "lessons": []
+        },
+        {
+          "id": "csapp-linking",
+          "title": "链接过程揭密",
+          "description": "静态链接、符号解析、重定位与动态链接库",
+          "status": "materials",
+          "lessons": []
+        },
+        {
+          "id": "csapp-virtual-memory",
+          "title": "虚拟内存机制",
+          "description": "页表、TLB、地址翻译与动态内存分配 (malloc)",
+          "status": "materials",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": "topic-ostep",
+      "title": "操作系统导论 (OSTEP)",
+      "subtitle": "虚拟化、并发与持久性三大支柱原理与实现",
+      "icon": "Terminal",
+      "status": "materials",
+      "description": "基于威斯康星大学经典开源教材《Operating Systems: Three Easy Pieces》，深入剖析进程调度、虚拟内存管理、锁/信号量并发机制与文件系统。当前仅建立资料与大纲索引，课程正在规划中。",
+      "stageLinks": [
+        "04"
+      ],
+      "sourceBook": {
+        "title": "操作系统导论 (OSTEP)",
+        "version": "中文译本",
+        "totalPages": 498,
+        "format": "开源教材"
+      },
+      "modules": [
+        {
+          "id": "ostep-virtualization",
+          "title": "虚拟化：CPU 与内存",
+          "description": "进程抽象、分时机制与地址转换",
+          "status": "materials",
+          "lessons": []
+        },
+        {
+          "id": "ostep-concurrency",
+          "title": "并发：线程与同步原语",
+          "description": "临界区、互斥锁、条件变量与死锁避免",
+          "status": "materials",
+          "lessons": []
+        },
+        {
+          "id": "ostep-persistence",
+          "title": "持久性：I/O 与文件系统",
+          "description": "磁盘调度、文件系统元数据与崩溃一致性 (FSCK/日志)",
+          "status": "materials",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": "topic-network",
+      "title": "计算机网络：自顶向下方法",
+      "subtitle": "从应用层协议到底层数据传输的互联网核心体系",
+      "icon": "Network",
+      "status": "materials",
+      "description": "基于 Kurose & Ross 经典高校教材《计算机网络：自顶向下方法（原书第 8 版）》，涵盖 HTTP/1.1/2/3、DNS、TCP 可靠数据传输与拥塞控制、IP 寻址路由。当前仅建立资料与大纲索引，课程正在规划中。",
+      "stageLinks": [
+        "03",
+        "04"
+      ],
+      "sourceBook": {
+        "title": "计算机网络：自顶向下方法 (原书第 8 版)",
+        "version": "原书第 8 版中文版",
+        "totalPages": 505,
+        "format": "经典教材"
+      },
+      "modules": [
+        {
+          "id": "net-application",
+          "title": "应用层协议原理",
+          "description": "HTTP 报文结构、Cookie/Session、DNS 域名解析与 Socket 编程",
+          "status": "materials",
+          "lessons": []
+        },
+        {
+          "id": "net-transport",
+          "title": "传输层：TCP 与 UDP",
+          "description": "滑动窗口、三次握手四次挥手、可靠传输状态机与拥塞控制算法",
+          "status": "materials",
+          "lessons": []
+        },
+        {
+          "id": "net-network-layer",
+          "title": "网络层：数据平面与控制平面",
+          "description": "IP 协议、子网划分、NAT 穿透与 OSPF/BGP 路由协议",
+          "status": "materials",
+          "lessons": []
+        }
+      ]
+    }
+  ]
+}

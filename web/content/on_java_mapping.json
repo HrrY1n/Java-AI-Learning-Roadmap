@@ -1,0 +1,145 @@
+{
+  "version": "1.4.0",
+  "book": {
+    "title": "On Java 8 (中文译本)",
+    "totalPages": 1565,
+    "pdfFile": "On-Java-8_Zh_latest.pdf"
+  },
+  "links": [
+    {
+      "stageId": "01",
+      "lessonId": "day01",
+      "topicTitle": "输出与变量",
+      "bookChapter": "第 3 章 万物皆对象",
+      "pdfPages": "37-41",
+      "overlapType": "extension",
+      "rationale": "现有课程侧重基础输出与变量定义语法，原书从内存分配模型（栈空间局部变量 vs 堆空间对象实体）阐述数据存储本质，有助于初学者打牢变量引用基础。",
+      "modernJdkDiff": "Java 10 引入局部变量类型推断（var），对于具备明确初始化的变量可简化声明，但底层静态强类型系统不变。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "day02",
+      "topicTitle": "数据类型与运算符",
+      "bookChapter": "第 4 章 运算符",
+      "pdfPages": "56-84",
+      "overlapType": "full-overlap",
+      "rationale": "基本算术、关系与逻辑运算符规则高度重叠；原书详尽分析了类型提升（Type Promotion）、短路求值（Short-circuit）与整数截断细节。",
+      "modernJdkDiff": "现代 Java 支持数字字面量下划线增强（如 1_000_000），增强大型常数可读性。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "day03",
+      "topicTitle": "条件判断与选择结构",
+      "bookChapter": "第 5 章 控制流",
+      "pdfPages": "98-121",
+      "overlapType": "extension",
+      "rationale": "原书对 switch 语句的分支评估机制进行了剖析，解释了为何遗漏 break 会导致穿透执行。",
+      "modernJdkDiff": "Java 14+ 正式引入增强型 Switch 表达式（支持箭头标签 ->、返回值与 yield 语句），彻底消除了历史遗漏 break 的陷阱；Java 21 进一步支持 switch 的类型模式匹配。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "day04",
+      "topicTitle": "循环结构与累加",
+      "bookChapter": "第 5 章 控制流",
+      "pdfPages": "105-118",
+      "overlapType": "full-overlap",
+      "rationale": "for/while 循环的基本语义与执行流程完全一致，原书补充了带标签的 break/continue 在多重嵌套循环跳出中的用法。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "day05",
+      "topicTitle": "数组基础与下标访问",
+      "bookChapter": "第 3 章 万物皆对象 (数组的存储)",
+      "pdfPages": "41-42",
+      "overlapType": "extension",
+      "rationale": "强调数组在 Java 中本身是一个对象引用，对象数组存储的是连续的引用指针而非内联对象本身。",
+      "modernJdkDiff": "现代 JVM（如 OpenJDK G1/ZGC）在堆内存分配和引用压缩（Compressed OOPs）方面进行了大量底层优化。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "day06",
+      "topicTitle": "方法基础与参数调用",
+      "bookChapter": "第 3 章 万物皆对象 (方法、参数与返回值)",
+      "pdfPages": "43-47",
+      "overlapType": "extension",
+      "rationale": "原书阐明方法在面向对象中是向对象发送消息（Sending Messages）的具象化，返回值与形参构成了调用方的强契约。",
+      "modernJdkDiff": "现代 Java 强调清晰的方法契约设计，配合 Objects.requireNonNull() 进行防御性先验检查。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "deep03",
+      "topicTitle": "数组、下标与内存分配",
+      "bookChapter": "第 3 章 万物皆对象 (内存分配位置)",
+      "pdfPages": "38-40",
+      "overlapType": "extension",
+      "rationale": "对比寄存器、栈（Stack）、堆（Heap）与常量存储区。数组实体在堆中分配连续内存，变量名仅持有一份栈引用。",
+      "modernJdkDiff": "JVM 即时编译器（JIT）支持逃逸分析（Escape Analysis）和标量替换，部分不逃逸的小对象可能直接在栈上分配。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "deep04",
+      "topicTitle": "Java 只有值传递本质",
+      "bookChapter": "第 3 章 万物皆对象 (别名现象与引用副本)",
+      "pdfPages": "40-41",
+      "overlapType": "gap-supplement",
+      "rationale": "深入剖析对象引用赋值带来的别名现象（Aliasing）。Java 方法传参传递的是引用本身的按值复制（Pass-by-value-of-reference），而非 C++ 的指针引用传递。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-class-basics",
+      "topicTitle": "类与对象基础",
+      "bookChapter": "第 1 章 对象的概念",
+      "pdfPages": "13-18",
+      "overlapType": "extension",
+      "rationale": "原书提出了至关重要的心智模型：“每个对象都是一个微型服务提供者（Service Provider）”，从单纯的语法定义类跃迁到面向对象的单一职责划分。",
+      "modernJdkDiff": "Java 16+ 引入 Record（记录类），针对纯数据传输对象（DTO）提供不可变、自动生成构造方法、equals 与 hashCode 的紧凑语法。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-constructor-this",
+      "topicTitle": "构造方法与 this 关键字",
+      "bookChapter": "第 6 章 初始化和清理 (保证初始化)",
+      "pdfPages": "121-140",
+      "overlapType": "extension",
+      "rationale": "深入解析了字段默认零值、显式初始化与构造函数执行顺序，以及使用 this(...) 委托同类重载构造器的具体规则与限制条件。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-encapsulation-basics",
+      "topicTitle": "封装性与访问控制",
+      "bookChapter": "第 7 章 封装 (访问权限修饰词)",
+      "pdfPages": "168-185",
+      "overlapType": "extension",
+      "rationale": "阐述了「客户端程序员」与「类库开发者」的角色边界，说明私有成员保护内部状态不变性（Invariants）的核心意图。",
+      "modernJdkDiff": "Java 9 引入模块系统（JPMS），在 public 之外增加了模块级导出控制（exports），实现了更高级别的强封装边界。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-encapsulation-why",
+      "topicTitle": "为什么需要封装：数据守门员与不变量",
+      "bookChapter": "第 7 章 封装 (代码组织的重构自由度)",
+      "pdfPages": "172-178",
+      "overlapType": "extension",
+      "rationale": "原书深刻指出封装的本质不仅是藏字段，更是为类库开发者保留后续自由重构内部实现而不破坏调用方的设计自由。",
+      "modernJdkDiff": "现代不可变对象设计（如 List.of、Record）将封装提升到了只读线程安全的高度。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-object-construction",
+      "topicTitle": "对象构建全流程：从堆分配到构造执行",
+      "bookChapter": "第 6 章 初始化和清理 (成员初始化次序)",
+      "pdfPages": "135-144",
+      "overlapType": "extension",
+      "rationale": "剖析堆内存开辟、类加载（静态块初始化）、字段默认赋零值、声明初始化、构造方法体执行这 5 大关键物理阶段。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-reference-state",
+      "topicTitle": "引用传递与对象状态陷阱",
+      "bookChapter": "第 1 章 对象的概念 (引用操纵对象)",
+      "pdfPages": "14-16",
+      "overlapType": "advanced",
+      "rationale": "以电视机与遥控器的经典比喻，透彻解析引用是句柄、对象是本体，多个遥控器可以操作同一台电视，产生隐蔽的状态修改副作用。"
+    }
+  ]
+}

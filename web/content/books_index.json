@@ -1,0 +1,133 @@
+{
+  "books": [
+    {
+      "id": "book-hello-algo",
+      "title": "Hello 算法",
+      "subtitle": "动画图解、一通百通的数据结构与算法入门教程",
+      "version": "1.0.0 (中文 C++ / 统一概念版)",
+      "author": "Krahets",
+      "totalPages": 378,
+      "format": "PDF / 开源教材 (CC BY-NC-SA 4.0)",
+      "topicId": "topic-algo",
+      "status": "integrated-topic",
+      "summary": "以动画图解与工程思维讲解复杂度分析、常见数据结构与经典算法，本站统一使用 Java 作为实现语言并配合原创交互图解。",
+      "keyChapters": [
+        { "chapter": "第 2 章", "title": "复杂度分析", "pdfPages": "23-57" },
+        { "chapter": "第 3 章", "title": "数据结构", "pdfPages": "57-72" },
+        { "chapter": "第 4 章", "title": "数组与链表", "pdfPages": "72-95" },
+        { "chapter": "第 5 章", "title": "栈与队列", "pdfPages": "95-120" },
+        { "chapter": "第 6 章", "title": "哈希表", "pdfPages": "120-143" },
+        { "chapter": "第 7 章", "title": "树", "pdfPages": "143-179" },
+        { "chapter": "第 8 章", "title": "堆", "pdfPages": "179-194" },
+        { "chapter": "第 9 章", "title": "图", "pdfPages": "194-214" },
+        { "chapter": "第 10 章", "title": "搜索", "pdfPages": "214-231" },
+        { "chapter": "第 11 章", "title": "排序", "pdfPages": "231-265" },
+        { "chapter": "第 12 章", "title": "分治", "pdfPages": "265-282" },
+        { "chapter": "第 13 章", "title": "回溯", "pdfPages": "282-308" },
+        { "chapter": "第 14 章", "title": "动态规划", "pdfPages": "308-352" },
+        { "chapter": "第 15 章", "title": "贪心", "pdfPages": "352-378" }
+      ]
+    },
+    {
+      "id": "book-pro-git",
+      "title": "Pro Git (第 2 版中文版)",
+      "subtitle": "官方权威版本控制实战指南",
+      "version": "2nd Edition (ZH)",
+      "author": "Scott Chacon & Ben Straub",
+      "totalPages": 501,
+      "format": "PDF / 官方开放文档 (CC BY-NC-SA 3.0)",
+      "topicId": "topic-git",
+      "status": "integrated-topic",
+      "summary": "深入阐述 Git 内容寻址与快照数据模型、日常工作流、分支合并机制、高级撤销与内部原理。本站设计配套命令行实验与提交图解。",
+      "keyChapters": [
+        { "chapter": "第 1 章", "title": "起步：版本控制与 Git 哲学", "pdfPages": "19-33" },
+        { "chapter": "第 2 章", "title": "Git 基础：三大区域与日常提交流", "pdfPages": "34-69" },
+        { "chapter": "第 3 章", "title": "Git 分支：分支创建、合并与变基", "pdfPages": "70-108" },
+        { "chapter": "第 5 章", "title": "分布式 Git：工作流与贡献准则", "pdfPages": "129-168" },
+        { "chapter": "第 7 章", "title": "Git 工具：贮藏、重写历史与撤销揭密", "pdfPages": "222-339" },
+        { "chapter": "第 10 章", "title": "Git 内部原理：对象模型与引用规范", "pdfPages": "420-458" }
+      ]
+    },
+    {
+      "id": "book-on-java-8",
+      "title": "On Java 8 (中文译本)",
+      "subtitle": "深入理解面向对象思维与 Java 语言设计",
+      "version": "Latest Translated Edition",
+      "author": "Bruce Eckel",
+      "totalPages": 1565,
+      "format": "PDF / 经典教材",
+      "topicId": "mainline-java",
+      "status": "integrated-core",
+      "summary": "Java 领域的经典思想著作。不作为平行学习路线，而是作为 Stage 01~03 主线课程的深度原理扩展与思考源泉，标注现代 JDK 演进差异。",
+      "keyChapters": [
+        { "chapter": "第 1 章", "title": "对象的概念", "pdfPages": "13-32" },
+        { "chapter": "第 3 章", "title": "万物皆对象", "pdfPages": "37-56" },
+        { "chapter": "第 4 章", "title": "运算符与类型转换", "pdfPages": "56-98" },
+        { "chapter": "第 5 章", "title": "控制流", "pdfPages": "98-121" },
+        { "chapter": "第 6 章", "title": "初始化与清理", "pdfPages": "121-168" },
+        { "chapter": "第 7 章", "title": "封装与访问控制", "pdfPages": "168-185" },
+        { "chapter": "第 8 章", "title": "复用：组合与继承", "pdfPages": "185-212" },
+        { "chapter": "第 9 章", "title": "多态与动态绑定", "pdfPages": "212-237" },
+        { "chapter": "第 10 章", "title": "接口与抽象类", "pdfPages": "237-268" },
+        { "chapter": "第 12 章", "title": "集合框架", "pdfPages": "320-390" },
+        { "chapter": "第 13/14 章", "title": "函数式编程与流式操作", "pdfPages": "400-510" },
+        { "chapter": "第 15 章", "title": "异常处理", "pdfPages": "520-570" }
+      ]
+    },
+    {
+      "id": "book-csapp",
+      "title": "CS:APP (深入理解计算机系统 第 3 版)",
+      "subtitle": "Computer Systems: A Programmer's Perspective",
+      "version": "3rd Global Edition",
+      "author": "Randal E. Bryant & David R. O'Hallaron",
+      "totalPages": 1122,
+      "format": "PDF / 经典教材 (英文原版)",
+      "topicId": "topic-csapp",
+      "status": "indexed-future",
+      "summary": "从程序员视角理解硬件架构、指令集、内存层次、虚拟内存、系统级 I/O 与并发基础。当前阶段建立索引待接入，不误标为已发布。",
+      "keyChapters": [
+        { "chapter": "Chapter 2", "title": "Representing and Manipulating Information", "pdfPages": "59-198" },
+        { "chapter": "Chapter 3", "title": "Machine-Level Representation of Programs", "pdfPages": "199-354" },
+        { "chapter": "Chapter 6", "title": "The Memory Hierarchy", "pdfPages": "613-688" },
+        { "chapter": "Chapter 7", "title": "Linking", "pdfPages": "689-738" },
+        { "chapter": "Chapter 9", "title": "Virtual Memory", "pdfPages": "791-866" },
+        { "chapter": "Chapter 12", "title": "Concurrent Programming", "pdfPages": "993-1048" }
+      ]
+    },
+    {
+      "id": "book-ostep",
+      "title": "操作系统导论 (OSTEP)",
+      "subtitle": "Operating Systems: Three Easy Pieces",
+      "version": "中文译本",
+      "author": "Remzi H. Arpaci-Dusseau & Andrea C. Arpaci-Dusseau",
+      "totalPages": 498,
+      "format": "PDF / 开源教材",
+      "topicId": "topic-ostep",
+      "status": "indexed-future",
+      "summary": "围绕虚拟化（CPU/内存）、并发（锁、条件变量、信号量）与持久性（磁盘、文件系统）三大核心主题。当前阶段建立索引待接入，不误标为已发布。",
+      "keyChapters": [
+        { "chapter": "第一部分", "title": "虚拟化：进程与地址空间", "pdfPages": "19-192" },
+        { "chapter": "第二部分", "title": "并发：线程、锁与条件变量", "pdfPages": "193-334" },
+        { "chapter": "第三部分", "title": "持久性：I/O 设备与文件系统", "pdfPages": "335-490" }
+      ]
+    },
+    {
+      "id": "book-network",
+      "title": "计算机网络：自顶向下方法 (原书第 8 版)",
+      "subtitle": "Computer Networking: A Top-Down Approach",
+      "version": "原书第 8 版中文版",
+      "author": "James F. Kurose & Keith W. Ross (陈鸣译)",
+      "totalPages": 505,
+      "format": "PDF / 权威高校教材",
+      "topicId": "topic-network",
+      "status": "indexed-future",
+      "summary": "从应用层（HTTP/DNS）、传输层（TCP/UDP 可靠传输与拥塞控制）自顶向下透视现代互联网通信机制。当前阶段建立索引待接入，不误标为已发布。",
+      "keyChapters": [
+        { "chapter": "第 1 章", "title": "计算机网络和因特网", "pdfPages": "1-62" },
+        { "chapter": "第 2 章", "title": "应用层协议 (HTTP, DNS, Socket)", "pdfPages": "63-146" },
+        { "chapter": "第 3 章", "title": "运输层 (UDP, TCP 原理与流量控制)", "pdfPages": "147-248" },
+        { "chapter": "第 4/5 章", "title": "网络层 (数据平面与控制平面)", "pdfPages": "249-380" }
+      ]
+    }
+  ]
+}

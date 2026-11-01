@@ -127,6 +127,103 @@ export interface WorkspaceConfig {
   reviewPicks: Array<{ id: string; label: string }>;
 }
 
+export type TopicStatus = "published" | "building" | "materials" | "planned";
+
+export interface BookReference {
+  bookTitle: string;
+  chapter: string;
+  pdfPageStart: number;
+  pdfPageEnd: number;
+  printPage?: string;
+  notes?: string;
+}
+
+export interface GitCommandStep {
+  command: string;
+  explanation: string;
+  repoStateBefore: string;
+  repoStateAfter: string;
+}
+
+export interface TopicLesson {
+  id: string;
+  topicId: string;
+  moduleId: string;
+  title: string;
+  summary: string;
+  status: TopicStatus;
+  kind: "concept" | "code" | "interactive-lab" | "command-lab";
+  bookReference?: BookReference;
+  stageLinks?: string[];
+  markdown: string;
+  code?: string;
+  packageName?: string;
+  className?: string;
+  codeFiles?: LessonCodeFile[];
+  gitSteps?: GitCommandStep[];
+  exercisePrompt?: string;
+  exerciseStarter?: string;
+  verificationTask?: string;
+}
+
+export interface TopicModule {
+  id: string;
+  title: string;
+  description: string;
+  status: TopicStatus;
+  lessons: TopicLesson[];
+}
+
+export interface TopicSourceBook {
+  title: string;
+  version: string;
+  totalPages: number;
+  format: string;
+}
+
+export interface Topic {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  status: TopicStatus;
+  description: string;
+  stageLinks: string[];
+  sourceBook: TopicSourceBook;
+  modules: TopicModule[];
+}
+
+export interface OnJavaLink {
+  stageId: string;
+  lessonId: string;
+  topicTitle: string;
+  bookChapter: string;
+  pdfPages: string;
+  overlapType: "full-overlap" | "extension" | "gap-supplement" | "advanced";
+  rationale: string;
+  modernJdkDiff?: string;
+}
+
+export interface BookChapterOutline {
+  chapter: string;
+  title: string;
+  pdfPages: string;
+}
+
+export interface BookIndexEntry {
+  id: string;
+  title: string;
+  subtitle: string;
+  version: string;
+  author: string;
+  totalPages: number;
+  format: string;
+  topicId: string;
+  status: "integrated-core" | "integrated-topic" | "indexed-future";
+  summary: string;
+  keyChapters: BookChapterOutline[];
+}
+
 export interface Catalog {
   lessons: Lesson[];
   exercises: Exercise[];
@@ -138,4 +235,10 @@ export interface Catalog {
   references: ReferenceResource[];
   /** 工作台固定入口配置（V1.2 起提供） */
   workspace: WorkspaceConfig;
+  /** V1.4 新增：专题学习体系 */
+  topics: Topic[];
+  /** V1.4 新增：On Java 8 补充关联 */
+  onJavaLinks: OnJavaLink[];
+  /** V1.4 新增：外部权威教材库索引 */
+  booksIndex: BookIndexEntry[];
 }
