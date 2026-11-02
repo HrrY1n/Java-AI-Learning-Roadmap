@@ -51,7 +51,7 @@ public class App {
         }
     }
 
-    // 括号匹配检查
+    // 括号匹配检查：约定普通字符（字母、数字等）不参与匹配，只校验括号本身
     public static boolean isValidParentheses(String s) {
         char[] stack = new char[s.length()];
         int top = -1;
@@ -59,13 +59,14 @@ public class App {
             char c = s.charAt(i);
             if (c == '(' || c == '[' || c == '{') {
                 stack[++top] = c;
-            } else {
+            } else if (c == ')' || c == ']' || c == '}') {
                 if (top == -1) return false;
                 char open = stack[top--];
                 if (c == ')' && open != '(') return false;
                 if (c == ']' && open != '[') return false;
                 if (c == '}' && open != '{') return false;
             }
+            // 其余普通字符直接跳过，不影响括号匹配结果
         }
         return top == -1;
     }
@@ -86,6 +87,11 @@ public class App {
         String invalidExpr = "{[(])}";
         System.out.println("括号合法性 {[()]}：" + isValidParentheses(validExpr));
         System.out.println("括号合法性 {[(])}：" + isValidParentheses(invalidExpr));
+        // 普通字符不参与匹配：只要括号自身成对闭合即为合法
+        System.out.println("括号合法性 (a)：" + isValidParentheses("(a)"));
+        System.out.println("括号合法性 (a：" + isValidParentheses("(a"));
+        System.out.println("括号合法性 空字符串：" + isValidParentheses(""));
+        System.out.println("括号合法性 纯普通字符abc：" + isValidParentheses("abc"));
 
         System.out.println("核心特征：入栈出栈皆在单端操作，时间复杂度稳定 O(1)。");
     }

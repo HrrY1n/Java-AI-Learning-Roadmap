@@ -59,12 +59,12 @@ function ComplexityLadderDemo() {
   };
 
   const tiers = [
-    { name: "常数阶 O(1)", calc: calculate("O(1)", n), color: "var(--teal-600)" },
-    { name: "对数阶 O(log n)", calc: calculate("O(log n)", n), color: "var(--emerald-600)" },
-    { name: "线性阶 O(n)", calc: calculate("O(n)", n), color: "var(--blue-600)" },
-    { name: "线性对数阶 O(n log n)", calc: calculate("O(n log n)", n), color: "var(--amber-600)" },
-    { name: "平方阶 O(n²)", calc: calculate("O(n^2)", n), color: "var(--orange-600)" },
-    { name: "指数阶 O(2ⁿ)", calc: calculate("O(2^n)", n), color: "var(--rose-600)" },
+    { name: "常数阶 O(1)", calc: calculate("O(1)", n), color: "#0d9488" },
+    { name: "对数阶 O(log n)", calc: calculate("O(log n)", n), color: "#059669" },
+    { name: "线性阶 O(n)", calc: calculate("O(n)", n), color: "#2563eb" },
+    { name: "线性对数阶 O(n log n)", calc: calculate("O(n log n)", n), color: "#d97706" },
+    { name: "平方阶 O(n²)", calc: calculate("O(n^2)", n), color: "#ea580c" },
+    { name: "指数阶 O(2ⁿ)", calc: calculate("O(2^n)", n), color: "#e11d48" },
   ];
 
   return (
@@ -111,7 +111,7 @@ function ComplexityLadderDemo() {
         })}
       </div>
       <div className="visualizer-foot">
-        💡 观察启示：当 n 从 4 变为 64 时，$O(1)$ 与 $O(\log n)$ 几乎没有显著开销，而 $O(n^2)$ 飙升到了 4096 次，$O(2^n)$ 已经冲破宇宙物理运算限制。这正是算法优化的决定性意义。
+        💡 观察启示：当 n 从 4 变为 64 时，常数阶 O(1) 与对数阶 O(log n) 几乎没有显著开销，而平方阶 O(n²) 飙升到了 4096 次，指数阶 O(2ⁿ) 已超出可计算范围。这正是算法优化的决定性意义。
       </div>
     </div>
   );
@@ -137,7 +137,7 @@ function ArrayAddressingDemo() {
       <div className="visualizer-header">
         <div className="visualizer-title">
           <Layers size={16} />
-          <span>连续内存寻址推导：Target = Base + Index × Size</span>
+          <span>连续内存寻址推导（简化教学模型）：Target = Base + Index × Size</span>
         </div>
       </div>
 
@@ -151,7 +151,7 @@ function ArrayAddressingDemo() {
               className={`memory-slot ${isTarget ? "active-slot" : ""}`}
               onClick={() => setIndex(cell.i)}
             >
-              <div className="slot-addr">0x{addr.toString(16).toUpperCase()}</div>
+              <div className="slot-addr">模拟地址 0x{addr.toString(16).toUpperCase()}</div>
               <div className="slot-val">{cell.val}</div>
               <div className="slot-idx">下标 [{cell.i}]</div>
             </div>
@@ -164,11 +164,11 @@ function ArrayAddressingDemo() {
         <code>0x{baseAddress.toString(16).toUpperCase()} + ({index} × {elementSize})</code>
         <ArrowRight size={14} />
         <strong className="target-addr-badge">
-          物理内存地址 0x{targetAddress.toString(16).toUpperCase()} (耗时 O(1))
+          模拟地址 0x{targetAddress.toString(16).toUpperCase()} (耗时 O(1))
         </strong>
       </div>
       <div className="visualizer-foot">
-        💡 核心机制：CPU 能够通过单次加法与乘法在 $O(1)$ 常数时间内定位任何下标，这是数组成为最基础线性结构的物理根基。
+        💡 核心机制：CPU 能够通过单次加法与乘法在 O(1) 常数时间内定位任何下标，这是数组成为最基础线性结构的物理根基。图中地址是便于理解的模拟示意值，并非真实物理内存地址；JVM 的实际内存布局由运行时决定。
       </div>
     </div>
   );
@@ -254,19 +254,21 @@ function LinkedListPointerDemo() {
   );
 }
 
-// 4. 算法：环形队列模运算
+// 4. 算法：环形队列模运算（预留空位法演示）
 function CircularQueueDemo() {
   const [capacity] = useState(6);
   const [items, setItems] = useState<Array<number | null>>([10, 20, 30, null, null, null]);
   const [front, setFront] = useState(0);
   const [rear, setRear] = useState(3);
+  const [nextVal, setNextVal] = useState(40);
 
   const enqueue = () => {
-    if ((rear + 1) % capacity === front) return; // 满
+    if ((rear + 1) % capacity === front) return; // 满：预留空位法判满
     const newItems = [...items];
-    newItems[rear] = (rear + 1) * 10;
+    newItems[rear] = nextVal;
     setItems(newItems);
     setRear((r) => (r + 1) % capacity);
+    setNextVal((v) => v + 10);
   };
 
   const dequeue = () => {
@@ -285,7 +287,7 @@ function CircularQueueDemo() {
       <div className="visualizer-header">
         <div className="visualizer-title">
           <Layers size={16} />
-          <span>环形队列（Circular Queue）：指针模运算 (p + 1) % {capacity}</span>
+          <span>环形队列（预留空位法演示）：指针模运算 (p + 1) % {capacity}</span>
         </div>
         <div className="visualizer-controls">
           <button
@@ -326,6 +328,9 @@ function CircularQueueDemo() {
       <div className="visualizer-foot">
         💡 状态：front = {front}，rear = {rear}。{isEmpty ? "【队列为空】" : ""}{" "}
         {isFull ? "【队列已满】" : ""}。出队后 front 槽位可以循环复用，彻底消除了普通数组的“假溢出”缺陷。
+        本演示采用「预留空位法」判满（牺牲一格，{capacity} 个槽位最多存 {capacity - 1} 个元素）；
+        配套 Java 源码采用的是「size 计数法」（{capacity} 个槽位可存满 {capacity} 个元素，空队列操作抛异常而非返回 -1），
+        两者都是正确的环形队列实现，但不是同一份实现，对比时请注意区分。
       </div>
     </div>
   );

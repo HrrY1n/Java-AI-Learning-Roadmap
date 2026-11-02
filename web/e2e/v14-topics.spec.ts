@@ -110,6 +110,65 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     expect(isOverflowing).toBe(false);
   });
 
+  test("复杂度图表柱形在深浅主题下均可见（非透明着色），且不显示原始 $O(...) 公式符号", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-complexity-eval");
+    const ladder = page.locator(".visualizer-card").filter({ hasText: "大 O 渐近复杂度增长断崖" });
+    await expect(ladder).toBeVisible();
+
+    // 每根柱形必须具有实际可见的填充颜色（此前使用了未定义的 CSS 变量导致不可见）
+    const bars = ladder.locator(".ladder-fill");
+    const count = await bars.count();
+    expect(count).toBeGreaterThanOrEqual(6);
+    for (let i = 0; i < count; i++) {
+      const color = await bars.nth(i).evaluate((el) => getComputedStyle(el).backgroundColor);
+      expect(color).toMatch(/rgba?\(\d+, \d+, \d+/);
+      expect(color).not.toBe("rgba(0, 0, 0, 0)");
+    }
+
+    // 交互组件内的说明文字不得出现原始 $...$ 公式标记
+    await expect(ladder).not.toContainText("$O(");
+
+    // 深色主题下柱形依旧可见
+    await page.evaluate(() => (document.documentElement.dataset.theme = "dark"));
+    for (let i = 0; i < count; i++) {
+      const color = await bars.nth(i).evaluate((el) => getComputedStyle(el).backgroundColor);
+      expect(color).not.toBe("rgba(0, 0, 0, 0)");
+    }
+  });
+
+  test("数组寻址图解标注模拟地址；环形队列图解标明预留空位法并与源码实现区分", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-array");
+    const addressing = page.locator(".visualizer-card").filter({ hasText: "连续内存寻址推导" });
+    await expect(addressing).toContainText("简化教学模型");
+    await expect(addressing).toContainText("模拟地址");
+    await expect(addressing).not.toContainText("物理内存地址 0x");
+
+    // 队列图解：真实交互验证——入队到预留空位法上限后按钮禁用
+    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-queue");
+    const queueCard = page
+      .locator(".visualizer-card")
+      .filter({ hasText: "预留空位法演示" });
+    await expect(queueCard).toBeVisible();
+    await expect(queueCard).toContainText("6 个槽位最多存 5 个元素");
+
+    const enqueueBtn = queueCard.getByRole("button", { name: /入队 Enqueue/ });
+    const dequeueBtn = queueCard.getByRole("button", { name: /出队 Dequeue/ });
+    // 初始 3 个元素：再入队 2 次后达到预留空位法上限（6 槽 5 元素）
+    await enqueueBtn.click();
+    await enqueueBtn.click();
+    await expect(enqueueBtn).toBeDisabled();
+    await expect(queueCard).toContainText("【队列已满】");
+    // 出队一次后应恢复可入队（FIFO：先出 10），front 前进到下标 1
+    await dequeueBtn.click();
+    await expect(queueCard).toContainText("front = 1");
+    await expect(enqueueBtn).toBeEnabled();
+    await expect(dequeueBtn).toBeEnabled();
+  });
+
   test("Hello 算法课程阅读：原书来源追溯、实操属性标识与阅读打卡（诚实性约定）", async ({
     page,
   }) => {

@@ -20,13 +20,13 @@ JavaRoadmap Lab 把一条 14 Stage 的学习路线做成了可以动手验证的
 
 学习工作台首页——从当前任务进入课程、预测与练习：
 
-![学习工作台首页](docs/javaroadmap_lab/renaissance/after-home-light.png)
+![学习工作台首页](docs/javaroadmap_lab/v1.4_screenshots/workbench_1440_light.png)
 
-| 课程阅读 | 编程实验室 |
+| 算法专题阅读 | Git 专题阅读 |
 | --- | --- |
-| ![课程阅读](docs/javaroadmap_lab/renaissance/after-lesson-light.png) | ![编程实验室](docs/javaroadmap_lab/renaissance/after-lab-light.png) |
+| ![算法专题阅读](docs/javaroadmap_lab/v1.4_screenshots/algo-lesson_1440_light.png) | ![Git 专题阅读](docs/javaroadmap_lab/v1.4_screenshots/git-lesson_1440_light.png) |
 
-截图来自 V1.1 视觉重构验收记录，当前内容以网站为准（[更多对比图](docs/javaroadmap_lab/visual-renaissance.md)）。
+截图来自 V1.4 专题体系验收记录，当前内容以网站为准（[更多截图](docs/javaroadmap_lab/v1.4_screenshots/)）。
 
 ## 主要功能
 
