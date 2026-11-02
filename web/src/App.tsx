@@ -22,7 +22,6 @@ import {
   HelpCircle,
   Home,
   Laptop,
-  Layout,
   Lightbulb,
   ListTree,
   Menu,
@@ -62,7 +61,6 @@ import { CodeEditor } from "./components/CodeEditor";
 import { SearchDialog } from "./components/SearchDialog";
 import { OnJavaCard } from "./components/OnJavaCard";
 import { TopicView } from "./components/TopicView";
-import { DesignPrototypeView } from "./components/DesignPrototypeView";
 
 type Change = (recipe: (current: LearningState) => LearningState) => void;
 type PageProps = {
@@ -247,16 +245,6 @@ function Navigation({
             ))}
         </details>
       </div>
-      <div className="rail-extra-links">
-        <a
-          className={`rail-prototype-link ${route.page === "prototype" ? "active" : ""}`}
-          href="#/prototype"
-          onClick={close}
-        >
-          <Layout size={16} />
-          <span>双原型选型论证 (V1.4)</span>
-        </a>
-      </div>
       <a
         className="rail-principle"
         href="#/document/teaching-rules"
@@ -406,7 +394,6 @@ export default function App() {
         lab: "编程实验室",
         practice: "预测与修改",
         review: "学习记录",
-        prototype: "双原型设计论证",
         document: "仓库资料",
       }[route.page] ?? "页面未找到";
     document.title = `${name} · JavaRoadmap Lab`;
@@ -445,8 +432,6 @@ export default function App() {
         onToggleRead={toggleTopicLessonRead}
       />
     );
-  else if (route.page === "prototype")
-    content = <DesignPrototypeView />;
   else if (
     route.page === "lesson" &&
     catalog.lessons.some((item) => item.id === route.id)

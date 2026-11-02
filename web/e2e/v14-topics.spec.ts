@@ -124,34 +124,6 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(onJavaCard).toContainText("现代 JDK 演进与演变说明");
   });
 
-  test("设计原型论证：方案一 vs 方案二八大场景与五维评估比对", async ({
-    page,
-  }) => {
-    await page.goto("http://127.0.0.1:4173/#/prototype");
-
-    // 原型标题
-    await expect(
-      page.getByRole("heading", { name: "Fumadocs / Starlight / shadcn 设计模式双原型" }),
-    ).toBeVisible();
-
-    // 切换方案一与方案二
-    await page.getByRole("button", { name: /方案一：专业文档阅读式/ }).click();
-    await expect(page.locator(".proto-screen-body")).toContainText("JavaRoadmap Docs");
-
-    await page.getByRole("button", { name: /方案二：学习工作台与专题融合式/ }).click();
-    await expect(page.locator(".proto-screen-body")).toContainText("JavaRoadmap Lab");
-
-    // 切换 8 大场景
-    await page.getByRole("button", { name: "4. 算法专题目录" }).click();
-    await expect(page.locator(".proto-screen-body")).toContainText("复杂度分析");
-
-    // 五维评估表与结论
-    await expect(page.locator(".eval-table")).toBeVisible();
-    await expect(page.locator(".eval-summary-card")).toContainText(
-      "方案二：学习工作台与专题目录融合式布局",
-    );
-  });
-
   test("全局快捷检索：快捷键与点击触发，全站穿梭搜索", async ({ page }) => {
     await page.goto("http://127.0.0.1:4173/#/home");
 
