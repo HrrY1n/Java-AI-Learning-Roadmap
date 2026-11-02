@@ -39,7 +39,13 @@ test("V1.4 《Hello 算法》专题：首批已发布课程包含完整教学结
     m.lessons.filter((l) => l.status === "published"),
   );
 
-  assert.equal(publishedLessons.length, 8);
+  assert.equal(publishedLessons.length, 19);
+  // 全部 9 个模块均已上线，不再有建设中/规划占位
+  for (const module of algoTopic.modules) {
+    assert.equal(module.status, "published", `${module.id} 应已上线`);
+    assert.ok(module.lessons.length > 0, `${module.id} 不应为空模块`);
+  }
+  assert.equal(algoTopic.modules.length, 9);
 
   for (const lesson of publishedLessons) {
     // 来源追溯
@@ -150,7 +156,13 @@ test("V1.4 《Pro Git》专题：首批课程包含真实 Git 行为、状态输
     m.lessons.filter((l) => l.status === "published"),
   );
 
-  assert.equal(publishedLessons.length, 5);
+  assert.equal(publishedLessons.length, 13);
+  // 全部 5 个 Git 模块均已上线
+  for (const module of gitTopic.modules) {
+    assert.equal(module.status, "published", `${module.id} 应已上线`);
+    assert.ok(module.lessons.length > 0, `${module.id} 不应为空模块`);
+  }
+  assert.equal(gitTopic.modules.length, 5);
 
   for (const lesson of publishedLessons) {
     assert.equal(lesson.kind, "command-lab");
@@ -186,11 +198,42 @@ test("V1.4 《Pro Git》专题：首批课程包含真实 Git 行为、状态输
   const statusStep = introLesson.gitSteps.find((s) => s.command === "git status");
   assert.ok(statusStep);
   assert.match(statusStep.repoStateAfter, /No commits yet/, "必须体现真实 Git 初始状态文案");
+
+  // 补齐课程的覆盖清单：冲突、撤销、stash、标签、rebase/cherry-pick、协作、考古、内部原理
+  const expectedNewLessons = [
+    "git-merge-conflict",
+    "git-undo-recover",
+    "git-stash",
+    "git-tag",
+    "git-rebase-cherry-pick",
+    "git-collab-workflow",
+    "git-history-archaeology",
+    "git-internals-basics",
+  ];
+  for (const id of expectedNewLessons) {
+    const lesson = publishedLessons.find((l) => l.id === id);
+    assert.ok(lesson, `缺少补齐课程 ${id}`);
+    assert.ok(lesson.gitSteps.length >= 3, `${id} 应包含完整的命令步进数据`);
+  }
+
+  // 危险操作必须在课程中如实警示，且步进命令不得包含破坏性写法
+  const undoLesson = publishedLessons.find((l) => l.id === "git-undo-recover");
+  assert.match(undoLesson.markdown, /reset --hard/, "撤销课必须如实说明 reset --hard 的破坏性");
+  const conflictLesson = publishedLessons.find((l) => l.id === "git-merge-conflict");
+  assert.match(conflictLesson.markdown, /<<<<<<< /, "冲突课必须展示真实冲突标记");
+  const rebaseLesson = publishedLessons.find((l) => l.id === "git-rebase-cherry-pick");
+  assert.match(rebaseLesson.markdown, /只变基私有提交|黄金法则/, "rebase 课必须写明黄金法则");
+  for (const lesson of publishedLessons) {
+    for (const step of lesson.gitSteps) {
+      assert.doesNotMatch(step.command, /push --force|push -f/, "步进命令禁止强推");
+    }
+  }
 });
 
-test("V1.4 《On Java 8》补充关联：全部关联对应有效课程并标注现代 JDK 差异与真实页码", () => {
+test("V1.4 《On Java 8》补充关联：全部关联对应有效课程并标注现代 JDK 差异", () => {
   assert.ok(Array.isArray(catalog.onJavaLinks));
-  assert.equal(catalog.onJavaLinks.length, 14);
+  // 覆盖全部 19 节已发布主线课程
+  assert.equal(catalog.onJavaLinks.length, 19);
 
   const validStageIds = new Set(catalog.stages.map((s) => s.id));
   const validLessonIds = new Set(catalog.lessons.map((l) => l.id));

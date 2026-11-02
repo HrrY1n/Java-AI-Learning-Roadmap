@@ -6263,6 +6263,35 @@ kbd {
   color: #a1a1aa;
 }
 
+/* 多文件课程的编译提示条 */
+.lesson-compile-hint {
+  margin: -18px 0 24px;
+  padding: 10px 14px;
+  background: var(--paper-100, #f3f0e6);
+  border: 1px solid var(--border-subtle, #d8d4c7);
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary, #524f47);
+  overflow-x: auto;
+}
+.lesson-compile-hint code {
+  display: block;
+  margin-top: 6px;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--text-primary, #1e1d1a);
+  white-space: pre;
+}
+[data-theme="dark"] .lesson-compile-hint {
+  background: #202024;
+  border-color: #2e2e33;
+  color: #a1a1aa;
+}
+[data-theme="dark"] .lesson-compile-hint code {
+  color: #e4e4e7;
+}
+
 /* ---------- KaTeX 数学公式渲染规范 (行内、块级与响应式) ---------- */
 .katex {
   font-size: 1.08em;

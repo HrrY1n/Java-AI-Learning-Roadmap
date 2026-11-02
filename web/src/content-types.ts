@@ -157,6 +157,8 @@ export interface TopicLesson {
   stageLinks?: string[];
   markdown: string;
   code?: string;
+  /** 主源码文件的仓库相对路径（code 存在时提供，多文件编译命令用） */
+  codePath?: string;
   packageName?: string;
   className?: string;
   codeFiles?: LessonCodeFile[];

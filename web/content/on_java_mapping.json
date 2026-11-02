@@ -140,6 +140,52 @@
       "pdfPages": "13-16",
       "overlapType": "advanced",
       "rationale": "以电视机与遥控器的经典比喻，透彻解析引用是句柄、对象是本体，多个遥控器可以操作同一台电视，产生隐蔽的状态修改副作用。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "deep01",
+      "topicTitle": "main 与 JVM",
+      "bookChapter": "第 3 章 万物皆对象（程序编写与编译运行）",
+      "pdfPages": "48-55",
+      "overlapType": "extension",
+      "rationale": "原书从“程序是对象的集合”出发解释 main 作为程序入口与 JVM 启动类加载的关系，补足主线课程对启动机制的原理说明。",
+      "modernJdkDiff": "现代 JDK 的单文件源码启动（java X.java）与 jshell 交互环境简化了初学验证流程，但类加载与 main 契约不变。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "deep02",
+      "topicTitle": "整数除法与类型转换",
+      "bookChapter": "第 4 章 运算符（类型转换与截断）",
+      "pdfPages": "56-84",
+      "overlapType": "gap-supplement",
+      "rationale": "原书详细演示整型截断（casting）、溢出行为与提升规则，是主线“整除陷阱”一课的权威展开。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "deep05",
+      "topicTitle": "循环边界",
+      "bookChapter": "第 5 章 控制流（for/while 与迭代边界）",
+      "pdfPages": "98-121",
+      "overlapType": "extension",
+      "rationale": "原书对循环变量作用域、逗号语法与无限循环写法的分析，帮助理解主线课程强调的边界条件思维。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "deep06",
+      "topicTitle": "方法、作用域与职责",
+      "bookChapter": "第 3 章 万物皆对象（方法、参数与返回值）",
+      "pdfPages": "43-47",
+      "overlapType": "extension",
+      "rationale": "原书把方法视为“向对象发送消息”，强调返回值契约与命名，支撑主线“单一职责”的设计讨论。"
+    },
+    {
+      "stageId": "01",
+      "lessonId": "deep07",
+      "topicTitle": "Scanner 与非法输入",
+      "bookChapter": "第 5 章 控制流（输入处理与健壮性）",
+      "pdfPages": "98-121",
+      "overlapType": "gap-supplement",
+      "rationale": "原书提示输入解析的脆弱性：Scanner 的 nextInt 遇到非法 token 会抛 InputMismatchException，主线课程以此引导防御式读取。"
     }
   ]
 }

@@ -4,16 +4,19 @@ package com.javaroadmap.algo.array;
  * 数组原理：连续内存空间与随机访问
  * 对应《Hello 算法》第 4 章 4.1 节
  *
- * 核心原理：
- * 1. 数组在内存中占据连续的物理地址空间。
+ * 核心原理（简化教学模型）：
+ * 1. 数组的元素在一段连续的内存空间中依次存放；JVM 的真实布局还涉及对象头、
+ *    压缩指针等细节，课程示意图中的地址是便于理解的模拟值，不代表真实物理地址。
  * 2. 寻址公式：address(i) = base_address + i * element_size
  * 3. 性能权衡：
  *    - 随机访问：O(1)
  *    - 中间插入/删除：需要搬移后续全部元素，时间复杂度 O(n)
+ * 4. 本示例是固定容量数组：已满再插入直接抛出 IndexOutOfBoundsException；
+ *    动态数组（如 ArrayList）的扩容是“新建更大数组并整体复制”，由封装层完成。
  */
 public class App {
 
-    // 在指定索引处插入元素（模拟底层动态扩容前的搬移）
+    // 在指定索引处插入元素：index 非法或容量已满时直接抛异常，本示例不自动扩容
     public static void insert(int[] arr, int size, int index, int element) {
         if (index < 0 || index > size || size >= arr.length) {
             throw new IndexOutOfBoundsException("插入位置非法或容量已满");

@@ -28,25 +28,25 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(algoCard).toContainText("已发布首批课程");
     await expect(algoCard).toContainText("来源权威教材：Hello 算法");
 
-    // 验证课时与真实模块统计（已发布8节，3个已上线模块，5个规划建设中，拒绝误显全部完成）
-    await expect(algoCard.locator(".topic-progress-text")).toContainText("已发布课程：8 节");
-    await expect(algoCard.locator(".topic-progress-text")).toContainText("已上线 3 个模块");
-    await expect(algoCard.locator(".topic-progress-text")).toContainText("1 个建设中");
-    await expect(algoCard.locator(".topic-progress-text")).toContainText("4 个规划中");
+    // 验证课时与真实模块统计（V1.5 补齐：算法 19 节、9 个模块全部上线、0 建设 0 规划）
+    await expect(algoCard.locator(".topic-progress-text")).toContainText("已发布课程：19 节");
+    await expect(algoCard.locator(".topic-progress-text")).toContainText("已上线 9 个模块");
+    await expect(algoCard.locator(".topic-progress-text")).toContainText("0 个规划中");
+    await expect(algoCard.locator(".topic-progress-text")).not.toContainText("个建设中");
 
-    // 检查模块状态药丸
+    // 检查模块状态药丸：全部为已上线，无建设中/规划中占位
     await expect(algoCard.locator(".published-pill").first()).toContainText("已上线");
-    await expect(algoCard.locator(".building-pill")).toContainText("建设中");
-    await expect(algoCard.locator(".planned-pill").first()).toContainText("规划中");
+    await expect(algoCard.locator(".building-pill")).toHaveCount(0);
+    await expect(algoCard.locator(".planned-pill")).toHaveCount(0);
 
-    // 3. 检查 Pro Git 专题卡片进度统计
+    // 3. 检查 Pro Git 专题卡片进度统计（V1.5 补齐：13 节、5 个模块全部上线）
     const gitCard = page.locator(".topic-card").filter({ hasText: "Git 工程实践" });
     await expect(gitCard).toBeVisible();
     await expect(gitCard).toContainText("已发布首批课程");
-    await expect(gitCard.locator(".topic-progress-text")).toContainText("已发布课程：5 节");
-    await expect(gitCard.locator(".topic-progress-text")).toContainText("已上线 2 个模块");
-    await expect(gitCard.locator(".topic-progress-text")).toContainText("1 个建设中");
-    await expect(gitCard.locator(".topic-progress-text")).toContainText("2 个规划中");
+    await expect(gitCard.locator(".topic-progress-text")).toContainText("已发布课程：13 节");
+    await expect(gitCard.locator(".topic-progress-text")).toContainText("已上线 5 个模块");
+    await expect(gitCard.locator(".building-pill")).toHaveCount(0);
+    await expect(gitCard.locator(".planned-pill")).toHaveCount(0);
 
     // 4. 检查仅有资料索引的专题
     const csappCard = page.locator(".topic-card").filter({ hasText: "深入理解计算机系统" });
@@ -65,6 +65,72 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(booksTable).toContainText("CS:APP");
     await expect(booksTable).toContainText("操作系统导论");
     await expect(booksTable).toContainText("计算机网络");
+  });
+
+  test("链表课程多文件展示与编译提示：ListNode 依赖类与一起编译说明可见", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-linkedlist");
+
+    // 主文件与依赖文件都要展示
+    await expect(page.locator(".lesson-code-block-card").first()).toContainText(
+      "Java 规范源码：com.javaroadmap.algo.linkedlist.App",
+    );
+    const depCard = page
+      .locator(".lesson-code-block-card")
+      .filter({ hasText: "同包依赖类：com.javaroadmap.algo.linkedlist.ListNode" });
+    await expect(depCard).toBeVisible();
+    await expect(depCard).toContainText("需与主文件一起编译");
+    await expect(depCard).toContainText("public class ListNode");
+
+    // 编译命令包含两个文件
+    const hint = page.locator(".lesson-compile-hint");
+    await expect(hint).toBeVisible();
+    await expect(hint).toContainText("ListNode.java");
+    await expect(hint).toContainText("javac -encoding UTF-8 -d out");
+  });
+
+  test("新增算法专题导航：哈希表、二叉树、堆、图、排序、DP 等课程可直达且结构完整", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    const checks = [
+      ["topic-algo/algo-hash-table", "哈希表：哈希函数与冲突解决", "拉链法"],
+      ["topic-algo/algo-binary-tree", "二叉树与四种遍历", "中序遍历"],
+      ["topic-algo/algo-heap", "堆与优先队列", "自底向上堆化"],
+      ["topic-algo/algo-graph", "图的表示与 BFS/DFS 遍历", "邻接表"],
+      ["topic-algo/algo-sorting", "排序算法对比", "快速排序"],
+      ["topic-algo/algo-dynamic-programming", "动态规划", "转移方程"],
+    ];
+    for (const [route, title, keyword] of checks) {
+      await page.goto(`http://127.0.0.1:4173/#/topic/${route}`);
+      await expect(
+        page.locator(".topic-lesson-title").filter({ hasText: title.split("：")[0] }),
+      ).toBeVisible();
+      await expect(page.locator(".lesson-markdown-body")).toContainText(keyword);
+      await expect(page.locator(".lesson-code-block-card")).toBeVisible();
+    }
+  });
+
+  test("新增 Pro Git 专题导航：冲突、撤销、stash、变基等课程可直达", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    const checks = [
+      ["topic-git/git-merge-conflict", "解决合并冲突", "<<<<<<< HEAD"],
+      ["topic-git/git-undo-recover", "撤销与恢复", "git revert HEAD"],
+      ["topic-git/git-stash", "贮藏与恢复", "git stash list"],
+      ["topic-git/git-rebase-cherry-pick", "变基与拣选", "黄金法则"],
+      ["topic-git/git-internals-basics", "配置体系与对象模型", "blob"],
+    ];
+    for (const [route, title, keyword] of checks) {
+      await page.goto(`http://127.0.0.1:4173/#/topic/${route}`);
+      await expect(
+        page.locator(".topic-lesson-title").filter({ hasText: title.split("：")[0] }),
+      ).toBeVisible();
+      await expect(page.locator(".lesson-markdown-body")).toContainText(keyword);
+    }
   });
 
   test("KaTeX 数学公式渲染：行内公式、块级 LaTeX、求和与分式在深浅主题中正常渲染且代码块不受干扰", async ({
@@ -306,13 +372,13 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     const targetRow = page.locator("#book-pro-git");
     await expect(targetRow).toBeVisible();
 
-    // 4. 未发布课程门禁：搜索未上线算法（如动态规划）不会出现可跳转正文
+    // 4. 未发布课程门禁：搜索未上线的内容（如旅行商专题课）不会出现可跳转正文
     await page.keyboard.press("Control+k");
     await expect(searchModal).toBeVisible();
-    await input.fill("动态规划");
+    await input.fill("旅行商");
     const emptyNotice = page.locator(".search-empty");
     await expect(emptyNotice).toBeVisible();
-    await expect(emptyNotice).toContainText("没有找到与 \"动态规划\" 相关的课程或材料");
+    await expect(emptyNotice).toContainText("没有找到与 \"旅行商\" 相关的课程或材料");
   });
 
   test("路由与历史堆栈：前进后退与刷新保持页面状态", async ({ page }) => {

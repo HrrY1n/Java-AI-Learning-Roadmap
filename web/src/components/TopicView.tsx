@@ -443,24 +443,59 @@ function TopicLessonReader({
         <GitStepsViewer steps={lesson.gitSteps} />
       )}
 
-      {/* Java 课程专用：代码高亮展示 */}
+      {/* Java 课程专用：代码高亮展示（主文件 + 同包依赖文件，需要一起编译） */}
       {lesson.code && (
-        <div className="lesson-code-block-card">
-          <div className="code-card-header">
-            <div className="code-title">
-              <FileCode2 size={16} />
+        <>
+          <div className="lesson-code-block-card">
+            <div className="code-card-header">
+              <div className="code-title">
+                <FileCode2 size={16} />
+                <span>
+                  Java 规范源码：{lesson.packageName}.{lesson.className || "App"}
+                </span>
+              </div>
+              <span className="code-env-badge">JDK 25 编译验证通过</span>
+            </div>
+            <div className="code-card-content">
+              <pre className="code-pre">
+                <code>{lesson.code}</code>
+              </pre>
+            </div>
+          </div>
+          {(lesson.codeFiles ?? [])
+            .filter((file) => file.className !== lesson.className)
+            .map((file) => (
+              <div className="lesson-code-block-card" key={file.path}>
+                <div className="code-card-header">
+                  <div className="code-title">
+                    <FileCode2 size={16} />
+                    <span>
+                      同包依赖类：{file.packageName}.{file.className}
+                    </span>
+                  </div>
+                  <span className="code-env-badge">需与主文件一起编译</span>
+                </div>
+                <div className="code-card-content">
+                  <pre className="code-pre">
+                    <code>{file.code}</code>
+                  </pre>
+                </div>
+              </div>
+            ))}
+          {(lesson.codeFiles?.length ?? 0) > 0 && lesson.codePath && (
+            <div className="lesson-compile-hint">
               <span>
-                Java 规范源码：{lesson.packageName}.{lesson.className || "App"}
+                本课包含 {(lesson.codeFiles?.length ?? 0) + 1} 个同包源码文件，需一起编译：
+                <code>
+                  javac -encoding UTF-8 -d out{" "}
+                  {[lesson.codePath, ...(lesson.codeFiles ?? []).map((f) => f.path)]
+                    .map((p) => p.slice(p.indexOf("/com/") + 1))
+                    .join(" ")}
+                </code>
               </span>
             </div>
-            <span className="code-env-badge">JDK 25 编译验证通过</span>
-          </div>
-          <div className="code-card-content">
-            <pre className="code-pre">
-              <code>{lesson.code}</code>
-            </pre>
-          </div>
-        </div>
+          )}
+        </>
       )}
 
       {/* 诚实学习底线提醒 */}

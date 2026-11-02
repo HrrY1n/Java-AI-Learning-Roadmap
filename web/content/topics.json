@@ -122,6 +122,37 @@
           ]
         },
         {
+          "id": "algo-foundations",
+          "title": "算法与数据结构基础",
+          "description": "认识算法与数据结构的全貌：分类视角、选型原则与衡量维度。",
+          "status": "published",
+          "lessons": [
+            {
+              "id": "algo-ds-basics",
+              "topicId": "topic-algo",
+              "moduleId": "algo-foundations",
+              "title": "数据结构分类与选型原则",
+              "summary": "为什么同一个问题换一种数据结构，操作次数会差百倍？建立“逻辑结构 + 操作成本”的选型框架。",
+              "status": "published",
+              "kind": "concept",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 1 章初识算法 & 第 3 章数据结构分类",
+                "pdfPageStart": 16,
+                "pdfPageEnd": 22,
+                "printPage": "12-18"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 数据结构分类与选型原则\n\n## 1. 业务场景与需要解决的问题\n同样是“查找一个 key 对应的值”，用无序数组要逐个比对，用哈希表却几乎一步到位。数据结构的选择为什么会带来数量级的差距？\n\n## 2. 为什么需要系统的选型视角\n- 数据结构 = **逻辑结构**（线性、树形、网状、散列）+ **操作成本**（每种结构都只擅长某几类操作）。\n- 没有万能结构：数组随机访问快但插入慢，链表相反；先弄清楚业务的**高频操作**，再反推结构。\n- 《Hello 算法》第 3 章把数据结构分为线性（数组/链表/栈/队列）、非线性（树/堆/图）与散列表，正是按逻辑组织方式分类。\n\n## 3. 核心心智模型：一张选型速查表\n\n```text\n随机读多、按位存取   → 数组（O(1) 随机访问，插入删除 O(n)）\n首尾频繁增删         → 链表（已知前驱时增删 O(1)，访问 O(n)）\n后进先出（撤销/嵌套） → 栈\n先进先出（排队/缓冲） → 队列\n按键快速查找         → 哈希表（理想 O(1)，冲突需处理）\n层级/有序关系        → 树（如二叉搜索树）\n反复取最值           → 堆（优先队列）\n多对多关系           → 图（社交网络、路径规划）\n```\n\n## 4. 用可运行的对照实验感受差距\n下面程序在 1000 个元素中查找同一个目标：无序数组线性扫描比较了 988 次，理想哈希表只需 1 次探测。\n```java\npackage com.javaroadmap.algo.dsbasics;\n\n/**\n * 数据结构选型基础：从“查找”看结构差异\n * 对应《Hello 算法》第 1 章初识算法与第 3 章数据结构分类\n */\npublic class App {\n\n    // 无序数组线性查找：返回找到目标所用比较次数（最坏 n 次）\n    static int linearScanCount(int[] data, int target) {\n        for (int i = 0; i < data.length; i++) {\n            if (data[i] == target) return i + 1;\n        }\n        return data.length;\n    }\n\n    // 理想哈希表：忽略冲突时一次探测即可定位\n    static int idealHashProbeCount(int[] data, int target) {\n        return 1;\n    }\n\n    public static void main(String[] args) {\n        int[] data = new int[1000];\n        for (int i = 0; i < data.length; i++) {\n            data[i] = i * 3 + 7;\n        }\n        int target = data[987];\n        System.out.println(\"无序数组线性查找比较次数：\" + linearScanCount(data, target));\n        System.out.println(\"理想哈希表探测次数：\" + idealHashProbeCount(data, target));\n        System.out.println(\"选型速查：随机读多→数组；首尾增删多→链表；后进先出→栈；先进先出→队列；按键快速查→哈希表；层级关系→树；优先级→堆；多对多关系→图。\");\n        System.out.println(\"结构启示：数据结构的选择直接决定操作次数的增长曲线。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 把目标换成 `data[0]`（数组第一个元素），线性查找要比较几次？换成不存在的元素呢？先写下答案再运行 `stages/topics/algorithms/ds_basics/com/javaroadmap/algo/dsbasics/App.java` 核对。\n\n## 6. 来源与出处\n- 《Hello 算法》第 1 章初识算法（PDF 第 16-22 页）与第 3 章数据结构分类（PDF 第 57-71 页）。",
+              "packageName": "com.javaroadmap.algo.dsbasics",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.dsbasics;\n\n/**\n * 数据结构选型基础：从“查找”看结构差异\n * 对应《Hello 算法》第 1 章初识算法与第 3 章数据结构分类\n */\npublic class App {\n\n    // 无序数组线性查找：返回找到目标所用比较次数（最坏 n 次）\n    static int linearScanCount(int[] data, int target) {\n        for (int i = 0; i < data.length; i++) {\n            if (data[i] == target) return i + 1;\n        }\n        return data.length;\n    }\n\n    // 理想哈希表：忽略冲突时一次探测即可定位\n    static int idealHashProbeCount(int[] data, int target) {\n        return 1;\n    }\n\n    public static void main(String[] args) {\n        int[] data = new int[1000];\n        for (int i = 0; i < data.length; i++) {\n            data[i] = i * 3 + 7;\n        }\n        int target = data[987];\n        System.out.println(\"无序数组线性查找比较次数：\" + linearScanCount(data, target));\n        System.out.println(\"理想哈希表探测次数：\" + idealHashProbeCount(data, target));\n        System.out.println(\"选型速查：随机读多→数组；首尾增删多→链表；后进先出→栈；先进先出→队列；按键快速查→哈希表；层级关系→树；优先级→堆；多对多关系→图。\");\n        System.out.println(\"结构启示：数据结构的选择直接决定操作次数的增长曲线。\");\n    }\n}"
+            }
+          ]
+        },
+        {
           "id": "algo-linear",
           "title": "数组与链表",
           "description": "探讨连续内存布局与离散指针结构在随机访问、增删效率与 CPU 缓存上的根本对立。",
@@ -145,10 +176,10 @@
               "stageLinks": [
                 "01"
               ],
-              "markdown": "# 数组原理与连续内存分析\n\n## 1. 业务场景与需要解决的问题\n为什么几乎所有编程语言与底层系统（操作系统调度表、数据库索引行、网络缓冲区）都以数组作为最基本的数据组织载体？连续内存给数组带来了什么无可替代的优势？\n\n## 2. 连续内存与寻址公式\n数组底层使用一段**连续的内存空间**。在简化的教学模型中，设首元素的起始地址为 $\\text{Base}$，每个元素占用 $S$ 字节，则第 $i$ 个元素的（模拟）地址可以通过单次数学运算直接求出：\n\n$$\n\\text{Address}(i) = \\text{Base} + i \\times S\n$$\n\n这就是数组可以在 $O(1)$ 常数时间内完成**随机访问**的物理本质。注意：上述地址是便于理解原理的**简化示意值**，并非真实物理内存地址——JVM 中对象还涉及对象头、压缩指针等布局细节，实际内存布局由 JVM 运行时决定，不由公式或课程示意图保证。\n\n## 3. 复杂度结论的操作前提与边界\n- **随机访问 $O(1)$ 的严格前提**：\n  必须**已知合法的数字下标索引 $i$（$0 \\le i < \\text{size}$）**。如果仅知道元素值而在无序数组中查找其下标（按值查找），CPU 无法直接套用公式，必须从头线性扫描比对，时间复杂度为 $O(n)$。\n- **插入操作的开销与边界**：\n  - 连续性是一把双刃剑：如果要在索引 $k$ 处插入新值，为了保持物理内存连续性，必须将索引 $k$ 及之后的所有元素向后顺移一位。\n  - 最好情况：尾部插入（且容量未满），时间复杂度为 $O(1)$；\n  - 最坏情况：头部插入，需移动全部 $n$ 个元素，时间复杂度为 $O(n)$；\n  - 平均情况：平均需要移动 $n/2$ 个元素，时间复杂度为 $O(n)$。\n  - **容量满边界**：当定长底层数组已满时，必须触发动态扩容，全量重新开辟内存并搬迁旧数据。\n- **删除操作的开销与边界**：\n  删除索引 $k$ 处元素时，尾部删除为 $O(1)$；删除头部或中间元素需将后续所有元素向前平移填补空缺，平均时间复杂度为 $O(n)$。\n\n## 4. 规范 Java 代码实现\n以下为 `stages/topics/algorithms/array/com/javaroadmap/algo/array/App.java` 中的核心实现：\n\n```java\npackage com.javaroadmap.algo.array;\n\npublic class App {\n    // 索引插入：将 index 后的元素逐个后移一位，平均 O(n)\n    public static void insert(int[] arr, int size, int index, int element) {\n        if (index < 0 || index > size || size >= arr.length) {\n            throw new IndexOutOfBoundsException(\"插入位置非法或容量已满\");\n        }\n        // 从后往前逐位后移\n        for (int i = size; i > index; i--) {\n            arr[i] = arr[i - 1];\n        }\n        arr[index] = element;\n    }\n\n    // 删除指定索引处的元素：后续元素逐位前移覆盖\n    public static void remove(int[] arr, int size, int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"删除位置非法\");\n        }\n        for (int i = index; i < size - 1; i++) {\n            arr[i] = arr[i + 1];\n        }\n        arr[size - 1] = 0; // 清理尾部\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 对 `[10, 20, 30]`（size=3）在 index=1 插入 15：先预测 `buffer[1]` 和 `buffer[2]` 的值；随后再删除 index=1，预测 `buffer[1]` 恢复成什么。写好后运行 `stages/topics/algorithms/array/com/javaroadmap/algo/array/App.java` 核对。\n\n## 6. 来源与出处\n- 《Hello 算法》第 4 章 4.1 节（PDF 第 73-78 页，原书印刷 P.67-72）。",
+              "markdown": "# 数组原理与连续内存分析\n\n## 1. 业务场景与需要解决的问题\n为什么几乎所有编程语言与底层系统（操作系统调度表、数据库索引行、网络缓冲区）都以数组作为最基本的数据组织载体？连续内存给数组带来了什么无可替代的优势？\n\n## 2. 连续内存与寻址公式\n数组底层使用一段**连续的内存空间**。在简化的教学模型中，设首元素的起始地址为 $\\text{Base}$，每个元素占用 $S$ 字节，则第 $i$ 个元素的（模拟）地址可以通过单次数学运算直接求出：\n\n$$\n\\text{Address}(i) = \\text{Base} + i \\times S\n$$\n\n这就是数组可以在 $O(1)$ 常数时间内完成**随机访问**的物理本质。注意：上述地址是便于理解原理的**简化示意值**，并非真实物理内存地址——JVM 中对象还涉及对象头、压缩指针等布局细节，实际内存布局由 JVM 运行时决定，不由公式或课程示意图保证。\n\n## 3. 复杂度结论的操作前提与边界\n- **随机访问 $O(1)$ 的严格前提**：\n  必须**已知合法的数字下标索引 $i$（$0 \\le i < \\text{size}$）**。如果仅知道元素值而在无序数组中查找其下标（按值查找），CPU 无法直接套用公式，必须从头线性扫描比对，时间复杂度为 $O(n)$。\n- **插入操作的开销与边界**：\n  - 连续性是一把双刃剑：如果要在索引 $k$ 处插入新值，为了保持物理内存连续性，必须将索引 $k$ 及之后的所有元素向后顺移一位。\n  - 最好情况：尾部插入（且容量未满），时间复杂度为 $O(1)$；\n  - 最坏情况：头部插入，需移动全部 $n$ 个元素，时间复杂度为 $O(n)$；\n  - 平均情况：平均需要移动 $n/2$ 个元素，时间复杂度为 $O(n)$。\n  - **容量满边界**：本课示例是**固定容量**数组——`insert` 在 `size >= arr.length` 时直接抛出 `IndexOutOfBoundsException`，并不会自动扩容。所谓“动态数组”（如 `ArrayList`）是在封装层检测到已满后，**新建一个更大的数组并把旧元素整体复制过去**，再让引用指向新数组；那是一次 $O(n)$ 的搬迁操作，本课示例没有实现它。\n- **删除操作的开销与边界**：\n  删除索引 $k$ 处元素时，尾部删除为 $O(1)$；删除头部或中间元素需将后续所有元素向前平移填补空缺，平均时间复杂度为 $O(n)$。\n\n## 4. 规范 Java 代码实现\n以下为 `stages/topics/algorithms/array/com/javaroadmap/algo/array/App.java` 中的核心实现：\n\n```java\npackage com.javaroadmap.algo.array;\n\npublic class App {\n    // 索引插入：将 index 后的元素逐个后移一位，平均 O(n)\n    public static void insert(int[] arr, int size, int index, int element) {\n        if (index < 0 || index > size || size >= arr.length) {\n            throw new IndexOutOfBoundsException(\"插入位置非法或容量已满\");\n        }\n        // 从后往前逐位后移\n        for (int i = size; i > index; i--) {\n            arr[i] = arr[i - 1];\n        }\n        arr[index] = element;\n    }\n\n    // 删除指定索引处的元素：后续元素逐位前移覆盖\n    public static void remove(int[] arr, int size, int index) {\n        if (index < 0 || index >= size) {\n            throw new IndexOutOfBoundsException(\"删除位置非法\");\n        }\n        for (int i = index; i < size - 1; i++) {\n            arr[i] = arr[i + 1];\n        }\n        arr[size - 1] = 0; // 清理尾部\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 对 `[10, 20, 30]`（size=3）在 index=1 插入 15：先预测 `buffer[1]` 和 `buffer[2]` 的值；随后再删除 index=1，预测 `buffer[1]` 恢复成什么。写好后运行 `stages/topics/algorithms/array/com/javaroadmap/algo/array/App.java` 核对。\n\n## 6. 来源与出处\n- 《Hello 算法》第 4 章 4.1 节（PDF 第 73-78 页，原书印刷 P.67-72）。",
               "packageName": "com.javaroadmap.algo.array",
               "className": "App",
-              "code": "package com.javaroadmap.algo.array;\r\n\r\n/**\r\n * 数组原理：连续内存空间与随机访问\r\n * 对应《Hello 算法》第 4 章 4.1 节\r\n *\r\n * 核心原理：\r\n * 1. 数组在内存中占据连续的物理地址空间。\r\n * 2. 寻址公式：address(i) = base_address + i * element_size\r\n * 3. 性能权衡：\r\n *    - 随机访问：O(1)\r\n *    - 中间插入/删除：需要搬移后续全部元素，时间复杂度 O(n)\r\n */\r\npublic class App {\r\n\r\n    // 在指定索引处插入元素（模拟底层动态扩容前的搬移）\r\n    public static void insert(int[] arr, int size, int index, int element) {\r\n        if (index < 0 || index > size || size >= arr.length) {\r\n            throw new IndexOutOfBoundsException(\"插入位置非法或容量已满\");\r\n        }\r\n        // 从后往前逐位后移\r\n        for (int i = size; i > index; i--) {\r\n            arr[i] = arr[i - 1];\r\n        }\r\n        arr[index] = element;\r\n    }\r\n\r\n    // 删除指定索引处的元素\r\n    public static void remove(int[] arr, int size, int index) {\r\n        if (index < 0 || index >= size) {\r\n            throw new IndexOutOfBoundsException(\"删除位置非法\");\r\n        }\r\n        // 从前往后逐位前移覆盖\r\n        for (int i = index; i < size - 1; i++) {\r\n            arr[i] = arr[i + 1];\r\n        }\r\n        arr[size - 1] = 0; // 清理尾部\r\n    }\r\n\r\n    public static void main(String[] args) {\r\n        System.out.println(\"=== 数组原理与内存操作 ===\");\r\n        int[] buffer = new int[6];\r\n        buffer[0] = 10;\r\n        buffer[1] = 20;\r\n        buffer[2] = 30;\r\n        int size = 3;\r\n\r\n        System.out.println(\"初始随机访问 index=1：\" + buffer[1]);\r\n\r\n        // 在 index=1 插入 15\r\n        insert(buffer, size, 1, 15);\r\n        size++;\r\n        System.out.println(\"插入后 index=1：\" + buffer[1] + \"，原元素后移至 index=2：\" + buffer[2]);\r\n\r\n        // 删除 index=1\r\n        remove(buffer, size, 1);\r\n        size--;\r\n        System.out.println(\"删除后恢复 index=1：\" + buffer[1]);\r\n\r\n        System.out.println(\"设计启示：高频查询、固定容量首选数组；高频首尾插入删除需评估链表。\");\r\n    }\r\n}"
+              "code": "package com.javaroadmap.algo.array;\r\n\r\n/**\r\n * 数组原理：连续内存空间与随机访问\r\n * 对应《Hello 算法》第 4 章 4.1 节\r\n *\r\n * 核心原理（简化教学模型）：\r\n * 1. 数组的元素在一段连续的内存空间中依次存放；JVM 的真实布局还涉及对象头、\r\n *    压缩指针等细节，课程示意图中的地址是便于理解的模拟值，不代表真实物理地址。\r\n * 2. 寻址公式：address(i) = base_address + i * element_size\r\n * 3. 性能权衡：\r\n *    - 随机访问：O(1)\r\n *    - 中间插入/删除：需要搬移后续全部元素，时间复杂度 O(n)\r\n * 4. 本示例是固定容量数组：已满再插入直接抛出 IndexOutOfBoundsException；\r\n *    动态数组（如 ArrayList）的扩容是“新建更大数组并整体复制”，由封装层完成。\r\n */\r\npublic class App {\r\n\r\n    // 在指定索引处插入元素：index 非法或容量已满时直接抛异常，本示例不自动扩容\r\n    public static void insert(int[] arr, int size, int index, int element) {\r\n        if (index < 0 || index > size || size >= arr.length) {\r\n            throw new IndexOutOfBoundsException(\"插入位置非法或容量已满\");\r\n        }\r\n        // 从后往前逐位后移\r\n        for (int i = size; i > index; i--) {\r\n            arr[i] = arr[i - 1];\r\n        }\r\n        arr[index] = element;\r\n    }\r\n\r\n    // 删除指定索引处的元素\r\n    public static void remove(int[] arr, int size, int index) {\r\n        if (index < 0 || index >= size) {\r\n            throw new IndexOutOfBoundsException(\"删除位置非法\");\r\n        }\r\n        // 从前往后逐位前移覆盖\r\n        for (int i = index; i < size - 1; i++) {\r\n            arr[i] = arr[i + 1];\r\n        }\r\n        arr[size - 1] = 0; // 清理尾部\r\n    }\r\n\r\n    public static void main(String[] args) {\r\n        System.out.println(\"=== 数组原理与内存操作 ===\");\r\n        int[] buffer = new int[6];\r\n        buffer[0] = 10;\r\n        buffer[1] = 20;\r\n        buffer[2] = 30;\r\n        int size = 3;\r\n\r\n        System.out.println(\"初始随机访问 index=1：\" + buffer[1]);\r\n\r\n        // 在 index=1 插入 15\r\n        insert(buffer, size, 1, 15);\r\n        size++;\r\n        System.out.println(\"插入后 index=1：\" + buffer[1] + \"，原元素后移至 index=2：\" + buffer[2]);\r\n\r\n        // 删除 index=1\r\n        remove(buffer, size, 1);\r\n        size--;\r\n        System.out.println(\"删除后恢复 index=1：\" + buffer[1]);\r\n\r\n        System.out.println(\"设计启示：高频查询、固定容量首选数组；高频首尾插入删除需评估链表。\");\r\n    }\r\n}"
             },
             {
               "id": "algo-linkedlist",
@@ -169,10 +200,19 @@
                 "02",
                 "03"
               ],
-              "markdown": "# 单向与双向链表的设计与实现\n\n## 1. 业务场景与需要解决的问题\n在内存受限或数据频繁动态变动的场景中，数组连续内存分配要求与插入删除的高额数据平移往往难以承受。链表如何通过指针链接解决这一矛盾？\n\n## 2. 为什么需要链表？突破连续内存物理限制\n- **数组要求连续内存**：若系统剩余 100MB 内存但碎片化，无法分配一个连续 10MB 的大数组；而链表节点离散存储，只要有零散空间即可分配。\n- **指针解耦**：链表将数据封装在独立的节点对象中，通过引用指针（`next` / `prev`）串联逻辑顺序。\n\n## 3. 复杂度结论的操作前提与边界\n- **插入/删除操作的严格前提**：\n  链表改变引用指针的操作本身确实只需两行赋值，耗时为 $O(1)$。**但这一结论的前提是：已经持有目标位置的前驱节点指针（Node Reference）**。如果仅给定逻辑序号 $k$ 或根据值查找删除，必须先从 `head` 出发顺序推进 $k$ 步（查找耗时 $O(k) = O(n)$），因此综合操作耗时依然受限于查找瓶颈 $O(n)$！\n- **访问与查找代价**：\n  不能通过下标直接计算物理地址，必须从 `head` 开始逐个 `curr = curr.next` 推进，查找与访问时间复杂度为 $O(n)$。\n- **空间开销边界**：\n  每个节点除了数据域外，额外需要引用指针域（64位 JVM 开启压缩指针占用 4 字节，未开启占用 8 字节），内存占用比纯紧密数组高，且节点离散分布对 CPU 缓存预取不够友好。\n\n## 4. 规范 Java 代码实现\n以下为 `stages/topics/algorithms/linkedlist/com/javaroadmap/algo/linkedlist/App.java` 中的核心实现：\n\n```java\npackage com.javaroadmap.algo.linkedlist;\n\npublic class App {\n    // 在 n0 节点之后插入新节点 newNode: O(1)\n    public static void insertAfter(ListNode n0, ListNode newNode) {\n        ListNode nextNode = n0.next;\n        newNode.next = nextNode;\n        n0.next = newNode;\n    }\n\n    // 删除 n0 节点之后的直接后继: O(1)\n    public static void removeAfter(ListNode n0) {\n        if (n0.next == null) return;\n        ListNode target = n0.next;\n        n0.next = target.next;\n        target.next = null; // 辅助垃圾回收\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 对 `1 → 3 → 4` 的链表执行 `insertAfter(head, new ListNode(2))`：先预测 `head.next.val`；再执行 `removeAfter(head)`，预测链表恢复成什么。写好后运行 `stages/topics/algorithms/linkedlist/com/javaroadmap/algo/linkedlist/App.java` 核对。\n\n## 6. 来源与出处\n- 《Hello 算法》第 4 章 4.2 节（PDF 第 78-84 页，原书印刷 P.72-78）。",
+              "markdown": "# 单向与双向链表的设计与实现\n\n## 1. 业务场景与需要解决的问题\n在内存受限或数据频繁动态变动的场景中，数组连续内存分配要求与插入删除的高额数据平移往往难以承受。链表如何通过指针链接解决这一矛盾？\n\n## 2. 为什么需要链表？突破连续内存物理限制\n- **数组要求连续内存**：若系统剩余 100MB 内存但碎片化，无法分配一个连续 10MB 的大数组；而链表节点离散存储，只要有零散空间即可分配。\n- **指针解耦**：链表将数据封装在独立的节点对象中，通过引用指针（`next` / `prev`）串联逻辑顺序。\n\n## 3. 复杂度结论的操作前提与边界\n- **插入/删除操作的严格前提**：\n  链表改变引用指针的操作本身确实只需两行赋值，耗时为 $O(1)$。**但这一结论的前提是：已经持有目标位置的前驱节点指针（Node Reference）**。如果仅给定逻辑序号 $k$ 或根据值查找删除，必须先从 `head` 出发顺序推进 $k$ 步（查找耗时 $O(k) = O(n)$），因此综合操作耗时依然受限于查找瓶颈 $O(n)$！\n- **访问与查找代价**：\n  不能通过下标直接计算物理地址，必须从 `head` 开始逐个 `curr = curr.next` 推进，查找与访问时间复杂度为 $O(n)$。\n- **空间开销边界**：\n  每个节点除了数据域外，额外需要引用指针域（64位 JVM 开启压缩指针占用 4 字节，未开启占用 8 字节），内存占用比纯紧密数组高，且节点离散分布对 CPU 缓存预取不够友好。\n\n## 4. 规范 Java 代码实现（两个文件需一起编译）\n本课由**两个同包文件**组成：`ListNode.java` 定义节点类，`App.java` 演示增删操作，编译时必须一起传入 `javac`（页面下方已给出完整编译命令）。核心实现：\n\n```java\npackage com.javaroadmap.algo.linkedlist;\n\npublic class App {\n    // 在 n0 节点之后插入新节点 newNode: O(1)\n    public static void insertAfter(ListNode n0, ListNode newNode) {\n        ListNode nextNode = n0.next;\n        newNode.next = nextNode;\n        n0.next = newNode;\n    }\n\n    // 删除 n0 节点之后的直接后继: O(1)\n    public static void removeAfter(ListNode n0) {\n        if (n0.next == null) return;\n        ListNode target = n0.next;\n        n0.next = target.next;\n        target.next = null; // 辅助垃圾回收\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 下载两个文件后执行 `javac -encoding UTF-8 -d out com/javaroadmap/algo/linkedlist/*.java` 体会多文件编译。\n- 对 `1 → 3 → 4` 的链表执行 `insertAfter(head, new ListNode(2))`：先预测 `head.next.val`；再执行 `removeAfter(head)`，预测链表恢复成什么。写好后运行 `stages/topics/algorithms/linkedlist/com/javaroadmap/algo/linkedlist/App.java` 核对。\n\n## 6. 来源与出处\n- 《Hello 算法》第 4 章 4.2 节（PDF 第 78-84 页，原书印刷 P.72-78）。",
               "packageName": "com.javaroadmap.algo.linkedlist",
               "className": "App",
-              "code": "package com.javaroadmap.algo.linkedlist;\r\n\r\n/**\r\n * 链表原理：离散节点与引用关联\r\n * 对应《Hello 算法》第 4 章 4.2 节\r\n *\r\n * 核心原理：\r\n * 1. 节点（Node）由「数据域」和「引用域」构成，物理存储不连续。\r\n * 2. 插入/删除只需修改前后节点的引用指针，开销为 O(1)。\r\n * 3. 访问第 i 个元素必须从头节点逐一遍历（Traverse），时间复杂度为 O(n)。\r\n */\r\npublic class App {\r\n\r\n    // 在 n0 节点之后插入新节点 newNode: O(1)\r\n    public static void insertAfter(ListNode n0, ListNode newNode) {\r\n        ListNode nextNode = n0.next;\r\n        newNode.next = nextNode;\r\n        n0.next = newNode;\r\n    }\r\n\r\n    // 删除 n0 节点之后的直接后继: O(1)\r\n    public static void removeAfter(ListNode n0) {\r\n        if (n0.next == null) return;\r\n        ListNode target = n0.next;\r\n        n0.next = target.next;\r\n        target.next = null; // 辅助垃圾回收\r\n    }\r\n\r\n    public static void main(String[] args) {\r\n        System.out.println(\"=== 单向链表设计与指针变迁 ===\");\r\n        // 构建初始链表：1 -> 3 -> 4\r\n        ListNode head = new ListNode(1);\r\n        head.next = new ListNode(3);\r\n        head.next.next = new ListNode(4);\r\n\r\n        System.out.println(\"初始链表第二节点：\" + head.next.val);\r\n\r\n        // 在 head 之后插入 2：1 -> 2 -> 3 -> 4\r\n        insertAfter(head, new ListNode(2));\r\n        System.out.println(\"插入后第二节点变为：\" + head.next.val + \"，第三节点仍是：\" + head.next.next.val);\r\n\r\n        // 删除刚插入的 2：1 -> 3 -> 4\r\n        removeAfter(head);\r\n        System.out.println(\"删除后恢复第二节点：\" + head.next.val);\r\n\r\n        System.out.println(\"权衡总结：链表无预分配空间与搬移代价，但每个节点伴随指针内存开销且不利于 CPU 缓存命中。\");\r\n    }\r\n}"
+              "code": "package com.javaroadmap.algo.linkedlist;\r\n\r\n/**\r\n * 链表原理：离散节点与引用关联\r\n * 对应《Hello 算法》第 4 章 4.2 节\r\n *\r\n * 核心原理：\r\n * 1. 节点（Node）由「数据域」和「引用域」构成，逻辑上连续而物理存储离散。\r\n * 2. 插入/删除只需修改前后节点的引用指针，开销为 O(1)。\r\n * 3. 访问第 i 个元素必须从头节点逐一遍历（Traverse），时间复杂度为 O(n)。\r\n */\r\npublic class App {\r\n\r\n    // 在 n0 节点之后插入新节点 newNode: O(1)\r\n    public static void insertAfter(ListNode n0, ListNode newNode) {\r\n        ListNode nextNode = n0.next;\r\n        newNode.next = nextNode;\r\n        n0.next = newNode;\r\n    }\r\n\r\n    // 删除 n0 节点之后的直接后继: O(1)\r\n    public static void removeAfter(ListNode n0) {\r\n        if (n0.next == null) return;\r\n        ListNode target = n0.next;\r\n        n0.next = target.next;\r\n        target.next = null; // 辅助垃圾回收\r\n    }\r\n\r\n    public static void main(String[] args) {\r\n        System.out.println(\"=== 单向链表设计与指针变迁 ===\");\r\n        // 构建初始链表：1 -> 3 -> 4\r\n        ListNode head = new ListNode(1);\r\n        head.next = new ListNode(3);\r\n        head.next.next = new ListNode(4);\r\n\r\n        System.out.println(\"初始链表第二节点：\" + head.next.val);\r\n\r\n        // 在 head 之后插入 2：1 -> 2 -> 3 -> 4\r\n        insertAfter(head, new ListNode(2));\r\n        System.out.println(\"插入后第二节点变为：\" + head.next.val + \"，第三节点仍是：\" + head.next.next.val);\r\n\r\n        // 删除刚插入的 2：1 -> 3 -> 4\r\n        removeAfter(head);\r\n        System.out.println(\"删除后恢复第二节点：\" + head.next.val);\r\n\r\n        System.out.println(\"权衡总结：链表无预分配空间与搬移代价，但每个节点伴随指针内存开销且不利于 CPU 缓存命中。\");\r\n    }\r\n}",
+              "codeFiles": [
+                {
+                  "path": "stages/topics/algorithms/linkedlist/com/javaroadmap/algo/linkedlist/ListNode.java",
+                  "className": "ListNode",
+                  "packageName": "com.javaroadmap.algo.linkedlist",
+                  "code": "package com.javaroadmap.algo.linkedlist;\r\n\r\npublic class ListNode {\r\n    public int val;\r\n    public ListNode next;\r\n\r\n    public ListNode(int val) {\r\n        this.val = val;\r\n        this.next = null;\r\n    }\r\n}"
+                }
+              ],
+              "codePath": "stages/topics/algorithms/linkedlist/com/javaroadmap/algo/linkedlist/App.java"
             }
           ]
         },
@@ -236,36 +276,271 @@
           "id": "algo-hashtable",
           "title": "哈希表",
           "description": "基于散列函数的键值快速检索机制、冲突解决策略与扩容重哈希。",
-          "status": "building",
-          "lessons": []
+          "status": "published",
+          "lessons": [
+            {
+              "id": "algo-hash-table",
+              "topicId": "topic-algo",
+              "moduleId": "algo-hashtable",
+              "title": "哈希表：哈希函数与冲突解决",
+              "summary": "哈希函数把键映射成数组下标实现“一步定位”；冲突不可消除，拉链法是可行的兜底方案。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 6 章哈希表",
+                "pdfPageStart": 120,
+                "pdfPageEnd": 142,
+                "printPage": "114-136"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 哈希表：哈希函数与冲突解决\n\n## 1. 业务场景与需要解决的问题\n用户ID → 用户档案、单词 → 释义、缓存 key → 对象。凡“按键查询”的场景都需要在 O(1) 量级完成定位，普通数组与链表都做不到。\n\n## 2. 为什么需要哈希函数与冲突处理\n- **哈希函数** `index = hash(key) % capacity` 把任意键映射到桶数组的下标，实现“按内容算地址”。\n- **冲突不可避免**：键的取值空间远大于桶数（鸽笼原理），两个不同键可能落在同一个桶。常见方案：拉链法（每个桶挂一条链表）与开放寻址法。\n- **退化风险**：所有键挤进一个桶时，查找退化为 O(n)；因此负载因子过高要扩容（rehash）。\n\n## 3. 核心机制（拉链法）\n- 写入：算出桶下标 → 在链上查同名键，存在则覆盖，不存在则追加节点。\n- 读取：算出桶下标 → 沿链逐一 `equals` 比对。\n- 本示例为了看清机制使用固定 8 桶 + 简单链表；JDK 的 `HashMap` 在此基础上增加了树化（链长超过阈值转红黑树）等优化。\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.hashtable;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\n/**\n * 哈希表：哈希函数定位 + 拉链法解决冲突\n * 对应《Hello 算法》第 6 章\n */\npublic class App {\n\n    static class Pair {\n        final String key;\n        int value;\n        Pair(String key, int value) {\n            this.key = key;\n            this.value = value;\n        }\n    }\n\n    // 简化哈希表：固定桶数组 + 拉链法\n    static class SimpleHashMap {\n        private final List<Pair>[] buckets;\n\n        SimpleHashMap(int capacity) {\n            buckets = new List[capacity];\n            for (int i = 0; i < capacity; i++) {\n                buckets[i] = new ArrayList<>();\n            }\n        }\n\n        int indexFor(String key) {\n            return Math.floorMod(key.hashCode(), buckets.length);\n        }\n\n        void put(String key, int value) {\n            List<Pair> chain = buckets[indexFor(key)];\n            for (Pair p : chain) {\n                if (p.key.equals(key)) {\n                    p.value = value; // 已存在则覆盖更新\n                    return;\n                }\n            }\n            chain.add(new Pair(key, value)); // 冲突时追加到同一条链\n        }\n\n        Integer get(String key) {\n            for (Pair p : buckets[indexFor(key)]) {\n                if (p.key.equals(key)) return p.value;\n            }\n            return null;\n        }\n\n        int maxChainLength() {\n            int max = 0;\n            for (List<Pair> chain : buckets) {\n                max = Math.max(max, chain.size());\n            }\n            return max;\n        }\n    }\n\n    public static void main(String[] args) {\n        SimpleHashMap map = new SimpleHashMap(8);\n        map.put(\"apple\", 5);\n        map.put(\"banana\", 3);\n        map.put(\"cherry\", 9);\n        System.out.println(\"get(apple)：\" + map.get(\"apple\"));\n        System.out.println(\"get(banana)：\" + map.get(\"banana\"));\n        map.put(\"apple\", 6); // 覆盖更新\n        System.out.println(\"覆盖后 get(apple)：\" + map.get(\"apple\"));\n        System.out.println(\"get(missing)：\" + map.get(\"missing\"));\n        System.out.println(\"最大冲突链长度：\" + map.maxChainLength());\n        System.out.println(\"核心机制：哈希函数把键映射到桶下标，冲突用拉链法挂在同一桶内。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- `get(\"missing\")` 返回什么？为什么返回 `null` 而不是抛异常？再想想：如果用 `int` 返回值表示查询结果，缺失时该返回什么？这正是“-1 哨兵”歧义问题的又一例证。\n\n## 6. 来源与出处\n- 《Hello 算法》第 6 章哈希表（PDF 第 120-142 页）。",
+              "packageName": "com.javaroadmap.algo.hashtable",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.hashtable;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\n/**\n * 哈希表：哈希函数定位 + 拉链法解决冲突\n * 对应《Hello 算法》第 6 章\n */\npublic class App {\n\n    static class Pair {\n        final String key;\n        int value;\n        Pair(String key, int value) {\n            this.key = key;\n            this.value = value;\n        }\n    }\n\n    // 简化哈希表：固定桶数组 + 拉链法\n    static class SimpleHashMap {\n        private final List<Pair>[] buckets;\n\n        SimpleHashMap(int capacity) {\n            buckets = new List[capacity];\n            for (int i = 0; i < capacity; i++) {\n                buckets[i] = new ArrayList<>();\n            }\n        }\n\n        int indexFor(String key) {\n            return Math.floorMod(key.hashCode(), buckets.length);\n        }\n\n        void put(String key, int value) {\n            List<Pair> chain = buckets[indexFor(key)];\n            for (Pair p : chain) {\n                if (p.key.equals(key)) {\n                    p.value = value; // 已存在则覆盖更新\n                    return;\n                }\n            }\n            chain.add(new Pair(key, value)); // 冲突时追加到同一条链\n        }\n\n        Integer get(String key) {\n            for (Pair p : buckets[indexFor(key)]) {\n                if (p.key.equals(key)) return p.value;\n            }\n            return null;\n        }\n\n        int maxChainLength() {\n            int max = 0;\n            for (List<Pair> chain : buckets) {\n                max = Math.max(max, chain.size());\n            }\n            return max;\n        }\n    }\n\n    public static void main(String[] args) {\n        SimpleHashMap map = new SimpleHashMap(8);\n        map.put(\"apple\", 5);\n        map.put(\"banana\", 3);\n        map.put(\"cherry\", 9);\n        System.out.println(\"get(apple)：\" + map.get(\"apple\"));\n        System.out.println(\"get(banana)：\" + map.get(\"banana\"));\n        map.put(\"apple\", 6); // 覆盖更新\n        System.out.println(\"覆盖后 get(apple)：\" + map.get(\"apple\"));\n        System.out.println(\"get(missing)：\" + map.get(\"missing\"));\n        System.out.println(\"最大冲突链长度：\" + map.maxChainLength());\n        System.out.println(\"核心机制：哈希函数把键映射到桶下标，冲突用拉链法挂在同一桶内。\");\n    }\n}"
+            }
+          ]
         },
         {
           "id": "algo-trees-heaps",
           "title": "树与堆",
           "description": "二叉树遍历递归与迭代、二叉搜索树平衡性、大顶堆/小顶堆与 Top-K 优先队列。",
-          "status": "planned",
-          "lessons": []
+          "status": "published",
+          "lessons": [
+            {
+              "id": "algo-binary-tree",
+              "topicId": "topic-algo",
+              "moduleId": "algo-trees-heaps",
+              "title": "二叉树与四种遍历",
+              "summary": "树是表达层级关系的非线性结构；DFS 三序由递归顺序决定，BFS 层序借助队列。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 7 章树",
+                "pdfPageStart": 143,
+                "pdfPageEnd": 178,
+                "printPage": "137-172"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 二叉树与四种遍历\n\n## 1. 业务场景与需要解决的问题\n公司的组织架构、文件系统的目录、DOM 树都是层级关系。线性结构表达不了“一对多”，需要树。\n\n## 2. 为什么二叉树是树的起点\n- 二叉树每个节点最多两个孩子（左/右），结构最简单却已能表达排序（BST）、优先级（堆）、表达式等模型。\n- 遍历是树操作的基础：**深度优先**的三个顺序（前/中/后序）取决于“访问根”在递归中的位置；**广度优先**（层序）则借助队列逐层展开。\n\n## 3. 核心心智模型\n\n```text\n前序：根 → 左 → 右   （复制树、序列化常用）\n中序：左 → 根 → 右   （二叉搜索树中得到升序序列）\n后序：左 → 右 → 根   （先算子树再算根，如目录大小统计）\n层序：逐层从左到右   （求深度、按层处理）\n```\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.binarytree;\n\nimport java.util.ArrayDeque;\nimport java.util.Deque;\n\n/**\n * 二叉树与四种遍历\n * 对应《Hello 算法》第 7 章\n */\npublic class App {\n\n    static class TreeNode {\n        final int val;\n        TreeNode left;\n        TreeNode right;\n\n        TreeNode(int val) {\n            this.val = val;\n        }\n    }\n\n    // 前序：根 → 左 → 右\n    static void preOrder(TreeNode n, StringBuilder out) {\n        if (n == null) return;\n        out.append(n.val).append(' ');\n        preOrder(n.left, out);\n        preOrder(n.right, out);\n    }\n\n    // 中序：左 → 根 → 右\n    static void inOrder(TreeNode n, StringBuilder out) {\n        if (n == null) return;\n        inOrder(n.left, out);\n        out.append(n.val).append(' ');\n        inOrder(n.right, out);\n    }\n\n    // 后序：左 → 右 → 根\n    static void postOrder(TreeNode n, StringBuilder out) {\n        if (n == null) return;\n        postOrder(n.left, out);\n        postOrder(n.right, out);\n        out.append(n.val).append(' ');\n    }\n\n    // 层序：借助队列逐层扩散（广度优先）\n    static void levelOrder(TreeNode root, StringBuilder out) {\n        if (root == null) return;\n        Deque<TreeNode> queue = new ArrayDeque<>();\n        queue.add(root);\n        while (!queue.isEmpty()) {\n            TreeNode n = queue.poll();\n            out.append(n.val).append(' ');\n            if (n.left != null) queue.add(n.left);\n            if (n.right != null) queue.add(n.right);\n        }\n    }\n\n    public static void main(String[] args) {\n        //        1\n        //       / \\\n        //      2   3\n        //     / \\   \\\n        //    4   5   6\n        TreeNode root = new TreeNode(1);\n        root.left = new TreeNode(2);\n        root.right = new TreeNode(3);\n        root.left.left = new TreeNode(4);\n        root.left.right = new TreeNode(5);\n        root.right.right = new TreeNode(6);\n        StringBuilder pre = new StringBuilder();\n        StringBuilder in = new StringBuilder();\n        StringBuilder post = new StringBuilder();\n        StringBuilder level = new StringBuilder();\n        preOrder(root, pre);\n        inOrder(root, in);\n        postOrder(root, post);\n        levelOrder(root, level);\n        System.out.println(\"前序遍历：\" + pre.toString().trim());\n        System.out.println(\"中序遍历：\" + in.toString().trim());\n        System.out.println(\"后序遍历：\" + post.toString().trim());\n        System.out.println(\"层序遍历：\" + level.toString().trim());\n        System.out.println(\"核心机制：递归遍历体现深度优先，层序遍历借助队列实现广度优先。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 对示例树先手算中序结果，再与程序输出比对。把 `root.right.right` 改成挂一个 `TreeNode(7)`，四种遍历各变为什么？\n\n## 6. 来源与出处\n- 《Hello 算法》第 7 章树（PDF 第 143-178 页）。",
+              "packageName": "com.javaroadmap.algo.binarytree",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.binarytree;\n\nimport java.util.ArrayDeque;\nimport java.util.Deque;\n\n/**\n * 二叉树与四种遍历\n * 对应《Hello 算法》第 7 章\n */\npublic class App {\n\n    static class TreeNode {\n        final int val;\n        TreeNode left;\n        TreeNode right;\n\n        TreeNode(int val) {\n            this.val = val;\n        }\n    }\n\n    // 前序：根 → 左 → 右\n    static void preOrder(TreeNode n, StringBuilder out) {\n        if (n == null) return;\n        out.append(n.val).append(' ');\n        preOrder(n.left, out);\n        preOrder(n.right, out);\n    }\n\n    // 中序：左 → 根 → 右\n    static void inOrder(TreeNode n, StringBuilder out) {\n        if (n == null) return;\n        inOrder(n.left, out);\n        out.append(n.val).append(' ');\n        inOrder(n.right, out);\n    }\n\n    // 后序：左 → 右 → 根\n    static void postOrder(TreeNode n, StringBuilder out) {\n        if (n == null) return;\n        postOrder(n.left, out);\n        postOrder(n.right, out);\n        out.append(n.val).append(' ');\n    }\n\n    // 层序：借助队列逐层扩散（广度优先）\n    static void levelOrder(TreeNode root, StringBuilder out) {\n        if (root == null) return;\n        Deque<TreeNode> queue = new ArrayDeque<>();\n        queue.add(root);\n        while (!queue.isEmpty()) {\n            TreeNode n = queue.poll();\n            out.append(n.val).append(' ');\n            if (n.left != null) queue.add(n.left);\n            if (n.right != null) queue.add(n.right);\n        }\n    }\n\n    public static void main(String[] args) {\n        //        1\n        //       / \\\n        //      2   3\n        //     / \\   \\\n        //    4   5   6\n        TreeNode root = new TreeNode(1);\n        root.left = new TreeNode(2);\n        root.right = new TreeNode(3);\n        root.left.left = new TreeNode(4);\n        root.left.right = new TreeNode(5);\n        root.right.right = new TreeNode(6);\n        StringBuilder pre = new StringBuilder();\n        StringBuilder in = new StringBuilder();\n        StringBuilder post = new StringBuilder();\n        StringBuilder level = new StringBuilder();\n        preOrder(root, pre);\n        inOrder(root, in);\n        postOrder(root, post);\n        levelOrder(root, level);\n        System.out.println(\"前序遍历：\" + pre.toString().trim());\n        System.out.println(\"中序遍历：\" + in.toString().trim());\n        System.out.println(\"后序遍历：\" + post.toString().trim());\n        System.out.println(\"层序遍历：\" + level.toString().trim());\n        System.out.println(\"核心机制：递归遍历体现深度优先，层序遍历借助队列实现广度优先。\");\n    }\n}"
+            },
+            {
+              "id": "algo-heap",
+              "topicId": "topic-algo",
+              "moduleId": "algo-trees-heaps",
+              "title": "堆与优先队列",
+              "summary": "完全二叉树装进数组，父子下标有固定公式；push/pop 各自堆化，pop 恒取最值。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 8 章堆",
+                "pdfPageStart": 179,
+                "pdfPageEnd": 193,
+                "printPage": "173-187"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 堆与优先队列\n\n## 1. 业务场景与需要解决的问题\n任务调度要“每次取优先级最高的任务”、Top-K 统计要“动态维护前 K 大”。有序数组插入 O(n)，无序数组取最值 O(n)——堆让两者都是 O(log n)。\n\n## 2. 为什么堆能用数组存\n- 堆是完全二叉树：除最后一层外全满，节点按层编号后恰好连续存放进数组。\n- 下标公式：节点 `i` 的左孩子 `2i+1`、右孩子 `2i+2`、父节点 `(i-1)/2`——无需指针。\n- **堆序性质**：小顶堆中每个父节点 ≤ 子节点，因此 `heap[0]` 恒为最小值。\n\n## 3. 核心机制\n- `push`：追加到数组末尾，自底向上与父节点比较交换（上浮）。\n- `pop`：取走堆顶，把末尾元素放到堆顶，自顶向下与较小的孩子交换（下沉）。\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.heap;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\n/**\n * 数组实现小顶堆与优先队列\n * 对应《Hello 算法》第 8 章\n */\npublic class App {\n\n    static class MinHeap {\n        private final List<Integer> heap = new ArrayList<>();\n\n        int size() {\n            return heap.size();\n        }\n\n        void push(int val) {\n            heap.add(val);\n            int i = heap.size() - 1;\n            while (i > 0) { // 自底向上堆化：与父节点比较交换\n                int parent = (i - 1) / 2;\n                if (heap.get(parent) <= heap.get(i)) break;\n                swap(i, parent);\n                i = parent;\n            }\n        }\n\n        int pop() {\n            if (heap.isEmpty()) {\n                throw new IllegalStateException(\"堆为空\");\n            }\n            int top = heap.get(0);\n            int last = heap.remove(heap.size() - 1);\n            if (!heap.isEmpty()) {\n                heap.set(0, last);\n                int i = 0;\n                while (true) { // 自顶向下堆化：与较小子节点交换\n                    int l = 2 * i + 1;\n                    int r = 2 * i + 2;\n                    int smallest = i;\n                    if (l < heap.size() && heap.get(l) < heap.get(smallest)) smallest = l;\n                    if (r < heap.size() && heap.get(r) < heap.get(smallest)) smallest = r;\n                    if (smallest == i) break;\n                    swap(i, smallest);\n                    i = smallest;\n                }\n            }\n            return top;\n        }\n\n        private void swap(int a, int b) {\n            int t = heap.get(a);\n            heap.set(a, heap.get(b));\n            heap.set(b, t);\n        }\n    }\n\n    public static void main(String[] args) {\n        MinHeap heap = new MinHeap();\n        int[] input = {7, 2, 9, 4, 1};\n        StringBuilder in = new StringBuilder();\n        for (int v : input) {\n            heap.push(v);\n            in.append(v).append(' ');\n        }\n        StringBuilder out = new StringBuilder();\n        while (heap.size() > 0) {\n            out.append(heap.pop()).append(' ');\n        }\n        System.out.println(\"入堆顺序：\" + in.toString().trim());\n        System.out.println(\"依次出堆（升序）：\" + out.toString().trim());\n        System.out.println(\"核心机制：完全二叉树用数组存储，父子下标满足 2i+1 与 2i+2，pop 恒取最小。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 依次 push 7、2、9、4、1 后，数组内部排列是什么？为什么出堆顺序与入堆顺序无关？把小顶堆改成大顶堆需要改哪几处比较符？\n\n## 6. 来源与出处\n- 《Hello 算法》第 8 章堆（PDF 第 179-193 页）。工程中通常直接使用 `java.util.PriorityQueue`。",
+              "packageName": "com.javaroadmap.algo.heap",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.heap;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\n/**\n * 数组实现小顶堆与优先队列\n * 对应《Hello 算法》第 8 章\n */\npublic class App {\n\n    static class MinHeap {\n        private final List<Integer> heap = new ArrayList<>();\n\n        int size() {\n            return heap.size();\n        }\n\n        void push(int val) {\n            heap.add(val);\n            int i = heap.size() - 1;\n            while (i > 0) { // 自底向上堆化：与父节点比较交换\n                int parent = (i - 1) / 2;\n                if (heap.get(parent) <= heap.get(i)) break;\n                swap(i, parent);\n                i = parent;\n            }\n        }\n\n        int pop() {\n            if (heap.isEmpty()) {\n                throw new IllegalStateException(\"堆为空\");\n            }\n            int top = heap.get(0);\n            int last = heap.remove(heap.size() - 1);\n            if (!heap.isEmpty()) {\n                heap.set(0, last);\n                int i = 0;\n                while (true) { // 自顶向下堆化：与较小子节点交换\n                    int l = 2 * i + 1;\n                    int r = 2 * i + 2;\n                    int smallest = i;\n                    if (l < heap.size() && heap.get(l) < heap.get(smallest)) smallest = l;\n                    if (r < heap.size() && heap.get(r) < heap.get(smallest)) smallest = r;\n                    if (smallest == i) break;\n                    swap(i, smallest);\n                    i = smallest;\n                }\n            }\n            return top;\n        }\n\n        private void swap(int a, int b) {\n            int t = heap.get(a);\n            heap.set(a, heap.get(b));\n            heap.set(b, t);\n        }\n    }\n\n    public static void main(String[] args) {\n        MinHeap heap = new MinHeap();\n        int[] input = {7, 2, 9, 4, 1};\n        StringBuilder in = new StringBuilder();\n        for (int v : input) {\n            heap.push(v);\n            in.append(v).append(' ');\n        }\n        StringBuilder out = new StringBuilder();\n        while (heap.size() > 0) {\n            out.append(heap.pop()).append(' ');\n        }\n        System.out.println(\"入堆顺序：\" + in.toString().trim());\n        System.out.println(\"依次出堆（升序）：\" + out.toString().trim());\n        System.out.println(\"核心机制：完全二叉树用数组存储，父子下标满足 2i+1 与 2i+2，pop 恒取最小。\");\n    }\n}"
+            }
+          ]
         },
         {
           "id": "algo-graphs",
           "title": "图结构与遍历",
           "description": "邻接表与邻接矩阵、广度优先遍历 (BFS)、深度优先遍历 (DFS) 与拓扑排序。",
-          "status": "planned",
-          "lessons": []
+          "status": "published",
+          "lessons": [
+            {
+              "id": "algo-graph",
+              "topicId": "topic-algo",
+              "moduleId": "algo-graphs",
+              "title": "图的表示与 BFS/DFS 遍历",
+              "summary": "邻接表用 Map+List 存多对多关系；BFS 借队列逐层扩散求最短跳数，DFS 沿路径走到底再回溯。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 9 章图",
+                "pdfPageStart": 194,
+                "pdfPageEnd": 213,
+                "printPage": "188-207"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 图的表示与 BFS/DFS 遍历\n\n## 1. 业务场景与需要解决的问题\n社交好友关系、地图路口连接、任务依赖……这些“多对多”关系既不是线性也不是树形，需要图：`G = (V, E)`，顶点加边。\n\n## 2. 为什么邻接表是工程默认？两种存储表示的取舍\n- **邻接矩阵**：`n×n` 布尔矩阵，查边 O(1)，空间 O(n²)，适合稠密图。\n- **邻接表**：每个顶点挂一条邻居链表（本课用 `Map<String, List<String>>`），空间 O(n+e)，适合稀疏图，是工程默认选择。\n\n## 3. 两种遍历的心智模型\n\n```text\nBFS：队列 + visited 集合，逐层扩散 → 无权图最短跳数\nDFS：递归沿一条邻边走到底，走不通回溯 → 连通性、拓扑、路径搜索\n共同点：都必须记录 visited，否则环会让遍历永不停止\n```\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.graph;\n\nimport java.util.ArrayDeque;\nimport java.util.ArrayList;\nimport java.util.Deque;\nimport java.util.LinkedHashMap;\nimport java.util.List;\nimport java.util.Map;\n\n/**\n * 图的邻接表存储与 BFS/DFS 遍历\n * 对应《Hello 算法》第 9 章\n */\npublic class App {\n\n    static void dfs(Map<String, List<String>> graph, String cur, List<String> visited, StringBuilder out) {\n        visited.add(cur);\n        out.append(cur).append(' ');\n        for (String next : graph.get(cur)) {\n            if (!visited.contains(next)) {\n                dfs(graph, next, visited, out);\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        // 无向图：A-B、A-C、B-D、C-D、D-E\n        Map<String, List<String>> graph = new LinkedHashMap<>();\n        graph.put(\"A\", new ArrayList<>(List.of(\"B\", \"C\")));\n        graph.put(\"B\", new ArrayList<>(List.of(\"A\", \"D\")));\n        graph.put(\"C\", new ArrayList<>(List.of(\"A\", \"D\")));\n        graph.put(\"D\", new ArrayList<>(List.of(\"B\", \"C\", \"E\")));\n        graph.put(\"E\", new ArrayList<>(List.of(\"D\")));\n\n        // 广度优先：借助队列逐层扩散\n        StringBuilder bfs = new StringBuilder();\n        Deque<String> queue = new ArrayDeque<>();\n        List<String> visitedBfs = new ArrayList<>();\n        queue.add(\"A\");\n        visitedBfs.add(\"A\");\n        while (!queue.isEmpty()) {\n            String cur = queue.poll();\n            bfs.append(cur).append(' ');\n            for (String next : graph.get(cur)) {\n                if (!visitedBfs.contains(next)) {\n                    visitedBfs.add(next);\n                    queue.add(next);\n                }\n            }\n        }\n\n        // 深度优先：沿一条路径走到底再回溯\n        StringBuilder dfsPath = new StringBuilder();\n        dfs(graph, \"A\", new ArrayList<>(), dfsPath);\n\n        System.out.println(\"广度优先 BFS：\" + bfs.toString().trim());\n        System.out.println(\"深度优先 DFS：\" + dfsPath.toString().trim());\n        System.out.println(\"核心机制：邻接表用 Map+List 存边；BFS 借助队列逐层扩散，DFS 沿一条路径走到底再回溯。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 从 A 出发的 BFS 与 DFS 序列分别是什么？先手算再运行核对。把边 A-C 删除后，两序列又如何变化？\n\n## 6. 来源与出处\n- 《Hello 算法》第 9 章图（PDF 第 194-213 页）。",
+              "packageName": "com.javaroadmap.algo.graph",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.graph;\n\nimport java.util.ArrayDeque;\nimport java.util.ArrayList;\nimport java.util.Deque;\nimport java.util.LinkedHashMap;\nimport java.util.List;\nimport java.util.Map;\n\n/**\n * 图的邻接表存储与 BFS/DFS 遍历\n * 对应《Hello 算法》第 9 章\n */\npublic class App {\n\n    static void dfs(Map<String, List<String>> graph, String cur, List<String> visited, StringBuilder out) {\n        visited.add(cur);\n        out.append(cur).append(' ');\n        for (String next : graph.get(cur)) {\n            if (!visited.contains(next)) {\n                dfs(graph, next, visited, out);\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        // 无向图：A-B、A-C、B-D、C-D、D-E\n        Map<String, List<String>> graph = new LinkedHashMap<>();\n        graph.put(\"A\", new ArrayList<>(List.of(\"B\", \"C\")));\n        graph.put(\"B\", new ArrayList<>(List.of(\"A\", \"D\")));\n        graph.put(\"C\", new ArrayList<>(List.of(\"A\", \"D\")));\n        graph.put(\"D\", new ArrayList<>(List.of(\"B\", \"C\", \"E\")));\n        graph.put(\"E\", new ArrayList<>(List.of(\"D\")));\n\n        // 广度优先：借助队列逐层扩散\n        StringBuilder bfs = new StringBuilder();\n        Deque<String> queue = new ArrayDeque<>();\n        List<String> visitedBfs = new ArrayList<>();\n        queue.add(\"A\");\n        visitedBfs.add(\"A\");\n        while (!queue.isEmpty()) {\n            String cur = queue.poll();\n            bfs.append(cur).append(' ');\n            for (String next : graph.get(cur)) {\n                if (!visitedBfs.contains(next)) {\n                    visitedBfs.add(next);\n                    queue.add(next);\n                }\n            }\n        }\n\n        // 深度优先：沿一条路径走到底再回溯\n        StringBuilder dfsPath = new StringBuilder();\n        dfs(graph, \"A\", new ArrayList<>(), dfsPath);\n\n        System.out.println(\"广度优先 BFS：\" + bfs.toString().trim());\n        System.out.println(\"深度优先 DFS：\" + dfsPath.toString().trim());\n        System.out.println(\"核心机制：邻接表用 Map+List 存边；BFS 借助队列逐层扩散，DFS 沿一条路径走到底再回溯。\");\n    }\n}"
+            }
+          ]
         },
         {
           "id": "algo-search-sort",
           "title": "经典排序与搜索",
           "description": "二分查找边界判定、快速排序分治划分、归并排序合并与堆排序实战。",
-          "status": "planned",
-          "lessons": []
+          "status": "published",
+          "lessons": [
+            {
+              "id": "algo-binary-search",
+              "topicId": "topic-algo",
+              "moduleId": "algo-search-sort",
+              "title": "二分查找与插入点",
+              "summary": "有序数组上每轮比较排除一半候选，O(log n) 定位；边界区间与中点防溢出是两大易错点。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 10 章搜索",
+                "pdfPageStart": 214,
+                "pdfPageEnd": 230,
+                "printPage": "208-224"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 二分查找与插入点\n\n## 1. 业务场景与需要解决的问题\n在 100 万条有序记录里找一条：线性扫描最多 100 万次比较，二分只要约 20 次。字典翻页、版本定位、`git bisect` 都是这个思想。\n\n## 2. 为什么必须有序\n- 二分的本质是利用**有序性做排除**：`sorted[mid] < target` 时，左半区全部不可能。无序数组不成立。\n- 数据结构代价：有序数组支持二分但插入 O(n)；链表插入快但无法二分——权衡再次出现。\n\n## 3. 两个易错边界\n- **区间约定**：闭区间 `[lo, hi]` 配 `lo <= hi`，左闭右开 `[lo, hi)` 配 `lo < hi`，混用必然死循环或漏判。\n- **中点写法**：`mid = lo + (hi - lo) / 2`，而不是 `(lo + hi) / 2`——后者在大数组下会整型溢出。\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.binarysearch;\n\n/**\n * 二分查找与插入点\n * 对应《Hello 算法》第 10 章\n */\npublic class App {\n\n    // 标准二分：找到返回下标，找不到返回 -1\n    static int binarySearch(int[] sorted, int target) {\n        int lo = 0;\n        int hi = sorted.length - 1;\n        while (lo <= hi) {\n            int mid = lo + (hi - lo) / 2;\n            if (sorted[mid] == target) return mid;\n            if (sorted[mid] < target) lo = mid + 1;\n            else hi = mid - 1;\n        }\n        return -1;\n    }\n\n    // 查找插入点：返回第一个大于等于 target 的下标\n    static int searchInsertPoint(int[] sorted, int target) {\n        int lo = 0;\n        int hi = sorted.length;\n        while (lo < hi) {\n            int mid = lo + (hi - lo) / 2;\n            if (sorted[mid] < target) lo = mid + 1;\n            else hi = mid;\n        }\n        return lo;\n    }\n\n    public static void main(String[] args) {\n        int[] sorted = {1, 3, 5, 7, 9, 11};\n        System.out.println(\"查找 7 的下标：\" + binarySearch(sorted, 7));\n        System.out.println(\"查找 4 的结果（不存在）：\" + binarySearch(sorted, 4));\n        System.out.println(\"4 的插入点下标：\" + searchInsertPoint(sorted, 4));\n        System.out.println(\"12 的插入点下标：\" + searchInsertPoint(sorted, 12));\n        System.out.println(\"边界提醒：二分只适用于有序数组，mid 必须用 lo+(hi-lo)/2 防止整型溢出。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- `binarySearch(sorted, 0)` 与 `binarySearch(sorted, 12)` 各返回什么？`searchInsertPoint` 找不到目标时返回值有什么含义？先写答案再运行核对。\n\n## 6. 来源与出处\n- 《Hello 算法》第 10 章搜索（PDF 第 214-230 页）。",
+              "packageName": "com.javaroadmap.algo.binarysearch",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.binarysearch;\n\n/**\n * 二分查找与插入点\n * 对应《Hello 算法》第 10 章\n */\npublic class App {\n\n    // 标准二分：找到返回下标，找不到返回 -1\n    static int binarySearch(int[] sorted, int target) {\n        int lo = 0;\n        int hi = sorted.length - 1;\n        while (lo <= hi) {\n            int mid = lo + (hi - lo) / 2;\n            if (sorted[mid] == target) return mid;\n            if (sorted[mid] < target) lo = mid + 1;\n            else hi = mid - 1;\n        }\n        return -1;\n    }\n\n    // 查找插入点：返回第一个大于等于 target 的下标\n    static int searchInsertPoint(int[] sorted, int target) {\n        int lo = 0;\n        int hi = sorted.length;\n        while (lo < hi) {\n            int mid = lo + (hi - lo) / 2;\n            if (sorted[mid] < target) lo = mid + 1;\n            else hi = mid;\n        }\n        return lo;\n    }\n\n    public static void main(String[] args) {\n        int[] sorted = {1, 3, 5, 7, 9, 11};\n        System.out.println(\"查找 7 的下标：\" + binarySearch(sorted, 7));\n        System.out.println(\"查找 4 的结果（不存在）：\" + binarySearch(sorted, 4));\n        System.out.println(\"4 的插入点下标：\" + searchInsertPoint(sorted, 4));\n        System.out.println(\"12 的插入点下标：\" + searchInsertPoint(sorted, 12));\n        System.out.println(\"边界提醒：二分只适用于有序数组，mid 必须用 lo+(hi-lo)/2 防止整型溢出。\");\n    }\n}"
+            },
+            {
+              "id": "algo-sorting",
+              "topicId": "topic-algo",
+              "moduleId": "algo-search-sort",
+              "title": "排序算法对比：从冒泡到快排与归并",
+              "summary": "四种排序覆盖“交换、插入、分治”三大思路；时间复杂度与稳定性的权衡决定工程选型。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 11 章排序",
+                "pdfPageStart": 231,
+                "pdfPageEnd": 264,
+                "printPage": "225-258"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 排序算法对比：从冒泡到快排与归并\n\n## 1. 业务场景与需要解决的问题\n排行榜、二分查找的前置、数据去重前的整理……排序是最常用的预处理。为什么 JDK 不用冒泡而用双轴快排（`Arrays.sort` 对基本类型）？\n\n## 2. 四种算法的思路与代价\n\n```text\n冒泡排序：相邻逆序对交换，每轮冒出最大值   O(n²)，稳定，可提前退出\n插入排序：把新元素插入左侧已排序区间       O(n²)，稳定，近有序数据极快\n快速排序：选基准划分两侧后递归             平均 O(n log n)，不稳定，最坏 O(n²)\n归并排序：分到最小再有序合并               O(n log n)，稳定，需 O(n) 辅助数组\n```\n\n## 3. 稳定性为什么重要\n- 稳定 = 相等元素排序后保持原有相对次序。按金额排序后再按日期排序，稳定算法能保留金额次序，不稳定算法不能。\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.sorting;\n\nimport java.util.Arrays;\n\n/**\n * 基础排序与分治排序\n * 对应《Hello 算法》第 11 章\n */\npublic class App {\n\n    // 冒泡排序：相邻比较交换，最大值逐轮“冒”到末尾\n    static void bubbleSort(int[] a) {\n        for (int i = a.length - 1; i > 0; i--) {\n            boolean swapped = false;\n            for (int j = 0; j < i; j++) {\n                if (a[j] > a[j + 1]) {\n                    int t = a[j];\n                    a[j] = a[j + 1];\n                    a[j + 1] = t;\n                    swapped = true;\n                }\n            }\n            if (!swapped) break; // 一轮无交换说明已有序，提前退出\n        }\n    }\n\n    // 插入排序：像整理扑克牌，把新元素插入左侧已排序区间\n    static void insertionSort(int[] a) {\n        for (int i = 1; i < a.length; i++) {\n            int base = a[i];\n            int j = i - 1;\n            while (j >= 0 && a[j] > base) {\n                a[j + 1] = a[j];\n                j--;\n            }\n            a[j + 1] = base;\n        }\n    }\n\n    // 快速排序：选基准划分两侧，再递归处理子区间\n    static void quickSort(int[] a, int lo, int hi) {\n        if (lo >= hi) return;\n        int pivot = a[lo];\n        int i = lo;\n        int j = hi;\n        while (i < j) {\n            while (i < j && a[j] >= pivot) j--;\n            while (i < j && a[i] <= pivot) i++;\n            int t = a[i];\n            a[i] = a[j];\n            a[j] = t;\n        }\n        a[lo] = a[i];\n        a[i] = pivot;\n        quickSort(a, lo, i - 1);\n        quickSort(a, i + 1, hi);\n    }\n\n    // 归并排序：分到最小，再按序合并（稳定）\n    static void mergeSort(int[] a, int lo, int hi, int[] tmp) {\n        if (lo >= hi) return;\n        int mid = lo + (hi - lo) / 2;\n        mergeSort(a, lo, mid, tmp);\n        mergeSort(a, mid + 1, hi, tmp);\n        int i = lo;\n        int j = mid + 1;\n        int k = lo;\n        while (i <= mid && j <= hi) {\n            tmp[k++] = a[i] <= a[j] ? a[i++] : a[j++];\n        }\n        while (i <= mid) tmp[k++] = a[i++];\n        while (j <= hi) tmp[k++] = a[j++];\n        System.arraycopy(tmp, lo, a, lo, hi - lo + 1);\n    }\n\n    public static void main(String[] args) {\n        int[] original = {5, 2, 9, 1, 7, 3};\n        int[] a = original.clone();\n        bubbleSort(a);\n        System.out.println(\"冒泡排序：\" + Arrays.toString(a));\n        a = original.clone();\n        insertionSort(a);\n        System.out.println(\"插入排序：\" + Arrays.toString(a));\n        a = original.clone();\n        quickSort(a, 0, a.length - 1);\n        System.out.println(\"快速排序：\" + Arrays.toString(a));\n        a = original.clone();\n        mergeSort(a, 0, a.length - 1, new int[a.length]);\n        System.out.println(\"归并排序：\" + Arrays.toString(a));\n        System.out.println(\"稳定性提醒：冒泡/插入/归并稳定，快排不稳定；快排平均 O(n log n)、最坏 O(n^2)。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 对已经有序的输入 `{1, 2, 3, 4, 5, 6}`，哪种算法实际比较次数最少？为什么？给快排喂一个完全逆序的数组会发生什么（最坏情形）？\n\n## 6. 来源与出处\n- 《Hello 算法》第 11 章排序（PDF 第 231-264 页）。",
+              "packageName": "com.javaroadmap.algo.sorting",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.sorting;\n\nimport java.util.Arrays;\n\n/**\n * 基础排序与分治排序\n * 对应《Hello 算法》第 11 章\n */\npublic class App {\n\n    // 冒泡排序：相邻比较交换，最大值逐轮“冒”到末尾\n    static void bubbleSort(int[] a) {\n        for (int i = a.length - 1; i > 0; i--) {\n            boolean swapped = false;\n            for (int j = 0; j < i; j++) {\n                if (a[j] > a[j + 1]) {\n                    int t = a[j];\n                    a[j] = a[j + 1];\n                    a[j + 1] = t;\n                    swapped = true;\n                }\n            }\n            if (!swapped) break; // 一轮无交换说明已有序，提前退出\n        }\n    }\n\n    // 插入排序：像整理扑克牌，把新元素插入左侧已排序区间\n    static void insertionSort(int[] a) {\n        for (int i = 1; i < a.length; i++) {\n            int base = a[i];\n            int j = i - 1;\n            while (j >= 0 && a[j] > base) {\n                a[j + 1] = a[j];\n                j--;\n            }\n            a[j + 1] = base;\n        }\n    }\n\n    // 快速排序：选基准划分两侧，再递归处理子区间\n    static void quickSort(int[] a, int lo, int hi) {\n        if (lo >= hi) return;\n        int pivot = a[lo];\n        int i = lo;\n        int j = hi;\n        while (i < j) {\n            while (i < j && a[j] >= pivot) j--;\n            while (i < j && a[i] <= pivot) i++;\n            int t = a[i];\n            a[i] = a[j];\n            a[j] = t;\n        }\n        a[lo] = a[i];\n        a[i] = pivot;\n        quickSort(a, lo, i - 1);\n        quickSort(a, i + 1, hi);\n    }\n\n    // 归并排序：分到最小，再按序合并（稳定）\n    static void mergeSort(int[] a, int lo, int hi, int[] tmp) {\n        if (lo >= hi) return;\n        int mid = lo + (hi - lo) / 2;\n        mergeSort(a, lo, mid, tmp);\n        mergeSort(a, mid + 1, hi, tmp);\n        int i = lo;\n        int j = mid + 1;\n        int k = lo;\n        while (i <= mid && j <= hi) {\n            tmp[k++] = a[i] <= a[j] ? a[i++] : a[j++];\n        }\n        while (i <= mid) tmp[k++] = a[i++];\n        while (j <= hi) tmp[k++] = a[j++];\n        System.arraycopy(tmp, lo, a, lo, hi - lo + 1);\n    }\n\n    public static void main(String[] args) {\n        int[] original = {5, 2, 9, 1, 7, 3};\n        int[] a = original.clone();\n        bubbleSort(a);\n        System.out.println(\"冒泡排序：\" + Arrays.toString(a));\n        a = original.clone();\n        insertionSort(a);\n        System.out.println(\"插入排序：\" + Arrays.toString(a));\n        a = original.clone();\n        quickSort(a, 0, a.length - 1);\n        System.out.println(\"快速排序：\" + Arrays.toString(a));\n        a = original.clone();\n        mergeSort(a, 0, a.length - 1, new int[a.length]);\n        System.out.println(\"归并排序：\" + Arrays.toString(a));\n        System.out.println(\"稳定性提醒：冒泡/插入/归并稳定，快排不稳定；快排平均 O(n log n)、最坏 O(n^2)。\");\n    }\n}"
+            }
+          ]
         },
         {
           "id": "algo-advanced",
           "title": "高级算法思想",
           "description": "分治法、回溯剪枝 (N 皇后)、动态规划状态转移方程与贪心策略选择。",
-          "status": "planned",
-          "lessons": []
+          "status": "published",
+          "lessons": [
+            {
+              "id": "algo-divide-conquer",
+              "topicId": "topic-algo",
+              "moduleId": "algo-advanced",
+              "title": "分治：分解、解决、合并",
+              "summary": "把大问题切成独立子问题分别求解再合并；归并排序是分治的标准范本。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 12 章分治",
+                "pdfPageStart": 265,
+                "pdfPageEnd": 281,
+                "printPage": "259-275"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 分治：分解、解决、合并\n\n## 1. 业务场景与需要解决的问题\n一个 10 亿元素的求和/排序单机难扛，但切成 100 份并行处理再汇总就容易。分治既是算法思想，也是分布式系统的原型。\n\n## 2. 三步模型与适用条件\n\n```text\n分解：把规模 n 的问题拆成若干规模更小的同类子问题\n解决：子问题足够小直接解（基线），否则继续递归\n合并：把子解组合成原问题的解\n适用前提：子问题相互独立（若大量重叠，动态规划更合适）\n```\n\n## 3. 为什么分治常常更快？核心机制\n- 本课用两个例子落地：分治求区间和（合并=相加）与归并排序（合并=有序合并，O(n log n) 的来源正是“log n 层 × 每层 O(n) 合并”）。\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.divideconquer;\n\nimport java.util.Arrays;\n\n/**\n * 分治策略：分解 → 解决 → 合并\n * 对应《Hello 算法》第 12 章\n */\npublic class App {\n\n    // 分治求区间和：分解为左右两半分别求和，合并即相加\n    static long rangeSum(int[] a, int lo, int hi, int[] depth) {\n        if (lo == hi) return a[lo]; // 基线：单个元素直接返回\n        int mid = lo + (hi - lo) / 2;\n        depth[0]++;\n        return rangeSum(a, lo, mid, depth) + rangeSum(a, mid + 1, hi, depth);\n    }\n\n    // 归并排序是分治的经典落地：分到最小，再有序合并\n    static void mergeSort(int[] a, int lo, int hi, int[] tmp) {\n        if (lo >= hi) return;\n        int mid = lo + (hi - lo) / 2;\n        mergeSort(a, lo, mid, tmp);\n        mergeSort(a, mid + 1, hi, tmp);\n        int i = lo;\n        int j = mid + 1;\n        int k = lo;\n        while (i <= mid && j <= hi) {\n            tmp[k++] = a[i] <= a[j] ? a[i++] : a[j++];\n        }\n        while (i <= mid) tmp[k++] = a[i++];\n        while (j <= hi) tmp[k++] = a[j++];\n        System.arraycopy(tmp, lo, a, lo, hi - lo + 1);\n    }\n\n    public static void main(String[] args) {\n        int[] data = {8, 3, 5, 1, 9, 2};\n        int[] depth = {0};\n        long sum = rangeSum(data, 0, data.length - 1, depth);\n        System.out.println(\"分治求和 8+3+5+1+9+2 = \" + sum);\n        System.out.println(\"递归分解次数：\" + depth[0]);\n        int[] sorted = data.clone();\n        mergeSort(sorted, 0, sorted.length - 1, new int[sorted.length]);\n        System.out.println(\"分治排序结果：\" + Arrays.toString(sorted));\n        System.out.println(\"三步模型：把问题分解成子问题，分别求解，再把子解合并成原问题的解。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 6 个元素的分治求和递归分解几次？n 个元素又是多少次（提示：内部节点数 = n-1）？先算再运行核对。\n\n## 6. 来源与出处\n- 《Hello 算法》第 12 章分治（PDF 第 265-281 页）。",
+              "packageName": "com.javaroadmap.algo.divideconquer",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.divideconquer;\n\nimport java.util.Arrays;\n\n/**\n * 分治策略：分解 → 解决 → 合并\n * 对应《Hello 算法》第 12 章\n */\npublic class App {\n\n    // 分治求区间和：分解为左右两半分别求和，合并即相加\n    static long rangeSum(int[] a, int lo, int hi, int[] depth) {\n        if (lo == hi) return a[lo]; // 基线：单个元素直接返回\n        int mid = lo + (hi - lo) / 2;\n        depth[0]++;\n        return rangeSum(a, lo, mid, depth) + rangeSum(a, mid + 1, hi, depth);\n    }\n\n    // 归并排序是分治的经典落地：分到最小，再有序合并\n    static void mergeSort(int[] a, int lo, int hi, int[] tmp) {\n        if (lo >= hi) return;\n        int mid = lo + (hi - lo) / 2;\n        mergeSort(a, lo, mid, tmp);\n        mergeSort(a, mid + 1, hi, tmp);\n        int i = lo;\n        int j = mid + 1;\n        int k = lo;\n        while (i <= mid && j <= hi) {\n            tmp[k++] = a[i] <= a[j] ? a[i++] : a[j++];\n        }\n        while (i <= mid) tmp[k++] = a[i++];\n        while (j <= hi) tmp[k++] = a[j++];\n        System.arraycopy(tmp, lo, a, lo, hi - lo + 1);\n    }\n\n    public static void main(String[] args) {\n        int[] data = {8, 3, 5, 1, 9, 2};\n        int[] depth = {0};\n        long sum = rangeSum(data, 0, data.length - 1, depth);\n        System.out.println(\"分治求和 8+3+5+1+9+2 = \" + sum);\n        System.out.println(\"递归分解次数：\" + depth[0]);\n        int[] sorted = data.clone();\n        mergeSort(sorted, 0, sorted.length - 1, new int[sorted.length]);\n        System.out.println(\"分治排序结果：\" + Arrays.toString(sorted));\n        System.out.println(\"三步模型：把问题分解成子问题，分别求解，再把子解合并成原问题的解。\");\n    }\n}"
+            },
+            {
+              "id": "algo-backtracking",
+              "topicId": "topic-algo",
+              "moduleId": "algo-advanced",
+              "title": "回溯：做选择、递归、撤销选择",
+              "summary": "回溯 = 在决策树上系统性枚举 + 剪枝；全排列与子集是它的两个标准模板。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 13 章回溯",
+                "pdfPageStart": 282,
+                "pdfPageEnd": 307,
+                "printPage": "276-301"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 回溯：做选择、递归、撤销选择\n\n## 1. 业务场景与需要解决的问题\n全排列、组合、N 皇后、数独……共同特征是“由一系列选择构成解，且需要试错”。暴力枚举所有可能再筛选往往指数级爆炸，回溯通过**边构造边排除**（剪枝）避免无效分支。\n\n## 2. 核心心智模型\n\n```text\n路径：已经做出的选择（path）\n选择列表：当前还可以做的选择（used 标记 / start 边界）\n结束条件：路径长度达到要求，或无选择可用\n模板：for 选择 in 选择列表 → 做选择 → 递归 → 撤销选择\n```\n\n## 3. 剪枝的价值\n- 全排列 n! 本身无法避免（解就有 n! 个），但“跳过已用元素”避免了死循环与重复；子集用 `start` 边界保证 `[1,2]` 与 `[2,1]` 不重复出现。\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.backtracking;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\n/**\n * 回溯：路径 + 选择列表 + 撤销选择\n * 对应《Hello 算法》第 13 章\n */\npublic class App {\n\n    // 全排列：used 标记已用元素，做选择 → 递归 → 撤销选择\n    static void permute(int[] nums, boolean[] used, List<Integer> path, List<String> result) {\n        if (path.size() == nums.length) {\n            result.add(path.toString());\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue; // 剪枝：跳过已在路径中的元素\n            used[i] = true;\n            path.add(nums[i]);\n            permute(nums, used, path, result);\n            path.remove(path.size() - 1);\n            used[i] = false;\n        }\n    }\n\n    // 子集：每个节点本身就是一个解，向后扩展避免重复\n    static void subsets(int[] nums, int start, List<Integer> path, List<String> result) {\n        result.add(path.toString());\n        for (int i = start; i < nums.length; i++) {\n            path.add(nums[i]);\n            subsets(nums, i + 1, path, result);\n            path.remove(path.size() - 1);\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 2, 3};\n        List<String> perms = new ArrayList<>();\n        permute(nums, new boolean[nums.length], new ArrayList<>(), perms);\n        List<String> subs = new ArrayList<>();\n        subsets(nums, 0, new ArrayList<>(), subs);\n        System.out.println(\"全排列共 \" + perms.size() + \" 个，其中两个：\" + perms.get(0) + \" 与 \" + perms.get(perms.size() - 1));\n        System.out.println(\"子集共 \" + subs.size() + \" 个\");\n        System.out.println(\"模板要点：做选择 → 递归 → 撤销选择；剪枝提前排除无效分支。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 3 个元素的全排列 6 个、子集 8 个，先手写再核对。4 个元素时各是多少？为什么排列数是 n! 而子集数是 2ⁿ？\n\n## 6. 来源与出处\n- 《Hello 算法》第 13 章回溯（PDF 第 282-307 页）。",
+              "packageName": "com.javaroadmap.algo.backtracking",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.backtracking;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\n/**\n * 回溯：路径 + 选择列表 + 撤销选择\n * 对应《Hello 算法》第 13 章\n */\npublic class App {\n\n    // 全排列：used 标记已用元素，做选择 → 递归 → 撤销选择\n    static void permute(int[] nums, boolean[] used, List<Integer> path, List<String> result) {\n        if (path.size() == nums.length) {\n            result.add(path.toString());\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue; // 剪枝：跳过已在路径中的元素\n            used[i] = true;\n            path.add(nums[i]);\n            permute(nums, used, path, result);\n            path.remove(path.size() - 1);\n            used[i] = false;\n        }\n    }\n\n    // 子集：每个节点本身就是一个解，向后扩展避免重复\n    static void subsets(int[] nums, int start, List<Integer> path, List<String> result) {\n        result.add(path.toString());\n        for (int i = start; i < nums.length; i++) {\n            path.add(nums[i]);\n            subsets(nums, i + 1, path, result);\n            path.remove(path.size() - 1);\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 2, 3};\n        List<String> perms = new ArrayList<>();\n        permute(nums, new boolean[nums.length], new ArrayList<>(), perms);\n        List<String> subs = new ArrayList<>();\n        subsets(nums, 0, new ArrayList<>(), subs);\n        System.out.println(\"全排列共 \" + perms.size() + \" 个，其中两个：\" + perms.get(0) + \" 与 \" + perms.get(perms.size() - 1));\n        System.out.println(\"子集共 \" + subs.size() + \" 个\");\n        System.out.println(\"模板要点：做选择 → 递归 → 撤销选择；剪枝提前排除无效分支。\");\n    }\n}"
+            },
+            {
+              "id": "algo-dynamic-programming",
+              "topicId": "topic-algo",
+              "moduleId": "algo-advanced",
+              "title": "动态规划：重叠子问题与状态转移",
+              "summary": "把指数级暴力递归改为按依赖顺序填表，每个子问题只算一次；转移方程是解题核心。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 14 章动态规划",
+                "pdfPageStart": 308,
+                "pdfPageEnd": 351,
+                "printPage": "302-345"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 动态规划：重叠子问题与状态转移\n\n## 1. 业务场景与需要解决的问题\n上一节斐波那契的朴素递归是 O(2ⁿ)，因为同一子问题被反复计算。爬楼梯、最短编辑距离、背包问题都属此类——**重叠子问题** + **最优子结构**，正是动态规划的适用信号。\n\n## 2. 解题三步\n\n```text\n定义状态：dp[i] 表示什么（如“凑出金额 i 的最少硬币数”）\n转移方程：dp[i] 由哪些更小的子问题推出（如 dp[i] = min(dp[i-coin]) + 1）\n遍历顺序：保证算 dp[i] 时它依赖的子问题已经算好（自底向上填表）\n```\n\n## 3. 初始化即边界\n- 零钱兑换把不可达状态初始化为 `amount + 1`（一个永远不会被选中的大数），而不是 -1——否则“不可达”与“最优解”无法区分，`min` 运算也会被破坏。这与队列不用 -1 做空队哨兵是同一个工程判断。\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.dynamicprogramming;\n\nimport java.util.Arrays;\n\n/**\n * 动态规划：重叠子问题与最优子结构\n * 对应《Hello 算法》第 14 章\n */\npublic class App {\n\n    // 爬楼梯：f(n) = f(n-1) + f(n-2)，自底向上填表\n    static int climbStairs(int n) {\n        if (n <= 2) return n;\n        int[] dp = new int[n + 1];\n        dp[1] = 1;\n        dp[2] = 2;\n        for (int i = 3; i <= n; i++) {\n            dp[i] = dp[i - 1] + dp[i - 2];\n        }\n        return dp[n];\n    }\n\n    // 零钱兑换：凑出 amount 的最少硬币数，凑不出返回 -1\n    static int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1); // 初值表示“尚不可达”\n        dp[0] = 0;\n        for (int coin : coins) {\n            for (int i = coin; i <= amount; i++) {\n                dp[i] = Math.min(dp[i], dp[i - coin] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"爬楼梯 f(10)：\" + climbStairs(10));\n        System.out.println(\"零钱兑换 coins=[1,5,11] amount=15：\" + coinChange(new int[]{1, 5, 11}, 15));\n        System.out.println(\"零钱兑换 coins=[2] amount=3（凑不出）：\" + coinChange(new int[]{2}, 3));\n        System.out.println(\"核心机制：把指数级暴力递归改为按依赖顺序填表，每个子问题只计算一次。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- `climbStairs(10)` 为什么等于斐波那契数列的一项？把硬币换成 `[1, 5, 11]`、金额 15，最优解是哪几枚？贪心（先拿 11）为什么反而不是最优？\n\n## 6. 来源与出处\n- 《Hello 算法》第 14 章动态规划（PDF 第 308-351 页）。",
+              "packageName": "com.javaroadmap.algo.dynamicprogramming",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.dynamicprogramming;\n\nimport java.util.Arrays;\n\n/**\n * 动态规划：重叠子问题与最优子结构\n * 对应《Hello 算法》第 14 章\n */\npublic class App {\n\n    // 爬楼梯：f(n) = f(n-1) + f(n-2)，自底向上填表\n    static int climbStairs(int n) {\n        if (n <= 2) return n;\n        int[] dp = new int[n + 1];\n        dp[1] = 1;\n        dp[2] = 2;\n        for (int i = 3; i <= n; i++) {\n            dp[i] = dp[i - 1] + dp[i - 2];\n        }\n        return dp[n];\n    }\n\n    // 零钱兑换：凑出 amount 的最少硬币数，凑不出返回 -1\n    static int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1); // 初值表示“尚不可达”\n        dp[0] = 0;\n        for (int coin : coins) {\n            for (int i = coin; i <= amount; i++) {\n                dp[i] = Math.min(dp[i], dp[i - coin] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"爬楼梯 f(10)：\" + climbStairs(10));\n        System.out.println(\"零钱兑换 coins=[1,5,11] amount=15：\" + coinChange(new int[]{1, 5, 11}, 15));\n        System.out.println(\"零钱兑换 coins=[2] amount=3（凑不出）：\" + coinChange(new int[]{2}, 3));\n        System.out.println(\"核心机制：把指数级暴力递归改为按依赖顺序填表，每个子问题只计算一次。\");\n    }\n}"
+            },
+            {
+              "id": "algo-greedy",
+              "topicId": "topic-algo",
+              "moduleId": "algo-advanced",
+              "title": "贪心：局部最优与适用边界",
+              "summary": "每一步取当前最有利的选择；只有能证明“局部最优可推出全局最优”时才可靠。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 15 章贪心",
+                "pdfPageStart": 352,
+                "pdfPageEnd": 377,
+                "printPage": "346-371"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 贪心：局部最优与适用边界\n\n## 1. 业务场景与需要解决的问题\n活动排期要在一间会议室塞下最多活动：每一步都选“结束最早”的可行活动，结果恰好是全局最优。贪心比动态规划快得多（通常 O(n log n)），但**不是所有问题都敢用**。\n\n## 2. 贪心 vs 动态规划\n- 贪心成立的前提：问题具有**贪心选择性质**——某一步的局部最优选择必然出现在某个全局最优解中（活动选择可交换论证证明）。\n- 反例：找零问题在币制 `{1, 5, 11}`、金额 15 时，贪心先拿 11 再拿 4 枚 1 元共 5 枚，而最优是 3 枚 5 元。此时必须回到动态规划。\n\n## 3. 为什么活动选择可以贪心？核心机制\n- 活动选择按**结束时间**升序排序后线性扫描：只要活动开始时间不早于上一个选中活动的结束时间就选它。排序 O(n log n) + 扫描 O(n)。\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.greedy;\n\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.List;\n\n/**\n * 贪心：每一步取局部最优\n * 对应《Hello 算法》第 15 章\n */\npublic class App {\n\n    // 活动选择：按结束时间贪心，选出最多的互不重叠区间\n    static List<int[]> selectActivities(int[][] activities) {\n        Arrays.sort(activities, (x, y) -> x[1] - y[1]); // 贪心策略：最早结束优先\n        List<int[]> selected = new ArrayList<>();\n        int lastEnd = Integer.MIN_VALUE;\n        for (int[] act : activities) {\n            if (act[0] >= lastEnd) {\n                selected.add(act);\n                lastEnd = act[1];\n            }\n        }\n        return selected;\n    }\n\n    public static void main(String[] args) {\n        int[][] activities = {{1, 4}, {3, 5}, {0, 6}, {5, 7}, {8, 9}};\n        List<int[]> selected = selectActivities(activities);\n        StringBuilder out = new StringBuilder();\n        for (int[] a : selected) {\n            out.append(\"[\").append(a[0]).append(\",\").append(a[1]).append(\"] \");\n        }\n        System.out.println(\"选中活动数：\" + selected.size());\n        System.out.println(\"选中活动：\" + out.toString().trim());\n        System.out.println(\"边界提醒：贪心需要可证明的贪心策略；找零问题在任意币制下不一定最优（如币制 1,3,4 凑 6）。\");\n    }\n}\n```\n\n## 5. 先预测，再运行\n- 把活动改成 `{1,3} {2,5} {4,7} {6,9}`，按结束时间贪心选中哪几个？再构造一个让“最早开始优先”策略失败的反例。\n\n## 6. 来源与出处\n- 《Hello 算法》第 15 章贪心（PDF 第 352-377 页）。",
+              "packageName": "com.javaroadmap.algo.greedy",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.greedy;\n\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.List;\n\n/**\n * 贪心：每一步取局部最优\n * 对应《Hello 算法》第 15 章\n */\npublic class App {\n\n    // 活动选择：按结束时间贪心，选出最多的互不重叠区间\n    static List<int[]> selectActivities(int[][] activities) {\n        Arrays.sort(activities, (x, y) -> x[1] - y[1]); // 贪心策略：最早结束优先\n        List<int[]> selected = new ArrayList<>();\n        int lastEnd = Integer.MIN_VALUE;\n        for (int[] act : activities) {\n            if (act[0] >= lastEnd) {\n                selected.add(act);\n                lastEnd = act[1];\n            }\n        }\n        return selected;\n    }\n\n    public static void main(String[] args) {\n        int[][] activities = {{1, 4}, {3, 5}, {0, 6}, {5, 7}, {8, 9}};\n        List<int[]> selected = selectActivities(activities);\n        StringBuilder out = new StringBuilder();\n        for (int[] a : selected) {\n            out.append(\"[\").append(a[0]).append(\",\").append(a[1]).append(\"] \");\n        }\n        System.out.println(\"选中活动数：\" + selected.size());\n        System.out.println(\"选中活动：\" + out.toString().trim());\n        System.out.println(\"边界提醒：贪心需要可证明的贪心策略；找零问题在任意币制下不一定最优（如币制 1,3,4 凑 6）。\");\n    }\n}"
+            }
+          ]
         }
       ]
     },
@@ -476,22 +751,355 @@
           "id": "git-conflict-undo",
           "title": "冲突解决与撤销时光机",
           "description": "掌握合并冲突标记解读、撤销暂存区与工作区修改，以及使用 git revert 安全撤销线上提交。",
-          "status": "building",
-          "lessons": []
+          "status": "published",
+          "lessons": [
+            {
+              "id": "git-merge-conflict",
+              "topicId": "topic-git",
+              "moduleId": "git-conflict-undo",
+              "title": "解决合并冲突：读懂冲突标记与三方比对",
+              "summary": "两分支改了同一文件的同一区域时，Git 拒绝自动合并并留下冲突标记，由人决定最终内容。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 3 章 3.2 节（分支的新建与合并）",
+                "pdfPageStart": 77,
+                "pdfPageEnd": 84
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 解决合并冲突：读懂冲突标记与三方比对\n\n## 1. 业务场景与需要解决的问题\n你和同事同时修改了 `ideas.md` 的同一段落。`git pull` 之后 Git 没有安静地合并，而是把工作交回给你——如何安全地走出冲突？\n\n## 2. 为什么会有冲突\n- 三方合并按“共同祖先 → 我方 → 对方”三方比对：**只有一方**改动的区域 Git 能自动取舍。\n- 两边改了**同一区域**且内容不同，Git 无法替你做语义判断，宁可停下也不猜测——这是安全设计，不是故障。\n\n## 3. 冲突现场长什么样\n\n```text\n<<<<<<< HEAD\n我方（当前分支）写入的段落\n=======\n对方（feature/ideas）写入的段落\n>>>>>>> feature/ideas\n```\n\n## 4. 解决流程\n编辑文件删掉全部标记 → `git add <file>` 声明已解决 → `git commit` 完成合并。中途想放弃用 `git merge --abort`。注意：`git add` 不表示“内容正确”，只表示“冲突已由我处理”。\n\n## 5. 先预测，再运行\n- 在本机新建一次性临时仓库（`mkdir /tmp/git-sandbox && cd /tmp/git-sandbox && git init`），造一个真冲突并走完流程。解决中途执行 `git status`，`ideas.md` 处于什么状态？\n\n## 6. 来源与出处\n- 《Pro Git (第 2 版)》第 3 章 3.2 节（PDF 第 77-84 页）。",
+              "gitSteps": [
+                {
+                  "command": "git merge feature/ideas",
+                  "explanation": "把 feature/ideas 并入当前分支。若两分支修改了同一文件的同一区域，自动合并失败：Git 在文件中写入 <<<<<<< / ======= / >>>>>>> 三段标记，并在输出里明确提示 CONFLICT (content)。",
+                  "repoStateBefore": "main 与 feature/ideas 自共同祖先分叉后都修改了 ideas.md",
+                  "repoStateAfter": "合并中止（MERGING 状态）：ideas.md 处于 both modified，文件内含冲突标记"
+                },
+                {
+                  "command": "git status",
+                  "explanation": "查看冲突现场：Unmerged paths 列出 both modified 的文件。冲突标记的含义：<<<<<<< HEAD 与 ======= 之间是当前分支内容，======= 与 >>>>>>> feature/ideas 之间是对方分支内容。",
+                  "repoStateBefore": "处于合并中止状态，冲突尚未处理",
+                  "repoStateAfter": "输出 Unmerged paths: both modified: ideas.md"
+                },
+                {
+                  "command": "git add ideas.md",
+                  "explanation": "手工编辑文件、删除全部冲突标记并保留正确内容后，用 git add 把解决结果标记为已解决（暂存）。注意：没有“自动解决”命令，git add 就是“我已处理完”的声明。",
+                  "repoStateBefore": "ideas.md 已手工编辑，冲突标记全部移除",
+                  "repoStateAfter": "ideas.md 从 Unmerged 转为 Staged，冲突解决完毕"
+                },
+                {
+                  "command": "git commit",
+                  "explanation": "提交合并结果。Git 已预填合并提交信息（含两个父节点引用），确认后即完成三方合并。可用 git merge --abort 在解决中途放弃整个合并、回到合并前状态。",
+                  "repoStateBefore": "冲突文件已全部暂存",
+                  "repoStateAfter": "生成双父节点的合并提交，工作区恢复 Clean"
+                }
+              ]
+            },
+            {
+              "id": "git-undo-recover",
+              "topicId": "topic-git",
+              "moduleId": "git-conflict-undo",
+              "title": "撤销与恢复：restore、revert 与 amend 的适用边界",
+              "summary": "按“改动暴露到哪一层”选择撤销工具：工作区用 restore，暂存区用 restore --staged，历史用 revert。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 2 章 2.4 节（撤消操作）",
+                "pdfPageStart": 55,
+                "pdfPageEnd": 57
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 撤销与恢复：restore、revert 与 amend 的适用边界\n\n## 1. 业务场景与需要解决的问题\n改错了文件、add 错了内容、提交写漏了东西、错误的提交已经推到了共享分支……撤销发生在不同“层”，工具也不同。\n\n## 2. 按“改动暴露到哪一层”选工具\n\n```text\n还在工作目录，未 add          → git restore <file>（丢弃，不可找回）\n已 add 但未 commit            → git restore --staged <file>（保留修改，退出暂存）\n本地已 commit，想改文案/补文件 → git commit --amend（仅限未推送）\n提交已推送到共享分支          → git revert HEAD（生成反向提交，历史不改写）\n私有分支想丢弃最近 N 笔提交   → git reset（只对自己可见的分支使用）\n```\n\n## 3. 两条安全红线\n- `git reset --hard` 与 `git push --force` 都会**丢弃或改写**他人可能依赖的状态；只在确认分支完全私有时使用。\n- 已经被 amend/reset“扔掉”的提交其实还在对象库里：`git reflog` 能找到它们（见“高级工具”课）。\n\n## 4. 先预测，再运行\n- 在一次性临时仓库里：修改文件 → `git restore --staged` → `git status` 显示什么？再 `git restore` 后修改还在吗？先预测再验证。\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 2 章 2.4 节（PDF 第 55-57 页）。",
+              "gitSteps": [
+                {
+                  "command": "git restore welcome.md",
+                  "explanation": "丢弃工作目录中未暂存的修改，把文件恢复成暂存区（或 HEAD）的样子。这是破坏性操作：被丢弃的修改没有进入任何对象库，无法用 Git 找回。",
+                  "repoStateBefore": "welcome.md 已修改但未 git add（working tree dirty）",
+                  "repoStateAfter": "welcome.md 恢复为 HEAD 版本，工作区 Clean"
+                },
+                {
+                  "command": "git restore --staged welcome.md",
+                  "explanation": "把文件移出暂存区（取消 git add），但保留工作目录里的修改。适用于“add 错了文件”。恢复后的文件回到 Untracked 或 Modified 状态。",
+                  "repoStateBefore": "welcome.md 处于 Staged 状态",
+                  "repoStateAfter": "暂存区回退，修改仍保留在工作目录（Modified）"
+                },
+                {
+                  "command": "git commit --amend",
+                  "explanation": "把暂存区内容并入上一次提交，替换为新的提交对象（原提交对象仍存在于对象库中，可经 reflog 找回）。只应 amend 尚未推送的本地提交。",
+                  "repoStateBefore": "刚完成一笔本地提交，暂存区有遗漏修改",
+                  "repoStateAfter": "原提交被新提交替换，分支指针指向新提交"
+                },
+                {
+                  "command": "git revert HEAD",
+                  "explanation": "生成一笔“反向提交”抵消指定提交的改动。历史不被改写，因此是撤销**已推送/共享**提交的安全方式；与之相对，reset 会移动分支指针，只适合私有提交。",
+                  "repoStateBefore": "HEAD 指向需要撤销的提交",
+                  "repoStateAfter": "新增一笔反向提交，工作区内容回到被撤销提交之前"
+                }
+              ]
+            },
+            {
+              "id": "git-stash",
+              "topicId": "topic-git",
+              "moduleId": "git-conflict-undo",
+              "title": "贮藏与恢复：git stash 的推入、查看与弹出",
+              "summary": "临时切走任务又不想把半成品提交进历史时，stash 把工作区与暂存区的修改存入独立栈结构。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 7 章 7.3 节（贮藏与清理）",
+                "pdfPageStart": 244,
+                "pdfPageEnd": 252
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 贮藏与恢复：git stash 的推入、查看与弹出\n\n## 1. 业务场景与需要解决的问题\n手头改到一半，线上出了紧急 bug 要立刻切分支修复。提交半成品会污染历史，`git reset` 又会丢工作——stash 专治“暂时收起”。\n\n## 2. stash 与 commit 的本质区别\n- commit 写进分支历史，stash 只存进独立的贮藏栈；`git stash list` 里的条目不属于任何分支。\n- stash 恢复时可能与你已改的内容冲突——Git 会拒绝并保留原贮藏，需先自行处理。\n\n## 3. 常用变体\n- `git stash -u`：连未跟踪文件一起收走；`git stash apply stash@{1}`：恢复指定条目；`git stash drop`：删除某条贮藏。\n\n## 4. 先预测，再运行\n- 在临时仓库 stash 之后执行 `git status`，工作区干净吗？`pop` 时如果目标分支同文件已不同，会发生什么？\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 7 章 7.3 节（PDF 第 244-252 页）。",
+              "gitSteps": [
+                {
+                  "command": "git stash push -m \"wip: 草稿\"",
+                  "explanation": "把工作目录与暂存区的未完成修改存入贮藏栈，并把两者重置为 HEAD 状态。带 -m 写描述便于日后辨认；贮藏不产生提交，分支历史不变。",
+                  "repoStateBefore": "工作区有未提交修改，无法安心切换分支",
+                  "repoStateAfter": "工作区恢复 Clean；修改保存在 stash@{0}"
+                },
+                {
+                  "command": "git stash list",
+                  "explanation": "列出全部贮藏。栈式编号 stash@{0} 最新、stash@{1} 次之，可在任意分支上恢复。",
+                  "repoStateBefore": "已有至少一笔贮藏",
+                  "repoStateAfter": "输出 stash@{0}: On <branch>: wip: 草稿"
+                },
+                {
+                  "command": "git stash pop",
+                  "explanation": "弹出最近一笔贮藏并应用到当前工作区（成功后从栈中删除）。若与当前内容冲突则应用失败，贮藏保留；也可用 git stash apply 保留栈中条目地应用。",
+                  "repoStateBefore": "处于目标分支，工作区 Clean",
+                  "repoStateAfter": "贮藏中的修改回到工作目录，栈中该条目移除"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "git-advanced-tools",
           "title": "高级工具与变基 Rebase",
           "description": "变基心智模型与线性历史维护、git stash 暂存上下文切换、git cherry-pick 挑选提交与 git bisect 二分定位故障。",
-          "status": "planned",
-          "lessons": []
+          "status": "published",
+          "lessons": [
+            {
+              "id": "git-tag",
+              "topicId": "topic-git",
+              "moduleId": "git-advanced-tools",
+              "title": "标签：给历史钉上里程碑",
+              "summary": "标签指向某笔提交且创建后一般不再移动，用于发布版本；附注标签是独立对象，轻量标签只是引用。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 2 章 2.6 节（打标签）",
+                "pdfPageStart": 62,
+                "pdfPageEnd": 66
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 标签：给历史钉上里程碑\n\n## 1. 业务场景与需要解决的问题\n“v1.0 发布版到底是哪一笔提交？”用分支名回答不可靠（分支会前进），用提交哈希难记。标签是**指向固定提交的命名标记**，正适合版本发布。\n\n## 2. 附注标签 vs 轻量标签\n- `git tag -a v1.0 -m \"...\"`：附注标签，独立对象，含作者/日期/说明，可签名——发布首选。\n- `git tag v1.0-lw`：轻量标签，只是指向提交的引用，像不会移动的分支，适合临时私有标记。\n\n## 3. 标签与分支的差别\n- 分支随提交前进；标签创建后**钉死**在某笔提交上。两者都是 `refs/` 下的引用，但语义完全不同。\n\n## 4. 先预测，再运行\n- 在两个不同提交上各打一个标签后，`git show v1.0` 与 `git show v0.9` 显示的提交一样吗？`git push` 之后远端有标签吗？\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 2 章 2.6 节（PDF 第 62-66 页）。",
+              "gitSteps": [
+                {
+                  "command": "git tag -a v1.0 -m \"首个里程碑\"",
+                  "explanation": "在当前提交上创建附注标签（annotated tag）。标签是独立的 Git 对象，保存打标签者、日期与说明，还有自己的校验和，适合对外发布。",
+                  "repoStateBefore": "HEAD 指向需要标记的提交",
+                  "repoStateAfter": "对象库新增 tag 对象，refs/tags/v1.0 指向它"
+                },
+                {
+                  "command": "git tag",
+                  "explanation": "按字母序列出全部标签。git show v1.0 可查看标签说明与其指向的提交内容。",
+                  "repoStateBefore": "仓库中已有一个或多个标签",
+                  "repoStateAfter": "输出 v1.0 等标签名列表"
+                },
+                {
+                  "command": "git show v1.0 --stat",
+                  "explanation": "显示标签的元数据（作者/日期/说明）与其指向提交的变更统计。发布时用 git push origin v1.0 单独推送标签——push 默认不带标签。",
+                  "repoStateBefore": "标签 v1.0 已存在",
+                  "repoStateAfter": "输出标签信息与该提交的文件变更清单"
+                }
+              ]
+            },
+            {
+              "id": "git-rebase-cherry-pick",
+              "topicId": "topic-git",
+              "moduleId": "git-advanced-tools",
+              "title": "变基与拣选：整理历史的两种利器",
+              "summary": "rebase 把分支提交重放到新基线上形成线性历史；cherry-pick 把单个提交复制到当前分支。两者都生成新提交对象。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 3 章 3.6 节（变基）",
+                "pdfPageStart": 96,
+                "pdfPageEnd": 108
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 变基与拣选：整理历史的两种利器\n\n## 1. 业务场景与需要解决的问题\nfeature 分支落后 main 很多头提交，合并历史杂乱；或者只需要别人分支里的某一笔修复。rebase 与 cherry-pick 分别解决这两件事。\n\n## 2. rebase 与 merge 的本质区别\n\n```text\nmerge：保留分叉形状，生成一笔双父节点的合并提交（历史真实但缠绕）\nrebase：把本分支提交重放到目标基线上，改写为线性（历史整洁但是“新”提交）\n共同结果：两者都把对方的改动带进当前分支\n```\n\n## 3. 变基黄金法则\n- **只变基私有提交**。已经推送、可能已被同事拉取的提交被 rebase 后，双方历史分叉，只能靠强推修复——那是被禁止的操作。共享提交一律用 merge 或 revert。\n\n## 4. 先预测，再运行\n- 在临时仓库里造两分支各两笔提交，rebase 后 `git log --oneline` 的顺序如何？cherry-pick 过来的提交哈希与原提交相同吗？为什么？\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 3 章 3.6 节（PDF 第 96-108 页）；拣选场景另见第 5 章分布式工作流。",
+              "gitSteps": [
+                {
+                  "command": "git rebase main",
+                  "explanation": "在 feature 分支上执行：找到两分支共同祖先，把 feature 的每笔提交“摘下”依次重放到 main 顶端。提交内容相同但都是**新对象**（新哈希）。黄金法则：只对从未共享的私有提交变基。",
+                  "repoStateBefore": "feature 与 main 分叉，各自有新提交",
+                  "repoStateAfter": "feature 历史变为线性，基于 main 最新提交之上"
+                },
+                {
+                  "command": "git cherry-pick <commit-hash>",
+                  "explanation": "把指定提交的改动“复制”一笔到当前分支顶端并生成新提交。适合把某个修复单独带上线，而不合入整个分支。",
+                  "repoStateBefore": "目标提交存在于其他分支",
+                  "repoStateAfter": "当前分支顶端多出一笔内容相同、哈希不同的新提交"
+                },
+                {
+                  "command": "git log --oneline --graph --all",
+                  "explanation": "变基后核对历史形态：feature 呈线性，不再有分叉。若误在公共分支上做了变基，不要强推覆盖，应与协作者沟通恢复。",
+                  "repoStateBefore": "变基/拣选完成",
+                  "repoStateAfter": "图形化列出各分支线性或分叉的历史拓扑"
+                }
+              ]
+            },
+            {
+              "id": "git-collab-workflow",
+              "topicId": "topic-git",
+              "moduleId": "git-advanced-tools",
+              "title": "分布式协作与 GitHub 工作流",
+              "summary": "每个克隆都是完整仓库；fork → 分支 → Pull Request → 审查合并是现代开源协作的标准闭环。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 5 章（分布式 Git）",
+                "pdfPageStart": 129,
+                "pdfPageEnd": 168
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 分布式协作与 GitHub 工作流\n\n## 1. 业务场景与需要解决的问题\n几十人协作同一个项目：谁有权推送？如何互不打扰地集成改动？Git 是分布式模型——没有唯一“正本”，每个克隆都完整；协作规则由托管平台（GitHub 等）与流程约定。\n\n## 2. 集中式 vs 集成管理者\n\n```text\n集中式单仓库：所有人共享一个 origin，分支推送协作（小团队常见）\nfork + PR：贡献者 fork 出自己的副本，推送自己的 fork，再向主仓库发起 Pull Request（开源标准）\n共通点：真正的集成都发生在“审查之后”，主分支保持可构建\n```\n\n## 3. Pull Request 闭环\nfork 主仓库 → 克隆自己的 fork → 新建 feature 分支开发 → push 到自己 fork → 在平台发起 PR（目标为主仓库主干）→ 维护者审查、要求修改 → 合并（merge / squash / rebase 由仓库约定）→ 删除 feature 分支同步本地。\n\n## 4. 先预测，再运行\n- `git clone` 一个远端仓库后立刻 `git branch -a`，为什么已经能看到 origin/* 分支？`git push -u` 里 `-u` 省略会怎样？\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 5 章分布式 Git（PDF 第 129-168 页）。",
+              "gitSteps": [
+                {
+                  "command": "git clone <url>",
+                  "explanation": "克隆把远端仓库的**全部对象与全部历史**复制到本地，并自动配置名为 origin 的远程与 origin/main 等远程跟踪分支。之后的所有操作都在本地完成。",
+                  "repoStateBefore": "本地没有该项目的任何数据",
+                  "repoStateAfter": "获得完整仓库（含全部历史），origin 指向克隆来源"
+                },
+                {
+                  "command": "git push -u origin feature/login",
+                  "explanation": "把本地 feature/login 推送到远程并建立跟踪关系（-u），之后该分支可直接 git pull / git push 不带参数。推送被拒绝通常意味着远端有你没有的提交，先 fetch 再整合。",
+                  "repoStateBefore": "本地新分支 feature/login 已就绪",
+                  "repoStateAfter": "远端出现同名分支并与本地建立跟踪"
+                },
+                {
+                  "command": "git fetch origin",
+                  "explanation": "拉取远端全部新对象并移动 origin/* 远程跟踪分支，但不改动本地分支与工作区。评估后再 merge/rebase 才把改动并入——这也是“pull 前先 fetch”习惯的由来。",
+                  "repoStateBefore": "远端有本地没有的新提交",
+                  "repoStateAfter": "origin/main 前移，本地 main 与工作区保持原状"
+                }
+              ]
+            },
+            {
+              "id": "git-history-archaeology",
+              "topicId": "topic-git",
+              "moduleId": "git-advanced-tools",
+              "title": "历史考古：reflog、blame 与 bisect",
+              "summary": "reflog 记录 HEAD 的每一次移动（找回“丢失”提交），blame 逐行归属，bisect 二分定位引入 bug 的提交。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 7 章（Git 工具）",
+                "pdfPageStart": 300,
+                "pdfPageEnd": 330
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 历史考古：reflog、blame 与 bisect\n\n## 1. 业务场景与需要解决的问题\n“这段代码谁改的？什么时候改的？为什么改？”“昨天误 reset 掉的提交还能找回来吗？”“这周才出现的 bug，几十笔提交怎么定位？”——三个问题三件工具。\n\n## 2. reflog 为什么能救回“删除”的提交\n- 提交对象一旦创建就会在对象库中保留一段时间；reset/amend 只是移动了**引用**，不会立刻删除对象。\n- reflog 是 HEAD 移动的本地日志：从里面找到目标提交的哈希，`git branch rescue <hash>` 或 `git reset --hard <hash>` 即可接回（后者仅限私有分支）。\n\n## 3. bisect 的使用节奏\n`git bisect start` → `git bisect bad`（当前有 bug）→ `git bisect good v1.0`（已知正常）→ Git 检出中间提交 → 测试后回答 `git bisect good` 或 `bad` → 重复直到锁定 → `git bisect reset`。\n\n## 4. 先预测，再运行\n- 在临时仓库 reset --hard 丢弃一笔提交后，`git reflog` 能看到它吗？找回它需要哪条命令？\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 7 章（PDF 第 300-330 页）。",
+              "gitSteps": [
+                {
+                  "command": "git reflog",
+                  "explanation": "输出 HEAD 最近的所有移动记录（每次 commit、reset、rebase、checkout 都留下一条）。被 reset 丢弃的提交依然能在这里找到哈希，用 git branch <name> <hash> 即可接回。",
+                  "repoStateBefore": "曾执行过 reset/amend 等改历史的操作",
+                  "repoStateAfter": "按时间倒序列出 HEAD@{0}、HEAD@{1}… 的移动历史"
+                },
+                {
+                  "command": "git blame -- <file>",
+                  "explanation": "逐行显示文件每一段代码最后一次由哪笔提交、哪位作者修改。配合 -L 12,20 可只看指定行区间，是代码评审与回溯的常规工具。",
+                  "repoStateBefore": "文件已存在至少一笔提交历史",
+                  "repoStateAfter": "每行前附提交短哈希、作者与日期"
+                },
+                {
+                  "command": "git bisect start",
+                  "explanation": "二分定位：标记当前为 bad、某个历史点为 good 后，Git 自动检出中间提交，反复回答 good/bad 即可在 log n 次内锁定引入问题的提交；git bisect reset 结束并回到原分支。",
+                  "repoStateBefore": "当前版本有 bug，且存在一个确定无 bug 的历史版本",
+                  "repoStateAfter": "进入二分模式，HEAD 在候选提交间自动切换"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "git-internals",
           "title": "Git 内部原理与对象模型",
           "description": "揭秘 .git 目录底层结构：blob 文件内容对象、tree 目录树对象、commit 提交节点、tag 标签对象与 packfile 垃圾回收压缩。",
-          "status": "planned",
-          "lessons": []
+          "status": "published",
+          "lessons": [
+            {
+              "id": "git-internals-basics",
+              "topicId": "topic-git",
+              "moduleId": "git-internals",
+              "title": "配置体系与对象模型：Git 在磁盘上是什么",
+              "summary": "三级配置决定 Git 行为；一切内容以 blob/tree/commit 对象按内容寻址存储，引用只是指向提交的可变指针。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 10 章（Git 内部原理）",
+                "pdfPageStart": 420,
+                "pdfPageEnd": 458
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 配置体系与对象模型：Git 在磁盘上是什么\n\n## 1. 业务场景与需要解决的问题\n为什么换机器要重设 user.name？为什么 Git 能保证历史不被篡改？答案都在它的底层设计：**三级配置** + **内容寻址对象库**。\n\n## 2. 三级配置，就近生效\n\n```text\n--system  全机所有用户      /etc/gitconfig（安装级）\n--global  当前用户 ~/.gitconfig（个人偏好：姓名、邮箱、编辑器）\n--local   当前仓库 .git/config（团队约定：remote、分支默认）\n读取优先级：local > global > system\n```\n\n## 3. 四类对象构成提交图\n\n```text\nblob    文件内容（不含文件名）\ntree    目录快照：blob 与子 tree 的清单\ncommit  指向根 tree + 父提交 + 作者/时间/说明\ntag     附注标签对象\n引用（refs/heads/*）只是指向提交的可变指针；HEAD 是指向引用的符号引用\n```\n\n## 4. 先预测，再运行\n- 复制 hello.txt 为 copy.txt 后分别 hash-object，两个哈希相同吗？为什么？修改一个字节再 hash，哈希会怎么变？\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 10 章（PDF 第 420-458 页）。",
+              "gitSteps": [
+                {
+                  "command": "git config user.name",
+                  "explanation": "读取生效的配置值。配置分三级：--system（整机）、--global（当前用户）、--local（当前仓库，.git/config），就近覆盖远端；git config --list --show-origin 可看到每条配置来自哪个文件。",
+                  "repoStateBefore": "仓库或全局配置中已设置 user.name",
+                  "repoStateAfter": "输出当前生效的用户名"
+                },
+                {
+                  "command": "git hash-object -w hello.txt",
+                  "explanation": "把文件内容做 SHA-1 运算得到 40 位哈希，并以 -w 写入对象库（.git/objects）。Git 中对象的唯一标识是内容的哈希而非文件名——相同内容必得相同哈希，这是内容寻址存储，也是去重与完整性校验的基础。",
+                  "repoStateBefore": "工作区存在 hello.txt",
+                  "repoStateAfter": "输出 40 位哈希，且 .git/objects 下新增对应 blob 对象"
+                },
+                {
+                  "command": "git cat-file -p <hash>",
+                  "explanation": "按哈希读取对象库中的对象内容。-p 表示友好打印：blob 显示文件内容，commit 显示元数据与父提交，tree 显示目录清单。Git 的本质是一个“内容寻址的文件系统”。",
+                  "repoStateBefore": "该哈希对应的对象已存在于对象库（.git/objects）",
+                  "repoStateAfter": "打印 blob/commit/tree 对象的内容"
+                },
+                {
+                  "command": "git ls-tree HEAD",
+                  "explanation": "列出一次提交对应的树对象：目录即 tree 对象，文件即 blob 对象。提交 = 指向根 tree 的快照记录 + 父提交 + 作者/说明，由此构成提交图。",
+                  "repoStateBefore": "HEAD 指向至少一笔提交",
+                  "repoStateAfter": "输出 blob/tree 对象哈希与文件/目录名的对应清单"
+                }
+              ]
+            }
+          ]
         }
       ]
     },

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import fs from "node:fs";
 import { mkdtemp, mkdir, rm, readdir } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -127,29 +128,98 @@ test("时间复杂度正文：全排列归入 O(n!) 而非 O(2^n)", () => {
   assert.match(factorialRow, /全排列/);
 });
 
-test("课程正文代码块的方法签名与实际落盘源码一致", () => {
-  const checks = [
-    [
-      "algo-iteration-recursion",
-      /sumByLoop\(|sumByRecursion\(|fib\(int n\)/,
-    ],
-    ["algo-space-complexity", /constantSpace\(|linearSpace\(int n\)/],
-    [
-      "algo-array",
-      /insert\(int\[\] arr, int size, int index, int element\)|remove\(int\[\] arr, int size, int index\)/,
-    ],
-    [
-      "algo-linkedlist",
-      /insertAfter\(ListNode n0|removeAfter\(ListNode n0/,
-    ],
-    ["algo-stack", /isValidParentheses\(String s\)/],
-    ["algo-queue", /class CircularQueue/],
-  ];
-  for (const [lessonId, signaturePattern] of checks) {
-    assert.match(
-      algoLesson(lessonId).markdown,
-      signaturePattern,
-      `${lessonId} 正文代码块方法签名应与源码一致`,
-    );
+// 正文 ```java 围栏块中“像声明”的行：方法声明（含参数与返回类型）与类/内部类声明
+const DECL_RE = /^\s*(?:@Override\s+)?(?:public|private|protected|static|final)\s[^;{()]*?(?:\((?:[^()]|\([^()]*\))*\)\s*\{|class\s+\w+)/gm;
+const normalize = (s) => s.replace(/\s+/g, " ").trim();
+
+function fencedJavaBlocks(markdown) {
+  const blocks = [];
+  const re = /```java\n([\s\S]*?)```/g;
+  let m;
+  while ((m = re.exec(markdown)) !== null) blocks.push(m[1]);
+  return blocks;
+}
+
+function declarationsOf(code) {
+  const decls = [];
+  for (const m of code.matchAll(DECL_RE)) {
+    decls.push(normalize(m[0].replace(/\s*\{\s*$/, "")));
   }
+  return decls;
+}
+
+test("正文 java 代码块中的每个声明都必须在对应落盘源码中逐个存在（逐方法核对，不允许多选一）", () => {
+  const fileMap = {
+    "algo-complexity-eval": "stages/topics/algorithms/complexity/com/javaroadmap/algo/complexity/App.java",
+    "algo-iteration-recursion": "stages/topics/algorithms/recursion/com/javaroadmap/algo/recursion/App.java",
+    "algo-time-complexity": "stages/topics/algorithms/big_o/com/javaroadmap/algo/bigo/App.java",
+    "algo-space-complexity": "stages/topics/algorithms/space/com/javaroadmap/algo/space/App.java",
+    "algo-array": "stages/topics/algorithms/array/com/javaroadmap/algo/array/App.java",
+    "algo-linkedlist": "stages/topics/algorithms/linkedlist/com/javaroadmap/algo/linkedlist/App.java",
+    "algo-stack": "stages/topics/algorithms/stack/com/javaroadmap/algo/stack/App.java",
+    "algo-queue": "stages/topics/algorithms/queue/com/javaroadmap/algo/queue/App.java",
+    "algo-ds-basics": "stages/topics/algorithms/ds_basics/com/javaroadmap/algo/dsbasics/App.java",
+    "algo-hash-table": "stages/topics/algorithms/hash_table/com/javaroadmap/algo/hashtable/App.java",
+    "algo-binary-tree": "stages/topics/algorithms/binary_tree/com/javaroadmap/algo/binarytree/App.java",
+    "algo-heap": "stages/topics/algorithms/heap/com/javaroadmap/algo/heap/App.java",
+    "algo-graph": "stages/topics/algorithms/graph/com/javaroadmap/algo/graph/App.java",
+    "algo-binary-search": "stages/topics/algorithms/binary_search/com/javaroadmap/algo/binarysearch/App.java",
+    "algo-sorting": "stages/topics/algorithms/sorting/com/javaroadmap/algo/sorting/App.java",
+    "algo-divide-conquer": "stages/topics/algorithms/divide_conquer/com/javaroadmap/algo/divideconquer/App.java",
+    "algo-backtracking": "stages/topics/algorithms/backtracking/com/javaroadmap/algo/backtracking/App.java",
+    "algo-dynamic-programming": "stages/topics/algorithms/dynamic_programming/com/javaroadmap/algo/dynamicprogramming/App.java",
+    "algo-greedy": "stages/topics/algorithms/greedy/com/javaroadmap/algo/greedy/App.java",
+  };
+
+  let checkedDecls = 0;
+  for (const [lessonId, relFile] of Object.entries(fileMap)) {
+    const lesson = algoLesson(lessonId);
+    const blocks = fencedJavaBlocks(lesson.markdown);
+    assert.ok(blocks.length > 0, `${lessonId} 正文应包含 java 代码块`);
+    const source = normalize(fs.readFileSync(path.join(repoRoot, relFile), "utf8"));
+
+    for (const block of blocks) {
+      const decls = declarationsOf(block);
+      assert.ok(
+        decls.length > 0,
+        `${lessonId} 的 java 代码块应至少包含一个方法或类声明`,
+      );
+      for (const decl of decls) {
+        assert.ok(
+          source.includes(decl),
+          `${lessonId} 正文声明「${decl}」在源码 ${relFile} 中不存在（名称、参数或返回类型不一致）`,
+        );
+        checkedDecls++;
+      }
+    }
+  }
+  // 确认本测试真的逐方法核对到了足量声明，而不是静默空转
+  assert.ok(checkedDecls >= 40, `逐方法核对应覆盖至少 40 个声明，实际 ${checkedDecls}`);
+});
+
+test("链表课程展示两个同包源码文件，且正文说明必须一起编译", () => {
+  const lesson = algoLesson("algo-linkedlist");
+  assert.ok(Array.isArray(lesson.codeFiles) && lesson.codeFiles.length === 1);
+  const nodeFile = lesson.codeFiles[0];
+  assert.equal(nodeFile.className, "ListNode");
+  assert.equal(nodeFile.packageName, "com.javaroadmap.algo.linkedlist");
+  assert.match(nodeFile.code, /public class ListNode/);
+  assert.equal(nodeFile.code.trim(), fs.readFileSync(path.join(repoRoot, nodeFile.path), "utf8").trim());
+  assert.match(lesson.markdown, /两个同包文件/);
+  assert.match(lesson.markdown, /一起编译/);
+});
+
+test("数组课程如实说明固定容量边界：满时抛异常，扩容是动态数组封装层行为", () => {
+  const lesson = algoLesson("algo-array");
+  assert.match(lesson.markdown, /固定容量/);
+  assert.match(lesson.markdown, /并不会自动扩容|不会自动扩容/);
+  assert.match(lesson.markdown, /新建一个更大的数组并把旧元素整体复制过去/);
+  const source = fs.readFileSync(
+    path.join(repoRoot, "stages/topics/algorithms/array/com/javaroadmap/algo/array/App.java"),
+    "utf8",
+  );
+  assert.match(source, /本示例是固定容量数组/);
+  assert.match(source, /IndexOutOfBoundsException/);
+  assert.doesNotMatch(source, /物理地址空间/);
+  assert.match(source, /模拟值/);
 });
