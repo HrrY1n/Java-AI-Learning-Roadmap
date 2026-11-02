@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Binary,
   GitBranch,
@@ -32,7 +32,12 @@ export function TopicView({
   state,
   onToggleRead,
 }: TopicViewProps) {
-  // 1. 如果指定了具体 lessonId，渲染课程正文阅读页
+  // 1. 如果是教材索引精准跳转：如 #/topics/book/book-pro-git
+  if (topicId === "book" && lessonId) {
+    return <TopicHub targetBookId={lessonId} />;
+  }
+
+  // 2. 如果指定了具体 lessonId，渲染课程正文阅读页
   if (topicId && lessonId) {
     const topic = catalog.topics.find((t) => t.id === topicId);
     let currentLesson: TopicLesson | undefined;
@@ -60,13 +65,27 @@ export function TopicView({
     }
   }
 
-  // 2. 如果仅指定了 topicId，或者未指定，展示专题 Hub 概览
+  // 3. 如果仅指定了 topicId，或者未指定，展示专题 Hub 概览
   return <TopicHub />;
 }
 
 // 专题 Hub 概览界面
-function TopicHub() {
+function TopicHub({ targetBookId }: { targetBookId?: string }) {
   const [filter, setFilter] = useState<"all" | "published" | "indexed">("all");
+
+  useEffect(() => {
+    if (targetBookId) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById(targetBookId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          el.classList.add("highlight-target-book");
+          setTimeout(() => el.classList.remove("highlight-target-book"), 3500);
+        }
+      }, 80);
+      return () => clearTimeout(timer);
+    }
+  }, [targetBookId]);
 
   const topics = catalog.topics ?? [];
   const books = catalog.booksIndex ?? [];
@@ -309,7 +328,7 @@ function TopicLessonReader({
 
   return (
     <div className="topic-reader-container">
-      {/* 顶部面包屑与掌握操作栏 */}
+      {/* 顶部面包屑与阅读打卡操作栏 */}
       <div className="reader-toolbar">
         <div className="reader-breadcrumbs">
           <a href="#/topics" className="bc-link">
@@ -325,23 +344,57 @@ function TopicLessonReader({
           <span className="bc-current">{lesson.title}</span>
         </div>
 
-        <button
-          type="button"
-          className={`mark-read-btn ${isRead ? "is-read" : ""}`}
-          onClick={() => onToggleRead(lesson.id)}
-        >
-          {isRead ? (
-            <>
-              <CheckCircle2 size={16} />
-              <span>已掌握该小节</span>
-            </>
-          ) : (
-            <>
-              <Circle size={16} />
-              <span>标记为已学习</span>
-            </>
-          )}
-        </button>
+        <div className="reader-status-actions">
+          <span className={`reader-status-pill ${isRead ? "status-read" : "status-unread"}`}>
+            {isRead ? "已读过本节" : "未读"}
+          </span>
+          <button
+            type="button"
+            className={`mark-read-btn ${isRead ? "is-read" : ""}`}
+            onClick={() => onToggleRead(lesson.id)}
+            title={isRead ? "取消已阅读标记" : "记录已阅读进度"}
+          >
+            {isRead ? (
+              <>
+                <CheckCircle2 size={16} />
+                <span>已阅读此小节</span>
+              </>
+            ) : (
+              <>
+                <Circle size={16} />
+                <span>标记为已阅读</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* 课程标题与简要 */}
+      <div className="topic-lesson-heading">
+        <h1 className="topic-lesson-title">{lesson.title}</h1>
+        <p className="topic-lesson-summary">{lesson.summary}</p>
+      </div>
+
+      {/* 课程模式与实操属性标识栏 */}
+      <div className="lesson-learning-meta-strip">
+        {lesson.kind === "concept" && (
+          <div className="meta-badge-item badge-concept">
+            <BookOpen size={14} />
+            <span>概念精读课 · 侧重原理、心智模型与理论分析（无独立编程题）</span>
+          </div>
+        )}
+        {lesson.kind === "code" && (
+          <div className="meta-badge-item badge-code">
+            <FileCode2 size={14} />
+            <span>配套 Java 规范源码 · 建议在本机 JDK 编译运行验证（阅读 ≠ 掌握）</span>
+          </div>
+        )}
+        {lesson.kind === "command-lab" && (
+          <div className="meta-badge-item badge-lab">
+            <Terminal size={14} />
+            <span>Git 命令实操课 · 配套命令步进与状态机（命令已在一次性沙箱实测）</span>
+          </div>
+        )}
       </div>
 
       {/* 原书来源信息条 */}
@@ -393,6 +446,13 @@ function TopicLessonReader({
           </div>
         </div>
       )}
+
+      {/* 诚实学习底线提醒 */}
+      <div className="reader-honesty-banner">
+        <span>
+          💡 诚实性约定：点击“已阅读”仅代表浏览过教程内容，并不等同于掌握；独立编程与工程协作能力必须通过真实运行与实测证据来证明。
+        </span>
+      </div>
 
       {/* 底部上一节/下一节导航 */}
       <div className="reader-pagination">

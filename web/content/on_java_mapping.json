@@ -31,7 +31,7 @@
       "lessonId": "day03",
       "topicTitle": "条件判断与选择结构",
       "bookChapter": "第 5 章 控制流",
-      "pdfPages": "98-121",
+      "pdfPages": "98-120",
       "overlapType": "extension",
       "rationale": "原书对 switch 语句的分支评估机制进行了剖析，解释了为何遗漏 break 会导致穿透执行。",
       "modernJdkDiff": "Java 14+ 正式引入增强型 Switch 表达式（支持箭头标签 ->、返回值与 yield 语句），彻底消除了历史遗漏 break 的陷阱；Java 21 进一步支持 switch 的类型模式匹配。"
@@ -99,7 +99,7 @@
       "lessonId": "s02-constructor-this",
       "topicTitle": "构造方法与 this 关键字",
       "bookChapter": "第 6 章 初始化和清理 (保证初始化)",
-      "pdfPages": "121-140",
+      "pdfPages": "121-131",
       "overlapType": "extension",
       "rationale": "深入解析了字段默认零值、显式初始化与构造函数执行顺序，以及使用 this(...) 委托同类重载构造器的具体规则与限制条件。"
     },
@@ -108,7 +108,7 @@
       "lessonId": "s02-encapsulation-basics",
       "topicTitle": "封装性与访问控制",
       "bookChapter": "第 7 章 封装 (访问权限修饰词)",
-      "pdfPages": "168-185",
+      "pdfPages": "173-185",
       "overlapType": "extension",
       "rationale": "阐述了「客户端程序员」与「类库开发者」的角色边界，说明私有成员保护内部状态不变性（Invariants）的核心意图。",
       "modernJdkDiff": "Java 9 引入模块系统（JPMS），在 public 之外增加了模块级导出控制（exports），实现了更高级别的强封装边界。"
@@ -118,7 +118,7 @@
       "lessonId": "s02-encapsulation-why",
       "topicTitle": "为什么需要封装：数据守门员与不变量",
       "bookChapter": "第 7 章 封装 (代码组织的重构自由度)",
-      "pdfPages": "172-178",
+      "pdfPages": "185-192",
       "overlapType": "extension",
       "rationale": "原书深刻指出封装的本质不仅是藏字段，更是为类库开发者保留后续自由重构内部实现而不破坏调用方的设计自由。",
       "modernJdkDiff": "现代不可变对象设计（如 List.of、Record）将封装提升到了只读线程安全的高度。"
@@ -128,7 +128,7 @@
       "lessonId": "s02-object-construction",
       "topicTitle": "对象构建全流程：从堆分配到构造执行",
       "bookChapter": "第 6 章 初始化和清理 (成员初始化次序)",
-      "pdfPages": "135-144",
+      "pdfPages": "144-156",
       "overlapType": "extension",
       "rationale": "剖析堆内存开辟、类加载（静态块初始化）、字段默认赋零值、声明初始化、构造方法体执行这 5 大关键物理阶段。"
     },
@@ -137,7 +137,7 @@
       "lessonId": "s02-reference-state",
       "topicTitle": "引用传递与对象状态陷阱",
       "bookChapter": "第 1 章 对象的概念 (引用操纵对象)",
-      "pdfPages": "14-16",
+      "pdfPages": "13-16",
       "overlapType": "advanced",
       "rationale": "以电视机与遥控器的经典比喻，透彻解析引用是句柄、对象是本体，多个遥控器可以操作同一台电视，产生隐蔽的状态修改副作用。"
     }

@@ -53,10 +53,11 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
       });
     }
 
-    // 2. 专题课程 (算法 & Git)
+    // 2. 专题课程 (算法 & Git) - 严格门禁：未发布课程不得入搜索
     for (const topic of catalog.topics ?? []) {
       for (const module of topic.modules ?? []) {
         for (const lesson of module.lessons ?? []) {
+          if (lesson.status !== "published") continue;
           const category = topic.id === "topic-algo" ? "算法专题" : "Git专题";
           items.push({
             id: `topic-lesson-${lesson.id}`,
@@ -81,14 +82,14 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
       });
     }
 
-    // 4. 教材索引
+    // 4. 教材索引 - 单一合法 Hash 路径，消灭 #/topics#book-id 双重 Hash
     for (const book of catalog.booksIndex ?? []) {
       items.push({
         id: `book-${book.id}`,
         category: "权威教材索引",
         title: book.title,
         subtitle: `${book.author} · ${book.totalPages}页 · ${book.summary}`,
-        href: `#/topics#${book.id}`,
+        href: `#/topics/book/${book.id}`,
         status: book.status,
       });
     }

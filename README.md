@@ -153,7 +153,7 @@ docs/              # 环境搭建、跨平台排查、教学协作与 Lab 交付
 ## 路线图与相关文档
 
 - 整体路线与当前任务：[统一学习路线](统一学习路线.md) · [学习执行计划](学习执行计划.md) · [真实学习进度](真实学习进度.md) · [求职能力矩阵](求职能力矩阵.md)
-- 课程入口：[Stage 01 Java 基础](stages/stage01_java_basics/README.md) · [Stage 02 面向对象基础](stages/stage02_oop_basics/README.md) · [课程总览](stages/README.md)
+- 课程入口：[Stage 01 Java 基础](stages/stage01_java_basics/README.md) · [Stage 02 面向对象基础](stages/stage02_java_oop/README.md) · [课程总览](stages/README.md)
 - 环境与运行：[环境搭建](docs/环境搭建.md) · [Java 课程运行说明](docs/Java课程运行说明.md) · [跨平台问题排查](docs/跨平台问题排查.md) · [验证脚本](scripts/README.md)
 - 教学与协作：[教学协作细则](docs/教学协作细则.md) · [AGENTS.md](AGENTS.md)
 - Lab 网站文档：[Lab 交付文档目录](docs/javaroadmap_lab/README.md) · [本地 Java 验证指南](docs/javaroadmap_lab/local-java.md) · [内容架构与脚手架指南](docs/javaroadmap_lab/new-lesson-guide.md) · [数据模型与迁移细则](docs/javaroadmap_lab/data-and-services.md) · [V1.4 设计选型与去重报告](docs/javaroadmap_lab/v1.4_design_proposals.md) · [web/README.md](web/README.md)
