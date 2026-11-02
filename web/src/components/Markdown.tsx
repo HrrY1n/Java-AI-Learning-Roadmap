@@ -1,5 +1,8 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import hljs from "highlight.js/lib/core";
 import java from "highlight.js/lib/languages/java";
 import { catalog, resolveSourcePath, sourceHref } from "../catalog";
@@ -44,7 +47,8 @@ export function Markdown({
   return (
     <div className="prose">
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
         components={{
           a: ({ href = "", children }) => {
             const path = resolveSourcePath(href, sourcePath);

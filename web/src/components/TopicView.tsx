@@ -144,7 +144,9 @@ function TopicHub({ targetBookId }: { targetBookId?: string }) {
           const publishedLessons = topic.modules.flatMap((m) =>
             m.lessons.filter((l) => l.status === "published"),
           );
-          const totalLessons = topic.modules.flatMap((m) => m.lessons);
+          const publishedModules = topic.modules.filter((m) => m.status === "published");
+          const buildingModules = topic.modules.filter((m) => m.status === "building");
+          const plannedModules = topic.modules.filter((m) => m.status === "planned" || m.status === "materials");
 
           return (
             <div key={topic.id} className={`topic-card ${topic.status}`}>
@@ -171,28 +173,42 @@ function TopicHub({ targetBookId }: { targetBookId?: string }) {
               </div>
 
               <div className="topic-modules-preview">
-                <div className="preview-label">包含模块：</div>
+                <div className="preview-label">模块建设进度：</div>
                 <div className="module-pills">
-                  {topic.modules.map((m) => (
-                    <span
-                      key={m.id}
-                      className={`module-pill ${m.status === "published" ? "published-pill" : ""}`}
-                    >
-                      {m.title}
-                      {m.status === "published" && " ✓"}
-                    </span>
-                  ))}
+                  {topic.modules.map((m) => {
+                    let pillClass = "module-pill";
+                    let statusLabel = "规划中";
+                    if (m.status === "published") {
+                      pillClass += " published-pill";
+                      statusLabel = "已上线";
+                    } else if (m.status === "building") {
+                      pillClass += " building-pill";
+                      statusLabel = "建设中";
+                    } else {
+                      pillClass += " planned-pill";
+                    }
+                    return (
+                      <span key={m.id} className={pillClass}>
+                        {m.title} <small className="module-pill-status">({statusLabel})</small>
+                      </span>
+                    );
+                  })}
                 </div>
               </div>
 
               <div className="topic-card-footer">
                 <div className="topic-progress-text">
                   {isPublished ? (
-                    <span>
-                      已发布 <strong>{publishedLessons.length}</strong> / 规划 {totalLessons.length} 门课
-                    </span>
+                    <div className="topic-stat-block">
+                      <div className="stat-main">
+                        已发布课程：<strong>{publishedLessons.length}</strong> 节
+                      </div>
+                      <div className="stat-sub">
+                        已上线 {publishedModules.length} 个模块 · {buildingModules.length > 0 ? `${buildingModules.length} 个建设中 · ` : ""}{plannedModules.length} 个规划中
+                      </div>
+                    </div>
                   ) : (
-                    <span className="text-muted">后续阶段规划建设中</span>
+                    <span className="text-muted">全阶段教材资料已索引 · 待接入课程建设</span>
                   )}
                 </div>
 
@@ -509,7 +525,7 @@ function GitStepsViewer({
       <div className="git-steps-header">
         <div className="git-steps-title">
           <Terminal size={16} />
-          <span>实操命令流转（第 {currentStep + 1} / {steps.length} 步）</span>
+          <span>Git 命令与状态交互演进演示（第 {currentStep + 1} / {steps.length} 步）</span>
         </div>
         <div className="git-step-tabs">
           {steps.map((s, idx) => (
@@ -523,6 +539,23 @@ function GitStepsViewer({
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="git-notice-box">
+        <div className="git-notice-title">
+          <span>🛠️ 实操功能边界与诚实性说明</span>
+        </div>
+        <ul className="git-notice-list">
+          <li>
+            <strong>网站演示角色</strong>：本步进器用于交互式解析命令前后的仓库状态流转（工作区 ➔ 暂存区 ➔ 版本库），属于<strong>教学状态机演示</strong>，并非在线运行终端。
+          </li>
+          <li>
+            <strong>学员真实实操</strong>：请在您本机终端开辟<strong>独立的一次性临时目录</strong>（如 <code>mkdir ~/git-sandbox && cd ~/git-sandbox</code>）亲手执行命令验证。
+          </li>
+          <li>
+            <strong>验证边界</strong>：工程自动化测试已在临时沙箱中验证了本命令序列的客观正确性，但<strong>自动化测试通过绝不代表学员个人已经完成实操</strong>。
+          </li>
+        </ul>
       </div>
 
       <div className="git-step-body">
@@ -547,7 +580,7 @@ function GitStepsViewer({
       </div>
       <div className="git-step-footer">
         <span>
-          🛡️ 安全防护提醒：所有自动化测试均在 <code>os.tmpdir()</code> 一次性沙箱中验证通过，绝不污染真实 Git 仓库。
+          🛡️ 安全红线提醒：严禁在当前工作仓库（如 JavaRoadmap Lab 项目根目录）执行任何测试或破坏性 Git 命令！所有自动化验证均运行在 <code>os.tmpdir()</code> 一次性隔离沙箱中。
         </span>
       </div>
     </div>

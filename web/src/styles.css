@@ -5865,10 +5865,25 @@ kbd {
   background: var(--paper-100, #f3f0e6);
   color: var(--text-secondary, #605c51);
 }
+.module-pill-status {
+  opacity: 0.85;
+  font-size: 10px;
+}
 .published-pill {
   background: rgba(16, 185, 129, 0.1);
   color: #047857;
   font-weight: 500;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+.building-pill {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+.planned-pill {
+  background: var(--paper-50, #fcfbf8);
+  color: var(--text-muted, #7c776b);
+  border: 1px dashed var(--border-subtle, #d8d4c7);
 }
 [data-theme="dark"] .module-pill {
   background: #27272a;
@@ -5877,6 +5892,17 @@ kbd {
 [data-theme="dark"] .published-pill {
   background: rgba(16, 185, 129, 0.15);
   color: #34d399;
+  border-color: rgba(52, 211, 153, 0.25);
+}
+[data-theme="dark"] .building-pill {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.25);
+}
+[data-theme="dark"] .planned-pill {
+  background: #1f1f23;
+  color: #71717a;
+  border-color: #3f3f46;
 }
 .topic-card-footer {
   display: flex;
@@ -5892,6 +5918,26 @@ kbd {
 .topic-progress-text {
   font-size: 12px;
   color: var(--text-secondary, #605c51);
+}
+.topic-stat-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat-main {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1e1d1a);
+}
+[data-theme="dark"] .stat-main {
+  color: #f4f4f5;
+}
+.stat-sub {
+  font-size: 11px;
+  color: var(--text-muted, #7c776b);
+}
+[data-theme="dark"] .stat-sub {
+  color: #a1a1aa;
 }
 .topic-enter-btn {
   display: inline-flex;
@@ -6198,7 +6244,7 @@ kbd {
   border-color: rgba(251, 191, 36, 0.25);
 }
 
-/* 诚实学习底线提醒 Banner */
+/* ---------- 诚实学习底线提醒 Banner ---------- */
 .reader-honesty-banner {
   margin: 32px 0 16px;
   padding: 12px 16px;
@@ -6215,6 +6261,35 @@ kbd {
   border-color: #27272a;
   border-left-color: #f59e0b;
   color: #a1a1aa;
+}
+
+/* ---------- KaTeX 数学公式渲染规范 (行内、块级与响应式) ---------- */
+.katex {
+  font-size: 1.08em;
+  text-rendering: auto;
+  color: inherit;
+}
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 12px;
+  margin: 16px 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+  background: var(--paper-50, #fcfbf8);
+  border-radius: 6px;
+}
+.katex-display > .katex {
+  max-width: 100%;
+  text-align: center;
+}
+:root[data-theme="dark"] .katex {
+  color: #f4f4f5;
+}
+:root[data-theme="dark"] .katex-display {
+  background: rgba(255, 255, 255, 0.03);
+  color: #f4f4f5;
 }
 .lesson-book-reference {
   display: flex;
@@ -6781,6 +6856,46 @@ kbd {
   background: #f4f4f5;
   color: #18181b;
   border-color: #f4f4f5;
+}
+.git-notice-box {
+  margin: 14px 16px 0;
+  padding: 12px 14px;
+  background: var(--paper-100, #f5f3ec);
+  border: 1px solid var(--border-subtle, #e0dbce);
+  border-left: 3px solid var(--accent, #b45309);
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+[data-theme="dark"] .git-notice-box {
+  background: #202024;
+  border-color: #2e2e33;
+  border-left-color: #f59e0b;
+}
+.git-notice-title {
+  font-weight: 600;
+  color: var(--text-primary, #1e1d1a);
+  margin-bottom: 6px;
+}
+[data-theme="dark"] .git-notice-title {
+  color: #f4f4f5;
+}
+.git-notice-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--text-secondary, #524f47);
+}
+[data-theme="dark"] .git-notice-list {
+  color: #a1a1aa;
+}
+.git-notice-list strong {
+  color: var(--text-primary, #1e1d1a);
+}
+[data-theme="dark"] .git-notice-list strong {
+  color: #e4e4e7;
 }
 .git-step-body {
   padding: 16px;
