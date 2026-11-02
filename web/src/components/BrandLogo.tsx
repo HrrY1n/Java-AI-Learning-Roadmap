@@ -3,127 +3,182 @@ interface BrandLogoProps {
   className?: string;
 }
 
+/**
+ * Concept B: Roadmap + Code Brand Logo
+ * A learning roadmap with milestone nodes, combined with a terminal prompt (>_)
+ * Symbolizes progress, practice, and real developer growth.
+ */
 export function BrandLogo({ size = 38, className = "" }: BrandLogoProps) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 40 40"
+      viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`brand-logo-svg ${className}`}
       aria-label="JavaRoadmap Lab Logo"
     >
       <defs>
-        {/* 深邃暗金渐变底座 */}
+        {/* 深邃黑曜石渐变底座 */}
         <linearGradient
-          id="brand-bg"
+          id="conceptB-bg"
           x1="0"
           y1="0"
-          x2="40"
-          y2="40"
+          x2="100"
+          y2="100"
           gradientUnits="userSpaceOnUse"
         >
           <stop offset="0%" stopColor="#1E232B" />
           <stop offset="50%" stopColor="#15191F" />
-          <stop offset="100%" stopColor="#0D1014" />
+          <stop offset="100%" stopColor="#0E1115" />
         </linearGradient>
 
-        {/* 精致微光边框 */}
+        {/* 细腻高光边框 */}
         <linearGradient
-          id="brand-border"
+          id="conceptB-border"
           x1="0"
           y1="0"
-          x2="40"
-          y2="40"
+          x2="100"
+          y2="100"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.28" />
-          <stop offset="40%" stopColor="#FFFFFF" stopOpacity="0.12" />
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.25" />
+          <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.10" />
           <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.04" />
         </linearGradient>
 
-        {/* 代码斜杠/编译火花渐变 */}
+        {/* 学习路线渐变色 (琥珀金到暖红) */}
         <linearGradient
-          id="brand-slash"
-          x1="23"
-          y1="11"
-          x2="29"
-          y2="29"
+          id="conceptB-road"
+          x1="10"
+          y1="90"
+          x2="85"
+          y2="25"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0%" stopColor="#FBBF24" />
-          <stop offset="60%" stopColor="#F59E0B" />
+          <stop offset="0%" stopColor="#FDC35C" />
+          <stop offset="45%" stopColor="#F59E0B" />
           <stop offset="100%" stopColor="#D97706" />
         </linearGradient>
 
-        {/* 内部暖色氛围微晕 */}
+        {/* 右上方终点旗帜暖光微晕 */}
         <radialGradient
-          id="brand-ambient"
+          id="conceptB-glow"
           cx="0"
           cy="0"
           r="1"
           gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(27 13) rotate(45) scale(15)"
+          gradientTransform="translate(80 25) rotate(45) scale(35)"
         >
-          <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.32" />
+          <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.22" />
           <stop offset="100%" stopColor="#F59E0B" stopOpacity="0" />
         </radialGradient>
       </defs>
 
-      {/* 现代圆角方形底板 (Squircle) */}
-      <rect
-        x="0.75"
-        y="0.75"
-        width="38.5"
-        height="38.5"
-        rx="10"
-        fill="url(#brand-bg)"
-        stroke="url(#brand-border)"
-        strokeWidth="1.5"
-      />
-
-      {/* 暖色微光层 */}
+      {/* 现代圆角矩形底板 (Squircle) */}
       <rect
         x="1.5"
         y="1.5"
-        width="37"
-        height="37"
-        rx="9"
-        fill="url(#brand-ambient)"
+        width="97"
+        height="97"
+        rx="22"
+        fill="url(#conceptB-bg)"
+        stroke="url(#conceptB-border)"
+        strokeWidth="2"
       />
 
-      {/* 路线轨迹 J (Roadmap Track) */}
-      {/* 顶栏学习锚点横轨 */}
+      {/* 暖色环境光 */}
+      <rect
+        x="1.5"
+        y="1.5"
+        width="97"
+        height="97"
+        rx="22"
+        fill="url(#conceptB-glow)"
+      />
+
+      {/* 终端代码提示符: >_ (纯白极简) */}
       <path
-        d="M10.5 12H20"
-        stroke="#F4F4F5"
-        strokeWidth="2.5"
+        d="M 18 18 L 30 26.5 L 18 35"
+        stroke="#FFFFFF"
+        strokeWidth="5.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M 35 35 H 48"
+        stroke="#FFFFFF"
+        strokeWidth="5.5"
         strokeLinecap="round"
       />
-      {/* 主轴垂直下沉与优雅平滑拐角 */}
+
+      {/* 蜿蜒向上的学习路线图主干 (Roadmap Path) */}
       <path
-        d="M17.5 12V22C17.5 25.4 14.8 28.2 11.4 28.2C9.4 28.2 7.7 27 7 25"
-        stroke="#F4F4F5"
-        strokeWidth="2.5"
+        d="M 2 92 C 10 86, 18 80, 32 77 C 52 72, 70 72, 76 65 C 80 61, 70 56, 50 51 C 42 49, 46 41, 62 38 C 70 36.5, 76 35, 80 34"
+        stroke="url(#conceptB-road)"
+        strokeWidth="8.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      {/* 阶段里程碑节点 1 (基础阶段) */}
+      <circle
+        cx="32"
+        cy="77"
+        r="7.5"
+        fill="#15191F"
+        stroke="#FFFFFF"
+        strokeWidth="3.2"
+      />
+      <circle cx="32" cy="77" r="3.8" fill="#F59E0B" />
+
+      {/* 阶段里程碑节点 2 (核心进阶) */}
+      <circle
+        cx="50"
+        cy="51"
+        r="7"
+        fill="#15191F"
+        stroke="#FFFFFF"
+        strokeWidth="3"
+      />
+      <circle cx="50" cy="51" r="3.5" fill="#F59E0B" />
+
+      {/* 阶段里程碑节点 3 (工程实战) */}
+      <circle
+        cx="74"
+        cy="65"
+        r="7.5"
+        fill="#15191F"
+        stroke="#FFFFFF"
+        strokeWidth="3.2"
+      />
+      <circle cx="74" cy="65" r="3.8" fill="#F59E0B" />
+
+      {/* 终点站台与旗杆 (Summit Goal) */}
+      <circle
+        cx="80"
+        cy="34"
+        r="4.5"
+        fill="#15191F"
+        stroke="#FFFFFF"
+        strokeWidth="2.2"
+      />
+      <path
+        d="M 80 34 V 10"
+        stroke="#FFFFFF"
+        strokeWidth="4.5"
         strokeLinecap="round"
       />
 
-      {/* 路线里程碑节点 (Milestone Nodes) */}
-      <circle cx="10.5" cy="12" r="2.2" fill="#F59E0B" />
-      <circle cx="17.5" cy="18.5" r="1.6" fill="#F4F4F5" />
-      <circle cx="7.5" cy="25" r="2" fill="#F59E0B" />
-
-      {/* 动态代码斜杠 (Code Slash / Compiler / Lab) */}
+      {/* 终点飞扬的暖金色目标旗帜 (Pennant Flag) */}
       <path
-        d="M23 28.5L28.5 11.5"
-        stroke="url(#brand-slash)"
-        strokeWidth="2.8"
-        strokeLinecap="round"
+        d="M 80 11 L 96 17 L 80 23 Z"
+        fill="url(#conceptB-road)"
+        stroke="url(#conceptB-road)"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
       />
-
-      {/* 终端闪烁点标 */}
-      <circle cx="30" cy="28" r="1.3" fill="#FBBF24" />
     </svg>
   );
 }
