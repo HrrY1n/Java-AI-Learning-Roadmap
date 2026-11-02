@@ -61,6 +61,7 @@ import { CodeEditor } from "./components/CodeEditor";
 import { SearchDialog } from "./components/SearchDialog";
 import { OnJavaCard } from "./components/OnJavaCard";
 import { TopicView } from "./components/TopicView";
+import { BrandLogo } from "./components/BrandLogo";
 
 type Change = (recipe: (current: LearningState) => LearningState) => void;
 type PageProps = {
@@ -415,8 +416,8 @@ export default function App() {
   if (!ready)
     content = (
       <div className="loading-state" role="status">
-        <div className="brand-mark">
-          J<span>/</span>
+        <div className="brand-mark loading-brand-mark">
+          <BrandLogo size={52} />
         </div>
         <p>正在打开你的学习空间…</p>
       </div>
@@ -524,10 +525,10 @@ export default function App() {
       <aside className="sidebar">
         <a href="#/home" className="brand" aria-label="JavaRoadmap Lab 首页">
           <div className="brand-mark">
-            J<span>/</span>
+            <BrandLogo size={40} />
           </div>
           <span>
-            JavaRoadmap <b>Lab</b>
+            JavaRoadmap <b>LAB</b>
           </span>
         </a>
         <Navigation route={route} state={state} currentStage={currentStage} />

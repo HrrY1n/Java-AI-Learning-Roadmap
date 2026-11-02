@@ -191,39 +191,33 @@ pre {
   padding: 0 8px 36px;
 }
 .brand-mark {
-  background: #143b49;
-  color: #eaf2dc;
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
-  display: flex;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  font-weight: 650;
-  font-family: var(--mono);
-  letter-spacing: -5px;
-  padding-right: 4px;
+  flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
 }
-.brand-mark span {
-  color: var(--accent);
-  font-size: 26px;
-  transform: translate(2px, -1px);
+.brand:hover .brand-mark {
+  transform: translateY(-1px) scale(1.04);
+  filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.35));
 }
 .brand > span {
   font-size: 15px;
-  letter-spacing: -0.4px;
-  line-height: 1.35;
-  font-weight: 650;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--ink);
 }
 .brand b {
   display: block;
   font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 3px;
-  color: var(--muted);
-  margin-top: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-top: 3px;
 }
 .primary-nav {
   display: grid;
@@ -2804,26 +2798,6 @@ h2 {
 .brand {
   padding: 0 6px 30px;
 }
-.brand-mark {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px 8px 8px 2px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -4px;
-  padding-right: 2px;
-  box-shadow: 2px 2px 0 var(--ink);
-}
-:root[data-theme="dark"] .brand-mark {
-  box-shadow: 2px 2px 0 #00000088;
-}
-.brand-mark span {
-  color: #ffffff;
-  opacity: 0.85;
-  font-size: 20px;
-}
 .brand > span {
   font-size: 16px;
   font-weight: 750;
@@ -2831,10 +2805,10 @@ h2 {
 }
 .brand b {
   font-family: var(--mono);
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 2.5px;
-  color: var(--faint);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent);
   margin-top: 3px;
 }
 .primary-nav > a {
@@ -4338,8 +4312,10 @@ h2 {
   .brand-mark {
     width: 36px;
     height: 36px;
-    font-size: 24px;
-    border-radius: 9px;
+  }
+  .brand-mark svg {
+    width: 36px;
+    height: 36px;
   }
   .rail-course {
     padding-inline: 9px;
