@@ -128,9 +128,15 @@ test("V1.4 源码同步门禁：已发布算法课程代码与 stages/topics/alg
     if (fileMap[lesson.id]) {
       const repoRoot = path.resolve("..");
       const filePath = path.join(repoRoot, fileMap[lesson.id]);
-      const actualContent = fs.readFileSync(filePath, "utf-8").trim();
+      const actualContent = fs
+        .readFileSync(filePath, "utf-8")
+        .trim()
+        .replace(/\r\n/g, "\n");
+      const expectedContent = (lesson.code || "")
+        .trim()
+        .replace(/\r\n/g, "\n");
       assert.equal(
-        (lesson.code || "").trim(),
+        expectedContent,
         actualContent,
         `${lesson.id} 的 code 属性与实际落盘源码不一致`,
       );
