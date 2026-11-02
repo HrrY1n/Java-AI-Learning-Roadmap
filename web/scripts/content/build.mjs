@@ -550,6 +550,27 @@ export async function buildCatalog({
     (match) => match[1],
   );
   const workspace = await readJson(contentRoot, "workspace.json");
+  let topics = [];
+  try {
+    const rawTopics = await readJson(contentRoot, "topics.json");
+    topics = rawTopics.topics ?? [];
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  let onJavaLinks = [];
+  try {
+    const rawOnJava = await readJson(contentRoot, "on_java_mapping.json");
+    onJavaLinks = rawOnJava.links ?? [];
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  let booksIndex = [];
+  try {
+    const rawBooks = await readJson(contentRoot, "books_index.json");
+    booksIndex = rawBooks.books ?? [];
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
   // 练习/预测的来源文档视图：按已发布阶段的数据驱动生成（Stage 01 保持既有 ID）
   const extras = [];
   for (const stage of stageEntries.filter(
@@ -616,6 +637,9 @@ export async function buildCatalog({
       currentTaskRoutes: workspace.currentTaskRoutes ?? [],
       reviewPicks: workspace.reviewPicks ?? [],
     },
+    topics,
+    onJavaLinks,
+    booksIndex,
   };
   validateCatalog(catalog);
   await validateResources(repoRoot, catalog);
@@ -684,6 +708,33 @@ export function validateCatalog(catalog) {
   for (const reference of catalog.references) {
     if (path.isAbsolute(reference.sourcePath))
       problems.push(`参考资源路径必须仓库相对：${reference.sourcePath}`);
+  }
+  if (Array.isArray(catalog.topics)) {
+    const topicIds = new Set();
+    const topicLessonIds = new Set();
+    const validStatuses = new Set(["published", "building", "materials", "planned"]);
+    const stageIds = new Set(catalog.stages.map((s) => s.id));
+    for (const topic of catalog.topics) {
+      if (topicIds.has(topic.id)) problems.push(`存在重复专题 ID: ${topic.id}`);
+      topicIds.add(topic.id);
+      if (!validStatuses.has(topic.status))
+        problems.push(`专题 ${topic.id} 的状态非法: ${topic.status}`);
+      for (const sId of topic.stageLinks ?? []) {
+        if (!stageIds.has(sId))
+          problems.push(`专题 ${topic.id} 关联了不存在的 Stage ID: ${sId}`);
+      }
+      for (const module of topic.modules ?? []) {
+        if (!validStatuses.has(module.status))
+          problems.push(`模块 ${module.id} 的状态非法: ${module.status}`);
+        for (const lesson of module.lessons ?? []) {
+          if (topicLessonIds.has(lesson.id))
+            problems.push(`存在重复专题小节 ID: ${lesson.id}`);
+          topicLessonIds.add(lesson.id);
+          if (!validStatuses.has(lesson.status))
+            problems.push(`小节 ${lesson.id} 的状态非法: ${lesson.status}`);
+        }
+      }
+    }
   }
   if (problems.length) throw contentError("目录校验失败", { problems });
   return catalog;
