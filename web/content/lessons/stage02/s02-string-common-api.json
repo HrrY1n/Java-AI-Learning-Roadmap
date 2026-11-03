@@ -26,11 +26,11 @@
     },
     {
       "label": "预测运行",
-      "body": "预测：a.equals(b) 与 a == b（两个 new String(\"Java\")）各是什么？为什么内容相同结果却不同？"
+      "body": "预测：程序打印的“内容是否相同”是什么？再自己补一行打印 a == b（两个 new String 的引用比较）——先预测 true 还是 false 再运行：为什么内容相同、引用却不同？"
     },
     {
       "label": "修改一个条件",
-      "body": "把 text 改成 \"I love JAVA\" 再调 toUpperCase，观察原 text 是否变化——验证不可变。"
+      "body": "把 text 改成 \"I love JAVA\" 再调 toUpperCase，自己补一行 System.out.println(text)：打印的是大写还是原样？——String 不可变，toUpperCase 返回的是新串。"
     },
     {
       "label": "独立练习",

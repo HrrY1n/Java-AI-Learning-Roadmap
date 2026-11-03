@@ -22,7 +22,7 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "abstract class Animal 含公共实现；interface Flyable 声明 fly() 契约；Sparrow extends Animal implements Flyable。“是什么”用继承，“能做什么”用接口。"
+      "body": "abstract class Bird 持有公共状态 name 并声明实现 Flyable；interface Flyable 只声明 fly() 契约；Sparrow extends Bird，补上 eat() 与 fly() 的具体实现。“是什么”用继承，“能做什么”用接口。"
     },
     {
       "label": "预测运行",

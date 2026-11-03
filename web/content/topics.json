@@ -269,6 +269,29 @@
               "packageName": "com.javaroadmap.algo.queue",
               "className": "App",
               "code": "package com.javaroadmap.algo.queue;\r\n\r\n/**\r\n * 队列（Queue）：先进先出（FIFO）与环形数组设计\r\n * 对应《Hello 算法》第 5 章 5.2 节\r\n *\r\n * 核心原理：\r\n * 1. 队尾入队（Push/Enqueue），队首出队（Pop/Dequeue）。\r\n * 2. 普通数组出队需要 O(n) 搬移；使用「双指针 + 取模运算」实现环形队列（Circular Array Queue），\r\n *    使得入队和出队均为 O(1) 均摊常数复杂度。\r\n *\r\n * 判空判满方案说明：环形队列有两种主流判满方案。\r\n * 本实现采用「size 计数法」——额外维护 size 字段，容量全部可用（capacity 个槽位可存 capacity 个元素），\r\n * 判空为 size == 0、判满为 size == capacity；空队列操作直接抛出 IllegalStateException，\r\n * 不使用 -1 之类的返回值哨兵，避免与合法元素值混淆。\r\n * 另一种常见方案是「预留空位法」——牺牲一个槽位，用 (rear + 1) % capacity == front 判满，\r\n * 网站交互图解采用该方案演示，两者都是正确的环形队列实现，注意不要混为一谈。\r\n */\r\npublic class App {\r\n\r\n    public static class CircularQueue {\r\n        private final int[] data;\r\n        private int front; // 队首指针\r\n        private int size;  // 队列当前长度\r\n        private final int capacity;\r\n\r\n        public CircularQueue(int capacity) {\r\n            this.capacity = capacity;\r\n            this.data = new int[capacity];\r\n            this.front = 0;\r\n            this.size = 0;\r\n        }\r\n\r\n        public void push(int val) {\r\n            if (size == capacity) {\r\n                throw new IllegalStateException(\"队列已满\");\r\n            }\r\n            int rear = (front + size) % capacity;\r\n            data[rear] = val;\r\n            size++;\r\n        }\r\n\r\n        public int pop() {\r\n            if (isEmpty()) {\r\n                throw new IllegalStateException(\"队列为空\");\r\n            }\r\n            int val = data[front];\r\n            front = (front + 1) % capacity;\r\n            size--;\r\n            return val;\r\n        }\r\n\r\n        public int peek() {\r\n            if (isEmpty()) {\r\n                throw new IllegalStateException(\"队列为空\");\r\n            }\r\n            return data[front];\r\n        }\r\n\r\n        public boolean isEmpty() {\r\n            return size == 0;\r\n        }\r\n\r\n        public int size() {\r\n            return size;\r\n        }\r\n    }\r\n\r\n    public static void main(String[] args) {\r\n        System.out.println(\"=== 环形数组队列原理与实现 ===\");\r\n        CircularQueue queue = new CircularQueue(4);\r\n        queue.push(100);\r\n        queue.push(200);\r\n        queue.push(300);\r\n\r\n        System.out.println(\"队首 peek：\" + queue.peek());\r\n        System.out.println(\"出队 pop：\" + queue.pop());\r\n        System.out.println(\"当前队列长度：\" + queue.size());\r\n\r\n        // 环形回绕入队\r\n        queue.push(400);\r\n        queue.push(500);\r\n        System.out.println(\"回绕后队首出队：\" + queue.pop());\r\n        System.out.println(\"最终队列长度：\" + queue.size());\r\n\r\n        // 边界观察：队满与队空都通过异常显式暴露，而不是返回 -1 之类的哨兵值\r\n        CircularQueue boundary = new CircularQueue(2);\r\n        boundary.push(1);\r\n        boundary.push(2);\r\n        try {\r\n            boundary.push(3);\r\n        } catch (IllegalStateException e) {\r\n            System.out.println(\"队满保护（size == capacity）：\" + e.getMessage());\r\n        }\r\n        boundary.pop();\r\n        boundary.pop();\r\n        try {\r\n            boundary.peek();\r\n        } catch (IllegalStateException e) {\r\n            System.out.println(\"队空保护（size == 0）：\" + e.getMessage());\r\n        }\r\n\r\n        System.out.println(\"核心思考：环形指针利用模运算复用数组前端空闲空间，解决假溢出问题。\");\r\n    }\r\n}"
+            },
+            {
+              "id": "algo-deque",
+              "topicId": "topic-algo",
+              "moduleId": "algo-stack-queue",
+              "title": "双端队列：两端都能进出的线性结构",
+              "summary": "Deque 同时开放头尾两端；同一个 ArrayDeque 换一组方法就是栈或队列。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 5 章 5.3 节 双向队列",
+                "pdfPageStart": 109,
+                "pdfPageEnd": 119,
+                "printPage": "103-113"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 双端队列：两端都能进出的线性结构\n\n## 1. 业务场景与需要解决的问题\n奶茶店排队：普通顾客按顺序排到队尾，会员可以直接插到最前面；轮到谁就从头叫号，临时离开的人也可以从队尾退出。普通队列只允许“尾进头出”，栈只允许同一端进出——两端都要动的场景，两者都不合适。\n\n## 2. 为什么需要双端队列\n- 队列（见队列课）只有 `offer`（尾进）和 `poll`（头出）两个方向；双端队列把头、尾两端都开放成“可进可出”。\n- 滑动窗口的最大值（窗口两端同时收缩）、任务抢占（高优先级任务插队到头部）、撤销历史（最新操作在头部进出）都是天然的双端场景。\n- Java 标准库中 `ArrayDeque` 同时是官方推荐的栈与队列实现：比遗留的 `Stack` 类更快，也比把 `LinkedList` 当队列用更省内存（循环数组、无节点开销）。\n\n## 3. 核心机制\n- 两端插入：`offerFirst` / `offerLast`；两端取出：`pollFirst` / `pollLast`；两端查看不取出：`peekFirst` / `peekLast`。全部 O(1)。\n- 同一个类换一组方法就是栈：`push`/`pop`/`peek` 等价于只在头部操作。\n- 换另一组方法就是队列：`offerLast` + `pollFirst`。\n\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.deque;\n\nimport java.util.ArrayDeque;\nimport java.util.Deque;\n\n/**\n * 双端队列：两端都能插入与取出。\n * 对应《Hello 算法》5.3 节。\n *\n * 场景：奶茶店排队可以正常排队（尾进头出），也允许\"会员插队到最前面\"（头进）——\n * 队列只支持两端单向进出，双端队列把\"头\"和\"尾\"都开放出来。\n */\npublic class App {\n    public static void main(String[] args) {\n        Deque<String> deque = new ArrayDeque<>();\n\n        // 两端都能插入：offerLast 从尾进（像队列），offerFirst 从头进（像插队）\n        deque.offerLast(\"普通顾客A\");\n        deque.offerLast(\"普通顾客B\");\n        deque.offerFirst(\"会员插队\");\n        System.out.println(\"两次尾进、一次头进后：\" + deque);\n\n        // 两端都能取出\n        System.out.println(\"从头取出：\" + deque.pollFirst());\n        System.out.println(\"从尾取出：\" + deque.pollLast());\n        System.out.println(\"剩余：\" + deque);\n\n        // 同一个类换个用法就是栈：push/pop 都操作头部\n        Deque<Integer> stack = new ArrayDeque<>();\n        stack.push(1);\n        stack.push(2);\n        stack.push(3);\n        System.out.println(\"当栈用 pop（后进先出）：\" + stack.pop());\n        System.out.println(\"新栈顶 peek：\" + stack.peek());\n\n        // 当队列用：尾进头出（先进先出）\n        Deque<Integer> queue = new ArrayDeque<>();\n        queue.offerLast(1);\n        queue.offerLast(2);\n        queue.offerLast(3);\n        System.out.println(\"当队列用 poll（先进先出）：\" + queue.pollFirst());\n    }\n}\n```\n## 5. 先预测，再运行\n- 两次 `offerLast` 再一次 `offerFirst` 之后，打印出的顺序是什么？谁在最前？\n- `pollFirst` 与 `pollLast` 分别取出哪个元素？剩下的列表内容是什么？\n- `push(1)、push(2)、push(3)` 后 `pop` 得到几？改为队列方式 `poll` 得到几？先写答案再运行核对。\n\n## 6. 来源与出处\n- 《Hello 算法》第 5 章 5.3 节 双向队列（PDF 第 109-119 页）。",
+              "packageName": "com.javaroadmap.algo.deque",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.deque;\n\nimport java.util.ArrayDeque;\nimport java.util.Deque;\n\n/**\n * 双端队列：两端都能插入与取出。\n * 对应《Hello 算法》5.3 节。\n *\n * 场景：奶茶店排队可以正常排队（尾进头出），也允许\"会员插队到最前面\"（头进）——\n * 队列只支持两端单向进出，双端队列把\"头\"和\"尾\"都开放出来。\n */\npublic class App {\n    public static void main(String[] args) {\n        Deque<String> deque = new ArrayDeque<>();\n\n        // 两端都能插入：offerLast 从尾进（像队列），offerFirst 从头进（像插队）\n        deque.offerLast(\"普通顾客A\");\n        deque.offerLast(\"普通顾客B\");\n        deque.offerFirst(\"会员插队\");\n        System.out.println(\"两次尾进、一次头进后：\" + deque);\n\n        // 两端都能取出\n        System.out.println(\"从头取出：\" + deque.pollFirst());\n        System.out.println(\"从尾取出：\" + deque.pollLast());\n        System.out.println(\"剩余：\" + deque);\n\n        // 同一个类换个用法就是栈：push/pop 都操作头部\n        Deque<Integer> stack = new ArrayDeque<>();\n        stack.push(1);\n        stack.push(2);\n        stack.push(3);\n        System.out.println(\"当栈用 pop（后进先出）：\" + stack.pop());\n        System.out.println(\"新栈顶 peek：\" + stack.peek());\n\n        // 当队列用：尾进头出（先进先出）\n        Deque<Integer> queue = new ArrayDeque<>();\n        queue.offerLast(1);\n        queue.offerLast(2);\n        queue.offerLast(3);\n        System.out.println(\"当队列用 poll（先进先出）：\" + queue.pollFirst());\n    }\n}\n"
             }
           ]
         },
@@ -333,6 +356,52 @@
               "code": "package com.javaroadmap.algo.binarytree;\n\nimport java.util.ArrayDeque;\nimport java.util.Deque;\n\n/**\n * 二叉树与四种遍历\n * 对应《Hello 算法》第 7 章\n */\npublic class App {\n\n    static class TreeNode {\n        final int val;\n        TreeNode left;\n        TreeNode right;\n\n        TreeNode(int val) {\n            this.val = val;\n        }\n    }\n\n    // 前序：根 → 左 → 右\n    static void preOrder(TreeNode n, StringBuilder out) {\n        if (n == null) return;\n        out.append(n.val).append(' ');\n        preOrder(n.left, out);\n        preOrder(n.right, out);\n    }\n\n    // 中序：左 → 根 → 右\n    static void inOrder(TreeNode n, StringBuilder out) {\n        if (n == null) return;\n        inOrder(n.left, out);\n        out.append(n.val).append(' ');\n        inOrder(n.right, out);\n    }\n\n    // 后序：左 → 右 → 根\n    static void postOrder(TreeNode n, StringBuilder out) {\n        if (n == null) return;\n        postOrder(n.left, out);\n        postOrder(n.right, out);\n        out.append(n.val).append(' ');\n    }\n\n    // 层序：借助队列逐层扩散（广度优先）\n    static void levelOrder(TreeNode root, StringBuilder out) {\n        if (root == null) return;\n        Deque<TreeNode> queue = new ArrayDeque<>();\n        queue.add(root);\n        while (!queue.isEmpty()) {\n            TreeNode n = queue.poll();\n            out.append(n.val).append(' ');\n            if (n.left != null) queue.add(n.left);\n            if (n.right != null) queue.add(n.right);\n        }\n    }\n\n    public static void main(String[] args) {\n        //        1\n        //       / \\\n        //      2   3\n        //     / \\   \\\n        //    4   5   6\n        TreeNode root = new TreeNode(1);\n        root.left = new TreeNode(2);\n        root.right = new TreeNode(3);\n        root.left.left = new TreeNode(4);\n        root.left.right = new TreeNode(5);\n        root.right.right = new TreeNode(6);\n        StringBuilder pre = new StringBuilder();\n        StringBuilder in = new StringBuilder();\n        StringBuilder post = new StringBuilder();\n        StringBuilder level = new StringBuilder();\n        preOrder(root, pre);\n        inOrder(root, in);\n        postOrder(root, post);\n        levelOrder(root, level);\n        System.out.println(\"前序遍历：\" + pre.toString().trim());\n        System.out.println(\"中序遍历：\" + in.toString().trim());\n        System.out.println(\"后序遍历：\" + post.toString().trim());\n        System.out.println(\"层序遍历：\" + level.toString().trim());\n        System.out.println(\"核心机制：递归遍历体现深度优先，层序遍历借助队列实现广度优先。\");\n    }\n}"
             },
             {
+              "id": "algo-bst",
+              "topicId": "topic-algo",
+              "moduleId": "algo-trees-heaps",
+              "title": "二叉搜索树：比较一次淘汰一半",
+              "summary": "左 < 根 < 右的有序树：查找/插入 O(log n)；顺序插入会退化成链表。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 7 章 7.4 节 二叉搜索树",
+                "pdfPageStart": 158,
+                "pdfPageEnd": 165,
+                "printPage": "152-159"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 二叉搜索树：比较一次淘汰一半\n\n## 1. 业务场景与需要解决的问题\n通讯录按姓名查找：从上万条记录里找一个人，逐条比对要 O(n)。如果数据按“左小右大”排成一棵树，每次比较都能淘汰一半候选——一万条数据只要约 14 次比较。\n\n## 2. 为什么需要二叉搜索树\n- 二叉树遍历课里的树只是“容器”；BST 给它加了一条全树成立的顺序约束：任意节点满足 **左子树 < 根 < 右子树**。\n- 这条约束让查找变成“沿着一条路往下走”，也带来一个副产品：**中序遍历恰好得到升序序列**。\n- 插入/删除只在树上开洞补洞，不像有序数组插入要整体搬移元素。\n\n## 3. 核心机制与不变量\n- 查找与插入都走单边，最多走树高 h 步：O(h)。平衡时 h ≈ log n。\n- 删除按孩子数量分三种情况：叶子直接摘；单孩子由孩子顶替；双孩子用**中序后继**（右子树最小值）顶替后再删掉后继原位置。\n- 不变量：任何操作之后“左 < 根 < 右”仍全树成立，这是所有 BST 操作正确性的根据。\n\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.bst;\n\n/**\n * 二叉搜索树：任意节点满足\"左子树 < 根 < 右子树\"。\n * 对应《Hello 算法》7.4 节。\n *\n * 场景：字典/通讯录——查一个词时，比较一次就能淘汰一半候选。\n */\npublic class App {\n\n    static class Node {\n        int val;\n        Node left, right;\n\n        Node(int val) {\n            this.val = val;\n        }\n    }\n\n    // 插入：沿\"小于走左、大于走右\"走到空位挂上（相等值不重复插入）\n    static Node insert(Node root, int val) {\n        if (root == null) return new Node(val);\n        if (val < root.val) root.left = insert(root.left, val);\n        else if (val > root.val) root.right = insert(root.right, val);\n        return root;\n    }\n\n    // 查找：每比较一次淘汰一半，最多走树高步\n    static boolean search(Node root, int target) {\n        while (root != null) {\n            if (target == root.val) return true;\n            root = target < root.val ? root.left : root.right;\n        }\n        return false;\n    }\n\n    // 删除：按孩子数量分三种情况；两个孩子时用中序后继（右子树最小值）顶替\n    static Node remove(Node root, int val) {\n        if (root == null) return null;\n        if (val < root.val) {\n            root.left = remove(root.left, val);\n            return root;\n        }\n        if (val > root.val) {\n            root.right = remove(root.right, val);\n            return root;\n        }\n        if (root.left == null) return root.right; // 叶子或只有右孩子\n        if (root.right == null) return root.left; // 只有左孩子\n        Node successor = root.right;              // 两个孩子：找右子树最左节点\n        while (successor.left != null) successor = successor.left;\n        root.val = successor.val;\n        root.right = remove(root.right, successor.val);\n        return root;\n    }\n\n    static int height(Node root) {\n        if (root == null) return 0;\n        return 1 + Math.max(height(root.left), height(root.right));\n    }\n\n    static void inorder(Node root, StringBuilder out) {\n        if (root == null) return;\n        inorder(root.left, out);\n        out.append(root.val).append(' ');\n        inorder(root.right, out);\n    }\n\n    static Node build(int... values) {\n        Node root = null;\n        for (int v : values) root = insert(root, v);\n        return root;\n    }\n\n    static void show(String label, Node root) {\n        StringBuilder out = new StringBuilder();\n        inorder(root, out);\n        System.out.println(label + \"中序=\" + out.toString().trim() + \"，树高=\" + height(root));\n    }\n\n    public static void main(String[] args) {\n        Node root = build(7, 3, 9, 1, 5, 8, 10);\n        show(\"建树后：\", root);\n        System.out.println(\"查找 5：\" + search(root, 5) + \"；查找 6：\" + search(root, 6));\n\n        root = remove(root, 1); // 情况一：叶子，直接摘掉\n        show(\"删除叶子 1：\", root);\n        root = remove(root, 9); // 情况三：有 8、10 两个孩子\n        show(\"删除两孩子的 9：\", root);\n\n        // 边界：按顺序插入会让树退化成\"链表\"，查找从 O(log n) 退到 O(n)\n        Node degenerated = build(1, 2, 3, 4, 5, 6, 7);\n        show(\"顺序插入 1..7：\", degenerated);\n    }\n}\n```\n## 5. 先预测，再运行\n- 用 `7, 3, 9, 1, 5, 8, 10` 建树后，中序遍历输出什么顺序？树高是多少？\n- `search(5)` 与 `search(6)` 各返回什么？\n- 删除有两个孩子的 9 之后，中序还剩什么？被谁顶替？\n- 顺序插入 1..7 时树高变成几？这说明 BST 的什么边界问题？（下一课解决它）\n\n## 6. 来源与出处\n- 《Hello 算法》第 7 章 7.4 节 二叉搜索树（PDF 第 158-165 页）。",
+              "packageName": "com.javaroadmap.algo.bst",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.bst;\n\n/**\n * 二叉搜索树：任意节点满足\"左子树 < 根 < 右子树\"。\n * 对应《Hello 算法》7.4 节。\n *\n * 场景：字典/通讯录——查一个词时，比较一次就能淘汰一半候选。\n */\npublic class App {\n\n    static class Node {\n        int val;\n        Node left, right;\n\n        Node(int val) {\n            this.val = val;\n        }\n    }\n\n    // 插入：沿\"小于走左、大于走右\"走到空位挂上（相等值不重复插入）\n    static Node insert(Node root, int val) {\n        if (root == null) return new Node(val);\n        if (val < root.val) root.left = insert(root.left, val);\n        else if (val > root.val) root.right = insert(root.right, val);\n        return root;\n    }\n\n    // 查找：每比较一次淘汰一半，最多走树高步\n    static boolean search(Node root, int target) {\n        while (root != null) {\n            if (target == root.val) return true;\n            root = target < root.val ? root.left : root.right;\n        }\n        return false;\n    }\n\n    // 删除：按孩子数量分三种情况；两个孩子时用中序后继（右子树最小值）顶替\n    static Node remove(Node root, int val) {\n        if (root == null) return null;\n        if (val < root.val) {\n            root.left = remove(root.left, val);\n            return root;\n        }\n        if (val > root.val) {\n            root.right = remove(root.right, val);\n            return root;\n        }\n        if (root.left == null) return root.right; // 叶子或只有右孩子\n        if (root.right == null) return root.left; // 只有左孩子\n        Node successor = root.right;              // 两个孩子：找右子树最左节点\n        while (successor.left != null) successor = successor.left;\n        root.val = successor.val;\n        root.right = remove(root.right, successor.val);\n        return root;\n    }\n\n    static int height(Node root) {\n        if (root == null) return 0;\n        return 1 + Math.max(height(root.left), height(root.right));\n    }\n\n    static void inorder(Node root, StringBuilder out) {\n        if (root == null) return;\n        inorder(root.left, out);\n        out.append(root.val).append(' ');\n        inorder(root.right, out);\n    }\n\n    static Node build(int... values) {\n        Node root = null;\n        for (int v : values) root = insert(root, v);\n        return root;\n    }\n\n    static void show(String label, Node root) {\n        StringBuilder out = new StringBuilder();\n        inorder(root, out);\n        System.out.println(label + \"中序=\" + out.toString().trim() + \"，树高=\" + height(root));\n    }\n\n    public static void main(String[] args) {\n        Node root = build(7, 3, 9, 1, 5, 8, 10);\n        show(\"建树后：\", root);\n        System.out.println(\"查找 5：\" + search(root, 5) + \"；查找 6：\" + search(root, 6));\n\n        root = remove(root, 1); // 情况一：叶子，直接摘掉\n        show(\"删除叶子 1：\", root);\n        root = remove(root, 9); // 情况三：有 8、10 两个孩子\n        show(\"删除两孩子的 9：\", root);\n\n        // 边界：按顺序插入会让树退化成\"链表\"，查找从 O(log n) 退到 O(n)\n        Node degenerated = build(1, 2, 3, 4, 5, 6, 7);\n        show(\"顺序插入 1..7：\", degenerated);\n    }\n}\n"
+            },
+            {
+              "id": "algo-balanced-tree",
+              "topicId": "topic-algo",
+              "moduleId": "algo-trees-heaps",
+              "title": "平衡二叉搜索树：用旋转锁住 O(log n)",
+              "summary": "AVL 用高度与平衡因子检测失衡，四种旋转在保序前提下防退化。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 7 章 7.5 节 平衡二叉搜索树（AVL）",
+                "pdfPageStart": 166,
+                "pdfPageEnd": 178,
+                "printPage": "160-172"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 平衡二叉搜索树：用旋转锁住 O(log n)\n\n## 1. 业务场景与需要解决的问题\nBST 课的边界实验里，按 1..7 顺序插入会让树退化成高 7 的“链表”，查找退回 O(n)。数据库索引、语言的有序集合都不能接受这种最坏情况——它们底层用的是平衡树。\n\n## 2. 为什么需要平衡树\n- 退化根因：左右子树高度失衡。AVL 树在 BST 约束之上再加一条：**任意节点左右子树高度差（平衡因子）不超过 1**。\n- 违反约束时用**旋转**修复：旋转只改指针指向，不破坏“左 < 根 < 右”，就能把高的那边压下来。\n- 红黑树等“放宽版”平衡树约束更松（插入旋转次数更少），思想相同：**用少量额外规则 + 局部调整，把最坏情况锁在 O(log n)**。\n\n## 3. 核心机制\n- 每个节点记录 `height`；插入后沿返回路径逐层 `update` 并检查平衡因子 bf = 左高 - 右高。\n- 四种失衡对应四种修复：LL 右旋、RR 左旋、LR 先左旋再右旋、RL 先右旋再左旋。\n- 一次插入只影响根到插入点这条路径上的节点，修复也在同一条路径上完成。\n\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.avl;\n\n/**\n * 平衡二叉搜索树（AVL）：插入后检查平衡因子，失衡就旋转修复。\n * 对应《Hello 算法》7.5 节。\n *\n * 场景：BST 在顺序插入时会退化成链表（上一课的边界）；AVL 用旋转\n * 保证任意节点左右子树高度差不超过 1，查找稳定在 O(log n)。\n */\npublic class App {\n\n    static class Node {\n        int val;\n        int height; // 以该节点为根的子树高度，叶子为 1\n        Node left, right;\n\n        Node(int val) {\n            this.val = val;\n            this.height = 1;\n        }\n    }\n\n    static int height(Node n) {\n        return n == null ? 0 : n.height;\n    }\n\n    static void update(Node n) {\n        n.height = 1 + Math.max(height(n.left), height(n.right));\n    }\n\n    // 平衡因子 = 左子树高 - 右子树高；AVL 要求每个节点 |bf| <= 1\n    static int balanceFactor(Node n) {\n        return n == null ? 0 : height(n.left) - height(n.right);\n    }\n\n    // 右旋：左子树过高时，让左孩子顶替自己\n    static Node rotateRight(Node y) {\n        Node x = y.left;\n        y.left = x.right;\n        x.right = y;\n        update(y);\n        update(x);\n        return x;\n    }\n\n    // 左旋：右子树过高时的镜像操作\n    static Node rotateLeft(Node x) {\n        Node y = x.right;\n        x.right = y.left;\n        y.left = x;\n        update(x);\n        update(y);\n        return y;\n    }\n\n    static Node insert(Node node, int val) {\n        if (node == null) return new Node(val);\n        if (val < node.val) node.left = insert(node.left, val);\n        else if (val > node.val) node.right = insert(node.right, val);\n        else return node; // 相等值不插入\n\n        update(node);\n        int bf = balanceFactor(node);\n        if (bf > 1 && val < node.left.val) return rotateRight(node); // LL\n        if (bf < -1 && val > node.right.val) return rotateLeft(node); // RR\n        if (bf > 1) { // LR：先左旋变成 LL，再右旋\n            node.left = rotateLeft(node.left);\n            return rotateRight(node);\n        }\n        if (bf < -1) { // RL：先右旋变成 RR，再左旋\n            node.right = rotateRight(node.right);\n            return rotateLeft(node);\n        }\n        return node;\n    }\n\n    static void inorder(Node node, StringBuilder out) {\n        if (node == null) return;\n        inorder(node.left, out);\n        out.append(node.val).append(' ');\n        inorder(node.right, out);\n    }\n\n    public static void main(String[] args) {\n        Node root = null;\n        for (int v = 1; v <= 7; v++) root = insert(root, v); // 恰是 BST 退化的输入\n        StringBuilder out = new StringBuilder();\n        inorder(root, out);\n        System.out.println(\"顺序插入 1..7 后中序=\" + out.toString().trim());\n        System.out.println(\"树高=\" + height(root) + \"（普通 BST 退化成 7，AVL 稳定在 3）\");\n        System.out.println(\"根节点=\" + root.val + \"（旋转把中段值 4 顶成了根）\");\n    }\n}\n```\n## 5. 先预测，再运行\n- 同样顺序插入 1..7：AVL 的树高是多少？和 BST 的 7 相比说明了什么？\n- 根节点是几？想一想旋转如何把中段值顶成根。\n- 中序输出还有序吗？旋转为什么不会破坏顺序？\n\n## 6. 来源与出处\n- 《Hello 算法》第 7 章 7.5 节 平衡二叉搜索树（AVL）（PDF 第 166-178 页）。",
+              "packageName": "com.javaroadmap.algo.avl",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.avl;\n\n/**\n * 平衡二叉搜索树（AVL）：插入后检查平衡因子，失衡就旋转修复。\n * 对应《Hello 算法》7.5 节。\n *\n * 场景：BST 在顺序插入时会退化成链表（上一课的边界）；AVL 用旋转\n * 保证任意节点左右子树高度差不超过 1，查找稳定在 O(log n)。\n */\npublic class App {\n\n    static class Node {\n        int val;\n        int height; // 以该节点为根的子树高度，叶子为 1\n        Node left, right;\n\n        Node(int val) {\n            this.val = val;\n            this.height = 1;\n        }\n    }\n\n    static int height(Node n) {\n        return n == null ? 0 : n.height;\n    }\n\n    static void update(Node n) {\n        n.height = 1 + Math.max(height(n.left), height(n.right));\n    }\n\n    // 平衡因子 = 左子树高 - 右子树高；AVL 要求每个节点 |bf| <= 1\n    static int balanceFactor(Node n) {\n        return n == null ? 0 : height(n.left) - height(n.right);\n    }\n\n    // 右旋：左子树过高时，让左孩子顶替自己\n    static Node rotateRight(Node y) {\n        Node x = y.left;\n        y.left = x.right;\n        x.right = y;\n        update(y);\n        update(x);\n        return x;\n    }\n\n    // 左旋：右子树过高时的镜像操作\n    static Node rotateLeft(Node x) {\n        Node y = x.right;\n        x.right = y.left;\n        y.left = x;\n        update(x);\n        update(y);\n        return y;\n    }\n\n    static Node insert(Node node, int val) {\n        if (node == null) return new Node(val);\n        if (val < node.val) node.left = insert(node.left, val);\n        else if (val > node.val) node.right = insert(node.right, val);\n        else return node; // 相等值不插入\n\n        update(node);\n        int bf = balanceFactor(node);\n        if (bf > 1 && val < node.left.val) return rotateRight(node); // LL\n        if (bf < -1 && val > node.right.val) return rotateLeft(node); // RR\n        if (bf > 1) { // LR：先左旋变成 LL，再右旋\n            node.left = rotateLeft(node.left);\n            return rotateRight(node);\n        }\n        if (bf < -1) { // RL：先右旋变成 RR，再左旋\n            node.right = rotateRight(node.right);\n            return rotateLeft(node);\n        }\n        return node;\n    }\n\n    static void inorder(Node node, StringBuilder out) {\n        if (node == null) return;\n        inorder(node.left, out);\n        out.append(node.val).append(' ');\n        inorder(node.right, out);\n    }\n\n    public static void main(String[] args) {\n        Node root = null;\n        for (int v = 1; v <= 7; v++) root = insert(root, v); // 恰是 BST 退化的输入\n        StringBuilder out = new StringBuilder();\n        inorder(root, out);\n        System.out.println(\"顺序插入 1..7 后中序=\" + out.toString().trim());\n        System.out.println(\"树高=\" + height(root) + \"（普通 BST 退化成 7，AVL 稳定在 3）\");\n        System.out.println(\"根节点=\" + root.val + \"（旋转把中段值 4 顶成了根）\");\n    }\n}\n"
+            },
+            {
               "id": "algo-heap",
               "topicId": "topic-algo",
               "moduleId": "algo-trees-heaps",
@@ -354,6 +423,29 @@
               "packageName": "com.javaroadmap.algo.heap",
               "className": "App",
               "code": "package com.javaroadmap.algo.heap;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\n/**\n * 数组实现小顶堆与优先队列\n * 对应《Hello 算法》第 8 章\n */\npublic class App {\n\n    static class MinHeap {\n        private final List<Integer> heap = new ArrayList<>();\n\n        int size() {\n            return heap.size();\n        }\n\n        void push(int val) {\n            heap.add(val);\n            int i = heap.size() - 1;\n            while (i > 0) { // 自底向上堆化：与父节点比较交换\n                int parent = (i - 1) / 2;\n                if (heap.get(parent) <= heap.get(i)) break;\n                swap(i, parent);\n                i = parent;\n            }\n        }\n\n        int pop() {\n            if (heap.isEmpty()) {\n                throw new IllegalStateException(\"堆为空\");\n            }\n            int top = heap.get(0);\n            int last = heap.remove(heap.size() - 1);\n            if (!heap.isEmpty()) {\n                heap.set(0, last);\n                int i = 0;\n                while (true) { // 自顶向下堆化：与较小子节点交换\n                    int l = 2 * i + 1;\n                    int r = 2 * i + 2;\n                    int smallest = i;\n                    if (l < heap.size() && heap.get(l) < heap.get(smallest)) smallest = l;\n                    if (r < heap.size() && heap.get(r) < heap.get(smallest)) smallest = r;\n                    if (smallest == i) break;\n                    swap(i, smallest);\n                    i = smallest;\n                }\n            }\n            return top;\n        }\n\n        private void swap(int a, int b) {\n            int t = heap.get(a);\n            heap.set(a, heap.get(b));\n            heap.set(b, t);\n        }\n    }\n\n    public static void main(String[] args) {\n        MinHeap heap = new MinHeap();\n        int[] input = {7, 2, 9, 4, 1};\n        StringBuilder in = new StringBuilder();\n        for (int v : input) {\n            heap.push(v);\n            in.append(v).append(' ');\n        }\n        StringBuilder out = new StringBuilder();\n        while (heap.size() > 0) {\n            out.append(heap.pop()).append(' ');\n        }\n        System.out.println(\"入堆顺序：\" + in.toString().trim());\n        System.out.println(\"依次出堆（升序）：\" + out.toString().trim());\n        System.out.println(\"核心机制：完全二叉树用数组存储，父子下标满足 2i+1 与 2i+2，pop 恒取最小。\");\n    }\n}"
+            },
+            {
+              "id": "algo-heap-topk",
+              "topicId": "topic-algo",
+              "moduleId": "algo-trees-heaps",
+              "title": "建堆操作与 Top-K 问题",
+              "summary": "自底向上建堆 O(n)；大小为 K 的小顶堆像守门员，流式维护前 K 大。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 8 章 8.2 节 建堆操作 & 8.3 节 Top-k 问题",
+                "pdfPageStart": 187,
+                "pdfPageEnd": 193,
+                "printPage": "181-187"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 建堆操作与 Top-K 问题\n\n## 1. 业务场景与需要解决的问题\n要从一批成绩里挑前 3 名。数据可能一次性给出（一个数组），也可能一条条到来（点击流、日志）。全部排序是 O(n log n)；能不能更快、且内存只和 K 有关？\n\n## 2. 为什么需要“建堆”与“守门员”堆\n- 堆课上 `push` 逐个插入建堆是 O(n log n)；**自底向上建堆**从最后一个非叶节点倒序下沉，总计只要 O(n)——越靠下的节点子树越小、下沉期望越短。\n- Top-K 用大小为 K 的**小顶堆**维护“当前最大的 K 个”：堆顶是这 K 个里最小的，像守门员——新元素打得过它才换进来。内存 O(K)，与数据总量无关。\n- 反向练习：求“最小的 K 个”时改用大顶堆，思路完全对称。\n\n## 3. 核心机制\n- 建堆：叶子不需要下沉；从 `n/2 - 1` 号节点倒序到 0 号逐个 `siftDown`。\n- Top-K 不变量：扫描到第 i 条数据时，堆里恰好是“目前见过的最大的 K 个”。\n- 新元素通过守门员检查后放到堆顶再下沉一次（O(log K)），不需要重新建堆。\n\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.heaptopk;\n\nimport java.util.Arrays;\n\n/**\n * 自底向上建堆与 Top-K 问题。\n * 对应《Hello 算法》8.2、8.3 节。\n *\n * 场景：从一批成绩里挑前 3 名——数据可以一次性给出，也可以一条条到来；\n * 用大小为 K 的小顶堆维护\"当前最大的 K 个\"，内存只需 O(K)。\n */\npublic class App {\n\n    // 小顶堆下沉：与较小的孩子交换，返回交换次数（演示用）\n    static int siftDown(int[] heap, int n, int i) {\n        int swaps = 0;\n        while (true) {\n            int l = 2 * i + 1, r = 2 * i + 2, smallest = i;\n            if (l < n && heap[l] < heap[smallest]) smallest = l;\n            if (r < n && heap[r] < heap[smallest]) smallest = r;\n            if (smallest == i) return swaps;\n            int tmp = heap[i];\n            heap[i] = heap[smallest];\n            heap[smallest] = tmp;\n            swaps++;\n            i = smallest;\n        }\n    }\n\n    // 自底向上建堆：从最后一个非叶节点倒序逐个下沉，总计 O(n)\n    static int buildHeap(int[] heap) {\n        int swaps = 0;\n        for (int i = heap.length / 2 - 1; i >= 0; i--) {\n            swaps += siftDown(heap, heap.length, i);\n        }\n        return swaps;\n    }\n\n    public static void main(String[] args) {\n        int[] data = {9, 4, 7, 1, 8, 3, 5};\n        int swaps = buildHeap(data);\n        System.out.println(\"建堆后（小顶堆）：\" + Arrays.toString(data));\n        System.out.println(\"建堆总交换次数：\" + swaps + \"（自底向上约 O(n)，逐个 push 则要 O(n log n)）\");\n\n        // Top-K：流式到来，堆里只保留\"当前最大的 K 个\"\n        int[] stream = {5, 12, 3, 20, 8, 15, 1, 9};\n        int k = 3;\n        int[] top = Arrays.copyOf(stream, k); // 先放前 k 个\n        buildHeap(top);                       // 建成小顶堆，top[0] 是 K 个里最小的\n        for (int i = k; i < stream.length; i++) {\n            if (stream[i] > top[0]) { // 比\"守门员\"大，才有资格进前 K\n                top[0] = stream[i];\n                siftDown(top, k, 0);\n            }\n        }\n        Arrays.sort(top);\n        System.out.println(\"流中最大的 \" + k + \" 个：\" + Arrays.toString(top));\n    }\n}\n```\n## 5. 先预测，再运行\n- `{9, 4, 7, 1, 8, 3, 5}` 自底向上建堆后数组变成什么？它满足小顶堆性质吗？\n- 建堆总交换次数是 4——如果改成逐个 push 这批数据，交换次数会明显变多吗？想一想为什么。\n- 流 `{5, 12, 3, 20, 8, 15, 1, 9}` 扫完后，大小为 3 的小顶堆里最终是哪三个数？\n\n## 6. 来源与出处\n- 《Hello 算法》第 8 章 8.2 节 建堆操作 & 8.3 节 Top-k 问题（PDF 第 187-193 页）。",
+              "packageName": "com.javaroadmap.algo.heaptopk",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.heaptopk;\n\nimport java.util.Arrays;\n\n/**\n * 自底向上建堆与 Top-K 问题。\n * 对应《Hello 算法》8.2、8.3 节。\n *\n * 场景：从一批成绩里挑前 3 名——数据可以一次性给出，也可以一条条到来；\n * 用大小为 K 的小顶堆维护\"当前最大的 K 个\"，内存只需 O(K)。\n */\npublic class App {\n\n    // 小顶堆下沉：与较小的孩子交换，返回交换次数（演示用）\n    static int siftDown(int[] heap, int n, int i) {\n        int swaps = 0;\n        while (true) {\n            int l = 2 * i + 1, r = 2 * i + 2, smallest = i;\n            if (l < n && heap[l] < heap[smallest]) smallest = l;\n            if (r < n && heap[r] < heap[smallest]) smallest = r;\n            if (smallest == i) return swaps;\n            int tmp = heap[i];\n            heap[i] = heap[smallest];\n            heap[smallest] = tmp;\n            swaps++;\n            i = smallest;\n        }\n    }\n\n    // 自底向上建堆：从最后一个非叶节点倒序逐个下沉，总计 O(n)\n    static int buildHeap(int[] heap) {\n        int swaps = 0;\n        for (int i = heap.length / 2 - 1; i >= 0; i--) {\n            swaps += siftDown(heap, heap.length, i);\n        }\n        return swaps;\n    }\n\n    public static void main(String[] args) {\n        int[] data = {9, 4, 7, 1, 8, 3, 5};\n        int swaps = buildHeap(data);\n        System.out.println(\"建堆后（小顶堆）：\" + Arrays.toString(data));\n        System.out.println(\"建堆总交换次数：\" + swaps + \"（自底向上约 O(n)，逐个 push 则要 O(n log n)）\");\n\n        // Top-K：流式到来，堆里只保留\"当前最大的 K 个\"\n        int[] stream = {5, 12, 3, 20, 8, 15, 1, 9};\n        int k = 3;\n        int[] top = Arrays.copyOf(stream, k); // 先放前 k 个\n        buildHeap(top);                       // 建成小顶堆，top[0] 是 K 个里最小的\n        for (int i = k; i < stream.length; i++) {\n            if (stream[i] > top[0]) { // 比\"守门员\"大，才有资格进前 K\n                top[0] = stream[i];\n                siftDown(top, k, 0);\n            }\n        }\n        Arrays.sort(top);\n        System.out.println(\"流中最大的 \" + k + \" 个：\" + Arrays.toString(top));\n    }\n}\n"
             }
           ]
         },
@@ -418,6 +510,29 @@
               "code": "package com.javaroadmap.algo.binarysearch;\n\n/**\n * 二分查找与插入点\n * 对应《Hello 算法》第 10 章\n */\npublic class App {\n\n    // 标准二分：找到返回下标，找不到返回 -1\n    static int binarySearch(int[] sorted, int target) {\n        int lo = 0;\n        int hi = sorted.length - 1;\n        while (lo <= hi) {\n            int mid = lo + (hi - lo) / 2;\n            if (sorted[mid] == target) return mid;\n            if (sorted[mid] < target) lo = mid + 1;\n            else hi = mid - 1;\n        }\n        return -1;\n    }\n\n    // 查找插入点：返回第一个大于等于 target 的下标\n    static int searchInsertPoint(int[] sorted, int target) {\n        int lo = 0;\n        int hi = sorted.length;\n        while (lo < hi) {\n            int mid = lo + (hi - lo) / 2;\n            if (sorted[mid] < target) lo = mid + 1;\n            else hi = mid;\n        }\n        return lo;\n    }\n\n    public static void main(String[] args) {\n        int[] sorted = {1, 3, 5, 7, 9, 11};\n        System.out.println(\"查找 7 的下标：\" + binarySearch(sorted, 7));\n        System.out.println(\"查找 4 的结果（不存在）：\" + binarySearch(sorted, 4));\n        System.out.println(\"4 的插入点下标：\" + searchInsertPoint(sorted, 4));\n        System.out.println(\"12 的插入点下标：\" + searchInsertPoint(sorted, 12));\n        System.out.println(\"边界提醒：二分只适用于有序数组，mid 必须用 lo+(hi-lo)/2 防止整型溢出。\");\n    }\n}"
             },
             {
+              "id": "algo-binary-boundary",
+              "topicId": "topic-algo",
+              "moduleId": "algo-search-sort",
+              "title": "二分查找的边界：重复元素的首末位置",
+              "summary": "命中后继续收缩区间即可锁定第一个/最后一个位置，出现次数 O(log n) 可得。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 10 章 10.3 节 二分查找边界",
+                "pdfPageStart": 222,
+                "pdfPageEnd": 230,
+                "printPage": "216-224"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 二分查找的边界：重复元素的首末位置\n\n## 1. 业务场景与需要解决的问题\n日志按时间排序，要统计“某一秒内有多少条记录”。基础二分（搜索课）命中一条就返回——可重复元素有一片连续区间，找到“其中一条”还不够，需要**第一处**和**最后一处**出现的位置。\n\n## 2. 为什么需要边界变体\n- 基础二分命中即停；边界变体的唯一改动是：**命中后不停止，记下位置并继续向目标方向收缩区间**。\n- 找第一个：命中后 `right = mid - 1`（答案只会更靠左）；找最后一个：命中后 `left = mid + 1`。两段代码结构完全相同，只有一行不同。\n- 有了首末下标，出现次数 = 末 - 首 + 1，仍是 O(log n)——比线性扫描整个区间 O(n) 划算。\n\n## 3. 循环不变量\n- 整个循环中“答案要么已记入 found，要么仍在 [left, right] 内”始终成立，循环结束时 found 就是边界。\n- `mid = left + (right - left) / 2` 防止大数相加溢出；区间收缩严格，不会死循环。\n\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.binaryboundary;\n\nimport java.util.Arrays;\n\n/**\n * 二分查找的左右边界：重复元素找第一个/最后一个位置。\n * 对应《Hello 算法》10.3 节。\n *\n * 场景：日志文件按时间排序，查询\"某秒内有多少条记录\"——\n * 需要的不是\"找到一条\"，而是第一处和最后一处出现的位置。\n */\npublic class App {\n\n    // 第一个等于 target 的下标：命中后不停，继续向左半段找\n    static int findFirst(int[] nums, int target) {\n        int left = 0, right = nums.length - 1, found = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] < target) {\n                left = mid + 1;\n            } else if (nums[mid] > target) {\n                right = mid - 1;\n            } else {\n                found = mid;      // 先记下这个位置\n                right = mid - 1;  // 但区间继续向左收缩\n            }\n        }\n        return found;\n    }\n\n    // 最后一个等于 target 的下标：命中后区间继续向右收缩\n    static int findLast(int[] nums, int target) {\n        int left = 0, right = nums.length - 1, found = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] < target) {\n                left = mid + 1;\n            } else if (nums[mid] > target) {\n                right = mid - 1;\n            } else {\n                found = mid;\n                left = mid + 1;\n            }\n        }\n        return found;\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 2, 4, 4, 4, 5, 6, 6};\n        System.out.println(\"数组：\" + Arrays.toString(nums));\n\n        int first = findFirst(nums, 4);\n        int last = findLast(nums, 4);\n        System.out.println(\"4 的首个下标=\" + first + \"，末个下标=\" + last\n                + \"，共 \" + (last - first + 1) + \" 个\");\n        System.out.println(\"6 的首个下标=\" + findFirst(nums, 6)\n                + \"，末个下标=\" + findLast(nums, 6));\n        System.out.println(\"3 的首个下标=\" + findFirst(nums, 3) + \"（不存在时为 -1）\");\n    }\n}\n```\n## 5. 先预测，再运行\n- `{1, 2, 4, 4, 4, 5, 6, 6}` 中 4 的首个下标、末个下标各是多少？共几个？\n- 6 的首末下标？3 的查找结果是什么、代表什么含义？\n- 把“找第一个 4”的收缩方向反过来写会得到什么？动手改一行试试。\n\n## 6. 来源与出处\n- 《Hello 算法》第 10 章 10.3 节 二分查找边界（PDF 第 222-230 页）。",
+              "packageName": "com.javaroadmap.algo.binaryboundary",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.binaryboundary;\n\nimport java.util.Arrays;\n\n/**\n * 二分查找的左右边界：重复元素找第一个/最后一个位置。\n * 对应《Hello 算法》10.3 节。\n *\n * 场景：日志文件按时间排序，查询\"某秒内有多少条记录\"——\n * 需要的不是\"找到一条\"，而是第一处和最后一处出现的位置。\n */\npublic class App {\n\n    // 第一个等于 target 的下标：命中后不停，继续向左半段找\n    static int findFirst(int[] nums, int target) {\n        int left = 0, right = nums.length - 1, found = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] < target) {\n                left = mid + 1;\n            } else if (nums[mid] > target) {\n                right = mid - 1;\n            } else {\n                found = mid;      // 先记下这个位置\n                right = mid - 1;  // 但区间继续向左收缩\n            }\n        }\n        return found;\n    }\n\n    // 最后一个等于 target 的下标：命中后区间继续向右收缩\n    static int findLast(int[] nums, int target) {\n        int left = 0, right = nums.length - 1, found = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] < target) {\n                left = mid + 1;\n            } else if (nums[mid] > target) {\n                right = mid - 1;\n            } else {\n                found = mid;\n                left = mid + 1;\n            }\n        }\n        return found;\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 2, 4, 4, 4, 5, 6, 6};\n        System.out.println(\"数组：\" + Arrays.toString(nums));\n\n        int first = findFirst(nums, 4);\n        int last = findLast(nums, 4);\n        System.out.println(\"4 的首个下标=\" + first + \"，末个下标=\" + last\n                + \"，共 \" + (last - first + 1) + \" 个\");\n        System.out.println(\"6 的首个下标=\" + findFirst(nums, 6)\n                + \"，末个下标=\" + findLast(nums, 6));\n        System.out.println(\"3 的首个下标=\" + findFirst(nums, 3) + \"（不存在时为 -1）\");\n    }\n}\n"
+            },
+            {
               "id": "algo-sorting",
               "topicId": "topic-algo",
               "moduleId": "algo-search-sort",
@@ -439,6 +554,52 @@
               "packageName": "com.javaroadmap.algo.sorting",
               "className": "App",
               "code": "package com.javaroadmap.algo.sorting;\n\nimport java.util.Arrays;\n\n/**\n * 基础排序与分治排序\n * 对应《Hello 算法》第 11 章\n */\npublic class App {\n\n    // 冒泡排序：相邻比较交换，最大值逐轮“冒”到末尾\n    static void bubbleSort(int[] a) {\n        for (int i = a.length - 1; i > 0; i--) {\n            boolean swapped = false;\n            for (int j = 0; j < i; j++) {\n                if (a[j] > a[j + 1]) {\n                    int t = a[j];\n                    a[j] = a[j + 1];\n                    a[j + 1] = t;\n                    swapped = true;\n                }\n            }\n            if (!swapped) break; // 一轮无交换说明已有序，提前退出\n        }\n    }\n\n    // 插入排序：像整理扑克牌，把新元素插入左侧已排序区间\n    static void insertionSort(int[] a) {\n        for (int i = 1; i < a.length; i++) {\n            int base = a[i];\n            int j = i - 1;\n            while (j >= 0 && a[j] > base) {\n                a[j + 1] = a[j];\n                j--;\n            }\n            a[j + 1] = base;\n        }\n    }\n\n    // 快速排序：选基准划分两侧，再递归处理子区间\n    static void quickSort(int[] a, int lo, int hi) {\n        if (lo >= hi) return;\n        int pivot = a[lo];\n        int i = lo;\n        int j = hi;\n        while (i < j) {\n            while (i < j && a[j] >= pivot) j--;\n            while (i < j && a[i] <= pivot) i++;\n            int t = a[i];\n            a[i] = a[j];\n            a[j] = t;\n        }\n        a[lo] = a[i];\n        a[i] = pivot;\n        quickSort(a, lo, i - 1);\n        quickSort(a, i + 1, hi);\n    }\n\n    // 归并排序：分到最小，再按序合并（稳定）\n    static void mergeSort(int[] a, int lo, int hi, int[] tmp) {\n        if (lo >= hi) return;\n        int mid = lo + (hi - lo) / 2;\n        mergeSort(a, lo, mid, tmp);\n        mergeSort(a, mid + 1, hi, tmp);\n        int i = lo;\n        int j = mid + 1;\n        int k = lo;\n        while (i <= mid && j <= hi) {\n            tmp[k++] = a[i] <= a[j] ? a[i++] : a[j++];\n        }\n        while (i <= mid) tmp[k++] = a[i++];\n        while (j <= hi) tmp[k++] = a[j++];\n        System.arraycopy(tmp, lo, a, lo, hi - lo + 1);\n    }\n\n    public static void main(String[] args) {\n        int[] original = {5, 2, 9, 1, 7, 3};\n        int[] a = original.clone();\n        bubbleSort(a);\n        System.out.println(\"冒泡排序：\" + Arrays.toString(a));\n        a = original.clone();\n        insertionSort(a);\n        System.out.println(\"插入排序：\" + Arrays.toString(a));\n        a = original.clone();\n        quickSort(a, 0, a.length - 1);\n        System.out.println(\"快速排序：\" + Arrays.toString(a));\n        a = original.clone();\n        mergeSort(a, 0, a.length - 1, new int[a.length]);\n        System.out.println(\"归并排序：\" + Arrays.toString(a));\n        System.out.println(\"稳定性提醒：冒泡/插入/归并稳定，快排不稳定；快排平均 O(n log n)、最坏 O(n^2)。\");\n    }\n}"
+            },
+            {
+              "id": "algo-selection-heapsort",
+              "topicId": "topic-algo",
+              "moduleId": "algo-search-sort",
+              "title": "选择排序与堆排序：每轮选出最值",
+              "summary": "选择排序每轮一次交换但 O(n²)；堆排序把“找最值”交给堆，O(n log n) 且原地。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 11 章 11.2 节 选择排序 & 11.7 节 堆排序",
+                "pdfPageStart": 233,
+                "pdfPageEnd": 251,
+                "printPage": "227-245"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 选择排序与堆排序：每轮选出最值\n\n## 1. 业务场景与需要解决的问题\n一堆试卷按分数从低到高排：最直观的做法是每轮扫一遍挑出最小的放到前面——选择排序。堆排序保留“每轮选最值”的思路，只把“怎么找最值”换成了堆。\n\n## 2. 为什么把“找最值”交给堆：与已学排序的联系和取舍\n- 冒泡排序（比较排序课）每轮多次交换相邻元素；选择排序每轮**只交换一次**，适合“交换/写入代价高”的介质（如 Flash 写入）。\n- 选择排序扫描仍是 O(n)，总复杂度 O(n²)；堆排序用堆课的“建堆 O(n) + 取最值 O(log n)”把整体降到 O(n log n)，且只需 O(1) 额外空间。\n- 稳定性对比：归并稳定但要 O(n) 辅助数组；快排平均最快但不稳定；选择与堆排序都不稳定——相等的两个元素可能在选择/交换中互换相对位置。\n\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.selectionheapsort;\n\nimport java.util.Arrays;\n\n/**\n * 选择排序与堆排序：都是\"每轮选出最值放到边界\"，选法不同。\n * 对应《Hello 算法》11.2、11.7 节。\n *\n * 选择排序每轮线性扫描找最小值 O(n)；堆排序把\"找最值\"换成\n * 从大顶堆取堆顶 O(log n)，总复杂度从 O(n²) 降到 O(n log n)。\n */\npublic class App {\n\n    static void selectionSort(int[] nums) {\n        for (int i = 0; i < nums.length - 1; i++) {\n            int min = i;\n            for (int j = i + 1; j < nums.length; j++) {\n                if (nums[j] < nums[min]) min = j; // 内层扫描：只记录下标，不交换\n            }\n            int tmp = nums[i]; // 一轮只交换一次\n            nums[i] = nums[min];\n            nums[min] = tmp;\n            System.out.println(\"第 \" + (i + 1) + \" 轮选出 \" + nums[i] + \" 后：\" + Arrays.toString(nums));\n        }\n    }\n\n    // 大顶堆下沉\n    static void siftDown(int[] heap, int n, int i) {\n        while (true) {\n            int l = 2 * i + 1, r = 2 * i + 2, largest = i;\n            if (l < n && heap[l] > heap[largest]) largest = l;\n            if (r < n && heap[r] > heap[largest]) largest = r;\n            if (largest == i) return;\n            int tmp = heap[i];\n            heap[i] = heap[largest];\n            heap[largest] = tmp;\n            i = largest;\n        }\n    }\n\n    static void heapSort(int[] nums) {\n        for (int i = nums.length / 2 - 1; i >= 0; i--) { // 自底向上建大顶堆 O(n)\n            siftDown(nums, nums.length, i);\n        }\n        for (int end = nums.length - 1; end > 0; end--) {\n            int tmp = nums[0]; // 堆顶（当前最大）换到末尾固定下来\n            nums[0] = nums[end];\n            nums[end] = tmp;\n            siftDown(nums, end, 0); // 剩余前 end 个元素重新堆化\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] a = {5, 2, 8, 2, 6};\n        selectionSort(a);\n        System.out.println(\"选择排序结果：\" + Arrays.toString(a)\n                + \"（相等元素的相对顺序可能被打乱：不稳定）\");\n\n        int[] b = {5, 2, 8, 2, 6};\n        heapSort(b);\n        System.out.println(\"堆排序结果：\" + Arrays.toString(b)\n                + \"（建堆 O(n) + n 次 O(log n) 取出）\");\n    }\n}\n```\n## 5. 先预测，再运行\n- `{5, 2, 8, 2, 6}` 第 1 轮选择后数组是什么？第 2 轮呢？（每轮只交换一次）\n- 两种排序的最终结果相同吗？\n- 内层循环只记录下标、不交换——这为“每轮一次交换”付出了什么代价、换来了什么？\n\n## 6. 来源与出处\n- 《Hello 算法》第 11 章 11.2 节 选择排序 & 11.7 节 堆排序（PDF 第 233-251 页）。",
+              "packageName": "com.javaroadmap.algo.selectionheapsort",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.selectionheapsort;\n\nimport java.util.Arrays;\n\n/**\n * 选择排序与堆排序：都是\"每轮选出最值放到边界\"，选法不同。\n * 对应《Hello 算法》11.2、11.7 节。\n *\n * 选择排序每轮线性扫描找最小值 O(n)；堆排序把\"找最值\"换成\n * 从大顶堆取堆顶 O(log n)，总复杂度从 O(n²) 降到 O(n log n)。\n */\npublic class App {\n\n    static void selectionSort(int[] nums) {\n        for (int i = 0; i < nums.length - 1; i++) {\n            int min = i;\n            for (int j = i + 1; j < nums.length; j++) {\n                if (nums[j] < nums[min]) min = j; // 内层扫描：只记录下标，不交换\n            }\n            int tmp = nums[i]; // 一轮只交换一次\n            nums[i] = nums[min];\n            nums[min] = tmp;\n            System.out.println(\"第 \" + (i + 1) + \" 轮选出 \" + nums[i] + \" 后：\" + Arrays.toString(nums));\n        }\n    }\n\n    // 大顶堆下沉\n    static void siftDown(int[] heap, int n, int i) {\n        while (true) {\n            int l = 2 * i + 1, r = 2 * i + 2, largest = i;\n            if (l < n && heap[l] > heap[largest]) largest = l;\n            if (r < n && heap[r] > heap[largest]) largest = r;\n            if (largest == i) return;\n            int tmp = heap[i];\n            heap[i] = heap[largest];\n            heap[largest] = tmp;\n            i = largest;\n        }\n    }\n\n    static void heapSort(int[] nums) {\n        for (int i = nums.length / 2 - 1; i >= 0; i--) { // 自底向上建大顶堆 O(n)\n            siftDown(nums, nums.length, i);\n        }\n        for (int end = nums.length - 1; end > 0; end--) {\n            int tmp = nums[0]; // 堆顶（当前最大）换到末尾固定下来\n            nums[0] = nums[end];\n            nums[end] = tmp;\n            siftDown(nums, end, 0); // 剩余前 end 个元素重新堆化\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] a = {5, 2, 8, 2, 6};\n        selectionSort(a);\n        System.out.println(\"选择排序结果：\" + Arrays.toString(a)\n                + \"（相等元素的相对顺序可能被打乱：不稳定）\");\n\n        int[] b = {5, 2, 8, 2, 6};\n        heapSort(b);\n        System.out.println(\"堆排序结果：\" + Arrays.toString(b)\n                + \"（建堆 O(n) + n 次 O(log n) 取出）\");\n    }\n}\n"
+            },
+            {
+              "id": "algo-non-comparison-sort",
+              "topicId": "topic-algo",
+              "moduleId": "algo-search-sort",
+              "title": "计数、桶与基数排序：不比较的排序",
+              "summary": "值域小就计数，分布均匀就分桶，位数固定就逐位排——突破 O(n log n) 的前提与代价。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 11 章 11.8-11.10 节 桶/计数/基数排序",
+                "pdfPageStart": 252,
+                "pdfPageEnd": 262,
+                "printPage": "246-256"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 计数、桶与基数排序：不比较的排序\n\n## 1. 业务场景与需要解决的问题\n全班年龄都在 0~100 之间、工号都是固定 3 位数——这类数据有“可数的结构”。比较排序的理论下界是 O(n log n)，因为每次比较只有两种结果；当数据自带结构时，可以**完全不比较**，更快。\n\n## 2. 为什么不比较也能排序：三种思路与适用条件（重点）\n- **计数排序**：值域 0..k-1 时，用 `count[v]` 数每个值出现几次，再按值展开。时间 O(n+k)、空间 O(k)——**前提是 k 不能太大**，给 32 位整数排序就不现实。\n- **桶排序**：把值域均匀切成 k 个桶，元素按范围落桶、桶内再排序——前提是**分布大致均匀**，否则全部挤进一个桶就退化成桶内排序算法本身。\n- **基数排序**：位数固定为 d 时，从低位到高位逐位做一次**稳定**排序（本示例用计数思想实现单趟）。时间 O(d·(n+k))——前提是**位数有限**。\n- 稳定性在基数排序里不是锦上添花而是**正确性前提**：高位相同时必须保持上一轮的相对顺序，所以单趟必须是稳定排序。\n\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.noncomparisonsort;\n\nimport java.util.Arrays;\n\n/**\n * 计数排序与基数排序：不比较元素，靠\"值计数\"与\"逐位分桶\"。\n * 对应《Hello 算法》11.8 桶排序、11.9 计数排序、11.10 基数排序。\n *\n * 它们突破比较排序 O(n log n) 下界的前提：数据本身有可数的结构\n * （值域小、位数固定）；没有这个前提就退回比较排序。\n */\npublic class App {\n\n    // 计数排序：值域 0..9 的整数，count[v] 数出现次数后按值展开\n    static int[] countingSort(int[] nums) {\n        int[] count = new int[10];\n        for (int v : nums) count[v]++;\n        int[] out = new int[nums.length];\n        int idx = 0;\n        for (int v = 0; v < count.length; v++) {\n            for (int c = 0; c < count[v]; c++) out[idx++] = v;\n        }\n        return out;\n    }\n\n    // 基数排序（LSD）：按个位、十位……逐位做一次\"稳定\"排序\n    static int[] radixSort(int[] nums) {\n        String[] digitNames = {\"个位\", \"十位\", \"百位\", \"千位\"};\n        int max = 0;\n        for (int v : nums) max = Math.max(max, v);\n        int[] out = nums;\n        for (int exp = 1; max / exp > 0; exp *= 10) {\n            out = countingSortByDigit(out, exp);\n            System.out.println(\"按\" + digitNames[Integer.numberOfTrailingZeros(exp)] + \"分桶收集后：\" + Arrays.toString(out));\n        }\n        return out;\n    }\n\n    // 用计数的思想给某一位排序：前缀和给出每个数字在结果中的\"结束位置\"\n    static int[] countingSortByDigit(int[] nums, int exp) {\n        int[] count = new int[10];\n        for (int v : nums) count[(v / exp) % 10]++;\n        for (int d = 1; d < 10; d++) count[d] += count[d - 1];\n        int[] out = new int[nums.length];\n        for (int i = nums.length - 1; i >= 0; i--) { // 从右往左放：同位相同者保持原有顺序\n            int d = (nums[i] / exp) % 10;\n            out[--count[d]] = nums[i];\n        }\n        return out;\n    }\n\n    public static void main(String[] args) {\n        int[] scores = {3, 1, 4, 1, 5, 9, 2, 6};\n        System.out.println(\"计数排序：\" + Arrays.toString(countingSort(scores))\n                + \"（值域 0..9，时间 O(n+k)、空间 O(k)）\");\n\n        int[] ids = {329, 457, 657, 839, 436, 720, 355};\n        System.out.println(\"原始：\" + Arrays.toString(ids));\n        System.out.println(\"基数排序：\" + Arrays.toString(radixSort(ids))\n                + \"（位数固定 d 时为 O(d·(n+k))）\");\n    }\n}\n```\n## 5. 先预测，再运行\n- `{3, 1, 4, 1, 5, 9, 2, 6}` 计数排序后是什么？count 数组里哪个下标的值是 2？\n- 基数排序第一轮按个位分桶后，`720` 排在最前——为什么个位是 0 的数最先被收集？\n- 三轮分桶结束后整体有序了吗？每一轮“稳定”起了什么作用？\n\n## 6. 来源与出处\n- 《Hello 算法》第 11 章 11.8 节 桶排序 & 11.9 节 计数排序 & 11.10 节 基数排序（PDF 第 252-262 页）。",
+              "packageName": "com.javaroadmap.algo.noncomparisonsort",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.noncomparisonsort;\n\nimport java.util.Arrays;\n\n/**\n * 计数排序与基数排序：不比较元素，靠\"值计数\"与\"逐位分桶\"。\n * 对应《Hello 算法》11.8 桶排序、11.9 计数排序、11.10 基数排序。\n *\n * 它们突破比较排序 O(n log n) 下界的前提：数据本身有可数的结构\n * （值域小、位数固定）；没有这个前提就退回比较排序。\n */\npublic class App {\n\n    // 计数排序：值域 0..9 的整数，count[v] 数出现次数后按值展开\n    static int[] countingSort(int[] nums) {\n        int[] count = new int[10];\n        for (int v : nums) count[v]++;\n        int[] out = new int[nums.length];\n        int idx = 0;\n        for (int v = 0; v < count.length; v++) {\n            for (int c = 0; c < count[v]; c++) out[idx++] = v;\n        }\n        return out;\n    }\n\n    // 基数排序（LSD）：按个位、十位……逐位做一次\"稳定\"排序\n    static int[] radixSort(int[] nums) {\n        String[] digitNames = {\"个位\", \"十位\", \"百位\", \"千位\"};\n        int max = 0;\n        for (int v : nums) max = Math.max(max, v);\n        int[] out = nums;\n        for (int exp = 1; max / exp > 0; exp *= 10) {\n            out = countingSortByDigit(out, exp);\n            System.out.println(\"按\" + digitNames[Integer.numberOfTrailingZeros(exp)] + \"分桶收集后：\" + Arrays.toString(out));\n        }\n        return out;\n    }\n\n    // 用计数的思想给某一位排序：前缀和给出每个数字在结果中的\"结束位置\"\n    static int[] countingSortByDigit(int[] nums, int exp) {\n        int[] count = new int[10];\n        for (int v : nums) count[(v / exp) % 10]++;\n        for (int d = 1; d < 10; d++) count[d] += count[d - 1];\n        int[] out = new int[nums.length];\n        for (int i = nums.length - 1; i >= 0; i--) { // 从右往左放：同位相同者保持原有顺序\n            int d = (nums[i] / exp) % 10;\n            out[--count[d]] = nums[i];\n        }\n        return out;\n    }\n\n    public static void main(String[] args) {\n        int[] scores = {3, 1, 4, 1, 5, 9, 2, 6};\n        System.out.println(\"计数排序：\" + Arrays.toString(countingSort(scores))\n                + \"（值域 0..9，时间 O(n+k)、空间 O(k)）\");\n\n        int[] ids = {329, 457, 657, 839, 436, 720, 355};\n        System.out.println(\"原始：\" + Arrays.toString(ids));\n        System.out.println(\"基数排序：\" + Arrays.toString(radixSort(ids))\n                + \"（位数固定 d 时为 O(d·(n+k))）\");\n    }\n}\n"
             }
           ]
         },
@@ -495,6 +656,29 @@
               "code": "package com.javaroadmap.algo.backtracking;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\n/**\n * 回溯：路径 + 选择列表 + 撤销选择\n * 对应《Hello 算法》第 13 章\n */\npublic class App {\n\n    // 全排列：used 标记已用元素，做选择 → 递归 → 撤销选择\n    static void permute(int[] nums, boolean[] used, List<Integer> path, List<String> result) {\n        if (path.size() == nums.length) {\n            result.add(path.toString());\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue; // 剪枝：跳过已在路径中的元素\n            used[i] = true;\n            path.add(nums[i]);\n            permute(nums, used, path, result);\n            path.remove(path.size() - 1);\n            used[i] = false;\n        }\n    }\n\n    // 子集：每个节点本身就是一个解，向后扩展避免重复\n    static void subsets(int[] nums, int start, List<Integer> path, List<String> result) {\n        result.add(path.toString());\n        for (int i = start; i < nums.length; i++) {\n            path.add(nums[i]);\n            subsets(nums, i + 1, path, result);\n            path.remove(path.size() - 1);\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 2, 3};\n        List<String> perms = new ArrayList<>();\n        permute(nums, new boolean[nums.length], new ArrayList<>(), perms);\n        List<String> subs = new ArrayList<>();\n        subsets(nums, 0, new ArrayList<>(), subs);\n        System.out.println(\"全排列共 \" + perms.size() + \" 个，其中两个：\" + perms.get(0) + \" 与 \" + perms.get(perms.size() - 1));\n        System.out.println(\"子集共 \" + subs.size() + \" 个\");\n        System.out.println(\"模板要点：做选择 → 递归 → 撤销选择；剪枝提前排除无效分支。\");\n    }\n}"
             },
             {
+              "id": "algo-backtracking-subset",
+              "topicId": "topic-algo",
+              "moduleId": "algo-advanced",
+              "title": "回溯实战：子集和与剪枝",
+              "summary": "排序剪枝、同层去重、只向后选——把回溯框架用在“凑出所有组合”上。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 13 章 13.3 节 子集和问题",
+                "pdfPageStart": 296,
+                "pdfPageEnd": 302,
+                "printPage": "290-296"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 回溯实战：子集和与剪枝\n\n## 1. 业务场景与需要解决的问题\n购物车凑单：从商品里挑出几件，价格总和正好凑满满减额度。要的是**所有**组合（或判断有没有），不是最优解——这正是回溯的主场。\n\n## 2. 为什么需要这三个实战技巧\n- 回溯课给了“做选择 → 递归 → 撤销选择”的框架和全排列例子；子集和在这个框架上多出三个实战必备技巧：\n- **排序 + 剪枝**：数组排序后，当前数字都超出剩余额度时，后面的更大，整段剪掉（`break`）。\n- **同层去重**：同一层遇到与前一个相同的值直接跳过（`continue`），否则两个 1 会生成两份相同的组合。\n- **只向后选**：递归起点用 `i + 1` 而不是 0，保证每个元素最多选一次、组合内部有序。\n- N 皇后（原书 13.4 节）是同一框架：把“选哪个数”换成“皇后放哪一列”，约束检查换成“列/对角线不冲突”。\n\n## 3. 核心机制\n- 状态：`start`（还能从哪里选）与 `remaining`（还差多少钱）；`remaining == 0` 收集一个解。\n- `break` 与 `continue` 的区别：前者剪掉一整段分支，后者只跳过当前重复值。\n\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.subsetsum;\n\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.List;\n\n/**\n * 回溯实战：子集和问题（找出所有和为 target 的组合）。\n * 对应《Hello 算法》13.3 节。\n *\n * 回溯的统一模式：做选择 → 递归 → 撤销选择；\n * N 皇后（13.4）只是把\"选择\"换成\"在哪一列放皇后\"，框架完全相同。\n */\npublic class App {\n\n    static void backtrack(int[] nums, int start, int remaining,\n                          List<Integer> chosen, List<String> solutions) {\n        if (remaining == 0) { // 剩余额度刚好用完：得到一个解\n            solutions.add(chosen.toString());\n            return;\n        }\n        for (int i = start; i < nums.length; i++) {\n            if (nums[i] > remaining) break; // 数组已排序：后面只会更大，剪掉整段\n            if (i > start && nums[i] == nums[i - 1]) continue; // 同一层跳过重复值，避免重复解\n            chosen.add(nums[i]);                              // 做选择\n            backtrack(nums, i + 1, remaining - nums[i], chosen, solutions); // 只向后选：元素不重复用\n            chosen.remove(chosen.size() - 1);                 // 撤销选择，尝试下一个\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 1, 2, 3, 5};\n        int target = 4;\n        Arrays.sort(nums); // 排序是剪枝和去重的前提\n        List<String> solutions = new ArrayList<>();\n        backtrack(nums, 0, target, new ArrayList<>(), solutions);\n        System.out.println(\"和为 \" + target + \" 的组合共 \" + solutions.size() + \" 个：\");\n        for (String s : solutions) {\n            System.out.println(\"  \" + s);\n        }\n    }\n}\n```\n## 5. 先预测，再运行\n- `{1, 1, 2, 3, 5}` 里和为 4 的组合共几个？分别是什么？\n- 如果没有“同层去重”，`[1, 3]` 会出现几次？\n- 把 target 改成 6，先预测组合数量和内容，再运行核对。\n\n## 6. 来源与出处\n- 《Hello 算法》第 13 章 13.3 节 子集和问题（N 皇后见 13.4 节）（PDF 第 296-307 页）。",
+              "packageName": "com.javaroadmap.algo.subsetsum",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.subsetsum;\n\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.List;\n\n/**\n * 回溯实战：子集和问题（找出所有和为 target 的组合）。\n * 对应《Hello 算法》13.3 节。\n *\n * 回溯的统一模式：做选择 → 递归 → 撤销选择；\n * N 皇后（13.4）只是把\"选择\"换成\"在哪一列放皇后\"，框架完全相同。\n */\npublic class App {\n\n    static void backtrack(int[] nums, int start, int remaining,\n                          List<Integer> chosen, List<String> solutions) {\n        if (remaining == 0) { // 剩余额度刚好用完：得到一个解\n            solutions.add(chosen.toString());\n            return;\n        }\n        for (int i = start; i < nums.length; i++) {\n            if (nums[i] > remaining) break; // 数组已排序：后面只会更大，剪掉整段\n            if (i > start && nums[i] == nums[i - 1]) continue; // 同一层跳过重复值，避免重复解\n            chosen.add(nums[i]);                              // 做选择\n            backtrack(nums, i + 1, remaining - nums[i], chosen, solutions); // 只向后选：元素不重复用\n            chosen.remove(chosen.size() - 1);                 // 撤销选择，尝试下一个\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {1, 1, 2, 3, 5};\n        int target = 4;\n        Arrays.sort(nums); // 排序是剪枝和去重的前提\n        List<String> solutions = new ArrayList<>();\n        backtrack(nums, 0, target, new ArrayList<>(), solutions);\n        System.out.println(\"和为 \" + target + \" 的组合共 \" + solutions.size() + \" 个：\");\n        for (String s : solutions) {\n            System.out.println(\"  \" + s);\n        }\n    }\n}\n"
+            },
+            {
               "id": "algo-dynamic-programming",
               "topicId": "topic-algo",
               "moduleId": "algo-advanced",
@@ -516,6 +700,52 @@
               "packageName": "com.javaroadmap.algo.dynamicprogramming",
               "className": "App",
               "code": "package com.javaroadmap.algo.dynamicprogramming;\n\nimport java.util.Arrays;\n\n/**\n * 动态规划：重叠子问题与最优子结构\n * 对应《Hello 算法》第 14 章\n */\npublic class App {\n\n    // 爬楼梯：f(n) = f(n-1) + f(n-2)，自底向上填表\n    static int climbStairs(int n) {\n        if (n <= 2) return n;\n        int[] dp = new int[n + 1];\n        dp[1] = 1;\n        dp[2] = 2;\n        for (int i = 3; i <= n; i++) {\n            dp[i] = dp[i - 1] + dp[i - 2];\n        }\n        return dp[n];\n    }\n\n    // 零钱兑换：凑出 amount 的最少硬币数，凑不出返回 -1\n    static int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1); // 初值表示“尚不可达”\n        dp[0] = 0;\n        for (int coin : coins) {\n            for (int i = coin; i <= amount; i++) {\n                dp[i] = Math.min(dp[i], dp[i - coin] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"爬楼梯 f(10)：\" + climbStairs(10));\n        System.out.println(\"零钱兑换 coins=[1,5,11] amount=15：\" + coinChange(new int[]{1, 5, 11}, 15));\n        System.out.println(\"零钱兑换 coins=[2] amount=3（凑不出）：\" + coinChange(new int[]{2}, 3));\n        System.out.println(\"核心机制：把指数级暴力递归改为按依赖顺序填表，每个子问题只计算一次。\");\n    }\n}"
+            },
+            {
+              "id": "algo-dp-knapsack",
+              "topicId": "topic-algo",
+              "moduleId": "algo-advanced",
+              "title": "动态规划实战：0-1 背包与完全背包",
+              "summary": "dp[i][c] 两行转移解 0-1 背包；内层正序变完全背包；与分数背包贪心对照。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 14 章 14.4 节 0-1 背包问题 & 14.5 节 完全背包问题",
+                "pdfPageStart": 328,
+                "pdfPageEnd": 344,
+                "printPage": "322-338"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 动态规划实战：0-1 背包与完全背包\n\n## 1. 业务场景与需要解决的问题\n出差行李限重 5 公斤：笔记本 1kg 价值 10、相机 2kg 价值 15、镜头 3kg 价值 40、书 4kg 价值 30——拿哪些让总价值最大？拿不动的枚举是 2ⁿ 种组合。\n\n## 2. 为什么背包是 DP 的试金石\n- 动态规划课建立了“重叠子问题 + 状态转移”；背包用最短的定义检验它：**dp[i][c] = 只考虑前 i 件、容量 c 时的最大价值**。\n- 转移只有两行：不拿第 i 件继承 `dp[i-1][c]`；拿得起时取“去掉它之后的最优 + 本件价值”。\n- **完全背包**（每件可拿任意多次）只需把内层循环改为正序：`dp[c - w]` 取自本行，意味着同一物品可以再次进入。\n- 与贪心的对照：物品**可切分**时（分数背包，贪心课 15.2 节）按性价比从高到低装就是最优；**不可切分**时贪心会失误，必须 DP——适用条件不同是两种策略的分界线。\n\n## 3. 四种策略怎么选（分治 / 回溯 / DP / 贪心）\n- 子问题**独立**（不共享状态）→ 分治；要求**所有解**或无法表达最优子结构 → 回溯；\n- 子问题**重叠**且有最优子结构 → DP；能证明**局部最优即全局最优** → 贪心（通常更快，但前提最难满足）。\n\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.knapsack;\n\nimport java.util.Arrays;\n\n/**\n * 动态规划实战：0-1 背包与完全背包。\n * 对应《Hello 算法》14.4、14.5 节。\n *\n * 场景：背包容量有限，每件物品有重量与价值——拿什么让总价值最大？\n * 0-1 背包每件至多拿一次；完全背包每件可以拿任意多次。\n */\npublic class App {\n\n    // 0-1 背包：dp[i][c] = 前 i 件物品、容量 c 下的最大价值\n    static int knapsack01(int[] weights, int[] values, int cap) {\n        int[][] dp = new int[weights.length + 1][cap + 1];\n        for (int i = 1; i <= weights.length; i++) {\n            for (int c = 0; c <= cap; c++) {\n                dp[i][c] = dp[i - 1][c]; // 不拿第 i 件\n                if (weights[i - 1] <= c) { // 拿得起才考虑拿：价值 = 去掉它后的最优 + 本件价值\n                    int take = dp[i - 1][c - weights[i - 1]] + values[i - 1];\n                    if (take > dp[i][c]) dp[i][c] = take;\n                }\n            }\n        }\n        for (int[] row : dp) {\n            System.out.println(\"  \" + Arrays.toString(row));\n        }\n        return dp[weights.length][cap];\n    }\n\n    // 完全背包：滚动到一行；内层正序遍历，dp[c - w] 是\"本行\"，同一物品可重复拿\n    static int unboundedKnapsack(int[] weights, int[] values, int cap) {\n        int[] dp = new int[cap + 1];\n        for (int i = 0; i < weights.length; i++) {\n            for (int c = weights[i]; c <= cap; c++) {\n                dp[c] = Math.max(dp[c], dp[c - weights[i]] + values[i]);\n            }\n        }\n        return dp[cap];\n    }\n\n    public static void main(String[] args) {\n        int[] weights = {1, 2, 3, 4};\n        int[] values = {10, 15, 40, 30};\n        int cap = 5;\n        System.out.println(\"0-1 背包 DP 表（行=前 i 件物品，列=容量 c）：\");\n        System.out.println(\"0-1 背包最大价值：\" + knapsack01(weights, values, cap));\n\n        int[] w2 = {2, 3};\n        int[] v2 = {3, 4};\n        System.out.println(\"完全背包（重 {2,3} 价值 {3,4}，容量 7）最大价值：\"\n                + unboundedKnapsack(w2, v2, 7));\n    }\n}\n```\n## 5. 先预测，再运行\n- DP 表最后一行最后一列是多少？对应选了哪两件物品？\n- 为什么“拿第 i 件”要用 `dp[i-1][c-w]` 而不是 `dp[i][c-w]`？改成后者会变成哪种背包？\n- 完全背包容量 7、重 {2,3} 价值 {3,4} 的最优价值是多少？由哪几件组成？\n\n## 6. 来源与出处\n- 《Hello 算法》第 14 章 14.4 节 0-1 背包问题 & 14.5 节 完全背包问题（PDF 第 328-344 页）。",
+              "packageName": "com.javaroadmap.algo.knapsack",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.knapsack;\n\nimport java.util.Arrays;\n\n/**\n * 动态规划实战：0-1 背包与完全背包。\n * 对应《Hello 算法》14.4、14.5 节。\n *\n * 场景：背包容量有限，每件物品有重量与价值——拿什么让总价值最大？\n * 0-1 背包每件至多拿一次；完全背包每件可以拿任意多次。\n */\npublic class App {\n\n    // 0-1 背包：dp[i][c] = 前 i 件物品、容量 c 下的最大价值\n    static int knapsack01(int[] weights, int[] values, int cap) {\n        int[][] dp = new int[weights.length + 1][cap + 1];\n        for (int i = 1; i <= weights.length; i++) {\n            for (int c = 0; c <= cap; c++) {\n                dp[i][c] = dp[i - 1][c]; // 不拿第 i 件\n                if (weights[i - 1] <= c) { // 拿得起才考虑拿：价值 = 去掉它后的最优 + 本件价值\n                    int take = dp[i - 1][c - weights[i - 1]] + values[i - 1];\n                    if (take > dp[i][c]) dp[i][c] = take;\n                }\n            }\n        }\n        for (int[] row : dp) {\n            System.out.println(\"  \" + Arrays.toString(row));\n        }\n        return dp[weights.length][cap];\n    }\n\n    // 完全背包：滚动到一行；内层正序遍历，dp[c - w] 是\"本行\"，同一物品可重复拿\n    static int unboundedKnapsack(int[] weights, int[] values, int cap) {\n        int[] dp = new int[cap + 1];\n        for (int i = 0; i < weights.length; i++) {\n            for (int c = weights[i]; c <= cap; c++) {\n                dp[c] = Math.max(dp[c], dp[c - weights[i]] + values[i]);\n            }\n        }\n        return dp[cap];\n    }\n\n    public static void main(String[] args) {\n        int[] weights = {1, 2, 3, 4};\n        int[] values = {10, 15, 40, 30};\n        int cap = 5;\n        System.out.println(\"0-1 背包 DP 表（行=前 i 件物品，列=容量 c）：\");\n        System.out.println(\"0-1 背包最大价值：\" + knapsack01(weights, values, cap));\n\n        int[] w2 = {2, 3};\n        int[] v2 = {3, 4};\n        System.out.println(\"完全背包（重 {2,3} 价值 {3,4}，容量 7）最大价值：\"\n                + unboundedKnapsack(w2, v2, 7));\n    }\n}\n"
+            },
+            {
+              "id": "algo-edit-distance",
+              "topicId": "topic-algo",
+              "moduleId": "algo-advanced",
+              "title": "动态规划实战：编辑距离",
+              "summary": "dp[i][j] 用两个前缀定义状态；插入/删除/替换三选一，读表即得最优对齐。",
+              "status": "published",
+              "kind": "code",
+              "bookReference": {
+                "bookTitle": "Hello 算法",
+                "chapter": "第 14 章 14.6 节 编辑距离问题",
+                "pdfPageStart": 345,
+                "pdfPageEnd": 351,
+                "printPage": "339-345"
+              },
+              "stageLinks": [
+                "01"
+              ],
+              "markdown": "# 动态规划实战：编辑距离\n\n## 1. 业务场景与需要解决的问题\n搜索框把 “hose” 纠错成 “horse”、git diff 找出最小改动、DNA 序列比对——本质都是同一个问题：**把一个序列改成另一个，最少需要多少步操作**（插入、删除、替换一个字符）。\n\n## 2. 为什么这是 DP 的第二块试金石\n- 背包的状态围绕“前 i 件物品”；编辑距离的状态围绕**两个前缀**：dp[i][j] = s 的前 i 个字符变成 t 的前 j 个字符的最少操作数。\n- 末字符相同时这一位不用操作，直接继承左上角；不同时在“插入（左）/ 删除（上）/ 替换（左上）”三者中取最小再加 1。\n- 边界是整行整列：变成空串只能一路删除，从空串变来只能一路插入。\n\n## 3. 读表的方法\n- 表中 dp[3][2] 回答的是：“hor” 变 “ro” 要几步——不关心整串，只关心前缀；这就是最优子结构。\n- 从右下角回溯（记下每一步选了插入/删除/替换）就能还原一条具体的修改方案。\n\n\n## 4. 规范 Java 代码实现（完整可运行）\n\n```java\npackage com.javaroadmap.algo.editdistance;\n\nimport java.util.Arrays;\n\n/**\n * 动态规划实战：编辑距离（把一个单词改成另一个所需的最少操作数）。\n * 对应《Hello 算法》14.6 节。\n *\n * 场景：搜索框纠错、git diff 的最小差异——本质都是\"两个序列有多像\"。\n * 三种操作：插入、删除、替换一个字符。\n */\npublic class App {\n\n    static int editDistance(String s, String t) {\n        int m = s.length(), n = t.length();\n        // dp[i][j] = s 的前 i 个字符变成 t 的前 j 个字符的最少操作数\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i; // 变成空串：只能一路删除\n        for (int j = 0; j <= n; j++) dp[0][j] = j; // 从空串变来：只能一路插入\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (s.charAt(i - 1) == t.charAt(j - 1)) {\n                    dp[i][j] = dp[i - 1][j - 1]; // 末字符相同：这一步不用操作\n                } else {\n                    int edit = Math.min(dp[i][j - 1], dp[i - 1][j]); // 插入 / 删除\n                    dp[i][j] = 1 + Math.min(edit, dp[i - 1][j - 1]); // 或替换\n                }\n            }\n        }\n        for (int[] row : dp) {\n            System.out.println(\"  \" + Arrays.toString(row));\n        }\n        return dp[m][n];\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"horse → ros 的编辑距离：\" + editDistance(\"horse\", \"ros\"));\n    }\n}\n```\n## 5. 先预测，再运行\n- horse → ros 的编辑距离是几？三次操作分别是什么？\n- 表中 dp[3][2] 是几？它回答的是哪两个前缀之间的问题？\n- 把两个字符串都改成 “abc”，整张表会是什么形状？（先想再运行）\n\n## 6. 来源与出处\n- 《Hello 算法》第 14 章 14.6 节 编辑距离问题（PDF 第 345-351 页）。",
+              "packageName": "com.javaroadmap.algo.editdistance",
+              "className": "App",
+              "code": "package com.javaroadmap.algo.editdistance;\n\nimport java.util.Arrays;\n\n/**\n * 动态规划实战：编辑距离（把一个单词改成另一个所需的最少操作数）。\n * 对应《Hello 算法》14.6 节。\n *\n * 场景：搜索框纠错、git diff 的最小差异——本质都是\"两个序列有多像\"。\n * 三种操作：插入、删除、替换一个字符。\n */\npublic class App {\n\n    static int editDistance(String s, String t) {\n        int m = s.length(), n = t.length();\n        // dp[i][j] = s 的前 i 个字符变成 t 的前 j 个字符的最少操作数\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i; // 变成空串：只能一路删除\n        for (int j = 0; j <= n; j++) dp[0][j] = j; // 从空串变来：只能一路插入\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (s.charAt(i - 1) == t.charAt(j - 1)) {\n                    dp[i][j] = dp[i - 1][j - 1]; // 末字符相同：这一步不用操作\n                } else {\n                    int edit = Math.min(dp[i][j - 1], dp[i - 1][j]); // 插入 / 删除\n                    dp[i][j] = 1 + Math.min(edit, dp[i - 1][j - 1]); // 或替换\n                }\n            }\n        }\n        for (int[] row : dp) {\n            System.out.println(\"  \" + Arrays.toString(row));\n        }\n        return dp[m][n];\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"horse → ros 的编辑距离：\" + editDistance(\"horse\", \"ros\"));\n    }\n}\n"
             },
             {
               "id": "algo-greedy",
@@ -636,6 +866,52 @@
               ]
             },
             {
+              "id": "git-ignore-basics",
+              "topicId": "topic-git",
+              "moduleId": "git-basics",
+              "title": "忽略规则：.gitignore 写什么、管不了什么",
+              "summary": "glob 规则过滤未跟踪文件；已被跟踪的文件不会因为新增规则而自动停止跟踪。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 2 章 2.2 节（记录每次更新）",
+                "pdfPageStart": 39,
+                "pdfPageEnd": 44,
+                "printPage": "21-26"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 忽略规则：.gitignore 写什么、管不了什么\n\n## 1. 业务场景与需要解决的问题\n项目里很快会混进来构建产物（out/、*.class）、本地日志（*.log）、IDE 配置。`git status` 满屏 Untracked files，真正改过的文件反而找不到。\n\n## 2. .gitignore 的常见匹配规则\n- `*.log`：匹配所有 .log 文件；`out/`：只匹配目录；`/notes.md`：只匹配仓库根下的 notes.md，子目录同名不受影响。\n- `build/` 前不加斜杠则任意层级的 build 目录都被忽略；`!keep.log`：感叹号取反，把被前面规则忽略的文件重新纳入。\n- 规则从上到下生效，后面的取反可以覆盖前面的忽略。仓库根的 .gitignore 对全仓库生效，子目录的 .gitignore 只对该目录生效。\n\n## 3. 最重要的陷阱：规则管不了已跟踪的文件\n- 沙箱实测：先 `git add -f app.log` 提交，再往 .gitignore 写入 app.log，随后修改 app.log——`git status` 依然显示 `M app.log`。\n- **忽略规则只对“未跟踪”文件生效**。要让已跟踪文件真正被忽略：`git rm --cached app.log`（从索引移除、保留工作区文件）并提交，之后的修改才会被规则接住。\n- 反过来，被忽略的文件如果必须纳入版本控制，用 `git add -f` 强制添加。\n\n## 4. 最小命令流与前后状态\n见下方命令步进：从未跟踪到误提交、再到用 rm --cached 停止跟踪的完整路径。\n\n## 5. 常见误区与提醒\n- “.gitignore 是把文件从仓库里删掉”——不是，它只是让未跟踪文件不进入 Untracked 列表。\n- 模板资源：github/gitignore 仓库按语言整理了常用规则，按需取用，不要整段照抄。\n\n## 6. 来源与出处\n- 《Pro Git》第 2 章 2.2 节（记录每次更新到仓库，PDF 第 39-44 页）。",
+              "gitSteps": [
+                {
+                  "command": "git status --short",
+                  "explanation": "写入 .gitignore（内容 *.log）后创建 app.log：日志文件被规则接住，不再出现在 Untracked 列表里——这正是忽略规则的用途。",
+                  "repoStateBefore": "工作区有已提交的 .gitignore（含 *.log）与未跟踪的 app.log、app.java",
+                  "repoStateAfter": "status 只显示未跟踪的 app.java；app.log 被 *.log 规则忽略，不出现"
+                },
+                {
+                  "command": "git add -f app.log",
+                  "explanation": "-f（force）越过忽略规则强制把日志文件纳入跟踪——用于演示陷阱，真实项目里通常是误操作。",
+                  "repoStateBefore": "app.log 被 .gitignore 忽略，处于未跟踪状态",
+                  "repoStateAfter": "app.log 进入暂存区，随后提交成为被跟踪文件"
+                },
+                {
+                  "command": "git status --short",
+                  "explanation": "把 app.log 追加进 .gitignore 后修改 app.log：修改照样显示 M——**新增忽略规则不会让已跟踪文件停止被跟踪**。",
+                  "repoStateBefore": "app.log 已被跟踪；.gitignore 新增了 app.log 一行；工作区中 app.log 有新修改",
+                  "repoStateAfter": "status 同时显示 .gitignore 与 app.log 两个 M：已跟踪文件的改动不受忽略规则影响"
+                },
+                {
+                  "command": "git rm --cached app.log",
+                  "explanation": "--cached 只从索引（暂存区）移除，工作区文件保留。提交后该文件回到“未跟踪”状态。",
+                  "repoStateBefore": "app.log 仍被跟踪",
+                  "repoStateAfter": "app.log 从索引移除（工作区文件还在）；提交后 status 不再显示 app.log——忽略规则自此生效"
+                }
+              ]
+            },
+            {
               "id": "git-history-diff",
               "topicId": "topic-git",
               "moduleId": "git-basics",
@@ -712,6 +988,52 @@
               ]
             },
             {
+              "id": "git-worktree",
+              "topicId": "topic-git",
+              "moduleId": "git-branching",
+              "title": "git worktree：多工作区并行，互不打扰",
+              "summary": "一个仓库同时检出多个分支到不同目录；实验、热修、长任务各占一个目录。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 7 章 7.5 节 搜索之外的工具补充（worktree 为现代 Git 扩展）",
+                "pdfPageStart": 243,
+                "pdfPageEnd": 246,
+                "printPage": "225-228"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# git worktree：多工作区并行，互不打扰\n\n## 1. 业务场景与需要解决的问题\n正在 feature 分支写到一半，线上突然要热修。stash（贮藏课）可以腾出工作区，但长任务来回 stash 很痛苦；再 clone 一份仓库又浪费磁盘且历史不同步。\n\n## 2. worktree 的心智模型\n- `git worktree add <路径> <分支>` 把另一个分支检出到一个**新目录**——同一个 .git 仓库（同一套对象库、同一条历史）同时服务多个工作区。\n- 沙箱实测：`git worktree add ../wt-demo -b hotfix-demo` 后 `git worktree list` 显示两个工作区各自挂在 main 与 hotfix-demo 上；在新目录里 `git branch --show-current` 输出 hotfix-demo。\n- 同一分支不能同时检出到两个工作区（Git 会拒绝）——这本身就是防呆：不会出现两个目录改同一分支互相覆盖。\n\n## 3. 结合本项目的使用纪律\n- 本仓库的开发约定是“每个任务一个 worktree/分支”：任务开始前 `git worktree add ../codex-learn-<task> -b codex/<task>`，任务目录互不干扰。\n- **不要动其他会话注册的工作区**：`git worktree remove` 只处理自己创建的目录；`git worktree prune` 前先确认列表里没有别人还活着的路径。\n- 结束任务：`git worktree remove <路径>` 收回目录，分支合并后照常删除。\n\n## 4. 最小命令流与前后状态\n见下方命令步进（沙箱实测）。\n\n## 5. 来源与出处\n- 《Pro Git》第 7 章 Git 工具章范围内（worktree 属于较新子命令，第 2 版成书时未单列小节；以 git worktree 官方文档为准，PDF 第 243-246 页为第 7 章工具背景）。",
+              "gitSteps": [
+                {
+                  "command": "git worktree add ../wt-demo -b hotfix-demo",
+                  "explanation": "-b 新建分支 hotfix-demo 并检出到 ../wt-demo 目录。Git 输出 Preparing worktree 确认创建。",
+                  "repoStateBefore": "仓库只有一个工作区，当前在 main",
+                  "repoStateAfter": "出现第二个工作区目录；git worktree list 显示 main 与 hotfix-demo 两条记录，指向同一批提交"
+                },
+                {
+                  "command": "git worktree list",
+                  "explanation": "查看全部注册的工作区：每个工作区一行，含路径与所在分支。",
+                  "repoStateBefore": "已创建 ../wt-demo",
+                  "repoStateAfter": "list 输出两行：主工作区 [main] 与 wt-demo [hotfix-demo]"
+                },
+                {
+                  "command": "git branch --show-current",
+                  "explanation": "在 wt-demo 目录内执行：新工作区有自己的检出状态，互不影响主工作区。",
+                  "repoStateBefore": "当前目录是 ../wt-demo",
+                  "repoStateAfter": "输出 hotfix-demo——两个目录各自处于不同分支，可以同时工作"
+                },
+                {
+                  "command": "git worktree remove ../wt-demo",
+                  "explanation": "任务完成后收回工作区目录。只移除自己创建的路径，先确认其他会话没有在使用。",
+                  "repoStateBefore": "wt-demo 中的任务已合并或不再需要",
+                  "repoStateAfter": "目录被删除；worktree list 恢复为主工作区一行"
+                }
+              ]
+            },
+            {
               "id": "git-remote-collab",
               "topicId": "topic-git",
               "moduleId": "git-branching",
@@ -729,7 +1051,7 @@
               "stageLinks": [
                 "08"
               ],
-              "markdown": "# 远程协作与同步：git remote、fetch、pull 与安全边界\n\n## 1. 业务场景与需要解决的问题\n在团队协作中，每个开发者在自己的本地机器都有完整的版本库。如何把本地的提交同步到 GitHub/GitLab 中央仓库，同时不破坏其他同事的代码？\n\n## 2. 核心原理：远程追踪分支（Remote-tracking Branches）\n- 远程追踪分支（如 `origin/main`）是保存在本地的一组只读指针，记录了上次与远程服务器通信时远程分支的位置。\n- `git fetch origin`：从远程服务器拉取所有新数据并更新本地的 `origin/main` 指针，**但完全不会修改你当前工作区的文件**（安全探索）。\n- `git pull origin main`：等价于 `git fetch` 之后把 `origin/main` 自动整合进当前分支；整合方式由本地配置决定——默认通常产生一次合并提交，而开启 `pull.rebase` 等配置时会改为变基（rebase），并非“必定合并”。无论哪种方式，都可能遇到冲突需要人工解决。\n\n## 3. Git 操作安全铁律\n- **禁止在公共共享分支执行 `git push --force`**：强推会改写远程提交历史，导致其他协作者的分支历史被严重破坏。\n- **小步提交、及时同步**：在准备发起 PR 或推送前，先基于最新的目标主干做本地验证。\n\n## 4. 来源与延伸阅读\n- 《Pro Git》第 2 章 2.5 节（PDF 第 58-62 页）。",
+              "markdown": "# 远程协作与同步：git remote、fetch、pull 与安全边界\n\n## 1. 业务场景与需要解决的问题\n在团队协作中，每个开发者在自己的本地机器都有完整的版本库。如何把本地的提交同步到 GitHub/GitLab 中央仓库，同时不破坏其他同事的代码？\n\n## 2. 核心原理：远程追踪分支（Remote-tracking Branches）\n- 远程追踪分支（如 `origin/main`）是保存在本地的一组只读指针，记录了上次与远程服务器通信时远程分支的位置。\n- `git fetch origin`：从远程服务器拉取所有新数据并更新本地的 `origin/main` 指针，**但完全不会修改你当前工作区的文件**（安全探索）。\n- `git pull origin main`：等价于 `git fetch` 之后把 `origin/main` 自动整合进当前分支；整合方式由本地配置决定——默认通常产生一次合并提交，而开启 `pull.rebase` 等配置时会改为变基（rebase），并非“必定合并”。无论哪种方式，都可能遇到冲突需要人工解决。\n\n**SSH 与 HTTPS 怎么选、凭据放哪**\n\n- `https://` 地址用账号凭据认证（GitHub 现要求 Personal Access Token，不再收账号密码）；`git@github.com:user/repo.git` 地址用 SSH 密钥对（ssh-keygen 生成，公钥登记到平台）。\n- HTTPS 开箱即用、过代理/防火墙省心；SSH 免去每次输 token。个人开发两者皆可；**不要在命令、脚本或文档里明文写凭据**。\n- 凭据交给系统级工具保管：Windows 用 Git Credential Manager，macOS 用钥匙串（credential.helper osxkeychain）。凭据不应出现在仓库、shell 历史或截图里。\n\n## 3. Git 操作安全铁律\n- **禁止在公共共享分支执行 `git push --force`**：强推会改写远程提交历史，导致其他协作者的分支历史被严重破坏。\n- **小步提交、及时同步**：在准备发起 PR 或推送前，先基于最新的目标主干做本地验证。\n\n## 4. 来源与延伸阅读\n- 《Pro Git》第 2 章 2.5 节（PDF 第 58-62 页）。",
               "gitSteps": [
                 {
                   "command": "git remote -v",
@@ -815,7 +1137,7 @@
               "stageLinks": [
                 "08"
               ],
-              "markdown": "# 撤销与恢复：restore、revert 与 amend 的适用边界\n\n## 1. 业务场景与需要解决的问题\n改错了文件、add 错了内容、提交写漏了东西、错误的提交已经推到了共享分支……撤销发生在不同“层”，工具也不同。\n\n## 2. 按“改动暴露到哪一层”选工具\n\n```text\n还在工作目录，未 add          → git restore <file>（丢弃，不可找回）\n已 add 但未 commit            → git restore --staged <file>（保留修改，退出暂存）\n本地已 commit，想改文案/补文件 → git commit --amend（仅限未推送）\n提交已推送到共享分支          → git revert HEAD（生成反向提交，历史不改写）\n私有分支想丢弃最近 N 笔提交   → git reset（只对自己可见的分支使用）\n```\n\n## 3. 两条安全红线\n- `git reset --hard` 与 `git push --force` 都会**丢弃或改写**他人可能依赖的状态；只在确认分支完全私有时使用。\n- 已经被 amend/reset“扔掉”的提交其实还在对象库里：`git reflog` 能找到它们（见“高级工具”课）。\n\n## 4. 先预测，再运行\n- 在一次性临时仓库里：修改文件 → `git restore --staged` → `git status` 显示什么？再 `git restore` 后修改还在吗？先预测再验证。\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 2 章 2.4 节（PDF 第 55-57 页）。",
+              "markdown": "# 撤销与恢复：restore、revert 与 amend 的适用边界\n\n## 1. 业务场景与需要解决的问题\n改错了文件、add 错了内容、提交写漏了东西、错误的提交已经推到了共享分支……撤销发生在不同“层”，工具也不同。\n\n## 2. 按“改动暴露到哪一层”选工具\n\n```text\n还在工作目录，未 add          → git restore <file>（丢弃，不可找回）\n已 add 但未 commit            → git restore --staged <file>（保留修改，退出暂存）\n本地已 commit，想改文案/补文件 → git commit --amend（仅限未推送）\n提交已推送到共享分支          → git revert HEAD（生成反向提交，历史不改写）\n私有分支想丢弃最近 N 笔提交   → git reset（只对自己可见的分支使用）\n```\n\n**reset 三种模式的影响范围（沙箱实测，HEAD~1 为例）**\n\n- `--soft`：只移动 HEAD，改动**完整留在暂存区**（status 显示已暂存的 M）——“拆掉提交重新组织”用它。\n- `--mixed`（默认）：移动 HEAD 并清空暂存区，改动**退回工作区**（status 显示未暂存的 M）——“换一种方式重新 add”用它。\n- `--hard`：提交、暂存区、工作区**三处一起回退**——最危险；被撤的提交仍可凭哈希配合 reflog 找回（见历史考古课），但从未 add 过的修改无法恢复。\n- 与 restore/revert 的分工：restore 只动工作区/暂存区（不碰历史）；revert 生成反向提交（安全修正公共历史）；reset 移动分支指针（只整理私有历史）。\n\n## 3. 两条安全红线\n- `git reset --hard` 与 `git push --force` 都会**丢弃或改写**他人可能依赖的状态；只在确认分支完全私有时使用。\n- 已经被 amend/reset“扔掉”的提交其实还在对象库里：`git reflog` 能找到它们（见“高级工具”课）。\n\n## 4. 先预测，再运行\n- 在一次性临时仓库里：修改文件 → `git restore --staged` → `git status` 显示什么？再 `git restore` 后修改还在吗？先预测再验证。\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 2 章 2.4 节（PDF 第 55-57 页）。",
               "gitSteps": [
                 {
                   "command": "git restore welcome.md",
@@ -930,6 +1252,52 @@
               ]
             },
             {
+              "id": "git-interactive-staging",
+              "topicId": "topic-git",
+              "moduleId": "git-advanced-tools",
+              "title": "交互式暂存：一次改动里的两件事分开提交",
+              "summary": "git add -p 按块（hunk）逐个确认；一次提交只讲一件事，实验代码留在工作区。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 7 章 7.2 节 交互式暂存",
+                "pdfPageStart": 229,
+                "pdfPageEnd": 232,
+                "printPage": "211-214"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 交互式暂存：一次改动里的两件事分开提交\n\n## 1. 业务场景与需要解决的问题\n排查一个 bug 时顺手改了两处：真正的修复改在文件开头，一个“要不要试试”的实验性段落加在文件末尾。提交历史应该只记录 bug 修复——实验还不该进入历史。\n\n## 2. 为什么需要按块暂存\n- `git add 文件` 是文件级暂存，两处改动会一起进入暂存区；`git add -A` 更是全量。\n- `git add -p`（patch）把工作区改动切成块（hunk，默认 3 行上下文，距离太近的两处会合成一块），逐块询问：`y` 暂存本块、`n` 跳过、`s` 把大块拆成小块、`e` 手工编辑、`q` 退出。\n- 沙箱实测：文件开头一行修正与末尾一行实验段落相距超过上下文，被识别为两个 hunk；回答 y、n 后，暂存区只有修正（1 insertion, 1 deletion），实验段落留在工作区。\n\n## 3. 命令流与核对习惯\n- 暂存后先 `git diff --staged` 核对“要提交的”，再 `git diff` 核对“留下来的”，最后才 commit。\n- 剩余改动可以继续工作，或用贮藏课的 `git stash` 暂存到一边。\n\n## 4. 最小命令流与前后状态\n见下方命令步进（沙箱实测的两 hunk 场景）。\n\n## 5. 边界与提醒\n- `e` 手工编辑 hunk 容易把补丁改到无法应用，初学少用；两处改动相邻时先 `s` 拆分。\n- `git restore --staged 文件` 可整体退回误暂存的内容（撤销课）。\n\n## 6. 来源与出处\n- 《Pro Git》第 7 章 7.2 节 交互式暂存（PDF 第 229-232 页）。",
+              "gitSteps": [
+                {
+                  "command": "git add -p notes.md",
+                  "explanation": "逐块确认模式：y=暂存本块，n=跳过，s=拆分，e=手工编辑，q=退出。本例两个 hunk 分别回答 y（修正）与 n（实验段落）。",
+                  "repoStateBefore": "notes.md 同时存在两处未暂存修改：开头一行修正、末尾一行实验段落（相距超过 3 行上下文，是两个独立 hunk）",
+                  "repoStateAfter": "仅第一个 hunk 进入暂存区（git diff --staged --stat 显示 1 insertion, 1 deletion）；实验段落仍在工作区"
+                },
+                {
+                  "command": "git diff --staged",
+                  "explanation": "核对暂存区：只应看到被 y 暂存的那一块修正。",
+                  "repoStateBefore": "修正 hunk 已暂存",
+                  "repoStateAfter": "输出只包含“第一行-修正”的差异——待提交内容符合预期"
+                },
+                {
+                  "command": "git diff",
+                  "explanation": "核对工作区剩余：只应看到未暂存的实验段落。",
+                  "repoStateBefore": "实验段落未暂存",
+                  "repoStateAfter": "输出只包含“实验性段落”的新增行（1 insertion）"
+                },
+                {
+                  "command": "git commit -m \"只提交修正\"",
+                  "explanation": "提交此刻只包含暂存区里的内容——历史记录干净地讲述“修复”这一件事。",
+                  "repoStateBefore": "暂存区只含修正 hunk",
+                  "repoStateAfter": "新提交只含修正；git status 显示 M notes.md（实验段落仍留在工作区）"
+                }
+              ]
+            },
+            {
               "id": "git-rebase-cherry-pick",
               "topicId": "topic-git",
               "moduleId": "git-advanced-tools",
@@ -965,6 +1333,144 @@
                   "explanation": "变基后核对历史形态：feature 呈线性，不再有分叉。若误在公共分支上做了变基，不要强推覆盖，应与协作者沟通恢复。",
                   "repoStateBefore": "变基/拣选完成",
                   "repoStateAfter": "图形化列出各分支线性或分叉的历史拓扑"
+                }
+              ]
+            },
+            {
+              "id": "git-rebase-interactive",
+              "topicId": "topic-git",
+              "moduleId": "git-advanced-tools",
+              "title": "交互式变基：把杂乱提交整理成清晰历史",
+              "summary": "rebase -i 的 todo 列表支持 pick/reword/squash/edit/drop；只变基未推送的私有提交。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 7 章 7.6 节 重写历史",
+                "pdfPageStart": 247,
+                "pdfPageEnd": 253,
+                "printPage": "229-235"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 交互式变基：把杂乱提交整理成清晰历史\n\n## 1. 业务场景与需要解决的问题\n开发一路 commit：“wip 中间状态”“修复拼写”“完成导出功能”。功能可以合并了，但历史读起来像草稿——合并前应整理成讲得清楚的提交。\n\n## 2. rebase -i 的 todo 列表\n- `git rebase -i HEAD~3` 会打开编辑器，从旧到新列出最近 3 条提交，每行一个动作：\n- `pick`：保留；`reword`：保留改动、修改提交信息；`squash`：把该提交合并进它上面那条并合并信息；`fixup`：同 squash 但丢弃信息；`edit`：停在该提交允许修补；`drop`：丢弃。\n- 沙箱实测：4 个提交（项目初始化 / wip / 修复拼写 / 完成导出功能）中，把“修复拼写”一行改为 squash——历史从 3 条变 2 条，wip 与拼写修复合成一条；**所有提交哈希全部改变**。\n\n## 3. 黄金法则（与变基课一致）\n- 交互式变基是更强的“重写历史”：哈希全变。**只对未推送到共享分支的私有提交使用**；对已推送提交变基等于换一套新历史，需要 force push——本课程禁止。\n- 单提交的特例：`git commit --amend` 只重写最近一条，沙箱实测其哈希改变、信息更新。\n- 大批量历史清理（改邮箱、删大文件）不要用 filter-branch，官方已不推荐；用 git filter-repo。\n\n## 4. 最小命令流与前后状态\n见下方命令步进（沙箱实测的 squash 整理）。\n\n## 5. 来源与出处\n- 《Pro Git》第 7 章 7.6 节 重写历史（PDF 第 247-253 页）。",
+              "gitSteps": [
+                {
+                  "command": "git log --oneline",
+                  "explanation": "整理前的历史：三条开发过程提交，信息像草稿。",
+                  "repoStateBefore": "功能分支上依次提交：wip 中间状态、修复拼写、完成导出功能（加上更早的初始化提交）",
+                  "repoStateAfter": "oneline 输出三条开发提交，信息杂乱、粒度不一"
+                },
+                {
+                  "command": "git rebase -i HEAD~3",
+                  "explanation": "打开 todo 编辑器，从旧到新列出最近 3 条提交（默认全是 pick）。把“修复拼写”一行的 pick 改成 squash：它将被合并进它上面那条提交。",
+                  "repoStateBefore": "最近 3 条提交均为未推送的私有提交（黄金法则允许变基）",
+                  "repoStateAfter": "todo 列表保存后 Git 依次重放提交；squash 步骤会打开第二个编辑器确认合并后的提交信息"
+                },
+                {
+                  "command": "git log --oneline",
+                  "explanation": "整理后的历史：提交数从 3 变 2，wip 与拼写修复合成一条（信息以第一条的首行为准）。",
+                  "repoStateBefore": "squash 完成",
+                  "repoStateAfter": "oneline 只剩两条整洁提交；所有提交哈希与整理前完全不同（历史被重写）"
+                },
+                {
+                  "command": "git commit --amend -m \"完成导出功能\"",
+                  "explanation": "单提交版本的“重写历史”：只改最近一条提交的信息，不需要打开 todo 列表。",
+                  "repoStateBefore": "最后一条提交的信息需要微调",
+                  "repoStateAfter": "最后一条提交的信息更新、哈希改变；其余历史不变"
+                }
+              ]
+            },
+            {
+              "id": "git-submodules-basics",
+              "topicId": "topic-git",
+              "moduleId": "git-advanced-tools",
+              "title": "子模块：仓库里引用另一个仓库",
+              "summary": "git submodule add 记录“外部仓库 + 具体提交”；父仓库只存指针，不复制内容。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 7 章 7.11 节 子模块",
+                "pdfPageStart": 301,
+                "pdfPageEnd": 322,
+                "printPage": "283-304"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# 子模块：仓库里引用另一个仓库\n\n## 1. 业务场景与需要解决的问题\n项目依赖一个自己维护的公共库（如工具类仓库）。复制源码进来会失去上游更新；git subtree 又把历史搅在一起。子模块让父仓库**只记录“用哪个仓库的哪个提交”**。\n\n## 2. 基本机制（沙箱实测）\n- `git submodule add <url> <路径>`：克隆外部仓库到指定路径，并在父仓库生成两样东西——`.gitmodules` 文件（记录 path 与 url）和一个 gitlink 条目（`git status` 显示 `A libs/math`，指向子模块仓库的某次提交）。\n- 父仓库**不保存子模块的文件内容，只保存这个提交指针**——这是“引用而非复制”的本质。\n- 本机沙箱用本地裸仓库模拟远端：新版 Git 对 file:// 协议默认收紧，需 `git -c protocol.file.allow=always submodule add ...`；真实 HTTPS/SSH 地址不需要这一步。\n\n## 3. 日常三件事与注意事项\n- 克隆含子模块的仓库后子模块目录是空的：`git clone --recursive` 或事后 `git submodule update --init`。\n- 子模块内可以独立开发、提交、推送（它就是一个正常仓库）；父仓库通过 `git add libs/math` 把“指针前移”提交上去。\n- 常见坑：忘记 update --init 导致空目录；子模块停在 detached HEAD；删除子模块要同时清 .gitmodules、.git/config 与工作区目录。轻量依赖优先考虑包管理器，子模块适合“确实要跟着某个仓库某个版本走”的场景。\n\n## 4. 最小命令流与前后状态\n见下方命令步进（沙箱实测，本地裸仓库模拟远端）。\n\n## 5. 来源与出处\n- 《Pro Git》第 7 章 7.11 节 子模块（PDF 第 301-322 页）。",
+              "gitSteps": [
+                {
+                  "command": "git submodule add ../lib.git libs/math",
+                  "explanation": "把外部仓库登记为子模块并克隆到 libs/math。沙箱用本地裸仓库模拟远端，因此加 protocol.file.allow=always。",
+                  "repoStateBefore": "父仓库 appwork 已初始化；lib.git 是一个独立维护的数学库仓库",
+                  "repoStateAfter": "工作区出现 libs/math；父仓库新增 .gitmodules（记录 path 与 url）与 gitlink 暂存条目"
+                },
+                {
+                  "command": "git config --file .gitmodules --list",
+                  "explanation": "查看登记信息：path 与 url 两行。这个文件随父仓库提交，协作环境据此知道去哪拉子模块。",
+                  "repoStateBefore": "子模块已登记",
+                  "repoStateAfter": "文件内容为 [submodule \"libs/math\"] 段，含 path = libs/math 与 url = ../lib.git"
+                },
+                {
+                  "command": "git status --short",
+                  "explanation": "父仓库视角：子模块以 gitlink（模式 160000）出现在暂存区，指向子模块仓库的某一次提交。",
+                  "repoStateBefore": "submodule add 完成",
+                  "repoStateAfter": "status 显示 A .gitmodules 与 A libs/math——提交它们，父仓库从此固定“用这个库的哪个提交”"
+                }
+              ]
+            },
+            {
+              "id": "git-hooks-automation",
+              "topicId": "topic-git",
+              "moduleId": "git-advanced-tools",
+              "title": "Git 钩子与 Rerere：把重复动作交给 Git",
+              "summary": "pre-commit 钩子把检查固化在提交动作里；rerere 记住冲突解法，下次自动套用。",
+              "status": "published",
+              "kind": "command-lab",
+              "bookReference": {
+                "bookTitle": "Pro Git (第 2 版)",
+                "chapter": "第 8 章 8.3 节 Git 钩子 & 第 7 章 7.9 节 Rerere",
+                "pdfPageStart": 358,
+                "pdfPageEnd": 369,
+                "printPage": "340-351"
+              },
+              "stageLinks": [
+                "08"
+              ],
+              "markdown": "# Git 钩子与 Rerere：把重复动作交给 Git\n\n## 1. 业务场景与需要解决的问题\n团队约定“提交前必须通过测试”，但靠自觉总会有人忘；同一个合并冲突每次解决方式都一样，重复劳动。两类重复都可以交给 Git 自动化。\n\n## 2. 钩子：挂在 Git 动作上的脚本\n- 钩子是 .git/hooks/ 下的可执行脚本；目录里的 *.sample 是官方模板（改名去掉 .sample 即启用）。常用：pre-commit（提交前，非零退出即中止）、commit-msg（校验提交信息）、pre-push（推送前）。\n- 沙箱实测：pre-commit 脚本 exit 1 时 `git commit` 输出脚本打印的“检查未通过”并中止；改成 exit 0 后提交成功。\n- 默认钩子目录在 .git 里，**不随克隆传播**。团队共享钩子的标准做法：脚本放仓库内目录（如 .githooks/），`git config core.hooksPath .githooks` 指过去。\n- 应急出口：`git commit --no-verify` 跳过钩子（沙箱实测可用）——留作紧急热修，事后必须补验证。\n- 安全注意：钩子是本机脚本，来源不明的仓库要先审查脚本内容再启用；不要把密钥写进钩子。\n\n## 3. Rerere：记住你解决过的冲突\n- `git config rerere.enabled true` 开启后，Git 在你手工解决冲突时记录“冲突两侧 → 你的解法”（沙箱实测输出 Recorded preimage / Recorded resolution）。\n- 沙箱实测：reset 撤销这次合并后重新 merge，Git 直接输出 Resolved 'c.txt' using previous resolution——冲突被自动按上次的方式解决。\n- 提醒：rerere 只对“完全相同的冲突”生效；自动套用的解法不一定仍然正确，合并后照常检查。\n\n## 4. 最小命令流与前后状态\n见下方命令步进（沙箱实测）。\n\n## 5. 来源与出处\n- 《Pro Git》第 8 章 8.3 节 Git 钩子（PDF 第 358-369 页）；第 7 章 7.9 节 Rerere（PDF 第 292-297 页）。",
+              "gitSteps": [
+                {
+                  "command": "git config core.hooksPath .githooks",
+                  "explanation": "把钩子目录指到仓库内的 .githooks/：脚本可随仓库提交，克隆后一行 config 即启用团队共享钩子。",
+                  "repoStateBefore": "默认钩子目录 .git/hooks 只在本机存在，不随克隆传播",
+                  "repoStateAfter": "此后 Git 从 .githooks/ 查找 pre-commit 等钩子脚本"
+                },
+                {
+                  "command": "git commit -m \"新增导出功能\"",
+                  "explanation": "pre-commit 钩子在提交落定前自动执行；脚本以非零状态退出时提交被中止（沙箱实测：脚本打印“检查未通过”，提交未产生）。",
+                  "repoStateBefore": ".githooks/pre-commit 存在（例如运行测试的脚本）",
+                  "repoStateAfter": "脚本通过则提交完成；脚本失败则提交被中止，工作区与暂存区保持原状"
+                },
+                {
+                  "command": "git commit --no-verify -m \"紧急热修\"",
+                  "explanation": "--no-verify 跳过 pre-commit 与 commit-msg 钩子（沙箱实测可成功提交）。应急通道，用后尽快补跑检查。",
+                  "repoStateBefore": "钩子存在但当前是紧急修复，来不及等完整检查",
+                  "repoStateAfter": "提交绕过钩子完成；历史中该提交未经过 pre-commit 检查"
+                },
+                {
+                  "command": "git config rerere.enabled true",
+                  "explanation": "开启 rerere（reuse recorded resolution）：手工解决冲突时 Git 记录两侧内容与你的解法。",
+                  "repoStateBefore": "冲突解决靠每次重复手工劳动",
+                  "repoStateAfter": "config 生效；此后每次冲突解决被记录（Recorded preimage/resolution）"
+                },
+                {
+                  "command": "git merge feature",
+                  "explanation": "再次遇到与上次相同的冲突时，rerere 直接套用记录的解法——沙箱实测输出 Resolved 'c.txt' using previous resolution。",
+                  "repoStateBefore": "上一次同款冲突的手工解法已被 rerere 记录",
+                  "repoStateAfter": "冲突被自动解决到与上次一致的状态；照常检查后提交合并结果"
                 }
               ]
             },

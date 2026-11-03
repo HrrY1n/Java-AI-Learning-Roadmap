@@ -30,7 +30,7 @@
     },
     {
       "label": "修改一个条件",
-      "body": "新增 Cat 的叫声方法后，把 feed 改成也调用叫声——观察 feed 依旧不需要知道具体类型。"
+      "body": "给 Animal 增加 makeSound() 约定，让 Dog、Cat 各自重写（叫声不同），再把 feed 改成也调用 makeSound()——观察 feed 依旧不需要知道具体类型。"
     },
     {
       "label": "独立练习",

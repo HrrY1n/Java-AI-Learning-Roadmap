@@ -22,19 +22,19 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "List<Integer> 只能装 Integer；方法泛型参数让输入输出类型联动。类型擦除：运行期仍是 Object，约束主要发生在编译期。"
+      "body": "List<Integer> 只能装 Integer。类型擦除：运行期仍是 Object，约束主要发生在编译期。方法泛型参数（让输入输出类型联动）本课示例未涉及，在独立练习中实现。"
     },
     {
       "label": "预测运行",
-      "body": "预测：往 List<Integer> add 一个字符串，程序还能编译通过吗？错误发生在哪个阶段？"
+      "body": "预测：对用 Integer 实例化的 Box 调 setValue(\"一百\")，错误发生在哪个阶段——编译期还是运行期？"
     },
     {
       "label": "修改一个条件",
-      "body": "写一个泛型方法 <T> T first(List<T> list)，分别用 List<String> 与 List<Integer> 调用。"
+      "body": "把 Box<String> 改成不带类型参数的 raw Box（Box rawBox = new Box()），把 setValue 的实参换成 123，观察编译器警告与读取时的强制转换——体会类型参数失去后的代价。"
     },
     {
       "label": "独立练习",
-      "body": "独立练习：给 Box<T> 容器写 set/get，并用两个不同类型实例化使用。"
+      "body": "独立练习：写一个 Pair<K, V> 泛型类（两个类型参数各管一个槽位），用两种键值类型组合各实例化一次；再写泛型方法 <T> T first(List<T> list)，分别对 List<String> 与 List<Integer> 调用。"
     },
     {
       "label": "项目迁移",

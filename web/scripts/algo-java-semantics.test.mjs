@@ -162,6 +162,16 @@ test("正文 java 代码块中的每个声明都必须在对应落盘源码中�
     "algo-backtracking": "stages/topics/algorithms/backtracking/com/javaroadmap/algo/backtracking/App.java",
     "algo-dynamic-programming": "stages/topics/algorithms/dynamic_programming/com/javaroadmap/algo/dynamicprogramming/App.java",
     "algo-greedy": "stages/topics/algorithms/greedy/com/javaroadmap/algo/greedy/App.java",
+    "algo-deque": "stages/topics/algorithms/deque/com/javaroadmap/algo/deque/App.java",
+    "algo-bst": "stages/topics/algorithms/bst/com/javaroadmap/algo/bst/App.java",
+    "algo-balanced-tree": "stages/topics/algorithms/avl/com/javaroadmap/algo/avl/App.java",
+    "algo-heap-topk": "stages/topics/algorithms/heap_topk/com/javaroadmap/algo/heaptopk/App.java",
+    "algo-binary-boundary": "stages/topics/algorithms/binary_boundary/com/javaroadmap/algo/binaryboundary/App.java",
+    "algo-selection-heapsort": "stages/topics/algorithms/selection_heapsort/com/javaroadmap/algo/selectionheapsort/App.java",
+    "algo-non-comparison-sort": "stages/topics/algorithms/non_comparison_sort/com/javaroadmap/algo/noncomparisonsort/App.java",
+    "algo-backtracking-subset": "stages/topics/algorithms/subset_sum/com/javaroadmap/algo/subsetsum/App.java",
+    "algo-dp-knapsack": "stages/topics/algorithms/knapsack/com/javaroadmap/algo/knapsack/App.java",
+    "algo-edit-distance": "stages/topics/algorithms/edit_distance/com/javaroadmap/algo/editdistance/App.java",
   };
 
   let checkedDecls = 0;

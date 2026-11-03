@@ -28,7 +28,7 @@
     },
     {
       "label": "修改一个条件",
-      "body": "给 Cat 也加一个叫的方法（如 meow），再在 main 里让它叫——只需要写差异，不要重写 eat。"
+      "body": "示例里还没有 Cat——请自己新建 Cat extends Animal，只写 meow()（不重写 eat），再在 main 里喂食并让它叫。体会“子类只写差异”。"
     },
     {
       "label": "独立练习",
@@ -36,7 +36,7 @@
     },
     {
       "label": "项目迁移",
-      "body": "项目里的 BankAccount 与 SavingsAccount 就是这种关系：账务规则在父类，差异化利率在子类。"
+      "body": "银行示例里 Account 负责账务规则、BankService 是对外入口；假如要新增利率不同的储蓄账户，公共账务留在 Account 父类、差异化利率只写在它的子类里——这正是本课的 is-a 关系。"
     }
   ],
   "codeDirectory": "stages/stage02_java_oop/existing_course/day04_inheritance"

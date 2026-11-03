@@ -1,7 +1,7 @@
 {
   "id": "s03-file-read",
   "stageId": "03",
-  "moduleId": "collections",
+  "moduleId": "exceptions-io",
   "kind": "foundation",
   "title": "文件读取：从磁盘到程序",
   "summary": "逐行读取文本文件，并对“文件不存在”做异常处理。",
@@ -22,19 +22,19 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "BufferedReader 逐行读效率更高；readLine 返回 null 表示读完。路径相对工作目录。"
+      "body": "本示例用 Files.readAllLines：一次性把所有行读进 List<String>，之后遍历集合逐行处理，适合小文件；文件不存在时抛 IOException。要流式一行一行读大文件，改用 BufferedReader 的 readLine（返回 null 表示读完），对照参考示例见 stages/stage03_java_core/examples/buffered_reader_demo。"
     },
     {
       "label": "预测运行",
-      "body": "预测：文件存在时打印什么？把路径改成一个不存在的名字，输出与程序状态如何？"
+      "body": "预测：文件存在时打印哪些内容？总行数大约是多少？把路径改成一个不存在的名字，输出与程序状态如何？"
     },
     {
       "label": "修改一个条件",
-      "body": "换一个更长的数据文件，观察“总行数”的值如何随之变化。"
+      "body": "换一个更长的数据文件，观察“总行数”的值如何随之变化——readAllLines 把行存进集合，行数就是集合大小。"
     },
     {
       "label": "独立练习",
-      "body": "独立练习：读取文件并统计包含关键词“及格”的行数。"
+      "body": "独立练习：遍历 readAllLines 返回的集合，统计包含关键词“及格”的行数。"
     },
     {
       "label": "项目迁移",

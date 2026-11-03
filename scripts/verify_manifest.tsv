@@ -38,6 +38,7 @@ stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collection
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day05_student_management_list	com.javaroadmap.stage03.collections.day05studentmanagement.App	-	out	姓名：小红，分数：96
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day01_exception	com.javaroadmap.stage03.exceptionsio.day01exception.App	-	out	发生错误：除数不能为 0	异常演示结束
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day02_file_read	com.javaroadmap.stage03.exceptionsio.day02fileread.App	-	out	总行数：	读取文件：
+stages/stage03_java_core/examples/buffered_reader_demo	com.javaroadmap.stage03.examples.bufferedreaderdemo.App	-	out	流式读取完成，总行数：	1: package
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day03_file_write	com.javaroadmap.stage03.exceptionsio.day03filewrite.App	-	out;output.txt	写入成功：
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day04_simple_note_app	com.javaroadmap.stage03.exceptionsio.day04simplenote.App	-	out;notes.txt	当前全部笔记：	今天学习了 Java 文件读写。
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day01_lambda	com.javaroadmap.stage03.lambdastream.day01lambda.App	-	out	结果：30
@@ -82,6 +83,16 @@ stages/topics/algorithms/divide_conquer	com.javaroadmap.algo.divideconquer.App	-
 stages/topics/algorithms/backtracking	com.javaroadmap.algo.backtracking.App	-	out	全排列共 6 个，其中两个：[1, 2, 3] 与 [3, 2, 1]	子集共 8 个	模板要点
 stages/topics/algorithms/dynamic_programming	com.javaroadmap.algo.dynamicprogramming.App	-	out	爬楼梯 f(10)：89	零钱兑换 coins=[1,5,11] amount=15：3	零钱兑换 coins=[2] amount=3（凑不出）：-1	核心机制
 stages/topics/algorithms/greedy	com.javaroadmap.algo.greedy.App	-	out	选中活动数：3	选中活动：[1,4] [5,7] [8,9]	边界提醒
+stages/topics/algorithms/deque	com.javaroadmap.algo.deque.App	-	out	两次尾进、一次头进后：[会员插队, 普通顾客A, 普通顾客B]	当栈用 pop（后进先出）：3	当队列用 poll（先进先出）：1
+stages/topics/algorithms/bst	com.javaroadmap.algo.bst.App	-	out	建树后：中序=1 3 5 7 8 9 10，树高=3	查找 5：true；查找 6：false	顺序插入 1..7：中序=1 2 3 4 5 6 7，树高=7
+stages/topics/algorithms/avl	com.javaroadmap.algo.avl.App	-	out	树高=3（普通 BST 退化成 7，AVL 稳定在 3）	根节点=4（旋转把中段值 4 顶成了根）
+stages/topics/algorithms/heap_topk	com.javaroadmap.algo.heaptopk.App	-	out	建堆后（小顶堆）：[1, 4, 3, 9, 8, 7, 5]	流中最大的 3 个：[12, 15, 20]
+stages/topics/algorithms/binary_boundary	com.javaroadmap.algo.binaryboundary.App	-	out	4 的首个下标=2，末个下标=4，共 3 个	3 的首个下标=-1（不存在时为 -1）
+stages/topics/algorithms/selection_heapsort	com.javaroadmap.algo.selectionheapsort.App	-	out	选择排序结果：[2, 2, 5, 6, 8]	堆排序结果：[2, 2, 5, 6, 8]
+stages/topics/algorithms/non_comparison_sort	com.javaroadmap.algo.noncomparisonsort.App	-	out	计数排序：[1, 1, 2, 3, 4, 5, 6, 9]	基数排序：[329, 355, 436, 457, 657, 720, 839]
+stages/topics/algorithms/subset_sum	com.javaroadmap.algo.subsetsum.App	-	out	和为 4 的组合共 2 个：	[1, 1, 2]	[1, 3]
+stages/topics/algorithms/knapsack	com.javaroadmap.algo.knapsack.App	-	out	0-1 背包最大价值：55	完全背包（重 {2,3} 价值 {3,4}，容量 7）最大价值：10
+stages/topics/algorithms/edit_distance	com.javaroadmap.algo.editdistance.App	-	out	horse → ros 的编辑距离：3
 stages/stage03_java_core/advanced/equals_hashcode	com.javaroadmap.stage03.advanced.equalshashcode.App	-	out	未重写 equals，集合里查询 new PointRaw(1, 2)：false	重写 equals/hashCode 后查询 (1, 2)：true	equals 相等：true	hashCode 相同：true
 stages/stage03_java_core/advanced/inner_classes	com.javaroadmap.stage03.advanced.innerclasses.App	-	out	一杯咖啡，剩余水量 90	一杯咖啡，剩余水量 80	清洗完成（静态嵌套类，无需外部实例）	匿名类：咖啡好了，请取餐
 stages/stage03_java_core/advanced/enums	com.javaroadmap.stage03.advanced.enums.App	-	out	NEW 可取消：true	PAID 可取消：true	SHIPPED 可取消：false	当前状态：PAID，序号：1
@@ -89,3 +100,4 @@ stages/stage03_java_core/advanced/annotations	com.javaroadmap.stage03.advanced.a
 stages/stage03_java_core/advanced/type_information	com.javaroadmap.stage03.advanced.typeinfo.App	-	out	Circle 面积：12.566370614359172	Square 面积：9.0	圆的半径：2.0	反射创建的实例：Square
 stages/stage03_java_core/advanced/concurrency_basics	com.javaroadmap.stage03.advanced.concurrencybasics.App	-	out	同步后的计数：2000（期望 2000）
 stages/stage03_java_core/advanced/design_patterns	com.javaroadmap.stage03.advanced.designpatterns.App	-	out	zip:report.txt.zip	gzip:report.txt.gz	销售数据 -> 表格
+stages/stage03_java_core/advanced/assertions	com.javaroadmap.stage03.advanced.assertions.App	-	out	断言状态：关闭（用 java -ea 重新运行观察区别）	最小自测：2 个用例，失败 0 个	√2 ≈ 1.414213562373095	前置条件拦截：体重与身高必须为正数：-50.0, 1.7

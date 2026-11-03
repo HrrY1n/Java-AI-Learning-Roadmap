@@ -78,7 +78,7 @@ test("初访继续学习、完整课程切换与阅读记录保持真实语义",
   await saved(page);
   await page.getByRole("button", { name: "课程目录" }).click();
   const picker = page.locator(".chapter-picker");
-  await expect(picker.getByRole("link")).toHaveCount(44);
+  await expect(picker.getByRole("link")).toHaveCount(45);
   await picker.getByRole("link", { name: /DAY 02.*数据类型与运算符/ }).click();
   await expect(
     page.getByRole("heading", { level: 1, name: "数据类型与运算符" }),

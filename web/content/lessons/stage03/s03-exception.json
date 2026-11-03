@@ -1,7 +1,7 @@
 {
   "id": "s03-exception",
   "stageId": "03",
-  "moduleId": "collections",
+  "moduleId": "exceptions-io",
   "kind": "foundation",
   "title": "异常：把错误处理从正常流程中分出来",
   "summary": "try/catch/finally 让“哪里出错、怎么兜底、如何收尾”各有其位。",

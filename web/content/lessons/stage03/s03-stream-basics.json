@@ -18,19 +18,19 @@
     },
     {
       "label": "为什么需要",
-      "body": "Stream 把“做什么”与“怎么做”分离：filter(条件)、map(转换) 描述流水线，collect 收集结果。中间操作惰性，终端操作才执行。"
+      "body": "Stream 把“做什么”与“怎么做”分离：filter(条件)、map(转换) 描述流水线，终端操作才执行并产出结果（本示例用 forEach 打印；collect 收集到新列表的写法见 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day03_stream_collect）。中间操作惰性。"
     },
     {
       "label": "概念与心智模型",
-      "body": "list.stream() 生成流 → 中间操作（filter/map，返回流）→ 终端操作（collect/forEach，产出结果）。原列表不被修改。"
+      "body": "list.stream() 生成流 → 中间操作（filter/map，返回流）→ 终端操作（collect/forEach，产出结果）。本示例没有对原列表调用任何修改方法，names 保持不变；但这不是 Stream 的自动保证——如果 lambda 内部自己去改原集合，原数据照样会变。"
     },
     {
       "label": "预测运行",
-      "body": "预测筛选后列表的内容与原列表是否被修改；再预测 map 之后每个元素的样子。"
+      "body": "预测两段 forEach 各打印几行、具体是哪些名字；原列表 names 在两次流水线后变了吗？"
     },
     {
       "label": "修改一个条件",
-      "body": "把过滤条件从“长度大于 2”改为“以某字母开头”，观察结果列表变化。"
+      "body": "把过滤条件从“长度大于 2”改为“以某字母开头”，观察打印结果的变化。"
     },
     {
       "label": "独立练习",

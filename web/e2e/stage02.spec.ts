@@ -19,7 +19,7 @@ test.describe("Stage 02 首批课程", () => {
     await expect(page.locator("main h1")).toHaveText(/引用与对象状态/);
     // 课程目录包含 Stage 01 + Stage 02 全部课程
     await page.getByRole("button", { name: "课程目录" }).click();
-    await expect(page.locator(".chapter-picker a")).toHaveCount(19);
+    await expect(page.locator(".chapter-picker a")).toHaveCount(45);
   });
 
   test("Stage 02 预测题与修改题可用且与 Stage 01 共存", async ({ page }) => {

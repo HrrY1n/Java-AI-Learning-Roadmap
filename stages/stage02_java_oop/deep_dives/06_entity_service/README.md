@@ -48,7 +48,7 @@ Stage 01 的程序把所有逻辑写在 main 里也能跑。Stage 02 的三个�
 
 ## 独立练习
 
-在 `my_practices/` 把"图书借还"按三层重写（先只写内存版）：`Book`（有 `borrowed` 状态与"不能重复借出"规则）、`LibraryService`（`borrow(title)`、`giveBack(title)`、`availableCount()`）、`LibraryApp`（菜单入口）。自检：重复借同一本书第二次必须失败且有提示；Service 中不得出现任何 `System.out` 以外的输出（允许返回 boolean/描述字符串，由入口打印）。
+在 `my_practices/` 把"图书借还"按三层重写（先只写内存版）：`Book`（有 `borrowed` 状态与"不能重复借出"规则）、`LibraryService`（`borrow(title)`、`giveBack(title)`、`availableCount()`）、`LibraryApp`（菜单入口）。自检：重复借同一本书第二次必须失败且有提示；Service 中不得出现 `System.out` 等任何输出语句（返回 boolean/描述字符串，由入口打印）。
 
 ## 与后面学习的联系
 

@@ -28,8 +28,8 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(algoCard).toContainText("已发布首批课程");
     await expect(algoCard).toContainText("来源权威教材：Hello 算法");
 
-    // 验证课时与真实模块统计（V1.5 补齐：算法 19 节、9 个模块全部上线、0 建设 0 规划）
-    await expect(algoCard.locator(".topic-progress-text")).toContainText("已发布课程：19 节");
+    // 验证课时与真实模块统计（V1.7 补齐：算法 29 节、9 个模块全部上线、0 建设 0 规划）
+    await expect(algoCard.locator(".topic-progress-text")).toContainText("已发布课程：29 节");
     await expect(algoCard.locator(".topic-progress-text")).toContainText("已上线 9 个模块");
     await expect(algoCard.locator(".topic-progress-text")).toContainText("0 个规划中");
     await expect(algoCard.locator(".topic-progress-text")).not.toContainText("个建设中");
@@ -39,11 +39,11 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(algoCard.locator(".building-pill")).toHaveCount(0);
     await expect(algoCard.locator(".planned-pill")).toHaveCount(0);
 
-    // 3. 检查 Pro Git 专题卡片进度统计（V1.5 补齐：13 节、5 个模块全部上线）
+    // 3. 检查 Pro Git 专题卡片进度统计（V1.7 补齐：19 节、5 个模块全部上线）
     const gitCard = page.locator(".topic-card").filter({ hasText: "Git 工程实践" });
     await expect(gitCard).toBeVisible();
     await expect(gitCard).toContainText("已发布首批课程");
-    await expect(gitCard.locator(".topic-progress-text")).toContainText("已发布课程：13 节");
+    await expect(gitCard.locator(".topic-progress-text")).toContainText("已发布课程：19 节");
     await expect(gitCard.locator(".topic-progress-text")).toContainText("已上线 5 个模块");
     await expect(gitCard.locator(".building-pill")).toHaveCount(0);
     await expect(gitCard.locator(".planned-pill")).toHaveCount(0);

@@ -1,0 +1,45 @@
+{
+  "id": "s03-assertions",
+  "stageId": "03",
+  "moduleId": "java-advanced",
+  "kind": "foundation",
+  "title": "断言与防御式校验：让代码自己报告算错了",
+  "summary": "IllegalArgumentException 守入口永远生效；assert 守内部不变量、-ea 才启用；最小自测表固化期望。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-exception"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "BMI 计算函数收到负数体重，算出荒谬结果并一路传播进报表——错误本应在入口被拦下，而不是污染下游数据。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "两道防线职责不同：公开方法先验证参数，失败抛 IllegalArgumentException（前置条件，永远生效）；算法内部用 assert 复核“结果不合理”这类本不该发生的状态（后置条件，只在 java -ea 下启用）。assert 不能替代参数校验——上线默认不启用。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "入口守卫（throw）→ 内部不变量（assert）→ 最小自测（期望输入/输出写进用例表，改代码后重跑）。三者层层递进：校验挡住非法输入，断言暴露内部错误，自测在改动后第一时间回归。"
+    },
+    {
+      "label": "预测运行",
+      "body": "不带 -ea 运行：第一行“断言状态”打印什么？再用 java -ea 重新运行，哪一行变了？如果给 approximateSqrt 传入 -2，两种模式下分别发生什么？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 bmi(-50, 1.7) 改成 bmi(0, 1.7)，异常信息如何变化；再给 approximateSqrt 传入负数并用 -ea 运行，观察 AssertionError——而普通模式下同样的错误被静默吞掉，这正是 assert 只能补充、不能替代校验的原因。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：给 bmi 增加“身高超过 2.5 米视为非法”的防御校验；再在自测表里补一个边界用例（体重极小值）。核心的用例表自己填，不抄示例。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "接口入参校验、算法库的内部不变量、重构后重跑自测——JUnit 等测试框架只是把“用例表 + 断言”自动化，思想在这里已经完整。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/advanced/assertions"
+}

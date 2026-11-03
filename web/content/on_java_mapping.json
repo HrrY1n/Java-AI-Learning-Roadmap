@@ -415,6 +415,15 @@
       "pdfPages": "1223-1258",
       "overlapType": "gap-supplement",
       "rationale": "原书以策略、模板方法等展开“面向接口编程”思想，此前无正式课覆盖。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-assertions",
+      "topicTitle": "断言与防御式校验",
+      "bookChapter": "第 16 章代码校验",
+      "pdfPages": "584-642",
+      "overlapType": "gap-supplement",
+      "rationale": "原书第 16 章讲断言、日志与调试思想；此前课程只覆盖异常，缺少 assert 与最小自测，本课补齐入口校验与内部不变量两道防线。"
     }
   ]
 }

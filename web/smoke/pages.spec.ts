@@ -70,16 +70,16 @@ async function editor(page: Page) {
   return field;
 }
 
-test("正式子路径：首页、路线、目录与44节正式课程", async ({ page }) => {
+test("正式子路径：首页、路线、目录与45节正式课程", async ({ page }) => {
   await open(page, "home");
   await page.getByRole("link", { name: "继续学习", exact: true }).click();
   await expect(page).toHaveURL(/#\/lesson\/day01$/);
   await page.getByRole("button", { name: "课程目录", exact: true }).click();
-  await expect(page.locator(".chapter-picker").getByRole("link")).toHaveCount(44);
-  expect(catalog.lessons).toHaveLength(44);
+  await expect(page.locator(".chapter-picker").getByRole("link")).toHaveCount(45);
+  expect(catalog.lessons).toHaveLength(45);
   expect(catalog.lessons.filter((lesson) => lesson.stageId === "01")).toHaveLength(13);
   expect(catalog.lessons.filter((lesson) => lesson.stageId === "02")).toHaveLength(14);
-  expect(catalog.lessons.filter((lesson) => lesson.stageId === "03")).toHaveLength(17);
+  expect(catalog.lessons.filter((lesson) => lesson.stageId === "03")).toHaveLength(18);
   for (const lesson of catalog.lessons) {
     await open(page, `lesson/${lesson.id}`);
     await expect(page.getByRole("heading", { level: 1, name: lesson.title, exact: true })).toBeVisible();

@@ -28,7 +28,7 @@
     },
     {
       "label": "修改一个条件",
-      "body": "给 localOnly 也加上 @Retry(times = 2)，观察输出顺序与内容。"
+      "body": "给 localOnly 也加上 @Retry(times = 2)，观察输出内容的变化（注意：getDeclaredMethods 的返回顺序 JVM 不作保证，两次运行的方法顺序可能不同，看内容即可）。"
     },
     {
       "label": "独立练习",

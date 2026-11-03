@@ -39,13 +39,38 @@ test("V1.4 《Hello 算法》专题：首批已发布课程包含完整教学结
     m.lessons.filter((l) => l.status === "published"),
   );
 
-  assert.equal(publishedLessons.length, 19);
+  assert.equal(publishedLessons.length, 29);
   // 全部 9 个模块均已上线，不再有建设中/规划占位
   for (const module of algoTopic.modules) {
     assert.equal(module.status, "published", `${module.id} 应已上线`);
     assert.ok(module.lessons.length > 0, `${module.id} 不应为空模块`);
   }
   assert.equal(algoTopic.modules.length, 9);
+
+  // V1.7 补齐课程：双端队列、BST/平衡树、建堆 Top-K、二分边界、
+  // 选择/堆排序、非比较排序、子集和、背包、编辑距离
+  for (const id of [
+    "algo-deque",
+    "algo-bst",
+    "algo-balanced-tree",
+    "algo-heap-topk",
+    "algo-binary-boundary",
+    "algo-selection-heapsort",
+    "algo-non-comparison-sort",
+    "algo-backtracking-subset",
+    "algo-dp-knapsack",
+    "algo-edit-distance",
+  ]) {
+    const lesson = publishedLessons.find((l) => l.id === id);
+    assert.ok(lesson, `缺少 V1.7 补齐课程 ${id}`);
+    if (lesson.kind === "code") {
+      assert.match(lesson.packageName, /^com\.javaroadmap\.algo\./);
+    }
+  }
+  // 背包课必须给出四种策略的适用边界对照（分治/回溯/DP/贪心）
+  const knapsack = publishedLessons.find((l) => l.id === "algo-dp-knapsack");
+  assert.match(knapsack.markdown, /分数背包/, "背包课应对照可切分的分数背包");
+  assert.match(knapsack.markdown, /贪心/, "背包课应说明贪心的适用分界");
 
   for (const lesson of publishedLessons) {
     // 来源追溯
@@ -123,6 +148,16 @@ test("V1.4 源码同步门禁：已发布算法课程代码与 stages/topics/alg
     "algo-linkedlist": "stages/topics/algorithms/linkedlist/com/javaroadmap/algo/linkedlist/App.java",
     "algo-stack": "stages/topics/algorithms/stack/com/javaroadmap/algo/stack/App.java",
     "algo-queue": "stages/topics/algorithms/queue/com/javaroadmap/algo/queue/App.java",
+    "algo-deque": "stages/topics/algorithms/deque/com/javaroadmap/algo/deque/App.java",
+    "algo-bst": "stages/topics/algorithms/bst/com/javaroadmap/algo/bst/App.java",
+    "algo-balanced-tree": "stages/topics/algorithms/avl/com/javaroadmap/algo/avl/App.java",
+    "algo-heap-topk": "stages/topics/algorithms/heap_topk/com/javaroadmap/algo/heaptopk/App.java",
+    "algo-binary-boundary": "stages/topics/algorithms/binary_boundary/com/javaroadmap/algo/binaryboundary/App.java",
+    "algo-selection-heapsort": "stages/topics/algorithms/selection_heapsort/com/javaroadmap/algo/selectionheapsort/App.java",
+    "algo-non-comparison-sort": "stages/topics/algorithms/non_comparison_sort/com/javaroadmap/algo/noncomparisonsort/App.java",
+    "algo-backtracking-subset": "stages/topics/algorithms/subset_sum/com/javaroadmap/algo/subsetsum/App.java",
+    "algo-dp-knapsack": "stages/topics/algorithms/knapsack/com/javaroadmap/algo/knapsack/App.java",
+    "algo-edit-distance": "stages/topics/algorithms/edit_distance/com/javaroadmap/algo/editdistance/App.java",
   };
 
   const algoTopic = catalog.topics.find((t) => t.id === "topic-algo");
@@ -156,7 +191,7 @@ test("V1.4 《Pro Git》专题：首批课程包含真实 Git 行为、状态输
     m.lessons.filter((l) => l.status === "published"),
   );
 
-  assert.equal(publishedLessons.length, 13);
+  assert.equal(publishedLessons.length, 19);
   // 全部 5 个 Git 模块均已上线
   for (const module of gitTopic.modules) {
     assert.equal(module.status, "published", `${module.id} 应已上线`);
@@ -216,6 +251,39 @@ test("V1.4 《Pro Git》专题：首批课程包含真实 Git 行为、状态输
     assert.ok(lesson.gitSteps.length >= 3, `${id} 应包含完整的命令步进数据`);
   }
 
+  // V1.7 补齐课程：忽略规则、交互式暂存、交互式变基、worktree、子模块、钩子与 rerere
+  const expectedV17Lessons = [
+    "git-ignore-basics",
+    "git-interactive-staging",
+    "git-rebase-interactive",
+    "git-worktree",
+    "git-submodules-basics",
+    "git-hooks-automation",
+  ];
+  for (const id of expectedV17Lessons) {
+    const lesson = publishedLessons.find((l) => l.id === id);
+    assert.ok(lesson, `缺少 V1.7 补齐课程 ${id}`);
+    assert.ok(lesson.gitSteps.length >= 3, `${id} 应包含完整的命令步进数据`);
+    for (const s of lesson.gitSteps) {
+      assert.ok(s.command.startsWith("git "), `${id} 步进命令必须以 git 开头`);
+    }
+  }
+  // 忽略规则课必须如实说明“已跟踪文件不受新增规则影响”这一陷阱
+  const ignoreLesson = publishedLessons.find((l) => l.id === "git-ignore-basics");
+  assert.match(
+    ignoreLesson.markdown,
+    /忽略规则只对[“"]未跟踪[”"]文件生效|不会让已跟踪文件停止被跟踪/,
+    "忽略课必须点出已跟踪文件陷阱",
+  );
+  assert.match(ignoreLesson.markdown, /rm --cached/, "忽略课必须给出停止跟踪的正解");
+  // 撤销课必须覆盖 reset 三种模式的影响范围
+  const undo = publishedLessons.find((l) => l.id === "git-undo-recover");
+  assert.match(undo.markdown, /--soft/, "撤销课应覆盖 reset --soft");
+  assert.match(undo.markdown, /--mixed/, "撤销课应覆盖 reset --mixed");
+  // worktree 课必须强调保护其他会话的工作区
+  const worktree = publishedLessons.find((l) => l.id === "git-worktree");
+  assert.match(worktree.markdown, /不要动其他|只处理自己创建|其他会话/, "worktree 课必须说明保护其他工作区");
+
   // 危险操作必须在课程中如实警示，且步进命令不得包含破坏性写法
   const undoLesson = publishedLessons.find((l) => l.id === "git-undo-recover");
   assert.match(undoLesson.markdown, /reset --hard/, "撤销课必须如实说明 reset --hard 的破坏性");
@@ -232,8 +300,8 @@ test("V1.4 《Pro Git》专题：首批课程包含真实 Git 行为、状态输
 
 test("V1.4 《On Java 8》补充关联：全部关联对应有效课程并标注现代 JDK 差异", () => {
   assert.ok(Array.isArray(catalog.onJavaLinks));
-  // 覆盖全部 44 节已发布主线课程（Stage 01×13 + Stage 02×14 + Stage 03×17）
-  assert.equal(catalog.onJavaLinks.length, 44);
+  // 覆盖全部 45 节已发布主线课程（Stage 01×13 + Stage 02×14 + Stage 03×18）
+  assert.equal(catalog.onJavaLinks.length, 45);
 
   const validStageIds = new Set(catalog.stages.map((s) => s.id));
   const validLessonIds = new Set(catalog.lessons.map((l) => l.id));
