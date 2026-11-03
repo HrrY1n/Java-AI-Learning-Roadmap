@@ -1,0 +1,45 @@
+{
+  "id": "s03-file-read",
+  "stageId": "03",
+  "moduleId": "collections",
+  "kind": "foundation",
+  "title": "文件读取：从磁盘到程序",
+  "summary": "逐行读取文本文件，并对“文件不存在”做异常处理。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-exception"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "程序重启后学生成绩就没了——数据需要落盘。读文件是持久化的第一步。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "文件在磁盘上，读取可能失败（不存在、无权限），所以文件 IO 天然与异常绑定，必须 try/catch。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "BufferedReader 逐行读效率更高；readLine 返回 null 表示读完。路径相对工作目录。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测：文件存在时打印什么？把路径改成一个不存在的名字，输出与程序状态如何？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "换一个更长的数据文件，观察“总行数”的值如何随之变化。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：读取文件并统计包含关键词“及格”的行数。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "导入 CSV、读配置文件、日志分析——都从逐行读取开始。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day02_file_read"
+}

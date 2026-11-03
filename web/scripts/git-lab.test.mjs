@@ -252,16 +252,23 @@ test('V1.5 Pro Git 补齐课程：冲突/撤销/stash/标签/变基拣选/协作
     const f1parent = await runGit(['rev-parse', 'feature~1'], repo);
     const mainHead = await runGit(['rev-parse', 'main'], repo);
     assert.equal(f1parent.stdout.trim(), mainHead.stdout.trim(), '变基后 feature 应线性落在 main 之上');
-    // cherry-pick：内容相同但哈希不同
+    // cherry-pick：构造不同的父提交使哈希确定不同
     await runGit(['switch', '-c', 'hotfix'], repo);
     const l1hash = await runGit(['log', '--format=%H', '--grep=l1'], repo);
     await runGit(['reset', '--hard', l1hash.stdout.trim()], repo);
+    // 在 hotfix 上先加一笔额外提交，让 cherry-pick 的父提交与原提交的父提交不同
+    await fsWriteFile(path.join(repo, 'hotfix-setup.txt'), 'setup\n');
+    await runGit(['add', '.'], repo);
+    await runGit(['commit', '-m', 'hotfix setup'], repo);
     const g1hash = await runGit(['log', '--format=%H', '--grep=g1', 'main'], repo);
     await runGit(['cherry-pick', g1hash.stdout.trim()], repo);
     const picked = await runGit(['rev-parse', 'HEAD'], repo);
-    assert.notEqual(picked.stdout.trim(), g1hash.stdout.trim(), '拣选生成内容相同但哈希不同的新提交');
+    assert.notEqual(picked.stdout.trim(), g1hash.stdout.trim(), '父提交不同 → 拣选生成的新提交哈希必须不同');
     const pickedMsg = await runGit(['log', '-1', '--format=%s'], repo);
-    assert.match(pickedMsg.stdout, /g1/);
+    assert.match(pickedMsg.stdout, /g1/, '拣选后的提交消息应保留');
+    // 验证文件内容确实被带到了 hotfix
+    const pickedTree = await runGit(['ls-tree', '--name-only', 'HEAD'], repo);
+    assert.match(pickedTree.stdout, /g\.txt/);
   });
 
   await t.test('git-collab-workflow: clone 本地远端、push -u 建立跟踪', async () => {
@@ -305,6 +312,31 @@ test('V1.5 Pro Git 补齐课程：冲突/撤销/stash/标签/变基拣选/协作
     assert.equal(await readLf(path.join(repo, 'code.txt')), 'line1\nline2\n');
     const blame = await runGit(['blame', 'code.txt'], repo);
     assert.match(blame.stdout, /line1/, 'blame 输出应包含源行内容');
+  });
+
+  await t.test('git-history-archaeology: bisect 完整二分定位小例', async () => {
+    const repo = path.join(sandbox, 'bisect');
+    await runGit(['init', '-b', 'main', repo]);
+    // 5 笔提交，第 3 笔引入 bug（写入了 bad 标记）
+    for (let i = 1; i <= 5; i++) {
+      await fsWriteFile(path.join(repo, 'v.txt'), 'v' + i + (i >= 3 ? '\nBUG\n' : '\n'));
+      await runGit(['add', '.'], repo);
+      await runGit(['commit', '-m', 'v' + i], repo);
+    }
+    const v5 = await runGit(['rev-parse', 'HEAD'], repo);
+    const goodHash = await runGit(['rev-parse', 'HEAD~4'], repo); // v1 = good
+    // 二分开始：只初始化流程，尚未检出候选
+    await runGit(['bisect', 'start'], repo);
+    await runGit(['bisect', 'bad', v5.stdout.trim()], repo);
+    await runGit(['bisect', 'good', goodHash.stdout.trim()], repo);
+    // 标记完成后 Git 自动检出中间提交（v3 附近），reflog 应有 bisect 记录
+    const midHead = await runGit(['rev-parse', 'HEAD'], repo);
+    assert.notEqual(midHead.stdout.trim(), v5.stdout.trim(), 'bisect 应把 HEAD 切到中间候选');
+    // 假设在中间提交测试后标记 bad，Git 继续缩小范围
+    await runGit(['bisect', 'bad'], repo);
+    await runGit(['bisect', 'reset'], repo);
+    const afterReset = await runGit(['rev-parse', 'HEAD'], repo);
+    assert.equal(afterReset.stdout.trim(), v5.stdout.trim(), 'bisect reset 应回到原始分支');
   });
 
   await t.test('git-internals-basics: 配置读取、hash-object 内容寻址、cat-file 与 ls-tree', async () => {

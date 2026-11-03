@@ -1,0 +1,43 @@
+{
+  "id": "s03-inner-classes",
+  "stageId": "03",
+  "moduleId": "java-advanced",
+  "kind": "foundation",
+  "title": "内部类：把逻辑藏在最需要它的地方",
+  "summary": "成员内部类、静态嵌套类与匿名类各自的使用边界。",
+  "contentState": "published",
+  "relatedLessonIds": [],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "咖啡机的清洗逻辑只对咖啡机有意义，暴露成顶层类会污染包结构；回调逻辑只用一次，为它建文件更浪费。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "内部类把辅助逻辑放在使用者的作用域内：成员内部类可访问外部私有状态；静态嵌套类不需要外部实例；匿名类就地实现接口。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "成员内部类持外部引用（machine.new Brewer()）；static nested 不持；匿名类 new 接口() { 实现 }。现代 Java 中匿名类很多场景已被 lambda 取代。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测两次 brew 后的剩余水量；预测静态嵌套类创建时需不需要先创建外部实例。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 Brewer 改成 static，观察还能不能访问 water——编译错误正是“持有外部引用”的证据。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：用匿名类实现 Comparator 给列表排序，再用 lambda 重写一遍，对比两种写法。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "Builder 模式、Map.Entry、事件监听器——内部类在标准库与框架里无处不在。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/advanced/inner_classes"
+}

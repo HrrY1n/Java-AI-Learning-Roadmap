@@ -186,6 +186,235 @@
       "pdfPages": "98-121",
       "overlapType": "gap-supplement",
       "rationale": "原书提示输入解析的脆弱性：Scanner 的 nextInt 遇到非法 token 会抛 InputMismatchException，主线课程以此引导防御式读取。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-inheritance-basics",
+      "topicTitle": "继承与 is-a 关系",
+      "bookChapter": "第 8 章复用（继承）",
+      "pdfPages": "185-212",
+      "overlapType": "extension",
+      "rationale": "原书强调继承的“是一个”判断与向上转型的安全边界，补足主线课程对继承动机的完整论证。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-polymorphism-basics",
+      "topicTitle": "多态与方法分派",
+      "bookChapter": "第 9 章多态",
+      "pdfPages": "212-237",
+      "overlapType": "extension",
+      "rationale": "原书从“后期绑定”角度解释方法调用如何落到具体子类，深化主线课程对动态绑定的说明。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-interface-abstract",
+      "topicTitle": "抽象类与接口契约",
+      "bookChapter": "第 10 章接口",
+      "pdfPages": "237-268",
+      "overlapType": "extension",
+      "rationale": "原书系统阐述“完全解耦”与多重实现，并比较接口与抽象类的取舍，是主线课程的直接延伸。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-string-common-api",
+      "topicTitle": "String 常用 API 与内容相等",
+      "bookChapter": "第 18 章字符串",
+      "pdfPages": "669-718",
+      "overlapType": "gap-supplement",
+      "rationale": "原书用整章分析 String 不可变性与 equals 语义，补足主线课程对 == 与 equals 差异的原理说明。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-stringbuilder-intro",
+      "topicTitle": "StringBuilder 与拼接",
+      "bookChapter": "第 18 章字符串（StringBuilder）",
+      "pdfPages": "690-698",
+      "overlapType": "extension",
+      "rationale": "原书明确指出循环拼接应使用 StringBuilder，与主线课程性能建议互相印证。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-inheritance-vs-composition",
+      "topicTitle": "继承与组合取舍",
+      "bookChapter": "第 8 章复用（组合与继承取舍）",
+      "pdfPages": "194-212",
+      "overlapType": "gap-supplement",
+      "rationale": "原书用大量篇幅论证“优先组合”，深化课的正方形事故正是该论证的具体化。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-polymorphism-mechanism",
+      "topicTitle": "多态机制与可扩展设计",
+      "bookChapter": "第 9 章多态（扩展性）",
+      "pdfPages": "230-237",
+      "overlapType": "extension",
+      "rationale": "原书展示“新增类型不改调用方”的完整推导，支撑深化课的接口设计讨论。"
+    },
+    {
+      "stageId": "02",
+      "lessonId": "s02-entity-service",
+      "topicTitle": "Entity 与 Service 职责分离",
+      "bookChapter": "第 25 章设计模式（思想部分）",
+      "pdfPages": "1223-1258",
+      "overlapType": "gap-supplement",
+      "rationale": "实体与服务的分层是设计模式的实用起点，原书的思想章节提供更高视角。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-arraylist",
+      "topicTitle": "ArrayList 与动态扩容",
+      "bookChapter": "第 12 章集合（List 与 ArrayList）",
+      "pdfPages": "324-360",
+      "overlapType": "extension",
+      "rationale": "原书详解 ArrayList 内部数组、扩容与 fail-fast，超出主线“会增删改查”的目标。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-hashmap",
+      "topicTitle": "HashMap 键值对",
+      "bookChapter": "第 12 章集合（Map 与 HashMap）",
+      "pdfPages": "360-390",
+      "overlapType": "extension",
+      "rationale": "原书深入散列机制与负载因子，主线课程只覆盖使用层面。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-hashset",
+      "topicTitle": "HashSet 去重集合",
+      "bookChapter": "第 12 章集合（Set 与 HashSet）",
+      "pdfPages": "362-370",
+      "overlapType": "gap-supplement",
+      "rationale": "原书对比 Set 家族实现差异（HashSet/TreeSet/LinkedHashSet），主线未展开。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-generics",
+      "topicTitle": "泛型与编译期类型检查",
+      "bookChapter": "第 20 章泛型",
+      "pdfPages": "791-940",
+      "overlapType": "gap-supplement",
+      "rationale": "原书整章讲解泛型擦除、边界与通配符，主线课程只做使用入门。",
+      "modernJdkDiff": "JDK 25 依旧坚持类型擦除模型；泛型数组与基本类型限制没有变化。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-exception",
+      "topicTitle": "异常机制",
+      "bookChapter": "第 15 章异常",
+      "pdfPages": "519-582",
+      "overlapType": "extension",
+      "rationale": "原书区分受检异常的工程得失、自定义异常与异常链，主线课程只做入门。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-file-read",
+      "topicTitle": "文件读取",
+      "bookChapter": "第 17 章文件",
+      "pdfPages": "643-668",
+      "overlapType": "extension",
+      "rationale": "原书覆盖 Path/Files 现代写法，主线课程只演示 BufferedReader 传统路径。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-choose-collection",
+      "topicTitle": "集合选型决策",
+      "bookChapter": "第 12 章集合（选型）",
+      "pdfPages": "324-330",
+      "overlapType": "extension",
+      "rationale": "原书开篇即给出按操作选集合的决策框架，与深化课的决策表互为印证。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-utf8-io",
+      "topicTitle": "UTF-8 与 IO 编码",
+      "bookChapter": "第 17 章文件（编码与读写器）",
+      "pdfPages": "652-668",
+      "overlapType": "gap-supplement",
+      "rationale": "原书解释字节流与字符流的界限及字符集指定，深化课的乱码演示需要这一层原理。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-lambda",
+      "topicTitle": "Lambda 表达式",
+      "bookChapter": "第 13 章函数式编程",
+      "pdfPages": "421-462",
+      "overlapType": "extension",
+      "rationale": "原书从函数式接口与方法引用系统展开，超出主线课程的语法入门。",
+      "modernJdkDiff": "JDK 25 的 lambda 语义与 Java 8 一致；var 与模式匹配让周边代码更短。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-stream-basics",
+      "topicTitle": "Stream 流水线",
+      "bookChapter": "第 14 章流式编程",
+      "pdfPages": "463-518",
+      "overlapType": "extension",
+      "rationale": "原书覆盖惰性求值、原始类型流与收集器全貌，主线课程只教 filter/map/collect。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-equals-hashcode",
+      "topicTitle": "equals/hashCode 契约",
+      "bookChapter": "第 12 章集合（散列与哈希码）",
+      "pdfPages": "360-368",
+      "overlapType": "gap-supplement",
+      "rationale": "原书明确“equals 相等则 hashCode 必须相同”的契约细节及违反后果，是主线集合课的关键前置。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-inner-classes",
+      "topicTitle": "内部类",
+      "bookChapter": "第 11 章内部类",
+      "pdfPages": "324-364",
+      "overlapType": "gap-supplement",
+      "rationale": "原书系统讲解成员/静态嵌套/匿名/局部内部类与 this 引用，此前无正式课覆盖。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-enums",
+      "topicTitle": "枚举",
+      "bookChapter": "第 22 章枚举",
+      "pdfPages": "1018-1075",
+      "overlapType": "gap-supplement",
+      "rationale": "原书展示枚举携带行为、EnumMap/EnumSet 与值集约束，此前无正式课覆盖。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-annotations",
+      "topicTitle": "注解",
+      "bookChapter": "第 23 章注解",
+      "pdfPages": "1077-1128",
+      "overlapType": "gap-supplement",
+      "rationale": "原书讲解定义/保留策略/反射读取，此前无正式课覆盖。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-type-information",
+      "topicTitle": "运行时类型信息与反射",
+      "bookChapter": "第 19 章类型信息",
+      "pdfPages": "719-788",
+      "overlapType": "gap-supplement",
+      "rationale": "原书区分 RTTI 与反射的边界与代价，此前无正式课覆盖。",
+      "modernJdkDiff": "JDK 25 建议优先用 instanceof 模式匹配替代显式强转；反射仍需 setAccessible 时注意模块封锁。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-concurrency-basics",
+      "topicTitle": "并发基础",
+      "bookChapter": "第 24 章并发编程",
+      "pdfPages": "1129-1219",
+      "overlapType": "gap-supplement",
+      "rationale": "原书用整章建立竞态、原子性与同步的心智模型，此前无正式课覆盖。",
+      "modernJdkDiff": "现代 JDK 提供 java.util.concurrent 与虚拟线程（JDK 21+），synchronized 语义不变。"
+    },
+    {
+      "stageId": "03",
+      "lessonId": "s03-design-patterns",
+      "topicTitle": "设计模式基本思想",
+      "bookChapter": "第 25 章设计模式",
+      "pdfPages": "1223-1258",
+      "overlapType": "gap-supplement",
+      "rationale": "原书以策略、模板方法等展开“面向接口编程”思想，此前无正式课覆盖。"
     }
   ]
 }

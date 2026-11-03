@@ -1,0 +1,17 @@
+{
+  "id": "s02-inheritance-vs-composition",
+  "stageId": "02",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "继承与组合：是什么才继承，有一个就组合",
+  "summary": "用正方形继承长方形的经典事故，理解什么时候继承是错误设计。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-inheritance-basics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage02_java_oop/deep_dives/04_inheritance_composition/README.md",
+  "codeDirectory": "stages/stage02_java_oop/deep_dives/04_inheritance_composition"
+}

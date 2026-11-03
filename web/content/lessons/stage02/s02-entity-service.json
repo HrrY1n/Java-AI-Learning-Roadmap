@@ -1,0 +1,17 @@
+{
+  "id": "s02-entity-service",
+  "stageId": "02",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "Entity 与 Service：面向对象的职责分离",
+  "summary": "数据类与行为类分开，初探真实项目的分层组织。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-interface-abstract"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage02_java_oop/deep_dives/06_entity_service/README.md",
+  "codeDirectory": "stages/stage02_java_oop/deep_dives/06_entity_service"
+}

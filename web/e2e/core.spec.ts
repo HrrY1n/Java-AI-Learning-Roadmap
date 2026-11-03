@@ -78,7 +78,7 @@ test("初访继续学习、完整课程切换与阅读记录保持真实语义",
   await saved(page);
   await page.getByRole("button", { name: "课程目录" }).click();
   const picker = page.locator(".chapter-picker");
-  await expect(picker.getByRole("link")).toHaveCount(19);
+  await expect(picker.getByRole("link")).toHaveCount(44);
   await picker.getByRole("link", { name: /DAY 02.*数据类型与运算符/ }).click();
   await expect(
     page.getByRole("heading", { level: 1, name: "数据类型与运算符" }),
@@ -117,10 +117,11 @@ test("14 阶段路线展示真实材料状态，无课程阶段只显示知识�
     .filter({ has: page.locator(".stage-index", { hasText: /^02$/ }) })
     .click();
   // V1.3：Stage 02 首批课程已发布——详情面板列出课程链接并标注持续建设
+  // V1.5：On Java 8 补齐后 Stage 02 从 6 课扩展到 14 课
   await expect(page.locator(".stage-detail")).toContainText("未验证");
   await expect(
     page.locator(".stage-lesson-links").getByRole("link"),
-  ).toHaveCount(6);
+  ).toHaveCount(14);
   await expect(
     page.locator(".stage-detail").getByText("本阶段内容仍在持续建设"),
   ).toBeVisible();

@@ -1,0 +1,45 @@
+{
+  "id": "s03-generics",
+  "stageId": "03",
+  "moduleId": "collections",
+  "kind": "foundation",
+  "title": "泛型：让类型错误在编译期暴露",
+  "summary": "ArrayList<Object> 什么都装也什么都可能错；泛型把类型检查提前到编译期。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-arraylist"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "往装数字的列表里塞了一个文本，运行到一半才崩溃——错误发现得越晚，修复越贵。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "泛型 <T> 把“容器里装什么类型”写成代码的一部分：编译期拦截错型，读取时也不再强制转换。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "List<Integer> 只能装 Integer；方法泛型参数让输入输出类型联动。类型擦除：运行期仍是 Object，约束主要发生在编译期。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测：往 List<Integer> add 一个字符串，程序还能编译通过吗？错误发生在哪个阶段？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "写一个泛型方法 <T> T first(List<T> list)，分别用 List<String> 与 List<Integer> 调用。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：给 Box<T> 容器写 set/get，并用两个不同类型实例化使用。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "DAO 的 Repository<T>、缓存的 Cache<K, V> 都是泛型的直接应用。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day04_generic"
+}

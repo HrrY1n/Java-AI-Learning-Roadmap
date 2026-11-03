@@ -1,0 +1,45 @@
+{
+  "id": "s03-hashmap",
+  "stageId": "03",
+  "moduleId": "collections",
+  "kind": "foundation",
+  "title": "HashMap：按键查找的键值对",
+  "summary": "键值对场景（名字→分数）用 HashMap 实现一步定位，替代遍历查找。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-polymorphism-basics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "成绩表按名字查分数。用两个平行数组或遍历 List 查找都别扭——数据天然是“键→值”。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "HashMap 用哈希把键映射到桶（算法专题哈希表一课的工业版），put/get 平均 O(1)。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "put(key, value) 写入，get(key) 读取，containsKey 判断存在。键唯一，重复 put 是覆盖。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测 get(\"小明\") 的返回；再预测 get(\"不存在\") 的返回——是报错还是 null？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把小明的分数 put 两次（值不同），观察最终 get 的结果——验证覆盖语义。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：存 3 个学生的年龄，再遍历打印全部键值对（提示：entrySet 或 keySet）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "配置项、缓存、ID→对象映射，全部依赖 HashMap。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day02_hashmap"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "s02-stringbuilder-intro",
+  "stageId": "02",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "StringBuilder：高频拼接的正确工具",
+  "summary": "循环里用 + 拼接会制造大量临时对象，StringBuilder 在原容器上追加。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-string-common-api"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "导出报表要把上百行数据拼成一段文本。用 + 在循环里拼，每次都会创建新 String，又慢又占内存。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "String 不可变，每次拼接都是复制；StringBuilder 维护可变的字符容器，append 直接在内部数组上追加。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "append 链式调用，最后 toString() 一次性得到结果。还有 reverse、insert、delete 等操作。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测 builder.toString() 的完整内容与 word.reverse() 的结果。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 append 的年龄改成 20，观察结果变化；再试试在中间 insert 一个字符串。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：用 StringBuilder 拼 1~10 的乘法表（每行一条，用 append 与换行符），不使用 + 号连接字符串字面量。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "日志拼装、SQL 拼接、JSON 组装——工程里凡循环拼接都用 StringBuilder。"
+    }
+  ],
+  "codeDirectory": "stages/stage02_java_oop/existing_course/examples/common_api/day02_stringbuilder"
+}

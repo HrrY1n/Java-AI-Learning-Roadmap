@@ -1,0 +1,43 @@
+{
+  "id": "s02-inheritance-basics",
+  "stageId": "02",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "继承入门：is-a 关系与方法复用",
+  "summary": "子类自动获得父类的能力，再用新增方法表达差异。",
+  "contentState": "published",
+  "relatedLessonIds": [],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "宠物医院的猫和狗都要“吃饭”，但只有狗会“汪汪叫”。给每个类把 eat 抄一遍，改一处就要改多处。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "Dog 是一种 Animal（is-a）。继承让子类自动拥有父类的字段与方法，只需写差异部分。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "class Dog extends Animal：子类获得 eat()；构造时先 super(name) 完成父类初始化，再补自己的逻辑。记忆：extends = 扩展，不是推倒重来。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测 main 的输出顺序：喂食文字和叫声谁先谁后？dog.eat() 执行的是哪个类里的方法？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "给 Cat 也加一个叫的方法（如 meow），再在 main 里让它叫——只需要写差异，不要重写 eat。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：新建 Bird extends Animal，构造传入名字，新增 fly()。核心的 eat 复用父类，不重写。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "项目里的 BankAccount 与 SavingsAccount 就是这种关系：账务规则在父类，差异化利率在子类。"
+    }
+  ],
+  "codeDirectory": "stages/stage02_java_oop/existing_course/day04_inheritance"
+}

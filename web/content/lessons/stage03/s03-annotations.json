@@ -1,0 +1,43 @@
+{
+  "id": "s03-annotations",
+  "stageId": "03",
+  "moduleId": "java-advanced",
+  "kind": "foundation",
+  "title": "注解基础：写给工具看的标签",
+  "summary": "注解本身不执行逻辑，它把元数据贴在代码上，由框架在运行期读取。",
+  "contentState": "published",
+  "relatedLessonIds": [],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "方法调错了要自动重试 5 次。把重试逻辑塞进每个方法太重复；配置文件又离代码太远——希望直接“贴”在方法上。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "注解就是贴在类/方法/字段上的标签。@interface 定义标签样式，反射在运行期读取标签，工具据此执行附加逻辑。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "@Retention(RUNTIME) 让标签运行期可读；属性用方法语法声明并可给默认值；isAnnotationPresent 与 getAnnotation 读取。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测哪些方法会打印“需要重试”；把 times 改成 3 后输出如何变化？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "给 localOnly 也加上 @Retry(times = 2)，观察输出顺序与内容。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：定义 @Todo(owner) 注解贴在两个方法上，写循环打印全部 owner。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "@Override、@Test、@Autowired——注解是现代框架驱动的核心机制。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/advanced/annotations"
+}

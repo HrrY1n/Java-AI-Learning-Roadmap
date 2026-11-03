@@ -243,18 +243,18 @@ test("V1.3：Stage 02 首批课程接入且与 Stage 01 命名空间零冲突", 
   const stage02Lessons = catalog.lessons.filter(
     (lesson) => lesson.stageId === "02",
   );
-  assert.equal(stage02Lessons.length, 6);
-  assert.deepEqual(
-    stage02Lessons.map((lesson) => lesson.id),
-    [
-      "s02-class-basics",
-      "s02-constructor-this",
-      "s02-encapsulation-basics",
-      "s02-encapsulation-why",
-      "s02-object-construction",
-      "s02-reference-state",
-    ],
-  );
+  assert.equal(stage02Lessons.length, 14);
+  // V1.3 首批 6 课 + V1.5 On Java 8 补齐 8 课
+  for (const id of [
+    "s02-class-basics",
+    "s02-constructor-this",
+    "s02-encapsulation-basics",
+    "s02-encapsulation-why",
+    "s02-object-construction",
+    "s02-reference-state",
+  ]) {
+    assert.ok(stage02Lessons.some((l) => l.id === id), `缺少首批课程 ${id}`);
+  }
   const stage02 = catalog.stages.find((stage) => stage.id === "02");
   assert.equal(stage02.contentState, "published");
   assert.equal(stage02.building, true);

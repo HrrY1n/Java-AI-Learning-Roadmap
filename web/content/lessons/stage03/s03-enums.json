@@ -1,0 +1,43 @@
+{
+  "id": "s03-enums",
+  "stageId": "03",
+  "moduleId": "java-advanced",
+  "kind": "foundation",
+  "title": "枚举：把取值范围交给编译器",
+  "summary": "用枚举替代魔法字符串/数字常量，还可以让每个取值携带行为。",
+  "contentState": "published",
+  "relatedLessonIds": [],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "订单状态用字符串 \"NEW\"/\"PAID\" 传递，拼错一个字母编译器毫无反应，运行时行为诡异。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "枚举定义一个封闭的取值集合：变量只能取列出的常量之一，拼错在编译期就报错。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "enum OrderStatus { NEW, PAID, SHIPPED }；values() 列出全部、valueOf 按名解析、ordinal 是序号；每个常量可实现抽象方法携带行为。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测三种状态的 canCancel 输出；预测 valueOf(\"PAID\") 的 ordinal 是多少。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "新增 CANCELLED 状态并实现 canCancel——观察漏实现时编译器如何强制补齐。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：定义 Weekday 枚举，isWorkday() 对周六周日返回 false（提示：switch 或常量行为）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "支付状态、角色权限、异常分类——任何“有限且稳定”的取值集合都该用枚举。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/advanced/enums"
+}

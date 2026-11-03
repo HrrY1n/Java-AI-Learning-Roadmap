@@ -1,0 +1,45 @@
+{
+  "id": "s03-type-information",
+  "stageId": "03",
+  "moduleId": "java-advanced",
+  "kind": "foundation",
+  "title": "运行时类型信息与反射入门",
+  "summary": "多态让你不知道具体类型也能工作；反射进一步把“类型”本身变成可操作的数据。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-polymorphism-basics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "框架收到配置字符串 \"com.example.Plugin\"，要按名字创建对象并调用方法——编译期根本不知道这个类存在。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "每个对象都能 getClass() 拿到运行时类型（RTTI）；反射 API 进一步允许按名字加载类、查看方法、创建实例。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "getClass().getSimpleName() 看运行时类型；instanceof 做安全向下转型；Class.forName + newInstance 按名字实例化。反射绕过编译期检查，性能与安全都需谨慎。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测三种形状打印的类型名与面积；预测 forName(\"...Square\") 创建的实例类型。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 forName 的类名拼错一个字母，观察异常类型——反射把编译错误推迟到了运行期。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：用 getDeclaredMethods() 打印任意一个类的全部方法名。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "Spring 依赖注入、JUnit 测试发现、JSON 序列化，底层全是反射。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/advanced/type_information"
+}

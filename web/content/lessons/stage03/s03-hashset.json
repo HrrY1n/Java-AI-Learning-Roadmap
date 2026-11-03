@@ -1,0 +1,45 @@
+{
+  "id": "s03-hashset",
+  "stageId": "03",
+  "moduleId": "collections",
+  "kind": "foundation",
+  "title": "HashSet：自动去重的集合",
+  "summary": "只要“有没有”不要“第几个”时，HashSet 提供平均 O(1) 的唯一性判断。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-arraylist"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "统计一场活动到场的不同用户：同一个人来两次只能算一次。List 不去重，写循环判断又繁琐。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "HashSet 底层就是哈希表（忽略值只留键），add 返回 boolean 表示“是否真的新增”。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "add、contains、size。元素无序：不能像 List 一样用下标访问。"
+    },
+    {
+      "label": "预测运行",
+      "body": "向集合加入两个相同元素后，预测 size() 与 contains 的结果。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "再 add 一个重复元素，观察 add 的返回值与 size 是否变化。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：给定一个含重复的名字数组，用 HashSet 统计不重复名字的个数。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "标签去重、已处理 ID 集合、权限点判断——全是 HashSet。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day03_hashset"
+}

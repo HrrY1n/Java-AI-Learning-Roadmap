@@ -49,11 +49,33 @@
     },
     {
       "id": "03",
-      "contentState": "materials",
+      "contentState": "published",
       "prerequisites": "Stage 02 的对象、封装、接口与职责划分。",
-      "modules": [],
+      "modules": [
+        {
+          "id": "collections",
+          "title": "集合与泛型"
+        },
+        {
+          "id": "exceptions-io",
+          "title": "异常与文件 IO"
+        },
+        {
+          "id": "lambda-stream",
+          "title": "Lambda 与 Stream"
+        },
+        {
+          "id": "java-advanced",
+          "title": "语言进阶（枚举/注解/反射/并发）"
+        },
+        {
+          "id": "deep-dives",
+          "title": "概念深化"
+        }
+      ],
       "referenceRoots": [],
-      "referenceDocuments": []
+      "referenceDocuments": [],
+      "building": true
     },
     {
       "id": "04",

@@ -1,0 +1,45 @@
+{
+  "id": "s03-exception",
+  "stageId": "03",
+  "moduleId": "collections",
+  "kind": "foundation",
+  "title": "异常：把错误处理从正常流程中分出来",
+  "summary": "try/catch/finally 让“哪里出错、怎么兜底、如何收尾”各有其位。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-interface-abstract"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "除法计算器遇到除数 0：返回 -1？打印错误？调用方根本分不清“算出的 -1”和“出错的 -1”。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "异常把错误变成对象：出错的代码 throw，调用方在 catch 里统一处理，正常逻辑不再被错误码打断。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "try 包住可能出错代码，catch 捕获具体类型，finally 无论成败都执行（释放资源）。Exception 分层：越具体的越先捕获。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测：除数为 0 时输出哪些行？“异常演示结束”还会打印吗？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 catch 的异常类型改成 ArithmeticException 的父类 Exception，观察行为；再故意去掉 catch，看程序如何终止。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：写一个 parseIntSafe(String) 方法，非法输入返回 0 而不崩溃（提示：catch NumberFormatException）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "Web 服务的统一异常处理、事务回滚，都以异常机制为基础。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day01_exception"
+}

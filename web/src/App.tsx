@@ -970,10 +970,19 @@ function HomePage({ state }: PageProps) {
             </div>
             <div className="wb-topic-info">
               <div className="wb-topic-tag">
-                <span>《Hello 算法》· 8 门已发布</span>
+                <span>
+                  《Hello 算法》·{" "}
+                  {
+                    catalog.topics
+                      .find((t) => t.id === "topic-algo")
+                      ?.modules.flatMap((m) => m.lessons).filter((l) => l.status === "published")
+                      .length
+                  }{" "}
+                  门已发布
+                </span>
               </div>
               <h3>数据结构与算法专题</h3>
-              <p>从复杂度分析到数组、链表、栈与队列，Java 源码实现与交互图解</p>
+              <p>从复杂度分析到哈希表、树堆图与算法策略，Java 源码实现与交互图解</p>
             </div>
             <ArrowRight size={18} className="wb-topic-arrow" />
           </a>
@@ -984,10 +993,19 @@ function HomePage({ state }: PageProps) {
             </div>
             <div className="wb-topic-info">
               <div className="wb-topic-tag">
-                <span>《Pro Git》· 5 门已发布</span>
+                <span>
+                  《Pro Git》·{" "}
+                  {
+                    catalog.topics
+                      .find((t) => t.id === "topic-git")
+                      ?.modules.flatMap((m) => m.lessons).filter((l) => l.status === "published")
+                      .length
+                  }{" "}
+                  门已发布
+                </span>
               </div>
               <h3>Git 工程实践专题</h3>
-              <p>三大工作区、提交快照、分支与三方合并，配套临时沙箱实验</p>
+              <p>三大工作区、分支合并、冲突解决与历史考古，配套临时沙箱实验</p>
             </div>
             <ArrowRight size={18} className="wb-topic-arrow" />
           </a>

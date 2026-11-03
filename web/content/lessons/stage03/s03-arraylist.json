@@ -1,0 +1,45 @@
+{
+  "id": "s03-arraylist",
+  "stageId": "03",
+  "moduleId": "collections",
+  "kind": "foundation",
+  "title": "ArrayList：会自动扩容的数组",
+  "summary": "数组容量固定，ArrayList 封装了扩容与中间插入删除的搬移逻辑。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-generics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "待办清单随时增删条目，定长数组要么溢出要么浪费——需要“能长大”的列表。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "ArrayList 内部仍是数组，但封装了扩容（新建更大的数组并复制）与按下标操作；算法专题里学过的搬移代价由它替你完成。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "add 追加、get(i) 按下标读取、size() 长度。泛型写法 ArrayList<String> 约束元素类型。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测 get(0) 返回什么、size() 是多少；再预测遍历的打印顺序。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 add 的顺序调换，观察 get(0) 的变化——理解“有序、可按下标访问”。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：往列表加入 3 个书名，删除第 2 个，再打印剩余内容与长度（提示：remove(int)）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "订单列表、用户列表——业务里 90% 的“列表”都是 ArrayList。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day01_arraylist"
+}

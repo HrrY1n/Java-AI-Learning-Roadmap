@@ -1,0 +1,43 @@
+{
+  "id": "s03-equals-hashcode",
+  "stageId": "03",
+  "moduleId": "java-advanced",
+  "kind": "foundation",
+  "title": "equals 与 hashCode：一对必须成对出现的契约",
+  "summary": "不重写 equals，集合里的“相同内容”对象互相不认识；重写了 equals 就必须重写 hashCode。",
+  "contentState": "published",
+  "relatedLessonIds": [],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "把两个内容完全相同的坐标点放进 HashSet，contains 却返回 false——数据明明一样！"
+    },
+    {
+      "label": "为什么需要",
+      "body": "不重写 equals 时比较的是引用（是不是同一个对象）。而 HashMap/HashSet 先比 hashCode 再比 equals：契约规定 equals 相等则 hashCode 必须相同。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "equals 重写内容相等；hashCode 用 Objects.hash(字段) 生成。只重写 equals 不重写 hashCode，两个“相等”对象落进不同桶，集合仍找不到。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测未重写版本的 contains 结果；再预测重写后 a.equals(b) 与 a.hashCode() == b.hashCode() 的值。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 hashCode 改成固定返回 1，查询依然正确但失去分桶意义——体会“正确但不高效”。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：给 Employee 类（id, name）重写 equals 与 hashCode，使相同 id 视为同一员工。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "JPA 实体、缓存键、去重逻辑——equals/hashCode 契约是日常高频考点。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/advanced/equals_hashcode"
+}

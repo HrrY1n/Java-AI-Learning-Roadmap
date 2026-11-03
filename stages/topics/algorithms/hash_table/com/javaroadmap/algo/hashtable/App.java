@@ -70,6 +70,14 @@ public class App {
         map.put("apple", 6); // 覆盖更新
         System.out.println("覆盖后 get(apple)：" + map.get("apple"));
         System.out.println("get(missing)：" + map.get("missing"));
+
+        // 真实冲突演示："Aa" 与 "BB" 的 hashCode 都是 2112，必然落进同一个桶
+        map.put("Aa", 1);
+        map.put("BB", 2);
+        System.out.println("Aa 与 BB 的 hashCode 相同："
+                + ("Aa".hashCode() == "BB".hashCode()));
+        System.out.println("冲突后 get(Aa)：" + map.get("Aa"));
+        System.out.println("冲突后 get(BB)：" + map.get("BB"));
         System.out.println("最大冲突链长度：" + map.maxChainLength());
         System.out.println("核心机制：哈希函数把键映射到桶下标，冲突用拉链法挂在同一桶内。");
     }

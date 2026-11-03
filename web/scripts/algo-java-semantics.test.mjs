@@ -128,8 +128,9 @@ test("时间复杂度正文：全排列归入 O(n!) 而非 O(2^n)", () => {
   assert.match(factorialRow, /全排列/);
 });
 
-// 正文 ```java 围栏块中“像声明”的行：方法声明（含参数与返回类型）与类/内部类声明
-const DECL_RE = /^\s*(?:@Override\s+)?(?:public|private|protected|static|final)\s[^;{()]*?(?:\((?:[^()]|\([^()]*\))*\)\s*\{|class\s+\w+)/gm;
+// 共享检查器：覆盖有/无修饰符方法、构造器、类声明（见 scripts/lesson-source-check.mjs）
+import { collectDeclarations, findMissingDeclarations } from "./lesson-source-check.mjs";
+
 const normalize = (s) => s.replace(/\s+/g, " ").trim();
 
 function fencedJavaBlocks(markdown) {
@@ -138,14 +139,6 @@ function fencedJavaBlocks(markdown) {
   let m;
   while ((m = re.exec(markdown)) !== null) blocks.push(m[1]);
   return blocks;
-}
-
-function declarationsOf(code) {
-  const decls = [];
-  for (const m of code.matchAll(DECL_RE)) {
-    decls.push(normalize(m[0].replace(/\s*\{\s*$/, "")));
-  }
-  return decls;
 }
 
 test("正文 java 代码块中的每个声明都必须在对应落盘源码中逐个存在（逐方法核对，不允许多选一）", () => {
@@ -179,7 +172,7 @@ test("正文 java 代码块中的每个声明都必须在对应落盘源码中�
     const source = normalize(fs.readFileSync(path.join(repoRoot, relFile), "utf8"));
 
     for (const block of blocks) {
-      const decls = declarationsOf(block);
+      const decls = collectDeclarations(block);
       assert.ok(
         decls.length > 0,
         `${lessonId} 的 java 代码块应至少包含一个方法或类声明`,
@@ -195,6 +188,48 @@ test("正文 java 代码块中的每个声明都必须在对应落盘源码中�
   }
   // 确认本测试真的逐方法核对到了足量声明，而不是静默空转
   assert.ok(checkedDecls >= 40, `逐方法核对应覆盖至少 40 个声明，实际 ${checkedDecls}`);
+});
+
+test("一致性检查的正反例：篡改正文声明必须能被发现", () => {
+  // 反例 1：方法名被改动
+  const doctoredName = fencedJavaBlocks(algoLesson("algo-stack").markdown)[0]
+    .replace("isValidParentheses", "isBalancedBrackets");
+  const stackSource = normalize(
+    fs.readFileSync(path.join(repoRoot, "stages/topics/algorithms/stack/com/javaroadmap/algo/stack/App.java"), "utf8"),
+  );
+  const missing1 = findMissingDeclarations(
+    "```java\n" + doctoredName + "\n```",
+    stackSource,
+  );
+  assert.ok(missing1.length > 0, "方法名被篡改后必须检出不一致");
+  assert.match(missing1[0], /isBalancedBrackets/);
+
+  // 反例 2：参数列表被改动
+  const doctoredParams = fencedJavaBlocks(algoLesson("algo-array").markdown)[0]
+    .replace("insert(int[] arr, int size, int index, int element)", "insert(int[] values, int len, int pos, int val)");
+  const arraySource = normalize(
+    fs.readFileSync(path.join(repoRoot, "stages/topics/algorithms/array/com/javaroadmap/algo/array/App.java"), "utf8"),
+  );
+  const missing2 = findMissingDeclarations(
+    "```java\n" + doctoredParams + "\n```",
+    arraySource,
+  );
+  assert.ok(missing2.length > 0, "参数列表被篡改后必须检出不一致");
+
+  // 正例：真实课程应全部通过（findMissingDeclarations 返回空数组）
+  for (const lessonId of ["algo-stack", "algo-array", "algo-queue"]) {
+    const lesson = algoLesson(lessonId);
+    const relFile = {
+      "algo-stack": "stages/topics/algorithms/stack/com/javaroadmap/algo/stack/App.java",
+      "algo-array": "stages/topics/algorithms/array/com/javaroadmap/algo/array/App.java",
+      "algo-queue": "stages/topics/algorithms/queue/com/javaroadmap/algo/queue/App.java",
+    }[lessonId];
+    const missing = findMissingDeclarations(
+      lesson.markdown,
+      fs.readFileSync(path.join(repoRoot, relFile), "utf8"),
+    );
+    assert.deepEqual(missing, [], `${lessonId} 真实课程不应有不一致声明`);
+  }
 });
 
 test("链表课程展示两个同包源码文件，且正文说明必须一起编译", () => {

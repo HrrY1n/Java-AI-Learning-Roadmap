@@ -1,0 +1,45 @@
+{
+  "id": "s02-polymorphism-basics",
+  "stageId": "02",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "多态入门：同一消息，不同响应",
+  "summary": "用父类型引用指向不同子类对象，调用同一方法得到不同行为。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-inheritance-basics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "喂食器不关心面前是猫是狗，只知道“它是动物，会吃”。如果每种动物写一个 feed 方法，加一种动物就要改喂食器。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "多态：Animal ref = new Dog() 时，ref.eat() 执行的是 Dog 的版本。调用方只依赖父类型，新子类无需改动调用方。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "三个要素：继承/实现产生父子关系、子类重写方法、父类型引用指向子类对象。方法看“右边 new 的是谁”。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测输出：dog.eat()、cat.eat() 与 feed(dog)、feed(cat) 各打印什么？feed 里 animal.eat() 执行的是谁的方法？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "新增 Cat 的叫声方法后，把 feed 改成也调用叫声——观察 feed 依旧不需要知道具体类型。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：新增 Animal 子类 Robot，让 feed 能直接使用它，不改 feed 的任何代码。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "支付系统里 PaymentService 只认 PaymentMethod 接口，微信、支付宝各自实现——正是这个模式。"
+    }
+  ],
+  "codeDirectory": "stages/stage02_java_oop/existing_course/day05_polymorphism"
+}

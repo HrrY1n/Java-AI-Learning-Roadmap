@@ -60,9 +60,11 @@ export async function javaFiles(repoRoot, directory) {
 
 export function javaIdentity(code, sourcePath) {
   const packageName = code.match(/^package\s+([\w.]+);/m)?.[1];
-  const className = code.match(/public\s+class\s+(\w+)/)?.[1];
+  const className = code.match(
+    /public\s+(?:abstract\s+|final\s+)?(?:class|interface|enum|record)\s+(\w+)/,
+  )?.[1];
   if (!packageName || !className)
-    throw contentError("Java 源码缺少 package 声明或 public class", {
+    throw contentError("Java 源码缺少 package 声明或 public 类型声明", {
       file: sourcePath,
     });
   return { packageName, className };

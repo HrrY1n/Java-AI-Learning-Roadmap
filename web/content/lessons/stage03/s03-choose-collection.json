@@ -1,0 +1,17 @@
+{
+  "id": "s03-choose-collection",
+  "stageId": "03",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "集合选型：List、Set 还是 Map",
+  "summary": "从“怎么取数据”反推该用哪种集合，给出可直接套用的决策表。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-arraylist"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage03_java_core/deep_dives/01_choose_collection/README.md",
+  "codeDirectory": "stages/stage03_java_core/deep_dives/01_choose_collection"
+}

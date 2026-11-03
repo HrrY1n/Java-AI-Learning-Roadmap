@@ -1,0 +1,17 @@
+{
+  "id": "s02-polymorphism-mechanism",
+  "stageId": "02",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "多态机制与接口设计",
+  "summary": "从方法分派的底层视角理解多态，学习用接口设计可扩展系统。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-polymorphism-basics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage02_java_oop/deep_dives/05_polymorphism_interface/README.md",
+  "codeDirectory": "stages/stage02_java_oop/deep_dives/05_polymorphism_interface"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "s03-stream-basics",
+  "stageId": "03",
+  "moduleId": "lambda-stream",
+  "kind": "foundation",
+  "title": "Stream：用流水线描述数据处理",
+  "summary": "filter/map 把“遍历+判断+转换”的循环压缩成一句声明式流水线。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-lambda"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "从名单里筛出长名字再统一加前缀：传统写法要新建列表、写循环、写 if——意图被淹没在机械代码里。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "Stream 把“做什么”与“怎么做”分离：filter(条件)、map(转换) 描述流水线，collect 收集结果。中间操作惰性，终端操作才执行。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "list.stream() 生成流 → 中间操作（filter/map，返回流）→ 终端操作（collect/forEach，产出结果）。原列表不被修改。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测筛选后列表的内容与原列表是否被修改；再预测 map 之后每个元素的样子。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把过滤条件从“长度大于 2”改为“以某字母开头”，观察结果列表变化。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：对一组数字求所有偶数的平方和（提示：filter + map + reduce 或 collect）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "报表统计、接口数据清洗、日志过滤——Stream 是现代 Java 数据处理的标准姿势。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day02_stream_filter_map"
+}

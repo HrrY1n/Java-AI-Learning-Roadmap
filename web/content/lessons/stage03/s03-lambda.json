@@ -1,0 +1,45 @@
+{
+  "id": "s03-lambda",
+  "stageId": "03",
+  "moduleId": "lambda-stream",
+  "kind": "foundation",
+  "title": "Lambda：把“一段行为”当作参数传递",
+  "summary": "匿名类的轻量写法，让“策略”的表达从三行变一行。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-polymorphism-basics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "按钮点击、排序规则、线程任务——到处都是“只使用一次的小段逻辑”，为它们各写一个类太重。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "Lambda 是函数式接口（只有一个抽象方法）的简写：(参数) -> 结果。它把行为本身变成可以传递的值。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "(a, b) -> a + b 对应一个只有 add 方法的接口。类型由目标接口推断，所以写起来极短。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测使用 lambda 的计算结果；再预测把它换成 (a, b) -> a * b 后的输出。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把加法 lambda 换成减法，不改任何调用方代码——体会“行为即参数”。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：用 lambda 给线程池提交一个打印 1~5 的任务（Runnable）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "Comparator 排序规则、事件回调、Stream 的每个算子，都是 lambda。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day01_lambda"
+}

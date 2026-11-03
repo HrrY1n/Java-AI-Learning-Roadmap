@@ -1,0 +1,45 @@
+{
+  "id": "s02-string-common-api",
+  "stageId": "02",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "String 常用 API 与内容相等",
+  "summary": "String 不可变；比较内容用 equals 而不是 ==。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-class-basics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "用户输入的用户名要判长度、去空格、比对是否与库里一致——这些都是字符串的日常操作。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "字符串使用频率极高，标准库把它做成了不可变对象并内置丰富方法；而 == 比较的是引用，内容相同也可能返回 false。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "String 不可变：每次“修改”都产生新对象。常用 API：length/contains/substring/toUpperCase。equals 比内容，== 比引用。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测：a.equals(b) 与 a == b（两个 new String(\"Java\")）各是什么？为什么内容相同结果却不同？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 text 改成 \"I love JAVA\" 再调 toUpperCase，观察原 text 是否变化——验证不可变。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：给定邮箱字符串，用 API 取出 @ 之前的部分并转小写（提示：indexOf、substring、toLowerCase）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "真实项目比较密码、Token 一律用 equals；字符串拼接频繁时改用 StringBuilder（下一课）。"
+    }
+  ],
+  "codeDirectory": "stages/stage02_java_oop/existing_course/examples/common_api/day01_string"
+}

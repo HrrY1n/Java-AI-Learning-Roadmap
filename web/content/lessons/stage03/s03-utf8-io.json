@@ -1,0 +1,17 @@
+{
+  "id": "s03-utf8-io",
+  "stageId": "03",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "UTF-8 与 IO：乱码从哪里来",
+  "summary": "字节与字符的差别、编码不一致如何制造乱码，以及读写文件如何指定字符集。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-file-read"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage03_java_core/deep_dives/04_utf8_io/README.md",
+  "codeDirectory": "stages/stage03_java_core/deep_dives/04_utf8_io"
+}

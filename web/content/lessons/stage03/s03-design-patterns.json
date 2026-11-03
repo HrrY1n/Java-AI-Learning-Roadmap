@@ -1,0 +1,45 @@
+{
+  "id": "s03-design-patterns",
+  "stageId": "03",
+  "moduleId": "java-advanced",
+  "kind": "foundation",
+  "title": "设计模式基本思想：策略与模板方法",
+  "summary": "识别变化点抽成接口（策略），固定流程留扩展点（模板方法）——先有需求再有模式。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-interface-abstract"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "压缩模块要在 zip 与 gzip 之间切换；报表流程固定（取数→格式化）但每步实现不同。if-else 和继承都不是好答案。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "策略模式把可变算法抽成接口注入（组合优于继承）；模板方法由抽象父类用 final 固定流程，子类只填抽象步骤。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "策略三角色：策略接口、若干实现、持有者（Context）；模板方法：final 骨架方法 + 抽象步骤。两种模式都依赖多态与接口。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测两次 archive 的输出与 generate 的完整字符串。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "新增一个 RarStrategy，除了一行 setStrategy 调用，Archiver 的任何代码都不用改——体会开闭原则。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：为 ReportGenerator 增加 FinanceReport 子类，不改模板方法。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "先识别变化，再套模式。Spring 的 ResourceLoader、JDK 的 Comparator 都是这些基础模式的化身。"
+    }
+  ],
+  "codeDirectory": "stages/stage03_java_core/advanced/design_patterns"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "s02-interface-abstract",
+  "stageId": "02",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "抽象类与接口：能力声明与契约",
+  "summary": "抽象类约定“你是什么”，接口约定“你能做什么”。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s02-polymorphism-basics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "鸟会吃也会飞，飞这个能力飞机也有。把“飞”硬塞进动物继承树，飞机就得继承动物——明显不对。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "抽象类抽取公共实现（不完整，不能直接 new）；接口声明能力契约（做得到什么），一个类可以实现多个接口。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "abstract class Animal 含公共实现；interface Flyable 声明 fly() 契约；Sparrow extends Animal implements Flyable。“是什么”用继承，“能做什么”用接口。"
+    },
+    {
+      "label": "预测运行",
+      "body": "预测 main 输出：eat 与 fly 各来自哪里？如果另一个类 Plane implements Flyable，它需要实现哪些方法？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "给 Flyable 增加一个默认方法 land()（Java 8 default），观察 Sparrow 不改代码也自动获得。"
+    },
+    {
+      "label": "独立练习",
+      "body": "独立练习：定义 Swimable 接口让 Duck 同时实现 Flyable 与 Swimable，体会“多能力”。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "订单系统的 Refundable、Comparable/Comparator 都是接口契约：调用方认契约不认实现。"
+    }
+  ],
+  "codeDirectory": "stages/stage02_java_oop/existing_course/day06_interface_abstract"
+}

@@ -232,8 +232,8 @@ test("V1.4 《Pro Git》专题：首批课程包含真实 Git 行为、状态输
 
 test("V1.4 《On Java 8》补充关联：全部关联对应有效课程并标注现代 JDK 差异", () => {
   assert.ok(Array.isArray(catalog.onJavaLinks));
-  // 覆盖全部 19 节已发布主线课程
-  assert.equal(catalog.onJavaLinks.length, 19);
+  // 覆盖全部 44 节已发布主线课程（Stage 01×13 + Stage 02×14 + Stage 03×17）
+  assert.equal(catalog.onJavaLinks.length, 44);
 
   const validStageIds = new Set(catalog.stages.map((s) => s.id));
   const validLessonIds = new Set(catalog.lessons.map((l) => l.id));

@@ -3,9 +3,11 @@ package com.javaroadmap.algo.graph;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 图的邻接表存储与 BFS/DFS 遍历
@@ -13,7 +15,7 @@ import java.util.Map;
  */
 public class App {
 
-    static void dfs(Map<String, List<String>> graph, String cur, List<String> visited, StringBuilder out) {
+    static void dfs(Map<String, List<String>> graph, String cur, Set<String> visited, StringBuilder out) {
         visited.add(cur);
         out.append(cur).append(' ');
         for (String next : graph.get(cur)) {
@@ -35,7 +37,8 @@ public class App {
         // 广度优先：借助队列逐层扩散
         StringBuilder bfs = new StringBuilder();
         Deque<String> queue = new ArrayDeque<>();
-        List<String> visitedBfs = new ArrayList<>();
+        // HashSet 提供 平均 O(1) 的已访问查询，整体遍历才可达 O(V+E)
+        Set<String> visitedBfs = new HashSet<>();
         queue.add("A");
         visitedBfs.add("A");
         while (!queue.isEmpty()) {
@@ -51,7 +54,7 @@ public class App {
 
         // 深度优先：沿一条路径走到底再回溯
         StringBuilder dfsPath = new StringBuilder();
-        dfs(graph, "A", new ArrayList<>(), dfsPath);
+        dfs(graph, "A", new HashSet<>(), dfsPath);
 
         System.out.println("广度优先 BFS：" + bfs.toString().trim());
         System.out.println("深度优先 DFS：" + dfsPath.toString().trim());
