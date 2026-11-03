@@ -31,6 +31,13 @@ public class App {
     public static void main(String[] args) {
         int[] nums = {1, 1, 2, 3, 5};
         int target = 4;
+        // 本课的剪枝与去重都以"元素为正数"为前提：
+        // 含 0 或负数时，"后面只会更大"的剪枝不再成立，需另行设计。
+        for (int v : nums) {
+            if (v <= 0) {
+                throw new IllegalArgumentException("本实现要求元素为正整数，收到：" + v);
+            }
+        }
         Arrays.sort(nums); // 排序是剪枝和去重的前提
         List<String> solutions = new ArrayList<>();
         backtrack(nums, 0, target, new ArrayList<>(), solutions);

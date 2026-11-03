@@ -38,6 +38,11 @@ import {
 } from "lucide-react";
 import { catalog } from "./catalog";
 import type { Stage } from "./content-types";
+
+// 快捷键提示按平台显示：macOS 用 ⌘K，Windows/Linux 用 Ctrl K（处理逻辑两者都支持）
+const isApplePlatform =
+  typeof navigator !== "undefined" &&
+  /Mac|iPhone|iPad|iPod/.test(navigator.userAgent || navigator.platform || "");
 import type { Exercise, Lesson, Prediction } from "./content-types";
 import {
   createInitialState,
@@ -590,7 +595,7 @@ export default function App() {
             >
               <Search size={15} />
               <span>搜索课程/资料</span>
-              <kbd className="topbar-kbd">⌘K</kbd>
+              <kbd className="topbar-kbd">{isApplePlatform ? "⌘K" : "Ctrl K"}</kbd>
             </button>
             <span className="save-status" role="status">
               <span className={`status-dot ${storageError ? "warning" : ""}`} />
@@ -740,6 +745,8 @@ function HomePage({ state }: PageProps) {
   const lesson =
     catalog.lessons.find((item) => item.id === state.lastLessonId) ??
     catalog.lessons[0];
+  // 阶段与课程类型一律来自课程数据本身，不硬编码阶段号或用 ID 前缀猜类型
+  const lessonStage = catalog.stages.find((stage) => stage.id === lesson.stageId);
   const readCount = Object.values(state.lessons).filter(
     (item) => item.read,
   ).length;
@@ -751,7 +758,7 @@ function HomePage({ state }: PageProps) {
       <div className="page-heading">
         <div>
           <Eyebrow>
-            个人学习空间 <span>01 · JAVA 基础</span>
+            个人学习空间 <span>Java 主线 · 循序渐进三个阶段</span>
           </Eyebrow>
           <h1>
             把基础，写成自己的能力<span className="heading-period">。</span>
@@ -766,7 +773,8 @@ function HomePage({ state }: PageProps) {
         <div className="continue-copy">
           <div className="card-kicker">
             <span className="status-dot" />
-            阶段 01 <span>正在学习</span>
+            {`Stage ${lesson.stageId} · ${lessonStage?.title ?? "Java 主线"}`}
+            <span>{state.lastLessonId ? "最近在学" : "从起点开始"}</span>
           </div>
           <h2 id="continue-title">
             {state.lastLessonId ? "接着上次的思路。" : "先让第一行代码运行。"}
@@ -782,7 +790,7 @@ function HomePage({ state }: PageProps) {
           <div className="continue-meta">
             <BookOpen size={15} />
             {state.lastLessonId
-              ? `${lesson.id.startsWith("day") ? "基础课" : "深化课"} · ${state.lessons[lesson.id]?.read ? "已阅读，可再次观察" : `阅读位置 ${Math.round((state.lessons[lesson.id]?.position ?? 0) * 100)}%`}`
+              ? `${lesson.kind === "foundation" ? "基础课" : "深化课"} · ${state.lessons[lesson.id]?.read ? "已阅读，可再次观察" : `阅读位置 ${Math.round((state.lessons[lesson.id]?.position ?? 0) * 100)}%`}`
               : "从 day01 输出与变量开始"}
             <span>阅读 ≠ 掌握</span>
           </div>
@@ -1285,32 +1293,52 @@ function LessonPage({
       </div>
       {chaptersOpen && (
         <div className="chapter-picker">
-          {["foundation", "deep-dive"].map((kind) => (
-            <section key={kind}>
-              <h2>
-                {kind === "foundation"
-                  ? `基础课程 · ${String(catalog.lessons.filter((item) => item.kind === "foundation").length).padStart(2, "0")}`
-                  : `概念深化 · ${String(catalog.lessons.filter((item) => item.kind === "deep-dive").length).padStart(2, "0")}`}
-              </h2>
-              {catalog.lessons
-                .filter((item) => item.kind === kind)
-                .map((item) => (
-                  <a
-                    key={item.id}
-                    className={item.id === lesson.id ? "active" : ""}
-                    href={lessonLink(item.id)}
-                  >
-                    {item.id.replace("day", "DAY ").replace("deep", "DEEP ")}
-                    <span>{item.title}</span>
-                    {state.lessons[item.id]?.read ? (
-                      <Check size={15} />
-                    ) : (
-                      <ChevronRight size={15} />
-                    )}
-                  </a>
-                ))}
-            </section>
-          ))}
+          {catalog.stages
+            .filter((stage) =>
+              catalog.lessons.some((item) => item.stageId === stage.id),
+            )
+            .map((stage) => (
+              <section key={stage.id}>
+                <h2>
+                  {`Stage ${stage.id} · ${stage.title}`}
+                  <span className="picker-stage-count">
+                    {catalog.lessons.filter((item) => item.stageId === stage.id).length} 节
+                  </span>
+                </h2>
+                {(stage.modules ?? [])
+                  .map((module) => ({
+                    module,
+                    groupLessons: catalog.lessons.filter(
+                      (item) =>
+                        item.stageId === stage.id &&
+                        item.moduleId === module.id,
+                    ),
+                  }))
+                  .filter((group) => group.groupLessons.length > 0)
+                  .map(({ module, groupLessons }) => (
+                    <div key={module.id} className="picker-module">
+                      <h3>{module.title}</h3>
+                      {groupLessons.map((item) => (
+                        <a
+                          key={item.id}
+                          className={item.id === lesson.id ? "active" : ""}
+                          href={lessonLink(item.id)}
+                        >
+                          <span className="picker-kind">
+                            {item.kind === "foundation" ? "基础" : "深化"}
+                          </span>
+                          <span>{item.title}</span>
+                          {state.lessons[item.id]?.read ? (
+                            <Check size={15} />
+                          ) : (
+                            <ChevronRight size={15} />
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                  ))}
+              </section>
+            ))}
         </div>
       )}
       <div className="lesson-layout">

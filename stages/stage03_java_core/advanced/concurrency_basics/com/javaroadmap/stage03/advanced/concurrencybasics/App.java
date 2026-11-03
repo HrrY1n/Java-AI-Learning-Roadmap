@@ -4,8 +4,8 @@ package com.javaroadmap.stage03.advanced.concurrencybasics;
  * 并发基础：线程、共享状态与 synchronized。
  * 对应《On Java 8》第 24 章（并发编程）的入门部分。
  *
- * 两个工作线程同时给同一个计数器累加：先把线程全部启动，再统一等待，
- * 两段计数在时间上真正重叠；synchronized 让重叠后的结果依然确定。
+ * 两个工作线程给同一个计数器累加：先把线程全部启动，再统一等待，
+ * 两段计数有机会并发执行（是否重叠取决于线程调度）；synchronized 保证结果确定。
  */
 public class App {
 
@@ -35,7 +35,7 @@ public class App {
     public static void main(String[] args) throws InterruptedException {
         Counter counter = new Counter();
         // 先创建并启动两个工作线程：此刻三个执行流同时存在，
-        // worker-1 与 worker-2 的累加过程在时间上真正重叠
+        // worker-1 与 worker-2 的累加过程有机会并发执行
         Thread first = new Thread(countingTask(counter, 1000), "worker-1");
         Thread second = new Thread(countingTask(counter, 1000), "worker-2");
         first.start();

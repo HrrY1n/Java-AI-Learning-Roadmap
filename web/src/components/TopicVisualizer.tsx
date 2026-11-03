@@ -36,36 +36,28 @@ export function TopicVisualizer({ type }: VisualizerProps) {
 }
 
 // 1. 算法：大 O 复杂度阶梯与算力对比
+// 柱长采用 log₁₀(运算次数) 等比缩放（明确标注对数刻度）：
+// 数值之间相差数十亿倍时线性刻度只能把小值压成 0 宽度，
+// 对数刻度保证"柱长差相同 = 数量级差相同"，且任何数值都不会被钳成 100%。
 function ComplexityLadderDemo() {
   const [n, setN] = useState<number>(16);
 
-  const calculate = (order: string, val: number) => {
-    switch (order) {
-      case "O(1)":
-        return 1;
-      case "O(log n)":
-        return Math.round(Math.log2(val));
-      case "O(n)":
-        return val;
-      case "O(n log n)":
-        return Math.round(val * Math.log2(val));
-      case "O(n^2)":
-        return val * val;
-      case "O(2^n)":
-        return val <= 20 ? Math.pow(2, val) : Infinity;
-      default:
-        return 0;
-    }
-  };
-
-  const tiers = [
-    { name: "常数阶 O(1)", calc: calculate("O(1)", n), color: "#0d9488" },
-    { name: "对数阶 O(log n)", calc: calculate("O(log n)", n), color: "#059669" },
-    { name: "线性阶 O(n)", calc: calculate("O(n)", n), color: "#2563eb" },
-    { name: "线性对数阶 O(n log n)", calc: calculate("O(n log n)", n), color: "#d97706" },
-    { name: "平方阶 O(n²)", calc: calculate("O(n^2)", n), color: "#ea580c" },
-    { name: "指数阶 O(2ⁿ)", calc: calculate("O(2^n)", n), color: "#e11d48" },
+  const tiers: Array<{ name: string; calc: number; color: string; logVal?: number }> = [
+    { name: "常数阶 O(1)", calc: 1, color: "#0d9488" },
+    { name: "对数阶 O(log n)", calc: Math.max(1, Math.round(Math.log2(n))), color: "#059669" },
+    { name: "线性阶 O(n)", calc: n, color: "#2563eb" },
+    { name: "线性对数阶 O(n log n)", calc: Math.round(n * Math.log2(n)), color: "#d97706" },
+    { name: "平方阶 O(n²)", calc: n * n, color: "#ea580c" },
+    // 2ⁿ 用 n·log₁₀2 精确求对数，n=64 也不会溢出或截断
+    { name: "指数阶 O(2ⁿ)", calc: Math.pow(2, n), color: "#e11d48", logVal: n * Math.log10(2) },
   ];
+
+  const formatCount = (v: number) =>
+    v < 1_000_000
+      ? v.toLocaleString("en-US")
+      : `≈10^${Math.log10(v).toFixed(1)}`;
+  const logVals = tiers.map((t) => t.logVal ?? Math.log10(Math.max(1, t.calc)));
+  const maxLog = Math.max(...logVals);
 
   return (
     <div className="visualizer-card">
@@ -73,6 +65,7 @@ function ComplexityLadderDemo() {
         <div className="visualizer-title">
           <Binary size={16} />
           <span>交互观察：大 O 渐近复杂度增长断崖（数据规模 n = {n}）</span>
+          <span className="ladder-scale-badge">对数刻度 log₁₀</span>
         </div>
         <div className="visualizer-controls">
           {[4, 8, 16, 32, 64].map((val) => (
@@ -80,6 +73,7 @@ function ComplexityLadderDemo() {
               key={val}
               type="button"
               className={`vis-btn ${n === val ? "active" : ""}`}
+              aria-pressed={n === val}
               onClick={() => setN(val)}
             >
               n={val}
@@ -89,13 +83,8 @@ function ComplexityLadderDemo() {
       </div>
 
       <div className="ladder-bars">
-        {tiers.map((tier) => {
-          const isHuge = !isFinite(tier.calc) || tier.calc > 10000;
-          const displayVal = isHuge ? "爆炸 (>10⁴)" : `${tier.calc} 次运算`;
-          const barWidth = isHuge
-            ? 100
-            : Math.min(100, Math.max(3, (tier.calc / (n * n || 1)) * 100));
-
+        {tiers.map((tier, i) => {
+          const barWidth = Math.max(2, (logVals[i] / maxLog) * 100);
           return (
             <div key={tier.name} className="ladder-row">
               <span className="ladder-label">{tier.name}</span>
@@ -105,13 +94,13 @@ function ComplexityLadderDemo() {
                   style={{ width: `${barWidth}%`, backgroundColor: tier.color }}
                 />
               </div>
-              <span className="ladder-val">{displayVal}</span>
+              <span className="ladder-val">{formatCount(tier.calc)} 次</span>
             </div>
           );
         })}
       </div>
       <div className="visualizer-foot">
-        💡 观察启示：当 n 从 4 变为 64 时，常数阶 O(1) 与对数阶 O(log n) 几乎没有显著开销，而平方阶 O(n²) 飙升到了 4096 次；指数阶 O(2ⁿ) 的运算次数远超本图表设置的展示上限（图中超过 10⁴ 次运算即截断显示），并非计算机无法计算——实际中它会在可感知的极长时间内才逐步完成。这正是算法优化的决定性意义。
+        💡 柱长按 log₁₀(运算次数) 等比缩放——柱长差相同即数量级差相同，用于同屏对比相差数十亿倍的数值，具体次数以右侧数字为准。切换 n 观察：常数与对数阶几乎不动，平方阶稳定右移，指数阶 2ⁿ 一骑绝尘（n=64 时约 1.8×10¹⁹ 次——不是计算机"无法计算"，而是要在可感知的极长时间内才逐步完成）。这正是算法优化的决定性意义。
       </div>
     </div>
   );
@@ -141,20 +130,23 @@ function ArrayAddressingDemo() {
         </div>
       </div>
 
-      <div className="memory-slots">
+      <div className="memory-slots" role="group" aria-label="数组内存槽位，点击或用 Tab+Enter 选择下标">
         {cells.map((cell) => {
           const addr = baseAddress + cell.i * elementSize;
           const isTarget = cell.i === index;
           return (
-            <div
+            <button
               key={cell.i}
+              type="button"
               className={`memory-slot ${isTarget ? "active-slot" : ""}`}
+              aria-pressed={isTarget}
+              aria-label={`下标 ${cell.i}，模拟地址 0x${addr.toString(16).toUpperCase()}`}
               onClick={() => setIndex(cell.i)}
             >
               <div className="slot-addr">模拟地址 0x{addr.toString(16).toUpperCase()}</div>
               <div className="slot-val">{cell.val}</div>
               <div className="slot-idx">下标 [{cell.i}]</div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -351,6 +343,7 @@ function GitThreeTreesDemo() {
           <button
             type="button"
             className={`vis-btn ${state === "working" ? "active" : ""}`}
+            aria-pressed={state === "working"}
             onClick={() => setState("working")}
           >
             1. 编辑文件
@@ -358,6 +351,7 @@ function GitThreeTreesDemo() {
           <button
             type="button"
             className={`vis-btn ${state === "staged" ? "active" : ""}`}
+            aria-pressed={state === "staged"}
             onClick={() => setState("staged")}
           >
             2. git add
@@ -365,6 +359,7 @@ function GitThreeTreesDemo() {
           <button
             type="button"
             className={`vis-btn ${state === "committed" ? "active" : ""}`}
+            aria-pressed={state === "committed"}
             onClick={() => setState("committed")}
           >
             3. git commit
@@ -420,6 +415,7 @@ function GitMergeTreeDemo() {
           <button
             type="button"
             className={`vis-btn ${mergeType === "fast-forward" ? "active" : ""}`}
+            aria-pressed={mergeType === "fast-forward"}
             onClick={() => setMergeType("fast-forward")}
           >
             Fast-Forward (快进合并)
@@ -427,6 +423,7 @@ function GitMergeTreeDemo() {
           <button
             type="button"
             className={`vis-btn ${mergeType === "three-way" ? "active" : ""}`}
+            aria-pressed={mergeType === "three-way"}
             onClick={() => setMergeType("three-way")}
           >
             Three-Way Merge (三方合并)

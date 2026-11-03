@@ -34,7 +34,7 @@ export function TopicView({
 }: TopicViewProps) {
   // 1. 如果是教材索引精准跳转：如 #/topics/book/book-pro-git
   if (topicId === "book" && lessonId) {
-    return <TopicHub targetBookId={lessonId} />;
+    return <TopicHub targetBookId={lessonId} state={state} />;
   }
 
   // 2. 如果指定了具体 lessonId，渲染课程正文阅读页
@@ -66,11 +66,17 @@ export function TopicView({
   }
 
   // 3. 如果仅指定了 topicId，或者未指定，展示专题 Hub 概览
-  return <TopicHub />;
+  return <TopicHub state={state} />;
 }
 
 // 专题 Hub 概览界面
-function TopicHub({ targetBookId }: { targetBookId?: string }) {
+function TopicHub({
+  targetBookId,
+  state,
+}: {
+  targetBookId?: string;
+  state: LearningState;
+}) {
   const [filter, setFilter] = useState<"all" | "published" | "indexed">("all");
 
   useEffect(() => {
@@ -101,7 +107,7 @@ function TopicHub({ targetBookId }: { targetBookId?: string }) {
       <div className="hub-header">
         <div className="hub-badge">
           <Sparkles size={14} />
-          <span>V1.4 专题学习体系</span>
+          <span>专题学习体系</span>
         </div>
         <h1 className="hub-title">与 Java 主线并行的计算机学科专题</h1>
         <p className="hub-subtitle">
@@ -195,6 +201,46 @@ function TopicHub({ targetBookId }: { targetBookId?: string }) {
                   })}
                 </div>
               </div>
+
+              {/* 课程目录：按模块展开，已发布课程可直接进入；未上线课程如实标注 */}
+              <details className="topic-catalog">
+                <summary>
+                  <ChevronRight size={14} className="catalog-chevron" />
+                  浏览课程目录（{publishedLessons.length} 节已上线）
+                </summary>
+                <div className="topic-catalog-body">
+                  {topic.modules
+                    .filter((m) => m.lessons.length > 0)
+                    .map((m) => (
+                      <div key={m.id} className="catalog-module">
+                        <h3>
+                          {m.title}
+                          {m.status !== "published" && (
+                            <small>（{m.status === "building" ? "建设中" : "规划中"}）</small>
+                          )}
+                        </h3>
+                        <ul>
+                          {m.lessons.map((l) => (
+                            <li key={l.id}>
+                              {l.status === "published" ? (
+                                <a href={`#/topic/${topic.id}/${l.id}`}>
+                                  <span>{l.title}</span>
+                                  {state.lessons[l.id]?.read && (
+                                    <CheckCircle2 size={13} className="catalog-read-mark" aria-label="已阅读" />
+                                  )}
+                                </a>
+                              ) : (
+                                <span className="catalog-lesson-planned">
+                                  {l.title}（尚未上线）
+                                </span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                </div>
+              </details>
 
               <div className="topic-card-footer">
                 <div className="topic-progress-text">
@@ -342,6 +388,19 @@ function TopicLessonReader({
     visualizerType = "git-merge-tree";
   }
 
+  // 正文去重：部分课程的 markdown 内嵌了与源码卡片完全相同的完整代码，
+  // 渲染时把该 fenced 块替换为指引，避免同屏重复（数据保持原样，不影响一致性测试）。
+  let markdownBody = lesson.markdown;
+  if (lesson.code) {
+    const fullFence = "```java\n" + lesson.code.trim() + "\n```";
+    if (markdownBody.includes(fullFence)) {
+      markdownBody = markdownBody.replace(
+        fullFence,
+        "> 📄 完整源码与本页下方「Java 规范源码」卡片完全相同（与仓库落盘源码一致），此处不再整段重复；正文中的短片段继续用于讲解。",
+      );
+    }
+  }
+
   return (
     <div className="topic-reader-container">
       {/* 顶部面包屑与阅读打卡操作栏 */}
@@ -433,9 +492,9 @@ function TopicLessonReader({
         </div>
       )}
 
-      {/* 正文 Markdown */}
+      {/* 正文 Markdown（完整源码已去重，保留讲解片段） */}
       <div className="lesson-markdown-body">
-        <Markdown text={lesson.markdown} />
+        <Markdown text={markdownBody} />
       </div>
 
       {/* Git 专用：交互式命令步进器 */}

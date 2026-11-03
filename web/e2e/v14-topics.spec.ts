@@ -97,8 +97,8 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     const checks = [
       ["topic-algo/algo-hash-table", "哈希表：哈希函数与冲突解决", "拉链法"],
-      ["topic-algo/algo-binary-tree", "二叉树与四种遍历", "中序遍历"],
-      ["topic-algo/algo-heap", "堆与优先队列", "自底向上堆化"],
+      ["topic-algo/algo-binary-tree", "二叉树与四种遍历", "中序：左 → 根 → 右"],
+      ["topic-algo/algo-heap", "堆与优先队列", "自底向上与父节点比较交换"],
       ["topic-algo/algo-graph", "图的表示与 BFS/DFS 遍历", "邻接表"],
       ["topic-algo/algo-sorting", "排序算法对比", "快速排序"],
       ["topic-algo/algo-dynamic-programming", "动态规划", "转移方程"],
@@ -381,6 +381,38 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(emptyNotice).toContainText("没有找到与 \"旅行商\" 相关的课程或材料");
   });
 
+  test("搜索弹窗焦点圈定、Escape 关闭与焦点返回（键盘无障碍）", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("http://127.0.0.1:4173/#/home");
+    const trigger = page.getByRole("button", { name: "全局快速检索" });
+    await trigger.click();
+    const dialog = page.locator("dialog.search-dialog");
+    await expect(dialog).toBeVisible();
+    await expect(page.locator(".search-input")).toBeFocused();
+    // Shift+Tab 多次后焦点仍被圈定在弹窗内（原生 showModal 的 inert 背景）
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Shift+Tab");
+    const escapedDialog = await page.evaluate(
+      () => !(document.activeElement instanceof HTMLElement) || document.activeElement.closest("dialog") === null,
+    );
+    expect(escapedDialog, "焦点不应逃出搜索弹窗").toBe(false);
+    // Escape 关闭后焦点返回触发按钮
+    await page.keyboard.press("Escape");
+    await expect(dialog).not.toBeVisible();
+    await expect(trigger).toBeFocused();
+  });
+
+  test("320px 窄屏主要页面无整页横向溢出", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 });
+    for (const route of ["#/home", "#/topics", "#/roadmap", "#/lesson/day01", "#/topic/topic-algo/algo-deque"]) {
+      await page.goto("http://127.0.0.1:4173/" + route);
+      await page.waitForLoadState("networkidle");
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth > window.innerWidth,
+      );
+      expect(overflow, route + " 出现整页横向溢出").toBe(false);
+    }
+  });
   test("路由与历史堆栈：前进后退与刷新保持页面状态", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     // 依次访问三个不同体系的页面

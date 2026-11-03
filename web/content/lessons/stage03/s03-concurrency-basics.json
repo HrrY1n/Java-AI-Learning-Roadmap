@@ -20,7 +20,7 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "Thread 封装执行流：start 启动、join 等待结束。先把两个线程都 start 再统一 join，两段计数才会真正重叠；若 start 后立刻 join，就退化成“跑完一个再跑下一个”。synchronized 方法串行化对共享状态的访问。"
+      "body": "Thread 封装执行流：start 启动、join 等待结束。先把两个线程都 start 再统一 join，两段计数才有机会并发执行（是否真的同时运行由线程调度决定，join 只是保证“都结束后”再继续）；若 start 后立刻 join，就退化成“跑完一个再跑下一个”。synchronized 方法串行化对共享状态的访问。"
     },
     {
       "label": "预测运行",

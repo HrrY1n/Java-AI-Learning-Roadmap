@@ -103,11 +103,67 @@ async function buildLessons(repoRoot, contentRoot, stageEntries) {
       steps: (meta.steps ?? []).map(({ label, body }) => ({ label, body })),
     });
   }
-  lessons.sort(
-    (a, b) =>
-      KIND_RANK[a.kind] - KIND_RANK[b.kind] || a.id.localeCompare(b.id),
-  );
+  validateLessonOrderCoverage(stageEntries, lessons);
+  lessons.sort(canonicalLessonOrder(stageEntries));
   return lessons;
+}
+
+/**
+ * 规范课程顺序：阶段 → stages.json 模块声明顺序 → 模块内 lessonOrder → 类型 → 字母序。
+ * 未声明 lessonOrder 的模块（如 Stage 01）退回原有的 类型+字母序，行为不变。
+ */
+function canonicalLessonOrder(stageEntries) {
+  const stageIndex = new Map(
+    stageEntries.map((stage, index) => [stage.id, index]),
+  );
+  const moduleIndex = new Map();
+  const lessonIndex = new Map();
+  for (const stage of stageEntries) {
+    (stage.modules ?? []).forEach((module, mIdx) => {
+      moduleIndex.set(`${stage.id}/${module.id}`, mIdx);
+      (module.lessonOrder ?? []).forEach((lessonId, lIdx) => {
+        const key = `${stage.id}/${lessonId}`;
+        if (lessonIndex.has(key))
+          throw contentError(
+            `lessonOrder 重复登记课程 ${lessonId}（Stage ${stage.id}）`,
+          );
+        lessonIndex.set(key, lIdx);
+      });
+    });
+  }
+  return (a, b) =>
+    (stageIndex.get(a.stageId) ?? 99) - (stageIndex.get(b.stageId) ?? 99) ||
+    (moduleIndex.get(`${a.stageId}/${a.moduleId}`) ?? 99) -
+      (moduleIndex.get(`${b.stageId}/${b.moduleId}`) ?? 99) ||
+    (lessonIndex.get(`${a.stageId}/${a.id}`) ?? 999) -
+      (lessonIndex.get(`${b.stageId}/${b.id}`) ?? 999) ||
+    KIND_RANK[a.kind] - KIND_RANK[b.kind] ||
+    a.id.localeCompare(b.id);
+}
+
+/** 声明了 lessonOrder 的模块必须覆盖该模块全部已发布课程，不多不少。 */
+function validateLessonOrderCoverage(stageEntries, lessons) {
+  for (const stage of stageEntries) {
+    for (const module of stage.modules ?? []) {
+      if (!module.lessonOrder) continue;
+      const declared = new Set(module.lessonOrder);
+      const published = lessons.filter(
+        (lesson) => lesson.stageId === stage.id && lesson.moduleId === module.id,
+      );
+      for (const lesson of published) {
+        if (!declared.has(lesson.id))
+          throw contentError(
+            `Stage ${stage.id} 模块 ${module.id} 声明了 lessonOrder 但缺少课程 ${lesson.id}`,
+          );
+      }
+      for (const lessonId of module.lessonOrder) {
+        if (!published.some((lesson) => lesson.id === lessonId))
+          throw contentError(
+            `Stage ${stage.id} 模块 ${module.id} 的 lessonOrder 登记了不存在或未发布的课程 ${lessonId}`,
+          );
+      }
+    }
+  }
 }
 
 /* ---------- 练习 ---------- */

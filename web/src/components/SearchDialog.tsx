@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import {
   Search,
   BookOpen,
@@ -25,17 +25,41 @@ interface SearchItem {
   status?: string;
 }
 
+const isApplePlatform =
+  typeof navigator !== "undefined" &&
+  /Mac|iPhone|iPad|iPod/.test(navigator.userAgent || navigator.platform || "");
+
 export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  // 中文输入法组合输入期间不触发 Enter 直达，避免选字回车误跳转
+  const composingRef = useRef(false);
 
+  // 原生 <dialog> showModal：焦点圈定在弹窗内、Esc 触发 onCancel、
+  // 关闭时把焦点还给打开者——与项目 Dialog 组件同一机制。
   useEffect(() => {
-    if (open) {
-      setQuery("");
-      setSelectedIndex(0);
-      setTimeout(() => inputRef.current?.focus(), 50);
-    }
+    const dialog = dialogRef.current;
+    if (!open || !dialog) return;
+    setQuery("");
+    setSelectedIndex(0);
+    const opener = document.activeElement;
+    const route = location.hash;
+    dialog.showModal();
+    const focusTimer = setTimeout(() => inputRef.current?.focus(), 30);
+    return () => {
+      clearTimeout(focusTimer);
+      dialog.close();
+      queueMicrotask(() => {
+        if (
+          location.hash === route &&
+          opener instanceof HTMLElement &&
+          opener.isConnected
+        )
+          opener.focus({ preventScroll: true });
+      });
+    };
   }, [open]);
 
   // 全量可搜项目集合
@@ -77,7 +101,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
         id: `exercise-${exercise.id}`,
         category: "编程实验",
         title: exercise.title,
-        subtitle: `实战代码练习 · ${exercise.sourcePath}`,
+        subtitle: `实战代码练习 · ${exercise.title}`,
         href: `#/lab/${exercise.id}`,
       });
     }
@@ -110,38 +134,47 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
       .slice(0, 12);
   }, [allItems, query]);
 
-  // 键盘快捷穿梭
-  useEffect(() => {
-    if (!open) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown") {
+  // 键盘快捷穿梭：↑↓ 循环、Enter 直达（输入法组合中除外）。
+  // 事件挂在 dialog 元素上：原生 showModal 已把焦点圈在弹窗内，
+  // Tab / Shift+Tab 自然在弹窗内循环，不会逃逸到页面。
+  const handleKeyDown = (e: KeyboardEvent<HTMLDialogElement>) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedIndex((prev) => (prev + 1) % Math.max(1, filteredItems.length));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedIndex((prev) =>
+        prev - 1 < 0 ? Math.max(0, filteredItems.length - 1) : prev - 1,
+      );
+    } else if (e.key === "Enter" && !composingRef.current) {
+      const chosen = filteredItems[selectedIndex];
+      if (chosen) {
         e.preventDefault();
-        setSelectedIndex((prev) => (prev + 1) % Math.max(1, filteredItems.length));
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setSelectedIndex((prev) =>
-          prev - 1 < 0 ? Math.max(0, filteredItems.length - 1) : prev - 1,
-        );
-      } else if (e.key === "Enter" && filteredItems[selectedIndex]) {
-        e.preventDefault();
-        window.location.hash = filteredItems[selectedIndex].href;
-        onClose();
-      } else if (e.key === "Escape") {
+        window.location.hash = chosen.href;
         onClose();
       }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, filteredItems, selectedIndex, onClose]);
+    }
+    // Escape 由 <dialog> 原生 onCancel 处理，无需在此重复
+  };
 
   if (!open) return null;
 
   return (
-    <div className="search-backdrop" onClick={onClose} role="dialog" aria-modal="true">
-      <div
-        className="search-palette"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <dialog
+      ref={dialogRef}
+      className="search-dialog"
+      aria-label="全局搜索课程与资料"
+      onCancel={(e) => {
+        e.preventDefault();
+        onClose();
+      }}
+      onClick={(e) => {
+        // 点击弹窗空白（调色板之外）关闭；原生 dialog 的点击目标即 dialog 本身
+        if (e.target === dialogRef.current) onClose();
+      }}
+      onKeyDown={handleKeyDown}
+    >
+      <div className="search-palette">
         <div className="search-input-wrapper">
           <Search size={18} className="search-input-icon" />
           <input
@@ -150,10 +183,17 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
             className="search-input"
             placeholder="搜索主线课程、Hello 算法、Pro Git、编程题与教材..."
             value={query}
+            onCompositionStart={() => {
+              composingRef.current = true;
+            }}
+            onCompositionEnd={() => {
+              composingRef.current = false;
+            }}
             onChange={(e) => {
               setQuery(e.target.value);
               setSelectedIndex(0);
             }}
+            aria-label="搜索课程与资料"
           />
           <button
             type="button"
@@ -217,8 +257,11 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
           <span>
             <kbd>ESC</kbd> 关闭
           </span>
+          <span className="search-footer-mod">
+            <kbd>{isApplePlatform ? "⌘K" : "Ctrl K"}</kbd> 随时唤起
+          </span>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }
