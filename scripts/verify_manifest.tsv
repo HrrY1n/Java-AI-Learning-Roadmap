@@ -89,7 +89,7 @@ stages/topics/algorithms/avl	com.javaroadmap.algo.avl.App	-	out	树高=3（普�
 stages/topics/algorithms/heap_topk	com.javaroadmap.algo.heaptopk.App	-	out	建堆后（小顶堆）：[1, 4, 3, 9, 8, 7, 5]	流中最大的 3 个：[12, 15, 20]
 stages/topics/algorithms/binary_boundary	com.javaroadmap.algo.binaryboundary.App	-	out	4 的首个下标=2，末个下标=4，共 3 个	6 的首个下标=6，末个下标=7，共 2 个	3 未命中：首=-1，末=-1，出现次数按 0 计	空数组查找 1：首=-1，末=-1
 stages/topics/algorithms/selection_heapsort	com.javaroadmap.algo.selectionheapsort.App	-	out	选择排序结果：[2, 2, 5, 6, 8]	堆排序结果：[2, 2, 5, 6, 8]
-stages/topics/algorithms/non_comparison_sort	com.javaroadmap.algo.noncomparisonsort.App	-	out	计数排序：[1, 1, 2, 3, 4, 5, 6, 9]	基数排序：[329, 355, 436, 457, 657, 720, 839]	按万位分桶收集后	五位数边界：[9, 10000, 54321]
+stages/topics/algorithms/non_comparison_sort	com.javaroadmap.algo.noncomparisonsort.App	-	out	计数排序：[1, 1, 2, 3, 4, 5, 6, 9]	基数排序：[329, 355, 436, 457, 657, 720, 839]	按万位分桶收集后	五位数边界：[9, 10000, 54321]	负数拦截：
 stages/topics/algorithms/subset_sum	com.javaroadmap.algo.subsetsum.App	-	out	和为 4 的组合共 2 个：	[1, 1, 2]	[1, 3]
 stages/topics/algorithms/knapsack	com.javaroadmap.algo.knapsack.App	-	out	0-1 背包最大价值：55	完全背包（重 {2,3} 价值 {3,4}，容量 7）最大价值：10
 stages/topics/algorithms/edit_distance	com.javaroadmap.algo.editdistance.App	-	out	horse → ros 的编辑距离：3

@@ -14,6 +14,14 @@ public class App {
     // 计数排序：值域 0..9 的整数，count[v] 数出现次数后按值展开
     // 空间：count 数组 O(k) + 另建的结果数组 out O(n)，合计 O(n+k)
     static int[] countingSort(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("输入数组不能为 null");
+        }
+        for (int v : nums) {
+            if (v < 0 || v > 9) {
+                throw new IllegalArgumentException("当前计数排序示例仅支持 0..9 的整数，收到：" + v);
+            }
+        }
         int[] count = new int[10];
         for (int v : nums) count[v]++;
         int[] out = new int[nums.length];
@@ -25,14 +33,25 @@ public class App {
     }
 
     // 基数排序（LSD）：按个位、十位……逐位做一次"稳定"排序
-    // 支持范围：非负 int（0..Integer.MAX_VALUE）。exp 用 long 计数：
-    // 最高位 10 亿时 exp=1_000_000_000，再乘 10 会超出 int 范围变成负数，
+    // 支持范围：非负 int（0..Integer.MAX_VALUE）。若包含负数，入口直接抛出 IllegalArgumentException。
+    // exp 用 long 计数：最高位 10 亿时 exp=1_000_000_000，再乘 10 会超出 int 范围变成负数，
     // 用 long 才不会把"位数变量"本身算溢出。
     static int[] radixSort(int[] nums) {
+        if (nums == null) {
+            throw new IllegalArgumentException("输入数组不能为 null");
+        }
+        for (int v : nums) {
+            if (v < 0) {
+                throw new IllegalArgumentException("基数排序（当前实现）仅支持非负整数，收到负数：" + v);
+            }
+        }
+        if (nums.length <= 1) {
+            return nums.clone();
+        }
         String[] digitNames = {"个位", "十位", "百位", "千位", "万位", "十万位", "百万位", "千万位", "亿位", "十亿位"};
         int max = 0;
         for (int v : nums) max = Math.max(max, v);
-        int[] out = nums;
+        int[] out = nums.clone();
         for (long exp = 1; max / exp > 0; exp *= 10) {
             out = countingSortByDigit(out, exp);
             int digitIndex = Long.toString(exp).length() - 1; // 1→0, 10→1, ... 10^9→9
@@ -72,5 +91,12 @@ public class App {
         // 边界：五位数需要处理到"万位"——位数标签表必须覆盖，exp 用 long 防进位溢出
         int[] big = {10000, 9, 54321};
         System.out.println("五位数边界：" + Arrays.toString(radixSort(big)));
+
+        // 边界：对不支持的负数输入给出明确的参数校验错误
+        try {
+            radixSort(new int[]{4, -1});
+        } catch (IllegalArgumentException e) {
+            System.out.println("负数拦截：" + e.getMessage());
+        }
     }
 }

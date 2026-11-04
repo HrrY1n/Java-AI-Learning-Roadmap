@@ -202,45 +202,47 @@ function TopicHub({
                 </div>
               </div>
 
-              {/* 课程目录：按模块展开，已发布课程可直接进入；未上线课程如实标注 */}
-              <details className="topic-catalog">
-                <summary>
-                  <ChevronRight size={14} className="catalog-chevron" />
-                  浏览课程目录（{publishedLessons.length} 节已上线）
-                </summary>
-                <div className="topic-catalog-body">
-                  {topic.modules
-                    .filter((m) => m.lessons.length > 0)
-                    .map((m) => (
-                      <div key={m.id} className="catalog-module">
-                        <h3>
-                          {m.title}
-                          {m.status !== "published" && (
-                            <small>（{m.status === "building" ? "建设中" : "规划中"}）</small>
-                          )}
-                        </h3>
-                        <ul>
-                          {m.lessons.map((l) => (
-                            <li key={l.id}>
-                              {l.status === "published" ? (
-                                <a href={`#/topic/${topic.id}/${l.id}`}>
-                                  <span>{l.title}</span>
-                                  {state.lessons[l.id]?.read && (
-                                    <CheckCircle2 size={13} className="catalog-read-mark" aria-label="已阅读" />
-                                  )}
-                                </a>
-                              ) : (
-                                <span className="catalog-lesson-planned">
-                                  {l.title}（尚未上线）
-                                </span>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                </div>
-              </details>
+              {/* 课程目录：按模块展开，已发布课程可直接进入；暂无课程的专题不展示空折叠 */}
+              {topic.modules.some((m) => m.lessons.length > 0) && (
+                <details className="topic-catalog">
+                  <summary>
+                    <ChevronRight size={14} className="catalog-chevron" />
+                    浏览课程目录（{publishedLessons.length} 节已上线）
+                  </summary>
+                  <div className="topic-catalog-body">
+                    {topic.modules
+                      .filter((m) => m.lessons.length > 0)
+                      .map((m) => (
+                        <div key={m.id} className="catalog-module">
+                          <h3>
+                            {m.title}
+                            {m.status !== "published" && (
+                              <small>（{m.status === "building" ? "建设中" : "规划中"}）</small>
+                            )}
+                          </h3>
+                          <ul>
+                            {m.lessons.map((l) => (
+                              <li key={l.id}>
+                                {l.status === "published" ? (
+                                  <a href={`#/topic/${topic.id}/${l.id}`}>
+                                    <span>{l.title}</span>
+                                    {state.lessons[l.id]?.read && (
+                                      <CheckCircle2 size={13} className="catalog-read-mark" aria-label="已阅读" />
+                                    )}
+                                  </a>
+                                ) : (
+                                  <span className="catalog-lesson-planned">
+                                    {l.title}（尚未上线）
+                                  </span>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                  </div>
+                </details>
+              )}
 
               <div className="topic-card-footer">
                 <div className="topic-progress-text">
@@ -488,7 +490,7 @@ function TopicLessonReader({
       {/* 核心原理可视化交互组件 */}
       {visualizerType && (
         <div className="reader-visualizer-slot">
-          <TopicVisualizer type={visualizerType} />
+          <TopicVisualizer key={lesson.id} type={visualizerType} />
         </div>
       )}
 
@@ -499,7 +501,7 @@ function TopicLessonReader({
 
       {/* Git 专用：交互式命令步进器 */}
       {lesson.gitSteps && lesson.gitSteps.length > 0 && (
-        <GitStepsViewer steps={lesson.gitSteps} />
+        <GitStepsViewer key={lesson.id} steps={lesson.gitSteps} />
       )}
 
       {/* Java 课程专用：代码高亮展示（主文件 + 同包依赖文件，需要一起编译） */}
@@ -600,6 +602,24 @@ function TopicLessonReader({
   );
 }
 
+// 提取 Git 子命令名称（跳过 -c key=val 等前置局部配置参数，确保标签清晰直观）
+function extractGitSubcommand(command: string): string {
+  const tokens = command.trim().split(/\s+/);
+  let i = 1;
+  while (i < tokens.length) {
+    if (tokens[i] === "-c") {
+      i += 2;
+    } else if (tokens[i].startsWith("-c")) {
+      i += 1;
+    } else if (tokens[i].startsWith("-")) {
+      i += 1;
+    } else {
+      return tokens[i];
+    }
+  }
+  return tokens[1] || "cmd";
+}
+
 // Git 命令流转步进器
 function GitStepsViewer({
   steps,
@@ -612,24 +632,30 @@ function GitStepsViewer({
   }>;
 }) {
   const [currentStep, setCurrentStep] = useState(0);
-  const step = steps[currentStep];
+  const total = steps?.length ?? 0;
+  if (total === 0) return null;
+
+  // 防御性索引钳制：防止旧组件实例或步骤数变化时发生数组越界访问
+  const safeIndex = Math.min(Math.max(0, currentStep), total - 1);
+  const step = steps[safeIndex];
+  if (!step) return null;
 
   return (
     <div className="git-steps-viewer">
       <div className="git-steps-header">
         <div className="git-steps-title">
           <Terminal size={16} />
-          <span>Git 命令与状态交互演进演示（第 {currentStep + 1} / {steps.length} 步）</span>
+          <span>Git 命令与状态交互演进演示（第 {safeIndex + 1} / {total} 步）</span>
         </div>
         <div className="git-step-tabs">
           {steps.map((s, idx) => (
             <button
               key={idx}
               type="button"
-              className={`git-tab-btn ${idx === currentStep ? "active" : ""}`}
+              className={`git-tab-btn ${idx === safeIndex ? "active" : ""}`}
               onClick={() => setCurrentStep(idx)}
             >
-              {idx + 1}. {s.command.split(" ")[1] || "cmd"}
+              {idx + 1}. {extractGitSubcommand(s.command)}
             </button>
           ))}
         </div>

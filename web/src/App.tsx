@@ -396,14 +396,23 @@ export default function App() {
           catalog.lessons.find((item) => item.id === route.id)?.title ??
           "课程阅读",
         topics: "专题学习体系",
-        topic: "专题学习体系",
+        topic: (() => {
+          if (route.id && route.subId) {
+            const topic = catalog.topics.find((t) => t.id === route.id);
+            const lesson = topic?.modules
+              .flatMap((m) => m.lessons)
+              .find((l) => l.id === route.subId);
+            if (lesson) return lesson.title;
+          }
+          return "专题学习体系";
+        })(),
         lab: "编程实验室",
         practice: "预测与修改",
         review: "学习记录",
         document: "仓库资料",
       }[route.page] ?? "页面未找到";
     document.title = `${name} · JavaRoadmap Lab`;
-  }, [route.page, route.id]);
+  }, [route.page, route.id, route.subId]);
   useEffect(() => {
     if (!toast) return;
     const timer = setTimeout(() => setToast(""), 5000);

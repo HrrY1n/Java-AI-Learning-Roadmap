@@ -268,3 +268,12 @@ test("数组课程如实说明固定容量边界：满时抛异常，扩容是�
   assert.doesNotMatch(source, /物理地址空间/);
   assert.match(source, /模拟值/);
 });
+
+test("基数排序与非比较排序：支持五位数边界与非负前置校验，负数被明确拦截", async () => {
+  const stdout = await runLessonApp(
+    "stages/topics/algorithms/non_comparison_sort",
+    "com.javaroadmap.algo.noncomparisonsort",
+  );
+  assert.match(stdout, /五位数边界：\[9, 10000, 54321\]/);
+  assert.match(stdout, /负数拦截：基数排序（当前实现）仅支持非负整数，收到负数：-1/);
+});

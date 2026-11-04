@@ -381,36 +381,162 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(emptyNotice).toContainText("没有找到与 \"旅行商\" 相关的课程或材料");
   });
 
-  test("搜索弹窗焦点圈定、Escape 关闭与焦点返回（键盘无障碍）", async ({ page }) => {
+  test("搜索弹窗焦点圈定、Tab与Enter分工、Escape关闭与焦点返回（键盘无障碍）", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("http://127.0.0.1:4173/#/home");
     const trigger = page.getByRole("button", { name: "全局快速检索" });
     await trigger.click();
     const dialog = page.locator("dialog.search-dialog");
     await expect(dialog).toBeVisible();
-    await expect(page.locator(".search-input")).toBeFocused();
-    // Shift+Tab 多次后焦点仍被圈定在弹窗内（原生 showModal 的 inert 背景）
+    const searchInput = page.locator(".search-input");
+    await expect(searchInput).toBeFocused();
+
+    // 1. Shift+Tab 多次后焦点仍被圈定在弹窗内（原生 showModal 的 inert 背景）
     await page.keyboard.press("Shift+Tab");
     await page.keyboard.press("Shift+Tab");
     const escapedDialog = await page.evaluate(
       () => !(document.activeElement instanceof HTMLElement) || document.activeElement.closest("dialog") === null,
     );
     expect(escapedDialog, "焦点不应逃出搜索弹窗").toBe(false);
-    // Escape 关闭后焦点返回触发按钮
+
+    // 2. Escape 关闭后焦点返回触发按钮
     await page.keyboard.press("Escape");
     await expect(dialog).not.toBeVisible();
     await expect(trigger).toBeFocused();
+
+    // 3. Tab 聚焦到关闭按钮按 Enter：仅关闭弹窗，不误跳转到第一门课程
+    await trigger.click();
+    await expect(dialog).toBeVisible();
+    const closeBtn = page.getByRole("button", { name: "关闭搜索面板" });
+    await page.keyboard.press("Tab"); // 从 input Tab 到关闭按钮
+    await expect(closeBtn).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(/#\/home$/); // 确认仍在 home，未误跳课程
+
+    // 4. Tab 移动到第 2 条搜索结果并按 Enter：正确进入第 2 条结果，而不是被强制覆盖为第 1 条
+    await trigger.click();
+    await expect(dialog).toBeVisible();
+    const items = page.locator(".search-item");
+    const secondItem = items.nth(1);
+    const secondItemHref = await secondItem.getAttribute("href");
+    expect(secondItemHref).toBeTruthy();
+
+    await page.keyboard.press("Tab"); // 聚焦关闭按钮
+    await page.keyboard.press("Tab"); // 聚焦第 1 条结果
+    await page.keyboard.press("Tab"); // 聚焦第 2 条结果
+    await expect(secondItem).toBeFocused();
+    await page.keyboard.press("Enter");
+
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(new RegExp(secondItemHref!.replace("#", "\\#") + "$"));
   });
 
-  test("320px 窄屏主要页面无整页横向溢出", async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 700 });
-    for (const route of ["#/home", "#/topics", "#/roadmap", "#/lesson/day01", "#/topic/topic-algo/algo-deque"]) {
-      await page.goto("http://127.0.0.1:4173/" + route);
-      await page.waitForLoadState("networkidle");
-      const overflow = await page.evaluate(
-        () => document.documentElement.scrollWidth > window.innerWidth,
-      );
-      expect(overflow, route + " 出现整页横向溢出").toBe(false);
+  test("Git 课程不同步骤数切换不发生白屏且步进状态安全重置", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    const errors: string[] = [];
+    page.on("pageerror", (err) => errors.push(err.message));
+
+    // 1. 打开含 5 步命令演示的课程
+    await page.goto("http://127.0.0.1:4173/#/topic/topic-git/git-hooks-automation");
+    const viewer = page.locator(".git-steps-viewer");
+    await expect(viewer).toBeVisible();
+
+    // 选中最后一步（第 5 步，索引 4）
+    const tabs = page.locator(".git-step-tabs button");
+    await expect(tabs).toHaveCount(5);
+    await tabs.nth(4).click();
+    await expect(tabs.nth(4)).toHaveClass(/active/);
+    await expect(page.locator(".git-steps-title")).toContainText("第 5 / 5 步");
+
+    // 2. 点击“下一节”跳转到只有 3 步的课程（git-collab-workflow）
+    const nextBtn = page.locator(".pagination-btn.next-btn");
+    await expect(nextBtn).toBeVisible();
+    await nextBtn.click();
+
+    await expect(page).toHaveURL(/#\/topic\/topic-git\/git-collab-workflow$/);
+    await expect(page.getByRole("heading", { name: "分布式协作与 GitHub 工作流" })).toBeVisible();
+
+    // 验证页面完全正常，步进器安全钳制在有效范围内（通常重置为第 1 步）
+    const newTabs = page.locator(".git-step-tabs button");
+    await expect(newTabs).toHaveCount(3);
+    await expect(page.locator(".git-steps-title")).toContainText("第 1 / 3 步");
+    expect(errors, "Git 步骤切换过程不应抛出未捕获异常").toEqual([]);
+
+    // 3. 点击“上一节”返回 5 步课程，页面依然自洽
+    const prevBtn = page.locator(".pagination-btn.prev-btn");
+    await expect(prevBtn).toBeVisible();
+    await prevBtn.click();
+    await expect(page).toHaveURL(/#\/topic\/topic-git\/git-hooks-automation$/);
+    await expect(page.locator(".git-steps-viewer")).toBeVisible();
+    expect(errors).toEqual([]);
+  });
+
+  test("专题课程前后切换自动置顶，不残留上一节底部滚动位置", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("http://127.0.0.1:4173/#/topic/topic-git/git-intro-basics");
+    await page.waitForLoadState("networkidle");
+
+    // 滚动到页面底部以点击“下一节”
+    const nextBtn = page.locator(".pagination-btn.next-btn");
+    await nextBtn.scrollIntoViewIfNeeded();
+    const scrollYBefore = await page.evaluate(() => window.scrollY);
+    expect(scrollYBefore, "点击前应已向下滚动").toBeGreaterThan(300);
+
+    await nextBtn.click();
+    await expect(page).toHaveURL(/#\/topic\/topic-git\/git-record-changes$/);
+
+    // 验证切换后页面自动置顶，标题进入视口可见区域
+    await expect(page.getByRole("heading", { name: "记录每次更新：从 git add 到语义化 commit" })).toBeVisible();
+    const scrollYAfter = await page.evaluate(() => window.scrollY);
+    expect(scrollYAfter, "切换新课后页面应自动置顶").toBeLessThan(80);
+  });
+
+  test("320px/390px 窄屏及占位式滚动条环境下无整页横向溢出", async ({ page }) => {
+    // 覆盖典型手机视口，以及占位式垂直滚动条（模拟 clientWidth 约 305px 环境）
+    for (const width of [305, 320, 390]) {
+      await page.setViewportSize({ width, height: 700 });
+      const routes = [
+        "#/home",
+        "#/topics",
+        "#/roadmap",
+        "#/lesson/day01",
+        "#/topic/topic-algo/algo-deque",
+        "#/topic/topic-git/git-intro-basics",
+        "#/lab/scores",
+        "#/review",
+      ];
+      for (const route of routes) {
+        await page.goto("http://127.0.0.1:4173/" + route);
+        await page.waitForLoadState("networkidle");
+        // 强制启用纵向滚动条以测试占位式滚动条极限
+        await page.evaluate(() => {
+          document.documentElement.style.overflowY = "scroll";
+        });
+        await page.waitForTimeout(60);
+
+        const metrics = await page.evaluate(() => {
+          const doc = document.documentElement;
+          // 尝试向右滚动
+          window.scrollTo(100, 0);
+          const scrolledX = window.scrollX;
+          window.scrollTo(0, 0);
+          return {
+            scrollWidth: doc.scrollWidth,
+            clientWidth: doc.clientWidth,
+            scrolledX,
+          };
+        });
+
+        expect(
+          metrics.scrollWidth <= metrics.clientWidth,
+          `${route} 在 ${width}px 下 scrollWidth(${metrics.scrollWidth}) 超过 clientWidth(${metrics.clientWidth})`,
+        ).toBe(true);
+        expect(
+          metrics.scrolledX,
+          `${route} 在 ${width}px 下产生不应有的横向滚动位移`,
+        ).toBe(0);
+      }
     }
   });
   test("路由与历史堆栈：前进后退与刷新保持页面状态", async ({ page }) => {

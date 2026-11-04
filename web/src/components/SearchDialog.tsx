@@ -134,10 +134,13 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
       .slice(0, 12);
   }, [allItems, query]);
 
-  // 键盘快捷穿梭：↑↓ 循环、Enter 直达（输入法组合中除外）。
-  // 事件挂在 dialog 元素上：原生 showModal 已把焦点圈在弹窗内，
-  // Tab / Shift+Tab 自然在弹窗内循环，不会逃逸到页面。
+  // 键盘快捷穿梭：
+  // 1. 在输入框内：↑↓ 循环切换高亮项，Enter 直达选中项（输入法组合中除外）；
+  // 2. Tab 聚焦到关闭按钮或结果链接时：各自执行原生的回车动作，不被全局拦截覆盖；
+  // 3. Tab 聚焦结果项时同步高亮索引，保持视觉与焦点一致。
   const handleKeyDown = (e: KeyboardEvent<HTMLDialogElement>) => {
+    const target = e.target as HTMLElement | null;
+
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((prev) => (prev + 1) % Math.max(1, filteredItems.length));
@@ -146,15 +149,21 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
       setSelectedIndex((prev) =>
         prev - 1 < 0 ? Math.max(0, filteredItems.length - 1) : prev - 1,
       );
-    } else if (e.key === "Enter" && !composingRef.current) {
-      const chosen = filteredItems[selectedIndex];
-      if (chosen) {
-        e.preventDefault();
-        window.location.hash = chosen.href;
-        onClose();
+    } else if (e.key === "Enter") {
+      // 若当前焦点在按钮（如关闭面板）或结果链接自身，放行原生 Enter，执行它们各自的点击
+      if (target?.closest("button") || target?.closest("a")) {
+        return;
+      }
+      // 焦点在输入框（且不在中文输入法拼音选字组合状态）时，Enter 直达当前选中的结果
+      if (!composingRef.current) {
+        const chosen = filteredItems[selectedIndex];
+        if (chosen) {
+          e.preventDefault();
+          window.location.hash = chosen.href;
+          onClose();
+        }
       }
     }
-    // Escape 由 <dialog> 原生 onCancel 处理，无需在此重复
   };
 
   if (!open) return null;
@@ -224,6 +233,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                   className={`search-item ${isSelected ? "selected" : ""}`}
                   onClick={onClose}
                   onMouseEnter={() => setSelectedIndex(index)}
+                  onFocus={() => setSelectedIndex(index)}
                 >
                   <div className="search-item-icon">
                     <Icon size={16} />
