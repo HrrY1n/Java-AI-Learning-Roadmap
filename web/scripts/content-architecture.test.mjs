@@ -582,14 +582,28 @@ test("专题小节与教材索引的非法引用在构建期失败", async () =>
 });
 
 // V1.8 审计回归：javaFiles 与 readSource 共用仓库边界守卫。
+// 修复 CI（Linux）阻塞：原断言硬编码 "D:/"/"C:/Windows" 这类 Windows 盘符路径，
+// POSIX path.resolve 不会把它们当作绝对路径，守卫根本不触发。改为运行时按当前
+// 平台构造真实落在仓库外的路径；盘符场景仅在 win32 保留覆盖。
 test("javaFiles 拒绝逃出仓库的目录", async () => {
   const { javaFiles } = await import("./content/load.mjs");
-  await assert.rejects(
-    () => javaFiles("D:/任何仓库根", "../"),
-    /逃出仓库/,
-  );
-  await assert.rejects(
-    () => javaFiles("D:/任何仓库根", "C:/Windows"),
-    /逃出仓库/,
-  );
+  const repoRoot = await mkdtemp(path.join(tmpdir(), "jrl-guard-"));
+  try {
+    await assert.rejects(
+      () => javaFiles(repoRoot, "../"),
+      /逃出仓库/,
+    );
+    await assert.rejects(
+      () => javaFiles(repoRoot, path.join(tmpdir(), "jrl-guard-外部目录")),
+      /逃出仓库/,
+    );
+    if (process.platform === "win32") {
+      await assert.rejects(
+        () => javaFiles(repoRoot, "C:/Windows"),
+        /逃出仓库/,
+      );
+    }
+  } finally {
+    await rm(repoRoot, { recursive: true, force: true });
+  }
 });
