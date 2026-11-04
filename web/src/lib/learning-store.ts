@@ -1,3 +1,5 @@
+// 学习记录的唯一持久化边界：任何备份、证据或页面状态在写入 IndexedDB 前都先净化。
+// 下方小型校验原语统一执行严格字段集、保留键、长度、日历日期与数量上限检查。
 import { normalizeOutput, sha256 } from "./services";
 
 type Dated = { updatedAt: string };
@@ -55,6 +57,7 @@ const MAX_ITEMS = 500;
 const BAD_KEYS = new Set(["__proto__", "prototype", "constructor"]);
 let loadedRevision: string | null | undefined;
 
+// 返回 schemaVersion=1 的空快照；以下九个小型校验原语都由模块头统一说明，不逐行展开。
 export function createInitialState(): LearningState {
   return {
     schemaVersion: 1,
@@ -118,6 +121,7 @@ function id(value: unknown, label: string): string {
   return result;
 }
 
+// 除可解析外还复核公历日期，避免 Date.parse 把 2 月 30 日自动滚到 3 月。
 function date(value: unknown, label: string): string {
   const result = string(value, label, 40);
   const parts =
@@ -163,6 +167,7 @@ function number(
   return value;
 }
 
+// 逐项净化字典：键必须合法且不含保留字，条目数受 MAX_ITEMS 限制。
 function record<T>(
   value: unknown,
   label: string,
@@ -175,6 +180,8 @@ function record<T>(
   );
 }
 
+// 净化一份本地 JDK 验证记录：字段、SHA-256、用例结果和总体结果必须彼此自洽，
+// 防止导入方用手动修改的 passed/allPassed 伪造实测通过。
 export function validateEvidence(input: unknown): Evidence {
   const value = fields(
     input,
@@ -263,6 +270,7 @@ export function validateEvidence(input: unknown): Evidence {
   };
 }
 
+// 导入时把记录的练习 ID 与 SHA-256 绑定到当前草稿，避免张冠李戴或复用旧源码证据。
 export async function importEvidence(
   input: unknown,
   exerciseId: string,
@@ -278,6 +286,8 @@ export async function importEvidence(
   return evidence;
 }
 
+// 把任意备份 JSON 净化为可保存状态：严格限定字段、类型、日期、重复 ID 及 10 MB 上限；
+// 不一致即抛错，导出、合并和保存共用这一校验，不让损坏数据进入 IndexedDB。
 export function validateBackup(input: unknown): LearningState {
   const value = object(input, "备份");
   if (value.schemaVersion !== 1)
@@ -373,6 +383,7 @@ export function validateBackup(input: unknown): LearningState {
   return state;
 }
 
+// 导出前复验状态，确保生成的备份本身也是可再次导入的合法快照。
 export function exportBackup(state: LearningState): string {
   return JSON.stringify(validateBackup(state), null, 2);
 }
@@ -393,6 +404,7 @@ function mergeDated<T extends Dated>(
   return merged;
 }
 
+// 按更新时间合并两份合法备份；提示取较高等级，同 ID 但内容不同的证据会中止导入。
 export function mergeBackup(
   currentInput: LearningState,
   incomingInput: LearningState,
@@ -438,6 +450,7 @@ export function mergeBackup(
   });
 }
 
+// 打开唯一快照库；升级被其他标签页阻挡或浏览器无 IndexedDB 时给出可操作错误。
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     if (!globalThis.indexedDB) {
@@ -476,6 +489,7 @@ function openDatabase(): Promise<IDBDatabase> {
   });
 }
 
+// 读取快照及并发 revision；首次使用返回初始状态，损坏记录直接拒绝而不覆盖磁盘数据。
 export async function loadState(): Promise<LearningState> {
   const database = await openDatabase();
   try {
@@ -511,6 +525,7 @@ export async function loadState(): Promise<LearningState> {
 
 let saveQueue: Promise<void> = Promise.resolve();
 
+// 写入串行化并用 revision 检测其他标签页的并发修改；冲突时中止事务、保留旧记录。
 export async function saveState(state: LearningState): Promise<void> {
   const snapshot = validateBackup(state);
   const pending = saveQueue

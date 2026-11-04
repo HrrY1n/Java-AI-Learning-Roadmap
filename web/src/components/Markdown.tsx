@@ -9,6 +9,7 @@ import { catalog, resolveSourcePath, sourceHref } from "../catalog";
 
 hljs.registerLanguage("java", java);
 
+// 代码高亮依赖 highlight.js 对源码转义后再写入 innerHTML；未知语言退回纯文本节点。
 export function Code({
   code,
   language = "java",
@@ -35,6 +36,8 @@ export function Code({
   );
 }
 
+// 把课程 Markdown 渲染为站内链接或“主动解锁”，去掉重复的首个 H1；
+// 数学公式由 KaTeX 接管，任务列表复选框保持只读，查看参考不等于完成练习。
 export function Markdown({
   text,
   sourcePath = "",

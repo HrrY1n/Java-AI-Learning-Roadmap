@@ -26,6 +26,7 @@ interface TopicViewProps {
   onToggleRead: (lessonId: string) => void;
 }
 
+// 专题路由入口：按 topicId/lessonId 决定教材索引、专题首页或单课阅读视图。
 export function TopicView({
   topicId,
   lessonId,

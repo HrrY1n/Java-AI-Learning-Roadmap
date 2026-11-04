@@ -1,3 +1,5 @@
+// 本模块只提供确定性判定与内置课程引导；执行器和模型适配器故意标记不可用，
+// 以便界面明确区分本地记录与尚未接入的真实服务，绝不伪造执行或模型结果。
 export function normalizeOutput(output: string): string {
   // 只忽略平台换行、行尾空格及最后一次换行；缩进和内部空行仍有意义。
   return output
@@ -8,6 +10,7 @@ export function normalizeOutput(output: string): string {
     .replace(/\n$/, "");
 }
 
+// 预测判定与指纹计算都是无副作用的确定性工具；下方服务接口保留未来受控后端边界。
 export function checkPrediction(actual: string, expected: string): boolean {
   return normalizeOutput(actual) === normalizeOutput(expected);
 }

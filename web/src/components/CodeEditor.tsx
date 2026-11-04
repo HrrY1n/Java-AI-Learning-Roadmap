@@ -23,6 +23,8 @@ class EditorBoundary extends Component<
   }
 }
 
+// 窄屏默认轻量 textarea；Monaco 加载失败自动降级。只在进入窄屏时自动降级，
+// 不自动升级，避免视口切换覆盖用户已选择的编辑模式并打断输入。
 export function CodeEditor({
   value,
   onChange,

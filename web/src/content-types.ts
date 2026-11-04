@@ -25,7 +25,7 @@ export interface Lesson {
   codePath: string;
   packageName: string;
   className: string;
-  /** 课程目录内全部 Java 文件（主文件在前；V1.3 起提供，多文件课程用） */
+  /** 课程目录内全部 Java 文件（按路径排序；主入口由 codePath 指定，V1.3 起提供） */
   codeFiles: LessonCodeFile[];
   relatedLessonIds: string[];
   exerciseIds: string[];

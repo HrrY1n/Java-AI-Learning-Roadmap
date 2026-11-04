@@ -68,7 +68,7 @@ npm run preview
 
 `npm test` 覆盖数据、服务、内容转换与本地验证工具；`test:e2e` 覆盖实际浏览器流程。`build` 先生成内容并执行严格 TypeScript 检查，再生成 `dist/`。生产预览默认是 [http://127.0.0.1:4173](http://127.0.0.1:4173)。请通过 HTTP 服务访问，不直接双击 `dist/index.html`。
 
-`check:build`检查构建后的相对入口资源、Monaco/worker及懒加载参考文件。网站CI在Ubuntu、Windows、macOS显式配置Node24和Temurin25，运行核心浏览器测试；PR另运行完整视觉扫描。失败日志、截图与trace通过Artifact保留。配置、实测结果与追加main必需检查的步骤见[V1.0质量验收](../docs/javaroadmap_lab/quality_v1/README.md)。
+`check:build`检查构建后的相对入口资源、Monaco/worker、懒加载参考文件，以及随 KaTeX 数学字体分发的版权声明与许可证。字体来源、授权边界和本机回退说明见[字体与第三方许可说明](public/licenses/README.md)。网站CI在Ubuntu、Windows、macOS显式配置Node24和Temurin25，运行核心浏览器测试；PR另运行完整视觉扫描。失败日志、截图与trace通过Artifact保留。配置、实测结果与追加main必需检查的步骤见[V1.0质量验收](../docs/javaroadmap_lab/quality_v1/README.md)。
 
 默认浏览器报告仍写入原验收产物目录；新一轮验收应设置独立`LAB_ARTIFACT_DIR`避免覆盖历史。设置`CI=true`时测试生产preview，先执行build；原命令顺序适用于默认开发模式。工具和E2E需要真实JDK；推荐JAVA_HOME指向完整JDK，运行原课程脚本时还应让PATH优先解析到同一JDK。
 

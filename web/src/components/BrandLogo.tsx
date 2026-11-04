@@ -3,11 +3,7 @@ interface BrandLogoProps {
   className?: string;
 }
 
-/**
- * Concept B: Roadmap + Code Brand Logo
- * A learning roadmap with milestone nodes, combined with a terminal prompt (>_)
- * Symbolizes progress, practice, and real developer growth.
- */
+/** 品牌图形：路线里程碑节点与终端提示符（>_）组合，表达持续实践的成长路径。 */
 export function BrandLogo({ size = 38, className = "" }: BrandLogoProps) {
   return (
     <svg

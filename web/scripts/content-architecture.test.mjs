@@ -8,7 +8,6 @@ import path from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { buildCatalog } from "./content/build.mjs";
-import { contentError } from "./content/errors.mjs"; // contentError 仅用于构造断言消息匹配
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 

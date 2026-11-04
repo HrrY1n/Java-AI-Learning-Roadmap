@@ -17,6 +17,8 @@ const webRoot = path.resolve(
 const repoRoot = path.resolve(webRoot, "..");
 const contentRoot = path.join(webRoot, "content");
 
+// 组装只读 Catalog；write=true 时写出生成的 catalog.json 和 reference/*.json，
+// updateRegistry 是显式登记新 ID 的维护动作，完成后会不带豁免复验稳定 ID 契约。
 export async function generateCatalog({ write = true, updateRegistry = false } = {}) {
   // --update-registry 是新 ID 的显式登记动作：先带豁免构建出 ID 集合，
   // 同步契约文件后复验（不带豁免），确保登记后的目录满足完整契约。

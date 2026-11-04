@@ -11,6 +11,7 @@ export class ContentError extends Error {
   }
 }
 
+// 构造带来源上下文的 ContentError，便于构建失败时定位具体文件或字段。
 export function contentError(message, context) {
   return new ContentError(message, context);
 }

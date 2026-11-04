@@ -27,6 +27,7 @@ export function toPascal(slug) {
     .join("");
 }
 
+// 路径存在性检查；ENOENT 视为正常未创建，其余系统错误直接暴露。
 async function exists(target) {
   try {
     await access(target);

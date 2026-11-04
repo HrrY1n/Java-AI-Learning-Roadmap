@@ -32,6 +32,7 @@ const OVERLAP_BADGES: Record<
   },
 };
 
+// 展示 On Java 8 的章节索引与本地 PDF 边界；无对应 catalog 映射时不渲染。
 export function OnJavaCard({ lessonId }: OnJavaCardProps) {
   const link = (catalog.onJavaLinks ?? []).find((l) => l.lessonId === lessonId);
   if (!link) return null;

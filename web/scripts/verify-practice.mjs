@@ -35,6 +35,7 @@ export function normalizeOutput(value) {
     .replace(/\n$/, "");
 }
 
+// 优先使用 JAVA_HOME 下的同名 JDK 工具，保证 javac 与 java 来自同一安装。
 function javaCommand(name) {
   return process.env.JAVA_HOME
     ? join(
@@ -45,7 +46,8 @@ function javaCommand(name) {
     : name;
 }
 
-// The timeout limits mistakes; it does not isolate code from the user's machine.
+// 以当前用户权限运行本地 JDK；超时和 64 KiB 输出上限只限制误运行，不隔离文件与网络。
+// 跨平台终止整棵进程树，超时返回 exitCode=-1 并把原因附加到 stderr。
 export function runProcess(
   command,
   args,
@@ -126,6 +128,7 @@ export function runProcess(
   });
 }
 
+// 读取用户提供的文本前同时检查体积和有效 UTF-8，避免把超大或无效编码交给 JDK。
 async function readSmall(path, label, limit = 100_000) {
   const buffer = await readFile(path);
   if (buffer.length > limit)
@@ -136,6 +139,8 @@ async function readSmall(path, label, limit = 100_000) {
   return { buffer, text };
 }
 
+// 校验练习身份、拒绝答案目录与学习者练习目录，再在临时目录编译运行独立源码副本；
+// 预期输出必须由调用者事先写明，结果只记录本次断言，不改写课程或学习进度。
 export async function verifyPractice(options, catalog) {
   const exercise = catalog.exercises.find(
     (item) => item.id === options.exercise,
@@ -256,7 +261,7 @@ export async function verifyPractice(options, catalog) {
       allPassed: passed,
     };
   } finally {
-    // This path is created here, never derived from a source or CLI deletion argument.
+    // 只删除本函数自建的临时根，路径不由源码或 CLI 参数推导，避免误删用户文件。
     if (
       dirname(temporaryRoot) === resolve(tmpdir()) &&
       basename(temporaryRoot).startsWith("javaroadmap-lab-")
@@ -266,6 +271,7 @@ export async function verifyPractice(options, catalog) {
   }
 }
 
+// 解析成对 CLI 参数；拒绝重复、缺值、未知选项和缺失必填项，保持验证输入明确。
 export function parseArgs(args) {
   const names = {
     "--exercise": "exercise",
@@ -299,6 +305,7 @@ export function parseArgs(args) {
   return options;
 }
 
+// CLI 入口：证据文件必须是 .json，并以 wx 独占创建，避免覆盖源码或既有证据。
 async function main() {
   const options = parseArgs(process.argv.slice(2));
   const catalog = JSON.parse(

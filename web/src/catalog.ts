@@ -3,6 +3,7 @@ import type { Catalog } from "./content-types";
 
 export const catalog = raw as Catalog;
 
+// 把内容文档中的相对链接解析为仓库相对路径；外链、协议相对 URL 和坏 URI 返回空串。
 export function resolveSourcePath(href: string, sourcePath: string): string {
   if (/^[a-z][a-z\d+.-]*:/i.test(href) || href.startsWith("//")) return "";
   try {
@@ -14,6 +15,7 @@ export function resolveSourcePath(href: string, sourcePath: string): string {
   }
 }
 
+// 先把仓库路径映射到站内 hash 路由；未命中时生成 GitHub blob/tree 链接并保留锚点。
 export function sourceHref(href: string, sourcePath: string): string {
   if (/^https?:\/\//.test(href)) return href;
   const path = resolveSourcePath(href, sourcePath);
@@ -27,7 +29,7 @@ export function sourceHref(href: string, sourcePath: string): string {
         item.codePath.slice(0, item.codePath.indexOf("/com/") + 1),
   );
   if (lesson) return `#/lesson/${lesson.id}`;
-  // V1.2：练习与预测/修改题的来源文档按 catalog 数据路由，不再按文件名特判
+  // 优先按 catalog 数据路由；末尾兜底仅兼容尚未登记到 catalog 的历史练习文档。
   const exercise = catalog.exercises.find((item) => item.sourcePath === path);
   if (exercise) return `#/lab/${exercise.id}`;
   if (

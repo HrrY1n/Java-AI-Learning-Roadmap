@@ -1,8 +1,10 @@
-// 内容读取与解析：文件安全、JSON/Markdown/Java 解析的唯一入口。
+// 内容读取与解析：集中处理路径越界、CRLF 归一、JSON/Markdown/Java 解析错误。
+// 构建器通过本模块读取正式内容；独立 CLI 可另行直接读取仓库文件。
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { contentError } from "./errors.mjs";
 
+// 读取仓库内 UTF-8 文本并归一 CRLF；拒绝越出 repoRoot，保留系统错误码供调用方分支。
 export async function readSource(repoRoot, sourcePath, context = {}) {
   const absolute = path.resolve(repoRoot, sourcePath);
   if (!absolute.startsWith(`${repoRoot}${path.sep}`))
@@ -19,6 +21,7 @@ export async function readSource(repoRoot, sourcePath, context = {}) {
   }
 }
 
+// 读取并解析内容 JSON，把语法错误包装成带文件路径的 ContentError。
 export async function readJson(repoRoot, sourcePath) {
   const raw = await readSource(repoRoot, sourcePath, { file: sourcePath });
   try {
@@ -30,6 +33,7 @@ export async function readJson(repoRoot, sourcePath) {
   }
 }
 
+// 返回目录中按文件名排序的 JSON 清单；目录不存在表示该阶段尚无内容。
 export async function listJsonFiles(contentRoot, relative) {
   const directory = path.resolve(contentRoot, relative);
   let entries;
@@ -45,6 +49,7 @@ export async function listJsonFiles(contentRoot, relative) {
     .sort();
 }
 
+// 递归收集目录中的 .java 文件并返回稳定排序，保证跨设备生成顺序一致。
 export async function javaFiles(repoRoot, directory) {
   const found = [];
   for (const entry of await readdir(path.resolve(repoRoot, directory), {
@@ -58,6 +63,7 @@ export async function javaFiles(repoRoot, directory) {
   return found.sort();
 }
 
+// 从 Java 源码提取显式包名与 public 类型名；缺一即终止，避免生成无包课程。
 export function javaIdentity(code, sourcePath) {
   const packageName = code.match(/^package\s+([\w.]+);/m)?.[1];
   const className = code.match(
@@ -70,6 +76,7 @@ export function javaIdentity(code, sourcePath) {
   return { packageName, className };
 }
 
+// 按指定标题级别切片 Markdown；每个标题的正文截止到下一个同级标题。
 export function sections(markdown, level) {
   const heading = new RegExp(`^${"#".repeat(level)} ([^\\n]+)\\n`, "gm");
   const matches = [...markdown.matchAll(heading)];
@@ -84,6 +91,7 @@ export function sections(markdown, level) {
   }));
 }
 
+// 标题前缀锚点必须且只能命中一处，避免内容章节调整时静默取错段落。
 export function requireSection(list, anchor, context) {
   const hits = list.filter((section) => section.title.startsWith(anchor));
   if (hits.length !== 1)

@@ -1,5 +1,5 @@
 // 同步算法专题课程的内嵌源码：topics.json 中每门 code 课的 code 字段
-// 与 markdown 中的 ```java 完整代码块，均以仓库真实源码为准。
+// 与旧 markdown 代码块一致时才以仓库真实源码更新；不一致时仅报告，--check 不写盘。
 // 用法：node scripts/sync-topic-code.mjs [--check]（--check 只报告不写）
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";

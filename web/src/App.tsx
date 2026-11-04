@@ -75,6 +75,8 @@ type PageProps = {
   notify: (message: string) => void;
 };
 type Route = { page: string; id: string; subId?: string };
+// 全站按哈希路由；页面只呈现合法快照中的证据，不据此判定学习者已经掌握。
+// timestamp / *Link / dateLabel / Eyebrow / Badge / SectionTitle 是无副作用的展示辅助。
 const timestamp = () => new Date().toISOString();
 const lessonLink = (id = "day01") => `#/lesson/${id}`;
 const labLink = (id = "scores") => `#/lab/${id}`;
@@ -87,6 +89,7 @@ const dateLabel = (date: string) =>
     hour12: false,
   });
 
+// 触发浏览器下载并在点击结束后延迟释放 Blob URL，避免过早撤销导致下载被取消。
 function download(name: string, text: string, type = "application/json") {
   const url = URL.createObjectURL(new Blob([text], { type }));
   const anchor = document.createElement("a");
@@ -96,6 +99,7 @@ function download(name: string, text: string, type = "application/json") {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+// 解析 #/page/id/subId；任一段 URI 编码损坏时进入 missing，避免整页崩溃。
 function getRoute(): Route {
   const parts = location.hash.replace(/^#\/?/, "").split("/");
   const page = parts[0] || "home";
@@ -144,6 +148,7 @@ function SectionTitle({
   );
 }
 
+// 顶部与移动导航按当前 hash 显示活跃项；所有页面经 props.state 读取同一份持久化快照。
 function Navigation({
   route,
   state,
@@ -265,6 +270,8 @@ function Navigation({
   );
 }
 
+// 根组件：载入 IndexedDB 快照后，变更经 change 统一打时间戳，
+// 180ms 防抖保存并用 sequence 忽略过期回写；加载失败时保留页面内容供导出。
 export default function App() {
   const [route, setRoute] = useState(getRoute);
   const [state, setState] = useState(createInitialState);
@@ -354,7 +361,7 @@ export default function App() {
     try {
       localStorage.setItem("jrl-theme", state.theme);
     } catch {
-      /* Theme cache is optional; the authoritative value is in IndexedDB. */
+      /* 主题缓存只是首屏优化，权威值仍以 IndexedDB 中的学习记录为准。 */
     }
   }, [dark, state.theme]);
   useEffect(() => {
@@ -750,6 +757,7 @@ export default function App() {
   );
 }
 
+// 工作台汇总当前任务、继续学习与备份入口；点击只导航或记录阅读，不生成掌握结论。
 function HomePage({ state }: PageProps) {
   const lesson =
     catalog.lessons.find((item) => item.id === state.lastLessonId) ??
@@ -1032,6 +1040,7 @@ function HomePage({ state }: PageProps) {
   );
 }
 
+// 按 catalog 的 14 Stage 分组展示课程；状态来自权威进度快照，不在此处推断完成度。
 function RoadmapPage() {
   const [selected, setSelected] = useState("01");
   const stage = catalog.stages.find((item) => item.id === selected)!;
@@ -1219,6 +1228,7 @@ function RoadmapPage() {
   );
 }
 
+// 课程阅读页；进入时恢复一次进度，滚动防抖写回，提示与参考查看分别留痕。
 function LessonPage({
   state,
   change,
@@ -1267,7 +1277,7 @@ function LessonPage({
       clearTimeout(timer);
       window.removeEventListener("scroll", handle);
     };
-    // A lesson's initial saved position is restored once on entry.
+    // 进入课程时仅恢复一次已保存位置，后续滚动位置由防抖写回。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lesson.id]);
   const index = catalog.lessons.indexOf(lesson);
@@ -1612,6 +1622,7 @@ function LessonPage({
   );
 }
 
+// 预测与修改共用 catalog 数据；作答按确定性答案比对，复盘内容只存为学习者输入。
 function PracticePage(
   props: PageProps & {
     routeId: string;
@@ -1751,6 +1762,7 @@ function PracticePage(
   );
 }
 
+// 单题预测：非空断言对应 catalog 保证存在的题目，作答次数与结果由 change 持久化。
 function PredictionCard({
   state,
   change,
@@ -1924,6 +1936,7 @@ function PredictionCard({
   );
 }
 
+// 实验室从草稿或题目 starterCode 开始；证据导入需匹配练习 ID 与当前源码 SHA-256。
 function LabPage({
   state,
   change,
@@ -1941,7 +1954,7 @@ function LabPage({
   onReference: (path: string) => void;
 }) {
   const code = state.drafts[exercise.id]?.code ?? exercise.starterCode;
-  // 未来需要 stdin 的练习只需在元数据中声明 needsInput: true
+  // 需要 stdin 的练习在元数据中声明 needsInput: true
   const needsInput = exercise.needsInput === true;
   const [tab, setTab] = useState<"cases" | "local" | "evidence">("cases");
   const [evidenceError, setEvidenceError] = useState("");
@@ -2390,6 +2403,7 @@ function LabPage({
   );
 }
 
+// 复盘表单只写学习者填写的错误、理解、下一步和复习标记，不修改其它学习状态。
 function ReflectionForm({ state, change, id }: PageProps & { id: string }) {
   const reflection = state.reflections[id] ?? {
     error: "",
@@ -2463,6 +2477,7 @@ function ReflectionForm({ state, change, id }: PageProps & { id: string }) {
   );
 }
 
+// 汇总阅读、草稿、预测、参考查看和实测记录，明确区分记录行为与独立完成证据。
 function ReviewPage({ state, onData }: PageProps & { onData: () => void }) {
   const read = Object.values(state.lessons).filter((item) => item.read).length;
   const drafts = Object.keys(state.drafts).length;
@@ -2659,6 +2674,7 @@ function ReviewPage({ state, onData }: PageProps & { onData: () => void }) {
   );
 }
 
+// 内置分级提示/Debug/Review 引导，明确标识未接入真实模型服务。
 function TutorDialog({
   state,
   change,
@@ -2801,6 +2817,7 @@ function TutorDialog({
   );
 }
 
+// 备份导出、校验、合并与替换入口；替换前强制导出当前快照以防误删本地记录。
 function DataDialog({
   state,
   onClose,
@@ -2966,6 +2983,7 @@ function DataDialog({
   );
 }
 
+// 只按 catalog 登记的 URL 懒加载参考；查看会留痕但不替换草稿、不计为练习完成。
 function ReferenceDialog({
   path,
   change,

@@ -13,6 +13,7 @@ interface VisualizerProps {
   type: string;
 }
 
+// 按专题课程传入的 type 分派交互演示；未知 type 返回空内容而非渲染错误组件。
 export function TopicVisualizer({ type }: VisualizerProps) {
   if (type === "complexity-ladder") {
     return <ComplexityLadderDemo />;
@@ -110,7 +111,7 @@ function ComplexityLadderDemo() {
 function ArrayAddressingDemo() {
   const [index, setIndex] = useState<number>(2);
   const baseAddress = 1000;
-  const elementSize = 4; // 4 bytes for int
+  const elementSize = 4; // int 占 4 字节
   const targetAddress = baseAddress + index * elementSize;
 
   const cells = [

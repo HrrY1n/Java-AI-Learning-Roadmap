@@ -7,6 +7,7 @@ import {
 } from "react";
 import { X } from "lucide-react";
 
+// tablist 的漫游焦点：仅接管 tab 上的方向键/Home/End，并循环移动焦点与选中项。
 export function handleTabKeys(event: KeyboardEvent<HTMLElement>) {
   const target = event.target as HTMLElement;
   const tablist = target.closest('[role="tablist"]');
@@ -32,6 +33,7 @@ export function handleTabKeys(event: KeyboardEvent<HTMLElement>) {
   tabs[next].click();
 }
 
+// showModal 提供原生焦点圈定；关闭后仅在哈希未变且打开者仍连接时归还焦点。
 export function Dialog({
   title,
   onClose,

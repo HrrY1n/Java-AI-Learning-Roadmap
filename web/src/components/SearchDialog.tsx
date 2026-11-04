@@ -29,6 +29,7 @@ const isApplePlatform =
   typeof navigator !== "undefined" &&
   /Mac|iPhone|iPad|iPod/.test(navigator.userAgent || navigator.platform || "");
 
+// 原生 dialog 内做本地课程搜索；键盘高亮与 DOM 焦点分离，鼠标悬停不抢占键盘选择。
 export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -139,7 +140,8 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   // 1. 在输入框内：↑↓ 切换高亮项且光标保留在输入框内（保持连续输入体验）；
   // 2. 在结果列表内：↑↓ 同步将 DOM 焦点与高亮移动到新项，保持焦点与选中完全一致；
   // 3. Tab 聚焦到关闭按钮按 Enter 正常关闭，Tab 聚焦结果项时高亮随焦点同步；
-  // 4. 按 Enter 始终直达当前指向的目标（关闭按钮除外，且排除中文输入法拼音选字组合态）。
+  // 4. 焦点在输入框且非中文输入法组合态时，Enter 直达当前高亮结果；
+  //    焦点已在链接或按钮上时保留其原生 Enter 行为，由浏览器触发对应控件。
   const handleKeyDown = (e: KeyboardEvent<HTMLDialogElement>) => {
     const target = e.target as HTMLElement | null;
 

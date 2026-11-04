@@ -1,5 +1,5 @@
 // 练习 Java 契约测试：骨架真实 javac 编译 + verify-practice 身份识别。
-// 覆盖全部已发布练习（Stage 01 与 Stage 02），JDK 来自环境（CI 已装 Temurin 21/25）。
+// 覆盖全部已发布练习（Stage 01 与 Stage 02），JDK 来自环境；网站测试工作流安装 Temurin 25。
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";

@@ -1,6 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
-
 const normalize = (s) => s.replace(/\s+/g, " ").trim();
 
 const CONTROL_KEYWORDS =
@@ -8,12 +5,12 @@ const CONTROL_KEYWORDS =
 
 /**
  * 从 Java 源码文本中提取“声明行”。
- * 判别标准：一行包含 `(`，去掉可选 throws 子句后以 `{` 结尾，
- * 且首词不是控制流关键字（if/for/while/...）——这同时覆盖：
+ * 判别标准：方法/构造器声明行包含 `(`、去掉可选 throws 子句后以 `{` 结尾，
+ * 且首词不是控制流关键字或 lambda；无圆括号的类型声明由 TYPE_RE 单独处理：
  * - 带修饰符方法：`public static void main(String[] args) {`
  * - 无修饰符方法：`void put(String key, int value) {`
  * - 构造器：`public Demo() {` / `Point(int x, int y) {`
- * - 类型声明：`public class Demo {` / `static class Inner {`
+ * - 无参数类型声明：`public class Demo {` / `static class Inner {`
  * 排除调用语句（以 `;` 结尾）与控制流块。
  */
 export function collectDeclarations(code) {
@@ -60,8 +57,4 @@ export function findMissingDeclarations(markdown, sourceCode) {
     }
   }
   return missing;
-}
-
-export function readRepoFile(repoRoot, relative) {
-  return fs.readFileSync(path.join(repoRoot, relative), "utf8");
 }

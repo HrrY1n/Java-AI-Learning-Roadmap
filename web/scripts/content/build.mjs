@@ -16,6 +16,7 @@ import {
 const CONTENT_STATES = ["published", "materials", "draft", "planned"];
 const KIND_RANK = { foundation: 0, "deep-dive": 1 };
 
+// 取首个一级标题作为展示标题；去掉代码标记，缺失时使用中性默认名。
 export function cleanTitle(markdown) {
   return markdown.match(/^# (.+)$/m)?.[1].replace(/`/g, "") ?? "学习资料";
 }
@@ -39,6 +40,7 @@ async function loadLessonMetadata(contentRoot, stageEntries) {
   return lessons;
 }
 
+// 仅发现已发布阶段的课程，读取 Java 源码并校验包、主入口及课程顺序覆盖。
 async function buildLessons(repoRoot, contentRoot, stageEntries) {
   const records = await loadLessonMetadata(contentRoot, stageEntries);
   const lessons = [];
@@ -265,8 +267,8 @@ async function buildExercises(repoRoot, contentRoot, stageEntries) {
         throw contentError("阶段清单缺少 slug（stages/ 下的目录名）", {
           stage: stage.id,
         });
-      // Java 包段与练习 ID 分离：ID 可含连字符（s02-bank-account），
-      // 包段必须是合法 Java 标识符（显式声明或回退到 ID 本身）。
+      // Java 包段与练习 ID 分离：含连字符的 ID 必须提供 packageSegment；
+      // 省略时仅当 ID 本身是合法 Java 标识符才可直接回退。
       const packageSegment = meta.packageSegment ?? meta.id;
       if (!/^[a-z][a-z0-9_]*$/.test(packageSegment))
         throw contentError(
@@ -574,7 +576,7 @@ function checkRegistry(contentRoot, catalog, { allowUnknownIds = false } = {}) {
   return current;
 }
 
-// registry.json 在校验阶段同步读取（构建入口已提前生成基线），这里使用同步兜底实现。
+// 稳定 ID 校验只依赖单份本地 JSON，使用同步读取让失败直接中断构建。
 import { readFileSync } from "node:fs";
 function readJsonSync(contentRoot, relative) {
   return JSON.parse(readFileSync(path.resolve(contentRoot, relative), "utf8"));
@@ -582,10 +584,11 @@ function readJsonSync(contentRoot, relative) {
 
 /* ---------- Catalog 组装 ---------- */
 
+// 从内容清单与仓库权威文档组装只读 Catalog；本函数不写磁盘，
+// 发布门禁、稳定 ID 契约及资源存在性任一失败即终止构建。
 export async function buildCatalog({
   repoRoot,
   contentRoot,
-  roadmapSource = "统一学习路线.md",
   allowUnknownIds = false,
 } = {}) {
   const { stages, stageEntries } = await buildStages(repoRoot, contentRoot);
@@ -705,6 +708,7 @@ export async function buildCatalog({
 
 /* ---------- 参考资源存在性 ---------- */
 
+// 发布前逐一确认练习、修改题和懒加载参考引用的仓库文件存在。
 async function validateResources(repoRoot, catalog) {
   const problems = [];
   const paths = [
@@ -725,6 +729,7 @@ async function validateResources(repoRoot, catalog) {
 
 /* ---------- 内容合法性校验 ---------- */
 
+// 跨集合校验 ID、阶段、课程与练习引用；返回问题列表供发布门禁汇总报错。
 export function validateCatalog(catalog) {
   const problems = [];
   const lessons = new Map(catalog.lessons.map((item) => [item.id, item]));

@@ -7,6 +7,7 @@ import EditorWorker from "monaco-editor/editor/editor.worker.js?worker";
   self as typeof self & { MonacoEnvironment: monaco.Environment }
 ).MonacoEnvironment = { getWorker: () => new EditorWorker() };
 
+// 仅加载 Java 语法与通用 worker；没有语言服务器、编译器或浏览器 JVM。
 export default function MonacoEditor({
   value,
   onChange,
@@ -72,7 +73,7 @@ export default function MonacoEditor({
       model?.dispose();
       editor.current = null;
     };
-    // The exercise owns the model lifetime; changes are synchronized below without moving the cursor.
+    // 练习组件持有编辑器模型；外部 value 变化时 setValue 会重置光标和撤销栈。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
