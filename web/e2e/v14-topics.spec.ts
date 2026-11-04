@@ -467,6 +467,43 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     if (activeSelectedHref) {
       await expect(page).toHaveURL(new RegExp(activeSelectedHref.replace("#", "\\#") + "$"));
     }
+
+    // 7. 鼠标与键盘混合操作：Tab 聚焦第 2 条结果，鼠标悬停到第 4 条，按 Enter 必须打开键盘焦点所在的第 2 条链接
+    await trigger.click();
+    await expect(dialog).toBeVisible();
+    const fourthItem = items.nth(3);
+    const fourthItemHref = await fourthItem.getAttribute("href");
+    expect(fourthItemHref).toBeTruthy();
+
+    await page.keyboard.press("Tab"); // 聚焦关闭按钮
+    await page.keyboard.press("Tab"); // 聚焦第 1 条结果
+    await page.keyboard.press("Tab"); // 聚焦第 2 条结果
+    await expect(secondItem).toBeFocused();
+    await expect(secondItem).toHaveClass(/selected/);
+
+    // 鼠标移动并悬停到第 4 条结果
+    await fourthItem.hover();
+    // 键盘焦点依然在第 2 条，且高亮不得被鼠标悬停抢占
+    await expect(secondItem).toBeFocused();
+    await expect(secondItem).toHaveClass(/selected/);
+
+    // 按 Enter 激活焦点项，必须打开第 2 条结果，绝不可跳转到第 4 条
+    await page.keyboard.press("Enter");
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(new RegExp(secondItemHref!.replace("#", "\\#") + "$"));
+
+    // 8. 中文输入法合成状态（IME composition）：选字回车不会错误触发搜索跳转
+    await trigger.click();
+    await expect(dialog).toBeVisible();
+    await searchInput.fill("erchashu");
+    await searchInput.dispatchEvent("compositionstart");
+    await page.keyboard.press("Enter");
+    // 弹窗依然保持打开，未发生跳转
+    await expect(dialog).toBeVisible();
+    await searchInput.dispatchEvent("compositionend");
+    await searchInput.fill("二叉树");
+    await page.keyboard.press("Enter");
+    await expect(dialog).not.toBeVisible();
   });
 
   test("Git 课程不同步骤数切换不发生白屏且步进状态安全重置", async ({ page }) => {
@@ -530,6 +567,25 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
   });
 
   test("290px/305px/320px/390px 极窄屏及占位式滚动条环境下无整页横向溢出", async ({ page }) => {
+    // 验证 max-width: 374px 下 visualizer-card 实际计算 padding 生效为 14px 12px，
+    // 在大于 374px（如 390px）下保持 20px
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-time-complexity");
+    await page.waitForLoadState("networkidle");
+    const padding320 = await page.locator(".visualizer-card").evaluate((el) => {
+      const cs = window.getComputedStyle(el);
+      return `${cs.paddingTop} ${cs.paddingRight}`;
+    });
+    expect(padding320, "320px 视口下 visualizer-card 的 padding 应为 14px 12px").toBe("14px 12px");
+
+    await page.setViewportSize({ width: 390, height: 700 });
+    await page.waitForTimeout(100);
+    const padding390 = await page.locator(".visualizer-card").evaluate((el) => {
+      const cs = window.getComputedStyle(el);
+      return `${cs.paddingTop} ${cs.paddingRight}`;
+    });
+    expect(padding390, "390px 视口下 visualizer-card 的 padding 应为 20px 20px").toBe("20px 20px");
+
     // 覆盖极窄屏（290px 实际内容区）、305px 占位垂直滚动条极限、320px 与 390px 视口
     for (const width of [290, 305, 320, 390]) {
       await page.setViewportSize({ width, height: 700 });

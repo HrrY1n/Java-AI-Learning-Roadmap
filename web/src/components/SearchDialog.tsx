@@ -169,12 +169,13 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
         targetItem.scrollIntoView({ block: "nearest" });
       }
     } else if (e.key === "Enter") {
-      // 若当前焦点在关闭按钮，放行触发其原生 onClick 关闭面板
-      if (target?.closest(".search-close-btn")) {
+      // 若当前焦点在结果链接或关闭按钮等交互元素上，保留其原生的键盘 Enter 行为：
+      // - 结果链接自身按 Enter 触发原生点击与跳转，绝不被全局拦截覆盖；
+      // - 关闭按钮按 Enter 触发其原生点击关闭弹窗。
+      if (target?.closest("a") || target?.closest("button")) {
         return;
       }
-      // 其它任何焦点位置（无论是输入框还是某条结果项），只要非中文输入法选字合成中，
-      // 按 Enter 始终直达当前选中的结果项
+      // 焦点在输入框（且不在中文输入法拼音选字组合状态）时，Enter 直达当前选中的结果项
       if (!composingRef.current) {
         const chosen = filteredItems[selectedIndex];
         if (chosen) {
@@ -255,7 +256,13 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                   href={item.href}
                   className={`search-item ${isSelected ? "selected" : ""}`}
                   onClick={onClose}
-                  onMouseEnter={() => setSelectedIndex(index)}
+                  onMouseEnter={() => {
+                    // 若用户已通过键盘 Tab 聚焦到了结果链接列表，键盘焦点优先，鼠标经过不得抢占高亮与选中项
+                    const active = document.activeElement;
+                    if (!active?.closest(".search-item")) {
+                      setSelectedIndex(index);
+                    }
+                  }}
                   onFocus={() => setSelectedIndex(index)}
                 >
                   <div className="search-item-icon">
