@@ -541,6 +541,9 @@ function stripUnpublishedSections(markdown, strip) {
     if (strip.kind === "ids") {
       const match = /^###\s+((?:S\d{2})?[AB]\d+)\b/.exec(line);
       if (match) skipping = !keep.has(match[1]);
+      // draft 小节严格是 ### 作用域：跨组的一级/二级标题必须结束跳过，
+      // 否则组内最后一个 draft 会吞掉后续分组的标题行。
+      else if (/^#{1,2}\s/.test(line)) skipping = false;
     } else {
       const match = /^##\s+(.+?)\s*$/.exec(line);
       if (match) {

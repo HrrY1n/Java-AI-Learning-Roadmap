@@ -418,21 +418,25 @@ test("未发布预测小节不会经来源文档泄露", async () => {
             S02A1: { lessonIds: ["s02-encapsulation"], contentState: "published" },
             S02A2: { lessonIds: [], contentState: "draft" },
           },
-          modifications: {},
+          modifications: {
+            S02B1: { lessonIds: ["s02-encapsulation"], contentState: "published" },
+          },
         },
         null,
         2,
       ),
       "utf8",
     );
+    // 关键构造：draft 是 A 组最后一个小节，其后紧跟 B 组的二级标题，
+    // 用于钉住“跳过状态必须被跨组标题复位”的边界行为。
     await writeFile(
       path.join(repoRoot, "stages/stage02_java_oop/practice/predict.md"),
-      "# 预测题\n\n### S02A1 已发布题面\n\n```java\nint value = 1;\n```\n\n预测输出。\n\n### S02A2 草稿题面\n\n这是尚未发布的草稿句子，不应被任何公开入口读到。\n",
+      "# 预测题\n\n## A. 预测题\n\n### S02A1 已发布题面\n\n```java\nint value = 1;\n```\n\n预测输出。\n\n### S02A2 草稿题面\n\n这是尚未发布的草稿句子，不应被任何公开入口读到。\n\n## B. 修改题\n\n### S02B1 已发布修改\n\n修改题正文不应被吞。\n",
       "utf8",
     );
     await writeFile(
       path.join(repoRoot, "stages/stage02_java_oop/practice/answers.md"),
-      "# 答案\n\n## S02A1\n\n```text\n1\n```\n\n为什么：字面量直接输出。\n",
+      "# 答案\n\n## S02A1\n\n```text\n1\n```\n\n为什么：字面量直接输出。\n\n## S02B1\n\n修改说明。\n",
       "utf8",
     );
     const catalog = await buildCatalog({ repoRoot, contentRoot });
@@ -445,6 +449,8 @@ test("未发布预测小节不会经来源文档泄露", async () => {
       !doc.markdown.includes("S02A2") && !doc.markdown.includes("草稿句子"),
       "draft 题面整段剥离",
     );
+    assert.ok(doc.markdown.includes("## B. 修改题"), "跨组标题不被 draft 吞掉");
+    assert.ok(doc.markdown.includes("修改题正文不应被吞"), "后续组已发布小节保留");
     assert.ok(
       catalog.predictions.some((item) => item.id === "S02A1") &&
         !catalog.predictions.some((item) => item.id === "S02A2"),
