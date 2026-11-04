@@ -32,4 +32,4 @@ javap -c -v MachineModel
 排查 JIT、性能分析和 JNI 边界问题时，需要知道机器级细节属于平台实现，而非 Java 语言规范。
 
 ## 来源与出处
-《CSAPP, 3rd Global Edition》Chapter 3, 3.1–3.5 节（PDF 第 200-237 页）。
+《CSAPP, 3rd Global Edition》Chapter 3, 3.1–3.5 节（PDF 第 203-237 页）。

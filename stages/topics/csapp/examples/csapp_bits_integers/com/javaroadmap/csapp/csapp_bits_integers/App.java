@@ -14,7 +14,8 @@ public final class App {
         int overflow = Integer.MAX_VALUE + 1;
         int truncated = (byte) 300 & 0xff;
         System.out.println("int 溢出：" + overflow);
-        System.out.println("byte 截断：" + truncated);
+        System.out.println("byte 截断（按无符号解释）：" + truncated);
+        System.out.println("(byte) 300 的补码值：" + (int) (byte) 300 + "，二进制：" + Integer.toBinaryString((byte) 300 & 0xff));
         System.out.println("-1 的 32 位补码：" + Integer.toBinaryString(-1));
         System.out.println("示例结束。请在本地独立完成练习，不要把演示输出当作生产验证。");
     }

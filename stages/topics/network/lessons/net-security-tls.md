@@ -19,7 +19,7 @@ System.out.println(context.getProtocol());
 ```
 
 ## 6. Observe：先预测，再运行
-查看 JVM 默认 SSL 协议名称；不要用自签名证书绕过生产校验。
+查看 JVM 默认 SSL 协议名称；再把一个 HTTPS 客户端指向只支持旧协议或不被信任证书的本机服务（自建实验环境），观察 `SSLHandshakeException` 与 HTTP 4xx/5xx、`ConnectException`、`UnknownHostException` 分属不同层，排查时先分层再定位。不要用自签名证书绕过生产校验。
 
 ## 7. Modify：只改一个有意义的条件
 为本地 HTTPS 服务配置受信任证书，观察握手与证书校验差异。

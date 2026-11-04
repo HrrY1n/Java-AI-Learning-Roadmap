@@ -14,15 +14,19 @@ UDP 是“寄信”，TCP 是“长对话”。
 
 ## 5. Minimal Code：最小示例
 ```java
-try (DatagramSocket socket = new DatagramSocket()) {
-    byte[] payload = "ping".getBytes(StandardCharsets.UTF_8);
-    socket.send(new DatagramPacket(payload, payload.length,
-        InetAddress.getByName("127.0.0.1"), 0));
+// UDP：发送到接收方实际绑定的端口；send 之后没有会话、没有确认
+try (DatagramSocket receiver = new DatagramSocket(0);
+     DatagramSocket sender = new DatagramSocket()) {
+    receiver.setSoTimeout(2000); // 数据报可能丢失，靠超时兜底
+    sender.send(new DatagramPacket(payload, payload.length,
+        InetAddress.getByName("127.0.0.1"), receiver.getLocalPort()));
+    receiver.receive(new DatagramPacket(buffer, buffer.length));
 }
+// TCP 对照：ServerSocket.accept 建立连接后按字节流读写
 ```
 
 ## 6. Observe：先预测，再运行
-先运行 TCP echo 示例；再观察 UDP 示例只发送，不等待确认。
+先预测两个协议的差异会在输出里如何体现，再运行示例核对：UDP 段展示“发送即结束、收到才打印”，TCP 段展示“先 accept、再按字节流读到一行”。回环上 UDP 通常可达，但那不是协议保证——真实网络里它可能永远收不到。
 
 ## 7. Modify：只改一个有意义的条件
 把 TCP 客户端发送内容改成多行，观察服务端如何需要协议分隔符。

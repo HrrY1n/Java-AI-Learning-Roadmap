@@ -71,6 +71,28 @@
           ],
           "bodyPath": "stages/topics/network/lessons/net-dns-cdn.md",
           "priority": "now"
+        },
+        {
+          "id": "net-http-status-lab",
+          "title": "HTTP 状态码实验：200、404 与连接失败",
+          "summary": "用本机真实 HTTP 服务区分应用层状态码与传输层连接失败。",
+          "status": "published",
+          "kind": "code",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 2 章 2.2 节",
+            "pdfPageStart": 82,
+            "pdfPageEnd": 95,
+            "printPage": "63-76"
+          },
+          "stageLinks": [
+            "03"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-http-status-lab.md",
+          "priority": "now",
+          "codeDirectory": "stages/topics/network/examples/net_http_status",
+          "packageName": "com.javaroadmap.network.net_http_status",
+          "className": "App"
         }
       ]
     },

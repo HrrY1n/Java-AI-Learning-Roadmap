@@ -32,4 +32,4 @@ System.out.println(overflow + " / " + truncated);
 协议解析、哈希函数、位标志、金额分单位计算都依赖位级语义；不要用浮点数表示精确金额。
 
 ## 来源与出处
-《CSAPP, 3rd Global Edition》Chapter 2, 2.1–2.3 节（PDF 第 68-121 页）。
+《CSAPP, 3rd Global Edition》Chapter 2, 2.1–2.3 节（PDF 第 71-145 页）。

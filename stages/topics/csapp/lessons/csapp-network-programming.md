@@ -15,14 +15,22 @@
 ## 5. Minimal Code：最小示例
 ```java
 try (java.net.ServerSocket server = new java.net.ServerSocket(0);
-     Socket client = new Socket("127.0.0.1", server.getLocalPort());
+     java.net.Socket client = new java.net.Socket("127.0.0.1", server.getLocalPort());
      java.net.Socket accepted = server.accept()) {
+    // 客户端写一行；TCP 是字节流，必须约定行分隔符作为消息边界
     client.getOutputStream().write("ping\n".getBytes(StandardCharsets.UTF_8));
+    // 服务端：读一行并“原样写回”——这才是回显，而不是只读取
+    String line = new java.io.BufferedReader(new java.io.InputStreamReader(
+        accepted.getInputStream(), StandardCharsets.UTF_8)).readLine();
+    accepted.getOutputStream().write((line + "\n").getBytes(StandardCharsets.UTF_8));
+    // 客户端：读取回显，验证双向通路
+    System.out.println(new java.io.BufferedReader(new java.io.InputStreamReader(
+        client.getInputStream(), StandardCharsets.UTF_8)).readLine());
 }
 ```
 
 ## 6. Observe：先预测，再运行
-先运行源码，预测客户端发送的 `ping` 是否会自动回显；再看服务端实际读取结果。
+先预测：只发送、不写回的“echo”能证明双向通路吗？再运行源码，核对三行输出（发送、收到、回显）是否一致。最后把服务端的写回语句注释掉，再运行一次——客户端 `readLine()` 会一直阻塞，这正说明回显必须由服务端显式完成。
 
 ## 7. Modify：只改一个有意义的条件
 把服务端改成读取一行后原样返回；再观察客户端如何判断响应结束。

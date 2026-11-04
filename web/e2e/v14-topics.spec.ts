@@ -62,7 +62,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     const networkCard = page.locator(".topic-card").filter({ hasText: "计算机网络" });
     await expect(networkCard).toBeVisible();
     await expect(networkCard).toContainText("课程建设中 · 已有可学内容");
-    await expect(networkCard.locator(".topic-progress-text")).toContainText("已发布课程：11 节");
+    await expect(networkCard.locator(".topic-progress-text")).toContainText("已发布课程：12 节");
 
     // 5. 检查外部教材库表格
     const booksTable = page.locator(".books-table");

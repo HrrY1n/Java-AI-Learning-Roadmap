@@ -212,7 +212,7 @@
       "format": "PDF / 经典教材（英文原版）",
       "topicId": "topic-csapp",
       "status": "integrated-topic",
-      "summary": "从程序员视角理解硬件架构、指令集、内存层次、虚拟内存、系统级 I/O 与并发基础。当前阶段建立索引待接入，不误标为已发布。",
+      "summary": "从程序员视角理解硬件架构、指令集、内存层次、虚拟内存、系统级 I/O 与并发基础。本站已按 12 章建立专题课程（topic-csapp），课程仍持续建设中。",
       "keyChapters": [
         {
           "chapter": "Chapter 1",
@@ -286,7 +286,7 @@
       "format": "PDF / 开源教材（本地中文版）",
       "topicId": "topic-ostep",
       "status": "integrated-topic",
-      "summary": "围绕虚拟化（CPU/内存）、并发（锁、条件变量、信号量）与持久性（磁盘、文件系统）三大核心主题。当前阶段建立索引待接入，不误标为已发布。",
+      "summary": "围绕虚拟化（CPU/内存）、并发（锁、条件变量、信号量）与持久性（磁盘、文件系统）三大核心主题。本站已按章节建立专题课程（topic-ostep），课程仍持续建设中。",
       "keyChapters": [
         {
           "chapter": "第 2、4、6 章",
@@ -375,7 +375,7 @@
       "format": "PDF / 教材（原书第 8 版中文版）",
       "topicId": "topic-network",
       "status": "integrated-topic",
-      "summary": "从应用层（HTTP/DNS）、传输层（TCP/UDP 可靠传输与拥塞控制）自顶向下透视现代互联网通信机制。当前阶段建立索引待接入，不误标为已发布。",
+      "summary": "从应用层（HTTP/DNS）、传输层（TCP/UDP 可靠传输与拥塞控制）自顶向下透视现代互联网通信机制。本站已按 8 章建立专题课程（topic-network），课程仍持续建设中。",
       "keyChapters": [
         {
           "chapter": "第 1 章",

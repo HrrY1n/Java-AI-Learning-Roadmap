@@ -14,10 +14,11 @@
 
 ## 5. Minimal Code：最小示例
 ```java
-long start = System.nanoTime();
-runOnce();
-long elapsed = System.nanoTime() - start;
-// 仅演示计时 API；单次时间不能作为可靠 benchmark。
+// 版本 A：每次迭代都重新计算边界；版本 B：提出循环不变量
+for (int i = 0; i < values.length; i++) total += process(values[i]);
+int n = values.length;
+for (int i = 0; i < n; i++) total += process(values[i]);
+// 测量纪律：同一 JVM、先预热再计时、每个版本跑多轮，记录区间而不是单次值
 ```
 
 ## 6. Observe：先预测，再运行

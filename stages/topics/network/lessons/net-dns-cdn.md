@@ -7,7 +7,7 @@
 DNS 决定“找谁”，CDN 决定“从哪里取”，两者都会影响可用性和延迟。
 
 ## 3. Concept：核心概念
-DNS 是分层的名称解析系统，记录类型包括 A/AAAA、CNAME、NS 等。CDN 根据位置和负载选择边缘节点。Java `InetAddress` 只做名称解析，不等于 HTTP 请求成功。
+DNS 是分层的名称解析系统，记录类型包括 A/AAAA、CNAME、NS 等。CDN 根据位置和负载选择边缘节点；P2P 分发则让对等节点互为来源，两者都在“从哪里取”上做优化。Java `InetAddress` 只做名称解析，不等于 HTTP 请求成功。
 
 ## 4. Mental Model：把机制装进一张图
 `域名 -> 缓存/递归解析 -> 权威服务器 -> IP -> 边缘节点`。

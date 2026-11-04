@@ -357,7 +357,7 @@ test("三本系统教材：新专题课程来源于仓库 Markdown，未完成�
       ],
     },
     "topic-network": {
-      count: 11,
+      count: 12,
       modules: [
         "net-overview",
         "net-application",
@@ -369,6 +369,7 @@ test("三本系统教材：新专题课程来源于仓库 Markdown，未完成�
         "net-internet-overview",
         "net-app-http",
         "net-dns-cdn",
+        "net-http-status-lab",
         "net-udp-tcp-sockets",
         "net-reliable-tcp",
         "net-congestion-control",
@@ -437,6 +438,79 @@ test("三本系统教材：新专题课程来源于仓库 Markdown，未完成�
       }
     }
   }
+});
+
+test("三本系统教材配套示例：关键行为在源码中真实可观察", () => {
+  const topicLessonSource = (topicId, lessonId) => {
+    const topic = catalog.topics.find((item) => item.id === topicId);
+    const lesson = topic.modules.flatMap((m) => m.lessons).find((l) => l.id === lessonId);
+    assert.ok(lesson, `缺少课程 ${lessonId}`);
+    assert.equal(lesson.kind, "code", `${lessonId} 应为代码课`);
+    return lesson.code;
+  };
+
+  // CSAPP Ch11：TCP 必须真实回显（读一行 -> 原样写回 -> 客户端读回显），
+  // 不允许退回“只发送不写回”的半成品。
+  const echo = topicLessonSource("topic-csapp", "csapp-network-programming");
+  assert.match(echo, /readLine/, "TCP 示例必须读取一行");
+  assert.match(echo, /serverOut\.write|accepted\.getOutputStream\(\)\.write/, "服务端必须写回应答");
+  assert.match(echo, /回显/, "必须验证客户端读到的回显");
+
+  // CSAPP Ch12：必须同时呈现竞态与原子修复，而不是只提交一个线程池任务。
+  const concurrency = topicLessonSource("topic-csapp", "csapp-concurrency");
+  assert.match(concurrency, /plainCounter\+\+/, "必须有普通递增的竞态示范");
+  assert.match(concurrency, /AtomicInteger/, "必须有原子对照");
+  assert.match(concurrency, /期望 200000/, "必须写出期望值与不确定性的对比");
+
+  // CSAPP Ch6：必须同时测量行优先与列优先访问。
+  const memory = topicLessonSource("topic-csapp", "csapp-memory-hierarchy");
+  assert.match(memory, /行遍历/, "必须有行遍历计时");
+  assert.match(memory, /列遍历/, "必须有列遍历计时");
+
+  // OSTEP 调度：必须实现 FIFO/SJF/RR 三种策略并输出周转/响应指标。
+  const scheduling = topicLessonSource("topic-ostep", "ostep-cpu-scheduling");
+  for (const keyword of ["FIFO", "SJF", "RR", "周转", "响应"]) {
+    assert.ok(scheduling.includes(keyword), `调度示例缺少 ${keyword}`);
+  }
+
+  // OSTEP 崩溃一致性：必须枚举崩溃点并区分 COMMIT 前后的恢复结果。
+  const crash = topicLessonSource("topic-ostep", "ostep-crash-consistency");
+  assert.match(crash, /COMMIT/, "必须有日志提交点");
+  assert.match(crash, /丢弃/, "必须有未提交时丢弃恢复");
+  assert.match(crash, /重放/, "必须有已提交时重放恢复");
+
+  // OSTEP 条件变量：必须真实阻塞（offer 探测 + put 阻塞），而不是单线程放取。
+  const semaphore = topicLessonSource("topic-ostep", "ostep-condition-semaphores");
+  assert.match(semaphore, /offer\(/, "必须用 offer 探测队列已满");
+  assert.match(semaphore, /阻塞/, "必须显式说明阻塞行为");
+
+  // 网络：UDP/TCP 对照必须包含真实 UDP receive；HTTP 实验必须区分 200/404/连接失败。
+  const udpTcp = topicLessonSource("topic-network", "net-udp-tcp-sockets");
+  assert.match(udpTcp, /DatagramPacket/, "必须有 UDP 数据报");
+  assert.match(udpTcp, /receiver\.receive|incoming\.getLength|receive\(/, "UDP 必须真实接收");
+  const httpStatus = topicLessonSource("topic-network", "net-http-status-lab");
+  assert.match(httpStatus, /200/, "HTTP 实验必须有 200");
+  assert.match(httpStatus, /404/, "HTTP 实验必须有 404");
+  assert.match(httpStatus, /ConnectException/, "HTTP 实验必须区分连接失败");
+});
+
+test("三本系统教材：页码修正由 PDF 书签核对驱动且不被回退", () => {
+  const lessonRef = (topicId, lessonId) => {
+    const topic = catalog.topics.find((item) => item.id === topicId);
+    return topic.modules.flatMap((m) => m.lessons).find((l) => l.id === lessonId).bookReference;
+  };
+  // 以下页码均已用本机原书 PDF 数字书签核对（2.1 起于 71、3.1 起于 203、第 2 章起于 18）。
+  const bits = lessonRef("topic-csapp", "csapp-bits-integers");
+  assert.equal(bits.pdfPageStart, 71, "CSAPP 2.1 节起于 PDF 71，不是章首页 68");
+  assert.equal(bits.pdfPageEnd, 145, "2.1-2.3 结束于 2.4 起点边界 145");
+  const machine = lessonRef("topic-csapp", "csapp-machine-representation");
+  assert.equal(machine.pdfPageStart, 203, "CSAPP 3.1 节起于 PDF 203");
+  const osVirtual = lessonRef("topic-ostep", "ostep-os-virtualization");
+  assert.equal(osVirtual.pdfPageStart, 18, "OSTEP 第 2 章起于 PDF 18");
+  const statusLab = lessonRef("topic-network", "net-http-status-lab");
+  assert.equal(statusLab.pdfPageStart, 82, "网络 2.2 节起于 PDF 82");
+  assert.equal(statusLab.pdfPageEnd, 95);
+  assert.equal(statusLab.printPage, "63-76");
 });
 
 test("三本系统教材索引：使用实际版本目录和物理页码，不把部分上线虚报为全书建成", () => {

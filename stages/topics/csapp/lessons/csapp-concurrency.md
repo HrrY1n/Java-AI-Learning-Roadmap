@@ -14,13 +14,14 @@
 
 ## 5. Minimal Code：最小示例
 ```java
-java.util.concurrent.ExecutorService pool = java.util.concurrent.Executors.newFixedThreadPool(2);
-pool.submit(() -> System.out.println(Thread.currentThread().getName()));
-pool.shutdown();
+static int plainCounter; // 共享可变状态
+Thread a = new Thread(() -> { for (int i = 0; i < 100_000; i++) plainCounter++; });
+Thread b = new Thread(() -> { for (int i = 0; i < 100_000; i++) plainCounter++; });
+// 再用 AtomicInteger.incrementAndGet() 重复同一实验作对照
 ```
 
 ## 6. Observe：先预测，再运行
-先预测两个线程同时递增 `count++` 的结果，再运行源码并重复多次。
+先预测两个线程同时递增 `plainCounter` 的结果，再运行源码并重复多次：普通 `int` 版本多数运行小于 200000（更新丢失），`AtomicInteger` 版本恒等于 200000。单次运行也可能恰好等于期望值，所以结论要建立在多次运行上。
 
 ## 7. Modify：只改一个有意义的条件
 把 `count++` 改成 `AtomicInteger.incrementAndGet()` 或 `synchronized`，比较稳定性和吞吐。
