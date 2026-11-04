@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Binary,
   GitBranch,
@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { catalog } from "../catalog";
 import type { Topic, TopicLesson, TopicModule } from "../content-types";
-import { Markdown } from "./Markdown";
+import { Markdown, slugifyHeading } from "./Markdown";
 import { TopicVisualizer } from "./TopicVisualizer";
 import type { LearningState } from "../lib/learning-store";
 
@@ -423,8 +423,32 @@ function TopicLessonReader({
     }
   }
 
+  // V1.9-R：本节脉络——从正文提取 ## 小节（先剥掉代码块，避免块内 "##" 误判），
+  // 锚点 id 与 Markdown 组件为 h2 生成的 slug 一一对应，与主线课 margin-toc 行为一致。
+  const tocSections = useMemo(() => {
+    const proseOnly = markdownBody.replace(/^```[\s\S]*?^```/gm, "");
+    const seen = new Map<string, number>();
+    const sections: { text: string; id: string }[] = [];
+    for (const match of proseOnly.matchAll(/^##\s+(.+)$/gm)) {
+      const text = match[1].trim();
+      sections.push({ text, id: slugifyHeading(text, seen) });
+    }
+    return sections;
+  }, [markdownBody]);
+
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <div className="topic-reader-container">
+      <div className="lesson-layout topic-reader-layout">
+        <div className="lesson-article topic-reader-main">
       {/* 顶部面包屑与阅读打卡操作栏 */}
       <div className="reader-toolbar">
         <div className="reader-breadcrumbs">
@@ -626,6 +650,25 @@ function TopicLessonReader({
         ) : (
           <div />
         )}
+      </div>
+        </div>
+        <aside className="lesson-margin topic-reader-toc">
+          <div className="margin-sticky">
+            <div className="eyebrow">本节脉络</div>
+            <div className="margin-toc">
+              {tocSections.map((section, index) => (
+                <button
+                  key={section.id}
+                  onClick={() => scrollToSection(section.id)}
+                >
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  {/* 正文小节标题自带「1.」编号，目录里用边栏序号替代，避免双重编号 */}
+                  {section.text.replace(/^[0-9]+[.、．]\s*/, "")}
+                </button>
+              ))}
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
   );

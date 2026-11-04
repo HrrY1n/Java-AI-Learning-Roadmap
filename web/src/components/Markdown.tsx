@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+import type { ReactNode } from "react";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -8,6 +9,31 @@ import java from "highlight.js/lib/languages/java";
 import { catalog, resolveSourcePath, sourceHref } from "../catalog";
 
 hljs.registerLanguage("java", java);
+
+// 章节锚点：把标题文本折叠为稳定的 URL 无关 id（中日英数字保留，其余剥除）。
+// 同一课内重复标题按出现顺序追加序号，避免目录按钮滚错目标。
+export function slugifyHeading(text: string, seen?: Map<string, number>): string {
+  const base =
+    text
+      .trim()
+      .replace(/[\s./\\]+/g, "-")
+      .replace(/[^\p{L}\p{N}-]/gu, "")
+      .toLowerCase() || "section";
+  if (!seen) return base;
+  const count = seen.get(base) ?? 0;
+  seen.set(base, count + 1);
+  return count === 0 ? base : `${base}-${count + 1}`;
+}
+
+function flattenNode(node: ReactNode): string {
+  if (node === null || node === undefined || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(flattenNode).join("");
+  if (typeof node === "object" && "props" in node) {
+    return flattenNode((node.props as { children?: ReactNode }).children);
+  }
+  return "";
+}
 
 // 代码高亮依赖 highlight.js 对源码转义后再写入 innerHTML；未知语言退回纯文本节点。
 export function Code({
@@ -47,12 +73,17 @@ export function Markdown({
   sourcePath?: string;
   onReference?: (path: string) => void;
 }) {
+  const headingIds = new Map<string, number>();
   return (
     <div className="prose">
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
+          h2: ({ children }) => {
+            const text = flattenNode(children);
+            return <h2 id={slugifyHeading(text, headingIds)}>{children}</h2>;
+          },
           a: ({ href = "", children }) => {
             const path = resolveSourcePath(href, sourcePath);
             if (

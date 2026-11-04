@@ -7146,3 +7146,47 @@ button.memory-slot.active-slot {
   color: var(--accent, #dd8168);
   border-color: var(--accent, #dd8168);
 }
+
+/* ==========================================================================
+   V1.9-R 原版视觉精修（分支 codex/v19r-original-refinement，基线 89bf81d）
+   原则：保留纸面/墨色/印章红体系与页面骨架，只做实测问题驱动的最小修改。
+   ========================================================================== */
+
+/* 1) 阅读列宽：主线课与专题课正文文本块收窄到约 44 字/行（实测原为 51-55 字/行，
+      长行阅读吃力）。代码块、.table-scroll 表格、KaTeX 公式不属于文本块，
+      保持容器可用全宽，长内容维持原有横向滚动。 */
+.lesson-article .prose > p,
+.lesson-article .prose > ul,
+.lesson-article .prose > ol,
+.lesson-article .prose > blockquote,
+.lesson-article .prose > h1,
+.lesson-article .prose > h2,
+.lesson-article .prose > h3,
+.lesson-article .prose > h4,
+.topic-reader-main .prose > p,
+.topic-reader-main .prose > ul,
+.topic-reader-main .prose > ol,
+.topic-reader-main .prose > blockquote,
+.topic-reader-main .prose > h1,
+.topic-reader-main .prose > h2,
+.topic-reader-main .prose > h3,
+.topic-reader-main .prose > h4 {
+  max-width: 660px;
+}
+
+/* 2) 专题课程阅读：≥1200px 与主线课共用 lesson-layout 骨架（正文列 + 本节脉络边栏，
+      类名与交互完全复用主线课既有实现，不新增导航体系）；1279px 以下回落到
+      原 820px 居中单列，边栏按 lesson-layout 原有断点自然隐藏。 */
+.topic-reader-container {
+  max-width: 1120px;
+}
+@media (max-width: 1279px) {
+  .topic-reader-container {
+    max-width: 880px;
+  }
+}
+@media (max-width: 1099px) {
+  .topic-reader-container {
+    max-width: 820px;
+  }
+}
