@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: "轻量发布：仅安装构建依赖、构建并部署，跳过 npm test / Playwright / 线上 smoke"
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -38,11 +44,15 @@ jobs:
         run: |
           mkdir -p test-artifacts/pages-preflight/logs
           npm ci 2>&1 | tee test-artifacts/pages-preflight/logs/install.log
-          npm run typecheck 2>&1 | tee test-artifacts/pages-preflight/logs/typecheck.log
-          npm test 2>&1 | tee test-artifacts/pages-preflight/logs/unit.log
+          # npm run build 自带 TypeScript 类型检查，属于构建必要环节
           npm run build 2>&1 | tee test-artifacts/pages-preflight/logs/build.log
           npm run check:build 2>&1 | tee test-artifacts/pages-preflight/logs/assets.log
+      - name: Run preflight unit tests
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.skip_tests }}
+        run: |
+          npm test 2>&1 | tee test-artifacts/pages-preflight/logs/unit.log
       - name: Chromium core against production preview
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.skip_tests }}
         run: |
           npx playwright install --with-deps chromium
           npx playwright test e2e/core.spec.ts 2>&1 | tee test-artifacts/pages-preflight/logs/e2e.log
@@ -83,6 +93,7 @@ jobs:
 
   smoke:
     needs: deploy
+    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.skip_tests }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
