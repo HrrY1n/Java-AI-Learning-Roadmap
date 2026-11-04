@@ -2,11 +2,15 @@ import { access, readFile, readdir } from "node:fs/promises";
 import { brotliDecompressSync } from "node:zlib";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import ts from "typescript";
 
-// 字体覆盖门禁：从实际发布文本收集汉字，直接读取 WOFF2 的 cmap 验证。
-// 不使用浏览器是否显示或系统回退字体作为证据，避免未来新增课程时静默缺字。
-const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const fontPath = resolve(webRoot, "src/assets/fonts/NotoSansSC-Subset.woff2");
+// 字体覆盖门禁：只收集实际发布/渲染文本中的汉字，再读取 WOFF2 的真实 cmap 验证。
+// 源码注释、HTML/CSS 注释不进入检查；Markdown/HTML 数字字符实体按渲染后的码点检查。
+const defaultWebRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const defaultFontPath = resolve(
+  defaultWebRoot,
+  "src/assets/fonts/NotoSansSC-Subset.woff2",
+);
 const HAN = /\p{Script=Han}/u;
 const WOFF2_TAGS = [
   "cmap", "head", "hhea", "hmtx", "maxp", "name", "OS/2", "post",
@@ -33,7 +37,7 @@ function readBase128(buffer, state) {
 }
 
 // 解压 WOFF2 的压缩表区，按表目录定位并返回未变换的目标表。
-function readWoff2Table(buffer, wantedTag) {
+export function readWoff2Table(buffer, wantedTag) {
   if (buffer.toString("ascii", 0, 4) !== "wOF2") {
     throw new Error("字体文件不是 WOFF2 格式");
   }
@@ -115,7 +119,7 @@ function readFormat4(table, offset, codepoints) {
   }
 }
 
-// 解析覆盖辅助平面的 cmap format 12 分组。
+// format 12 中组内 glyph 连续递增；startGlyph 为 0 时，只有后续非 0 glyph 有效。
 function readFormat12(table, offset, codepoints) {
   const groupCount = table.readUInt32BE(offset + 12);
   let position = offset + 16;
@@ -125,7 +129,8 @@ function readFormat12(table, offset, codepoints) {
     const startGlyph = table.readUInt32BE(position + 8);
     position += 12;
     for (let code = start; code <= end; code += 1) {
-      if (startGlyph !== 0) addCmapCode(codepoints, code);
+      const glyph = startGlyph + (code - start);
+      if (glyph !== 0) addCmapCode(codepoints, code);
     }
   }
 }
@@ -146,7 +151,7 @@ function readFormat0(table, offset, codepoints) {
 }
 
 // 合并 cmap 中所有 Unicode 子表，得到字体真实可映射的码点集合。
-function readCmap(buffer) {
+export function readCmap(buffer) {
   if (buffer.readUInt16BE(0) !== 0) throw new Error("cmap 版本不受支持");
   const tableCount = buffer.readUInt16BE(2);
   const offsets = new Set();
@@ -177,23 +182,87 @@ async function listFiles(directory, accepts) {
   return files;
 }
 
+// 数字字符实体在 Markdown/HTML 渲染时会变成实际码点，必须按渲染语义检查。
+export function decodeNumericCharacterReferences(text) {
+  return text.replace(
+    /&#(?:[xX]([0-9a-fA-F]+)|([0-9]+));/g,
+    (entity, hex, decimal) => {
+      const code = Number.parseInt(hex ?? decimal, hex ? 16 : 10);
+      if (!Number.isSafeInteger(code) || code < 0 || code > 0x10ffff) {
+        return entity;
+      }
+      return String.fromCodePoint(code);
+    },
+  );
+}
+
+function removeBlockComments(text, start, end) {
+  let output = "";
+  let position = 0;
+  while (position < text.length) {
+    const opening = text.indexOf(start, position);
+    if (opening === -1) {
+      output += text.slice(position);
+      break;
+    }
+    const closing = text.indexOf(end, opening + start.length);
+    if (closing === -1) {
+      output += text.slice(position, opening);
+      break;
+    }
+    output += text.slice(position, opening);
+    position = closing + end.length;
+  }
+  return output;
+}
+
+// 从 TypeScript/TSX AST 收集字符串、模板与 JSX 文本；注释不会成为 AST 子节点。
+function addTypeScriptText(path, source, required, webRoot) {
+  const sourceFile = ts.createSourceFile(
+    path,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    path.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+  );
+  const visit = (node) => {
+    if (
+      ts.isStringLiteral(node) ||
+      ts.isNoSubstitutionTemplateLiteral(node)
+    ) {
+      addText(node.text, path, required, webRoot);
+    } else if (
+      ts.isTemplateHead(node) ||
+      ts.isTemplateMiddle(node) ||
+      ts.isTemplateTail(node)
+    ) {
+      addText(node.text, path, required, webRoot);
+    } else if (ts.isJsxText(node)) {
+      addText(node.text, path, required, webRoot);
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
+}
+
 // 遍历生成目录/参考 JSON，只收集字符串值中的汉字。
-function addJsonStrings(value, source, required) {
+function addJsonStrings(value, source, required, webRoot) {
   if (typeof value === "string") {
-    addText(value, source, required);
+    addText(value, source, required, webRoot);
   } else if (Array.isArray(value)) {
-    for (const item of value) addJsonStrings(item, source, required);
+    for (const item of value) addJsonStrings(item, source, required, webRoot);
   } else if (value && typeof value === "object") {
     for (const item of Object.values(value)) {
-      addJsonStrings(item, source, required);
+      addJsonStrings(item, source, required, webRoot);
     }
   }
 }
 
 // 记录每个汉字及其发布来源，便于覆盖失败时定位到具体内容文件。
-function addText(text, source, required) {
+function addText(text, source, required, webRoot = defaultWebRoot) {
   const relativePath = relative(webRoot, source);
-  for (const character of text) {
+  const renderedText = decodeNumericCharacterReferences(text);
+  for (const character of renderedText) {
     if (!HAN.test(character)) continue;
     const sources = required.get(character) ?? new Set();
     sources.add(relativePath);
@@ -206,68 +275,84 @@ async function readJson(path) {
   try {
     return JSON.parse(await readFile(path, "utf8"));
   } catch (error) {
-    throw new Error(`无法读取或解析 ${relative(webRoot, path)}：${error.message}`);
+    throw new Error(`无法读取或解析 ${relative(defaultWebRoot, path)}：${error.message}`);
   }
 }
 
-const required = new Map();
-const catalogPath = resolve(webRoot, "src/generated/catalog.json");
-try {
-  await access(catalogPath);
-} catch {
-  throw new Error(
-    "缺少 src/generated/catalog.json；请先运行 npm run content 再检查字体覆盖。",
+export async function collectRequiredHan(webRoot = defaultWebRoot) {
+  const required = new Map();
+  const catalogPath = resolve(webRoot, "src/generated/catalog.json");
+  try {
+    await access(catalogPath);
+  } catch {
+    throw new Error(
+      "缺少 src/generated/catalog.json；请先运行 npm run content 再检查字体覆盖。",
+    );
+  }
+  addJsonStrings(await readJson(catalogPath), catalogPath, required, webRoot);
+
+  for (const path of await listFiles(resolve(webRoot, "public/reference"), (path) =>
+    path.endsWith(".json"),
+  )) {
+    addJsonStrings(await readJson(path), path, required, webRoot);
+  }
+  for (const path of await listFiles(resolve(webRoot, "content"), (path) =>
+    path.endsWith(".json"),
+  )) {
+    addJsonStrings(await readJson(path), path, required, webRoot);
+  }
+  for (const path of await listFiles(
+    resolve(webRoot, "src"),
+    (path) =>
+      /\.(ts|tsx)$/.test(path) && !/\.test\.(ts|tsx)$/.test(path),
+  )) {
+    addTypeScriptText(path, await readFile(path, "utf8"), required, webRoot);
+  }
+
+  const indexPath = resolve(webRoot, "index.html");
+  const html = await readFile(indexPath, "utf8");
+  addText(removeBlockComments(html, "<!--", "-->"), indexPath, required, webRoot);
+
+  const stylesPath = resolve(webRoot, "src/styles.css");
+  const styles = await readFile(stylesPath, "utf8");
+  addText(removeBlockComments(styles, "/*", "*/"), stylesPath, required, webRoot);
+
+  return required;
+}
+
+export function findMissingCharacters(required, cmap) {
+  return [...required.keys()]
+    .filter((character) => !cmap.has(character.codePointAt(0)))
+    .sort((a, b) => a.codePointAt(0) - b.codePointAt(0));
+}
+
+async function main() {
+  const required = await collectRequiredHan(defaultWebRoot);
+  const cmap = readCmap(
+    readWoff2Table(await readFile(defaultFontPath), "cmap"),
+  );
+  const missing = findMissingCharacters(required, cmap);
+  if (missing.length > 0) {
+    const details = missing
+      .slice(0, 40)
+      .map((character) => {
+        const locations = [...(required.get(character) ?? [])].join(", ");
+        return `${character}（${locations}）`;
+      })
+      .join("；");
+    throw new Error(
+      `Noto Sans SC 子集缺少 ${missing.length} 个已发布汉字：${details}${
+        missing.length > 40 ? "……" : ""
+      }`,
+    );
+  }
+
+  console.log(
+    `字体覆盖通过：${required.size} 个已发布汉字均存在于 ${relative(defaultWebRoot, defaultFontPath)} 的实际 cmap 中。`,
   );
 }
-addJsonStrings(await readJson(catalogPath), catalogPath, required);
 
-for (const path of await listFiles(resolve(webRoot, "public/reference"), (path) =>
-  path.endsWith(".json"),
-)) {
-  addJsonStrings(await readJson(path), path, required);
+const entryPath = process.argv[1] ? resolve(process.argv[1]) : "";
+if (entryPath && entryPath === fileURLToPath(import.meta.url)) {
+  await main();
 }
-for (const path of await listFiles(resolve(webRoot, "content"), (path) =>
-  path.endsWith(".json"),
-)) {
-  addJsonStrings(await readJson(path), path, required);
-}
-for (const path of await listFiles(
-  resolve(webRoot, "src"),
-  (path) =>
-    /\.(ts|tsx)$/.test(path) && !/\.test\.(ts|tsx)$/.test(path),
-)) {
-  addText(await readFile(path, "utf8"), path, required);
-}
-addText(
-  await readFile(resolve(webRoot, "index.html"), "utf8"),
-  resolve(webRoot, "index.html"),
-  required,
-);
-addText(
-  await readFile(resolve(webRoot, "src/styles.css"), "utf8"),
-  resolve(webRoot, "src/styles.css"),
-  required,
-);
-
-const cmap = readCmap(readWoff2Table(await readFile(fontPath), "cmap"));
-const missing = [...required.keys()].filter(
-  (character) => !cmap.has(character.codePointAt(0)),
-);
-if (missing.length > 0) {
-  const details = missing
-    .slice(0, 40)
-    .map((character) => {
-      const locations = [...(required.get(character) ?? [])].join(", ");
-      return `${character}（${locations}）`;
-    })
-    .join("；");
-  throw new Error(
-    `Noto Sans SC 子集缺少 ${missing.length} 个已发布汉字：${details}${
-      missing.length > 40 ? "……" : ""
-    }`,
-  );
-}
-
-console.log(
-  `字体覆盖通过：${required.size} 个已发布汉字均存在于 ${relative(webRoot, fontPath)} 的实际 cmap 中。`,
-);
