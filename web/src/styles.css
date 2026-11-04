@@ -7190,3 +7190,9 @@ button.memory-slot.active-slot {
     max-width: 820px;
   }
 }
+
+/* 3) 目录定位遮挡补偿：专题正文 h2 与主线课 .lesson-step 一致，预留 80px
+      粘性顶栏高度，scrollIntoView 后标题完整可见（V1.9-R 专项验收发现）。 */
+.topic-reader-main .prose h2 {
+  scroll-margin-top: 80px;
+}

@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import { catalog } from "../catalog";
 import type { Topic, TopicLesson, TopicModule } from "../content-types";
-import { Markdown, slugifyHeading } from "./Markdown";
+import { Markdown } from "./Markdown";
+import { extractH2Sections } from "../slug-heading";
 import { TopicVisualizer } from "./TopicVisualizer";
 import type { LearningState } from "../lib/learning-store";
 
@@ -423,18 +424,12 @@ function TopicLessonReader({
     }
   }
 
-  // V1.9-R：本节脉络——从正文提取 ## 小节（先剥掉代码块，避免块内 "##" 误判），
-  // 锚点 id 与 Markdown 组件为 h2 生成的 slug 一一对应，与主线课 margin-toc 行为一致。
-  const tocSections = useMemo(() => {
-    const proseOnly = markdownBody.replace(/^```[\s\S]*?^```/gm, "");
-    const seen = new Map<string, number>();
-    const sections: { text: string; id: string }[] = [];
-    for (const match of proseOnly.matchAll(/^##\s+(.+)$/gm)) {
-      const text = match[1].trim();
-      sections.push({ text, id: slugifyHeading(text, seen) });
-    }
-    return sections;
-  }, [markdownBody]);
+  // V1.9-R：本节脉络——提取正文 ## 小节，锚点 id 与 Markdown 组件为 h2 生成的
+  // slug 一一对应，与主线课 margin-toc 行为一致。
+  const tocSections = useMemo(
+    () => extractH2Sections(markdownBody),
+    [markdownBody],
+  );
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({

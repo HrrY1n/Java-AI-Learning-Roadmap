@@ -7,23 +7,9 @@ import "katex/dist/katex.min.css";
 import hljs from "highlight.js/lib/core";
 import java from "highlight.js/lib/languages/java";
 import { catalog, resolveSourcePath, sourceHref } from "../catalog";
+import { slugifyHeading } from "../slug-heading";
 
 hljs.registerLanguage("java", java);
-
-// 章节锚点：把标题文本折叠为稳定的 URL 无关 id（中日英数字保留，其余剥除）。
-// 同一课内重复标题按出现顺序追加序号，避免目录按钮滚错目标。
-export function slugifyHeading(text: string, seen?: Map<string, number>): string {
-  const base =
-    text
-      .trim()
-      .replace(/[\s./\\]+/g, "-")
-      .replace(/[^\p{L}\p{N}-]/gu, "")
-      .toLowerCase() || "section";
-  if (!seen) return base;
-  const count = seen.get(base) ?? 0;
-  seen.set(base, count + 1);
-  return count === 0 ? base : `${base}-${count + 1}`;
-}
 
 function flattenNode(node: ReactNode): string {
   if (node === null || node === undefined || typeof node === "boolean") return "";
