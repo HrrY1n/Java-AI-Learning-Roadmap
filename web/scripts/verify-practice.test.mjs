@@ -204,3 +204,29 @@ test("real JDK execution records passing, wrong and compilation results without 
       await rm(root, { recursive: true, force: true });
   }
 });
+
+// V1.8 审计回归：类名元字符契约 —— 元数据校验必须先拒绝（正则转义仅为纵深防御）。
+test("className 含正则元字符时在身份校验前被明确拒绝", async () => {
+  const catalog = {
+    exercises: [
+      {
+        id: "self-check-dollar",
+        packageName: "com.javaroadmap.lab.selfdollar",
+        className: "Self$Check",
+      },
+    ],
+  };
+  await assert.rejects(
+    () =>
+      verifyPractice(
+        {
+          exercise: "self-check-dollar",
+          source: "whatever.java",
+          expectFile: "expected.txt",
+          label: "元字符契约",
+        },
+        catalog,
+      ),
+    (error) => /包名或类名无效/.test(error.message),
+  );
+});

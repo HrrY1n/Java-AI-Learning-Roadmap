@@ -316,6 +316,10 @@ async function buildExercises(repoRoot, contentRoot, stageEntries) {
     stageByExercise: new Map(
       built.map(({ stageId, exercise }) => [exercise.id, stageId]),
     ),
+    // 锚点仅用于来源文档小节过滤，不进入公开 catalog
+    anchorsByExercise: new Map(
+      built.map(({ exercise }) => [exercise.id, exercise.statementAnchor ?? ""]),
+    ),
   };
 }
 
@@ -502,7 +506,7 @@ async function buildDocuments(repoRoot, contentRoot, stages, lessons, extras) {
     sources.push({ id: `${lesson.id}-source`, sourcePath: lesson.sourcePath });
   sources.push(...extras);
   const documents = [];
-  for (const { id, sourcePath } of sources) {
+  for (const { id, sourcePath, strip } of sources) {
     let markdown = await readSource(repoRoot, sourcePath, { document: id });
     // 练习题面文档中的分级提示只允许出现在实验室，源文档视图一律剥离
     if (
@@ -510,6 +514,8 @@ async function buildDocuments(repoRoot, contentRoot, stages, lessons, extras) {
       (sourcePath.includes("/exercises/") || sourcePath.endsWith("_exercises.md"))
     )
       markdown = markdown.split("## 渐进提示")[0].trim();
+    // 整文件来源文档沿用单条发布门禁：未发布小节不进入公开产物
+    markdown = stripUnpublishedSections(markdown, strip);
     documents.push({ id, title: cleanTitle(markdown), sourcePath, markdown });
   }
   const documentIds = new Set(documents.map((item) => item.id));
@@ -520,6 +526,34 @@ async function buildDocuments(repoRoot, contentRoot, stages, lessons, extras) {
         .filter((id, index, all) => all.indexOf(id) !== index),
     });
   return documents;
+}
+
+// 题面来源文档按标题分节；未发布的预测/修改/练习小节在此整段剥离，
+// 与单条目的 published 门禁保持同一边界，防止 draft 题面经"来源文档"视图泄露。
+function stripUnpublishedSections(markdown, strip) {
+  if (!strip || !Array.isArray(strip.keep)) return markdown;
+  const keep = new Set(strip.keep);
+  const lines = markdown.split("\n");
+  const kept = [];
+  let skipping = false;
+  let changed = false;
+  for (const line of lines) {
+    if (strip.kind === "ids") {
+      const match = /^###\s+((?:S\d{2})?[AB]\d+)\b/.exec(line);
+      if (match) skipping = !keep.has(match[1]);
+    } else {
+      const match = /^##\s+(.+?)\s*$/.exec(line);
+      if (match) {
+        const text = match[1];
+        skipping = ![...keep].some(
+          (anchor) => text === anchor || text.startsWith(anchor),
+        );
+      }
+    }
+    if (skipping) changed = true;
+    else kept.push(line);
+  }
+  return changed ? kept.join("\n") : markdown;
 }
 
 /* ---------- 稳定 ID 契约（防静默删除/改名） ---------- */
@@ -687,11 +721,8 @@ export async function buildCatalog({
 } = {}) {
   const { stages, stageEntries } = await buildStages(repoRoot, contentRoot);
   const lessons = await buildLessons(repoRoot, contentRoot, stageEntries);
-  const { exercises, stageByExercise } = await buildExercises(
-    repoRoot,
-    contentRoot,
-    stageEntries,
-  );
+  const { exercises, stageByExercise, anchorsByExercise } =
+    await buildExercises(repoRoot, contentRoot, stageEntries);
   const { predictions, modifications } = await buildPredictionsAndModifications(
     repoRoot,
     contentRoot,
@@ -740,6 +771,13 @@ export async function buildCatalog({
             ? "exercises-source"
             : `stage${stage.id}-exercises-source`,
         sourcePath: stageExercises[0].sourcePath,
+        // 来源文档只保留已发布练习的锚点小节，与单条门禁同边界
+        strip: {
+          kind: "anchors",
+          keep: stageExercises.map(
+            (exercise) => anchorsByExercise.get(exercise.id) ?? "",
+          ),
+        },
       });
     }
     try {
@@ -747,12 +785,22 @@ export async function buildCatalog({
         contentRoot,
         `predictions/stage${stage.id}.json`,
       );
+      // 与 buildPredictionsAndModifications 同一宽松语义：缺省视为已发布
+      const isPublished = (config) =>
+        Boolean(config) && (!config.contentState || config.contentState === "published");
+      const keepIds = [
+        ...Object.entries(manifest.predictions ?? {}),
+        ...Object.entries(manifest.modifications ?? {}),
+      ]
+        .filter(([, config]) => isPublished(config))
+        .map(([id]) => id);
       extras.push({
         id:
           stage.id === "01"
             ? "predictions-source"
             : `stage${stage.id}-predictions-source`,
         sourcePath: manifest.statementSource,
+        strip: { kind: "ids", keep: keepIds },
       });
     } catch (error) {
       if (error.code !== "ENOENT") throw error;
@@ -836,8 +884,19 @@ export function validateCatalog(catalog) {
     catalog.modifications.map((item) => [item.id, item]),
   );
   const all = new Map([...lessons, ...exercises, ...predictions, ...modifications]);
-  if (all.size !== catalog.lessons.length + catalog.exercises.length + catalog.predictions.length + catalog.modifications.length)
-    problems.push("存在重复 ID");
+  if (all.size !== catalog.lessons.length + catalog.exercises.length + catalog.predictions.length + catalog.modifications.length) {
+    // 列出具体撞名 ID，方便定位是哪个集合之间的冲突
+    const allIds = [
+      ...catalog.lessons,
+      ...catalog.exercises,
+      ...catalog.predictions,
+      ...catalog.modifications,
+    ].map((item) => item.id);
+    const duplicates = [
+      ...new Set(allIds.filter((id, index) => allIds.indexOf(id) !== index)),
+    ];
+    problems.push(`存在重复 ID: ${duplicates.join(", ")}`);
+  }
   const lessonIds = new Set(lessons.keys());
   for (const lesson of lessons.values()) {
     for (const id of lesson.relatedLessonIds)
@@ -865,9 +924,10 @@ export function validateCatalog(catalog) {
     if (path.isAbsolute(reference.sourcePath))
       problems.push(`参考资源路径必须仓库相对：${reference.sourcePath}`);
   }
+  // 专题集合在 topics/booksIndex 两处校验中共用，故提升到块外
+  const topicIds = new Set();
+  const topicLessonIds = new Set();
   if (Array.isArray(catalog.topics)) {
-    const topicIds = new Set();
-    const topicLessonIds = new Set();
     const validStatuses = new Set(["published", "building", "materials", "planned"]);
     const stageIds = new Set(catalog.stages.map((s) => s.id));
     for (const topic of catalog.topics) {
@@ -888,8 +948,33 @@ export function validateCatalog(catalog) {
           topicLessonIds.add(lesson.id);
           if (!validStatuses.has(lesson.status))
             problems.push(`小节 ${lesson.id} 的状态非法: ${lesson.status}`);
+          // 小节级 stageLinks 与专题级同规则：悬空会让读者页导航 404
+          for (const sId of lesson.stageLinks ?? []) {
+            if (!stageIds.has(sId))
+              problems.push(
+                `专题小节 ${lesson.id} 关联了不存在的 Stage ID: ${sId}`,
+              );
+          }
         }
       }
+    }
+    // 专题小节与主线课程共用路由/搜索命名空间，撞名会让直达入口歧义
+    for (const id of topicLessonIds) {
+      if (lessons.has(id))
+        problems.push(`专题小节 ID 与主线课程 ID 撞名: ${id}`);
+    }
+  }
+  if (Array.isArray(catalog.onJavaLinks)) {
+    for (const link of catalog.onJavaLinks) {
+      if (!lessons.has(link.lessonId))
+        problems.push(`On Java 8 关联指向不存在的课程: ${link.lessonId}`);
+    }
+  }
+  if (Array.isArray(catalog.booksIndex)) {
+    // mainline-java 是 On Java 8 主线核心的固定伪专题引用，允许显式通过
+    for (const book of catalog.booksIndex) {
+      if (!topicIds.has(book.topicId) && book.topicId !== "mainline-java")
+        problems.push(`教材 ${book.id} 指向不存在的专题: ${book.topicId}`);
     }
   }
   if (problems.length) throw contentError("目录校验失败", { problems });

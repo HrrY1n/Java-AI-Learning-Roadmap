@@ -50,9 +50,13 @@ export async function listJsonFiles(contentRoot, relative) {
 }
 
 // 递归收集目录中的 .java 文件并返回稳定排序，保证跨设备生成顺序一致。
+// 与 readSource 相同的仓库边界守卫：目录字段写 ../ 或绝对路径时直接给出可定位的错误。
 export async function javaFiles(repoRoot, directory) {
+  const root = path.resolve(repoRoot, directory);
+  if (!(root + path.sep).startsWith(path.resolve(repoRoot) + path.sep))
+    throw new Error(`内容路径逃出仓库：${directory}`);
   const found = [];
-  for (const entry of await readdir(path.resolve(repoRoot, directory), {
+  for (const entry of await readdir(root, {
     withFileTypes: true,
   })) {
     const relative = `${directory}/${entry.name}`;

@@ -6,17 +6,20 @@
     "S02A1": {
       "lessonIds": [
         "s02-reference-state"
-      ]
+      ],
+      "contentState": "published"
     },
     "S02A2": {
       "lessonIds": [
         "s02-reference-state"
-      ]
+      ],
+      "contentState": "published"
     },
     "S02A3": {
       "lessonIds": [
         "s02-object-construction"
-      ]
+      ],
+      "contentState": "published"
     },
     "S02A4": {
       "lessonIds": [],
@@ -26,7 +29,8 @@
       "lessonIds": [
         "s02-object-construction",
         "s02-constructor-this"
-      ]
+      ],
+      "contentState": "published"
     }
   },
   "modifications": {
@@ -37,7 +41,8 @@
     "S02B2": {
       "lessonIds": [
         "s02-encapsulation-basics"
-      ]
+      ],
+      "contentState": "published"
     },
     "S02B3": {
       "lessonIds": [],
@@ -46,7 +51,8 @@
     "S02B4": {
       "lessonIds": [
         "s02-encapsulation-why"
-      ]
+      ],
+      "contentState": "published"
     }
   }
 }

@@ -401,3 +401,189 @@ test("课程改名通过 renames 显式迁移，不会静默丢历史", async ()
     await rm(repoRoot, { recursive: true, force: true });
   }
 });
+
+// V1.8 审计回归：整文件"来源文档"必须沿用单条发布门禁，draft 题面不得进入公开产物。
+test("未发布预测小节不会经来源文档泄露", async () => {
+  const { repoRoot, contentRoot } = await makeRepo({ withRegistry: false });
+  try {
+    await mkdir(path.join(contentRoot, "predictions"), { recursive: true });
+    await writeFile(
+      path.join(contentRoot, "predictions/stage02.json"),
+      JSON.stringify(
+        {
+          stageId: "02",
+          statementSource: "stages/stage02_java_oop/practice/predict.md",
+          answerSource: "stages/stage02_java_oop/practice/answers.md",
+          predictions: {
+            S02A1: { lessonIds: ["s02-encapsulation"], contentState: "published" },
+            S02A2: { lessonIds: [], contentState: "draft" },
+          },
+          modifications: {},
+        },
+        null,
+        2,
+      ),
+      "utf8",
+    );
+    await writeFile(
+      path.join(repoRoot, "stages/stage02_java_oop/practice/predict.md"),
+      "# 预测题\n\n### S02A1 已发布题面\n\n```java\nint value = 1;\n```\n\n预测输出。\n\n### S02A2 草稿题面\n\n这是尚未发布的草稿句子，不应被任何公开入口读到。\n",
+      "utf8",
+    );
+    await writeFile(
+      path.join(repoRoot, "stages/stage02_java_oop/practice/answers.md"),
+      "# 答案\n\n## S02A1\n\n```text\n1\n```\n\n为什么：字面量直接输出。\n",
+      "utf8",
+    );
+    const catalog = await buildCatalog({ repoRoot, contentRoot });
+    const doc = catalog.documents.find(
+      (item) => item.id === "stage02-predictions-source",
+    );
+    assert.ok(doc, "来源文档应存在");
+    assert.ok(doc.markdown.includes("S02A1"), "已发布题面保留");
+    assert.ok(
+      !doc.markdown.includes("S02A2") && !doc.markdown.includes("草稿句子"),
+      "draft 题面整段剥离",
+    );
+    assert.ok(
+      catalog.predictions.some((item) => item.id === "S02A1") &&
+        !catalog.predictions.some((item) => item.id === "S02A2"),
+      "预测列表保持单条门禁行为",
+    );
+  } finally {
+    await rm(repoRoot, { recursive: true, force: true });
+  }
+});
+
+// V1.8 审计回归：小节级 stageLinks、ID 撞名、onJavaLinks 与 booksIndex 引用必须在构建期拒绝。
+test("专题小节与教材索引的非法引用在构建期失败", async () => {
+  const { repoRoot, contentRoot } = await makeRepo({ withRegistry: false });
+  const writeTopics = async (lessonId, stageLinks) => {
+    await writeFile(
+      path.join(contentRoot, "topics.json"),
+      JSON.stringify(
+        {
+          topics: [
+            {
+              id: "topic-x",
+              title: "审计夹具专题",
+              subtitle: "S",
+              icon: "Binary",
+              status: "building",
+              description: "D",
+              stageLinks: [],
+              sourceBook: { title: "B", version: "1", totalPages: 10, format: "PDF" },
+              modules: [
+                {
+                  id: "m1",
+                  title: "M",
+                  description: "",
+                  status: "published",
+                  lessons: [
+                    {
+                      id: lessonId,
+                      topicId: "topic-x",
+                      moduleId: "m1",
+                      title: "L",
+                      summary: "",
+                      status: "published",
+                      kind: "concept",
+                      stageLinks,
+                      markdown: "正文",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        null,
+        2,
+      ),
+      "utf8",
+    );
+  };
+  try {
+    await writeTopics("topic-lesson-a", ["99"]);
+    await assert.rejects(
+      () => buildCatalog({ repoRoot, contentRoot }),
+      (error) => error.name === "ContentError" && /Stage ID: 99/.test(error.message),
+    );
+    await writeTopics("s02-encapsulation", []);
+    await assert.rejects(
+      () => buildCatalog({ repoRoot, contentRoot }),
+      (error) => /专题小节 ID 与主线课程 ID 撞名/.test(error.message),
+    );
+    await writeTopics("topic-lesson-a", []);
+    await writeFile(
+      path.join(contentRoot, "on_java_mapping.json"),
+      JSON.stringify(
+        {
+          links: [
+            {
+              stageId: "02",
+              lessonId: "ghost-lesson",
+              topicTitle: "T",
+              bookChapter: "第 1 章",
+              pdfPages: "1-2",
+              overlapType: "extension",
+              rationale: "审计夹具引用。",
+            },
+          ],
+        },
+        null,
+        2,
+      ),
+      "utf8",
+    );
+    await assert.rejects(
+      () => buildCatalog({ repoRoot, contentRoot }),
+      (error) => /On Java 8 关联指向不存在的课程/.test(error.message),
+    );
+    await rm(path.join(contentRoot, "on_java_mapping.json"));
+    await writeFile(
+      path.join(contentRoot, "books_index.json"),
+      JSON.stringify(
+        {
+          books: [
+            {
+              id: "book-fixture",
+              title: "B",
+              subtitle: "",
+              version: "1",
+              author: "A",
+              totalPages: 10,
+              format: "PDF",
+              topicId: "topic-nope",
+              status: "integrated-topic",
+              summary: "",
+              keyChapters: [],
+            },
+          ],
+        },
+        null,
+        2,
+      ),
+      "utf8",
+    );
+    await assert.rejects(
+      () => buildCatalog({ repoRoot, contentRoot }),
+      (error) => /指向不存在的专题/.test(error.message),
+    );
+  } finally {
+    await rm(repoRoot, { recursive: true, force: true });
+  }
+});
+
+// V1.8 审计回归：javaFiles 与 readSource 共用仓库边界守卫。
+test("javaFiles 拒绝逃出仓库的目录", async () => {
+  const { javaFiles } = await import("./content/load.mjs");
+  await assert.rejects(
+    () => javaFiles("D:/任何仓库根", "../"),
+    /逃出仓库/,
+  );
+  await assert.rejects(
+    () => javaFiles("D:/任何仓库根", "C:/Windows"),
+    /逃出仓库/,
+  );
+});

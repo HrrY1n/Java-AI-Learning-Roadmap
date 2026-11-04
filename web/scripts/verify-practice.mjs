@@ -188,8 +188,12 @@ export async function verifyPractice(options, catalog) {
     `^\\s*package\\s+${exercise.packageName.replaceAll(".", "\\.")}\\s*;`,
     "m",
   );
+  // 类名先转义正则元字符（合法 Java 标识符含 $），避免畸形输入破坏匹配或报错失真
   const classPattern = new RegExp(
-    `\\bpublic\\s+(?:final\\s+)?class\\s+${exercise.className}\\b`,
+    `\\bpublic\\s+(?:final\\s+)?class\\s+${exercise.className.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&",
+    )}\\b`,
   );
   if (!packagePattern.test(source.text) || !classPattern.test(source.text))
     throw new Error(
