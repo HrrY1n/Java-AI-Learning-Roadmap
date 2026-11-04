@@ -34,6 +34,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   // 中文输入法组合输入期间不触发 Enter 直达，避免选字回车误跳转
   const composingRef = useRef(false);
 
@@ -135,26 +136,45 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   }, [allItems, query]);
 
   // 键盘快捷穿梭：
-  // 1. 在输入框内：↑↓ 循环切换高亮项，Enter 直达选中项（输入法组合中除外）；
-  // 2. Tab 聚焦到关闭按钮或结果链接时：各自执行原生的回车动作，不被全局拦截覆盖；
-  // 3. Tab 聚焦结果项时同步高亮索引，保持视觉与焦点一致。
+  // 1. 在输入框内：↑↓ 切换高亮项且光标保留在输入框内（保持连续输入体验）；
+  // 2. 在结果列表内：↑↓ 同步将 DOM 焦点与高亮移动到新项，保持焦点与选中完全一致；
+  // 3. Tab 聚焦到关闭按钮按 Enter 正常关闭，Tab 聚焦结果项时高亮随焦点同步；
+  // 4. 按 Enter 始终直达当前指向的目标（关闭按钮除外，且排除中文输入法拼音选字组合态）。
   const handleKeyDown = (e: KeyboardEvent<HTMLDialogElement>) => {
     const target = e.target as HTMLElement | null;
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setSelectedIndex((prev) => (prev + 1) % Math.max(1, filteredItems.length));
+      if (filteredItems.length === 0) return;
+      const next = (selectedIndex + 1) % filteredItems.length;
+      setSelectedIndex(next);
+      const targetItem = itemRefs.current[next];
+      if (targetItem) {
+        if (target?.closest(".search-item") || target?.closest(".search-close-btn")) {
+          targetItem.focus();
+        }
+        targetItem.scrollIntoView({ block: "nearest" });
+      }
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setSelectedIndex((prev) =>
-        prev - 1 < 0 ? Math.max(0, filteredItems.length - 1) : prev - 1,
-      );
+      if (filteredItems.length === 0) return;
+      const next =
+        selectedIndex - 1 < 0 ? filteredItems.length - 1 : selectedIndex - 1;
+      setSelectedIndex(next);
+      const targetItem = itemRefs.current[next];
+      if (targetItem) {
+        if (target?.closest(".search-item") || target?.closest(".search-close-btn")) {
+          targetItem.focus();
+        }
+        targetItem.scrollIntoView({ block: "nearest" });
+      }
     } else if (e.key === "Enter") {
-      // 若当前焦点在按钮（如关闭面板）或结果链接自身，放行原生 Enter，执行它们各自的点击
-      if (target?.closest("button") || target?.closest("a")) {
+      // 若当前焦点在关闭按钮，放行触发其原生 onClick 关闭面板
+      if (target?.closest(".search-close-btn")) {
         return;
       }
-      // 焦点在输入框（且不在中文输入法拼音选字组合状态）时，Enter 直达当前选中的结果
+      // 其它任何焦点位置（无论是输入框还是某条结果项），只要非中文输入法选字合成中，
+      // 按 Enter 始终直达当前选中的结果项
       if (!composingRef.current) {
         const chosen = filteredItems[selectedIndex];
         if (chosen) {
@@ -229,6 +249,9 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
               return (
                 <a
                   key={item.id}
+                  ref={(el) => {
+                    itemRefs.current[index] = el;
+                  }}
                   href={item.href}
                   className={`search-item ${isSelected ? "selected" : ""}`}
                   onClick={onClose}

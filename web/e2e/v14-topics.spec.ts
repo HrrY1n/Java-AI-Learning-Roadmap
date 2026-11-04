@@ -430,6 +430,43 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
 
     await expect(dialog).not.toBeVisible();
     await expect(page).toHaveURL(new RegExp(secondItemHref!.replace("#", "\\#") + "$"));
+
+    // 5. 焦点与方向键同步：Tab 聚焦第 2 条结果后按 ↓，焦点与高亮同步移动至第 3 条，按 Enter 必须打开第 3 条
+    await trigger.click();
+    await expect(dialog).toBeVisible();
+    const thirdItem = items.nth(2);
+    const thirdItemHref = await thirdItem.getAttribute("href");
+    expect(thirdItemHref).toBeTruthy();
+
+    await page.keyboard.press("Tab"); // 聚焦关闭按钮
+    await page.keyboard.press("Tab"); // 聚焦第 1 条结果
+    await page.keyboard.press("Tab"); // 聚焦第 2 条结果
+    await expect(secondItem).toBeFocused();
+    await expect(secondItem).toHaveClass(/selected/);
+
+    await page.keyboard.press("ArrowDown");
+    await expect(thirdItem).toBeFocused();
+    await expect(thirdItem).toHaveClass(/selected/);
+
+    await page.keyboard.press("Enter");
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(new RegExp(thirdItemHref!.replace("#", "\\#") + "$"));
+
+    // 6. 输入框内连续输入与方向键选择：光标保留在 input 内，按 Enter 依然能直达选中的项
+    await trigger.click();
+    await expect(dialog).toBeVisible();
+    await searchInput.fill("二叉树");
+    const matchedItems = page.locator(".search-item");
+    await expect(matchedItems.first()).toBeVisible();
+    // input 内按 ↓ 切换高亮，焦点保留在 input（便于退格或追加打字）
+    await page.keyboard.press("ArrowDown");
+    await expect(searchInput).toBeFocused();
+    const activeSelectedHref = await matchedItems.nth(1).getAttribute("href");
+    await page.keyboard.press("Enter");
+    await expect(dialog).not.toBeVisible();
+    if (activeSelectedHref) {
+      await expect(page).toHaveURL(new RegExp(activeSelectedHref.replace("#", "\\#") + "$"));
+    }
   });
 
   test("Git 课程不同步骤数切换不发生白屏且步进状态安全重置", async ({ page }) => {
@@ -492,17 +529,23 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     expect(scrollYAfter, "切换新课后页面应自动置顶").toBeLessThan(80);
   });
 
-  test("320px/390px 窄屏及占位式滚动条环境下无整页横向溢出", async ({ page }) => {
-    // 覆盖典型手机视口，以及占位式垂直滚动条（模拟 clientWidth 约 305px 环境）
-    for (const width of [305, 320, 390]) {
+  test("290px/305px/320px/390px 极窄屏及占位式滚动条环境下无整页横向溢出", async ({ page }) => {
+    // 覆盖极窄屏（290px 实际内容区）、305px 占位垂直滚动条极限、320px 与 390px 视口
+    for (const width of [290, 305, 320, 390]) {
       await page.setViewportSize({ width, height: 700 });
       const routes = [
         "#/home",
         "#/topics",
         "#/roadmap",
         "#/lesson/day01",
+        "#/topic/topic-algo/algo-time-complexity",
+        "#/topic/topic-algo/algo-complexity-eval",
+        "#/topic/topic-algo/algo-array",
+        "#/topic/topic-algo/algo-linkedlist",
+        "#/topic/topic-algo/algo-queue",
         "#/topic/topic-algo/algo-deque",
         "#/topic/topic-git/git-intro-basics",
+        "#/topic/topic-git/git-branch-create-merge",
         "#/lab/scores",
         "#/review",
       ];

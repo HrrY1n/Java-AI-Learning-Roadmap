@@ -5257,6 +5257,9 @@ h2 {
   .main-content {
     padding-inline: 16px;
   }
+  .visualizer-card {
+    padding: 14px 12px;
+  }
   h1 {
     font-size: 27px;
   }
@@ -6530,6 +6533,7 @@ kbd {
 }
 .visualizer-controls {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 .vis-btn {
