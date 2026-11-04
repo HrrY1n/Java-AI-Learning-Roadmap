@@ -48,13 +48,21 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(gitCard.locator(".building-pill")).toHaveCount(0);
     await expect(gitCard.locator(".planned-pill")).toHaveCount(0);
 
-    // 4. 检查仅有资料索引的专题
+    // 4. 检查三本新教材专题：已有可学课程，但整体仍保持建设中
     const csappCard = page.locator(".topic-card").filter({ hasText: "深入理解计算机系统" });
     await expect(csappCard).toBeVisible();
-    await expect(csappCard).toContainText("仅有教材资料索引");
-    await expect(csappCard.locator(".topic-progress-text")).toContainText(
-      "全阶段教材资料已索引 · 待接入课程建设",
-    );
+    await expect(csappCard).toContainText("课程建设中 · 已有可学内容");
+    await expect(csappCard.locator(".topic-progress-text")).toContainText("已发布课程：14 节");
+
+    const ostepCard = page.locator(".topic-card").filter({ hasText: "操作系统导论" });
+    await expect(ostepCard).toBeVisible();
+    await expect(ostepCard).toContainText("课程建设中 · 已有可学内容");
+    await expect(ostepCard.locator(".topic-progress-text")).toContainText("已发布课程：17 节");
+
+    const networkCard = page.locator(".topic-card").filter({ hasText: "计算机网络" });
+    await expect(networkCard).toBeVisible();
+    await expect(networkCard).toContainText("课程建设中 · 已有可学内容");
+    await expect(networkCard.locator(".topic-progress-text")).toContainText("已发布课程：11 节");
 
     // 5. 检查外部教材库表格
     const booksTable = page.locator(".books-table");
@@ -296,7 +304,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     );
 
     // 实操标识栏
-    await expect(page.locator(".badge-lab")).toContainText("Git 命令实操课");
+    await expect(page.locator(".badge-lab")).toContainText("命令实验课");
 
     // 澄清 Git 实操功能边界 Banner
     const noticeBox = page.locator(".git-notice-box");
@@ -356,7 +364,22 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await algoResult.click();
     await expect(page).toHaveURL(/#\/topic\/topic-algo\/algo-complexity-eval$/);
 
-    // 3. 再次打开搜索，测试权威教材索引跳转（无双重 Hash，路由为 #/topics/book/:id）
+    // 3. 检查三本新教材的专题搜索都能显示自己的专题名，而不是 Git 专题
+    for (const [query, title, topicId] of [
+      ["虚拟内存", "虚拟内存：地址空间、页表与 Java 堆的边界", "计算机系统要素"],
+      ["缺页", "交换空间、缺页与替换策略", "操作系统导论"],
+      ["DNS、CDN 与名称解析", "DNS、CDN 与名称解析", "计算机网络：自顶向下方法"],
+    ] as const) {
+      await page.keyboard.press("Control+k");
+      await expect(searchModal).toBeVisible();
+      await input.fill(query);
+      const result = page.locator(".search-item").filter({ hasText: title });
+      await expect(result).toBeVisible();
+      await expect(result).toContainText(topicId);
+      await page.keyboard.press("Escape");
+    }
+
+    // 4. 再次打开搜索，测试权威教材索引跳转（无双重 Hash，路由为 #/topics/book/:id）
     await page.keyboard.press("Control+k");
     await expect(searchModal).toBeVisible();
     await input.fill("Pro Git");
@@ -372,7 +395,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     const targetRow = page.locator("#book-pro-git");
     await expect(targetRow).toBeVisible();
 
-    // 4. 未发布课程门禁：搜索未上线的内容（如旅行商专题课）不会出现可跳转正文
+    // 5. 未发布课程门禁：搜索未上线的内容（如旅行商专题课）不会出现可跳转正文
     await page.keyboard.press("Control+k");
     await expect(searchModal).toBeVisible();
     await input.fill("旅行商");

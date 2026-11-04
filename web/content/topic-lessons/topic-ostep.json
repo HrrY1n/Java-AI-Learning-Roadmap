@@ -1,0 +1,361 @@
+{
+  "topicId": "topic-ostep",
+  "modules": [
+    {
+      "id": "ostep-cpu-virtualization",
+      "title": "CPU 虚拟化",
+      "description": "进程 API、受限直接执行和调度。",
+      "status": "published",
+      "lessons": [
+        {
+          "id": "ostep-os-virtualization",
+          "title": "操作系统如何虚拟化 CPU 与内存",
+          "summary": "从进程、系统调用和受限直接执行理解 OS 的基本服务。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 2、4、6 章",
+            "pdfPageStart": 16,
+            "pdfPageEnd": 62
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-os-virtualization.md",
+          "priority": "now"
+        },
+        {
+          "id": "ostep-process-api",
+          "title": "进程 API：创建、等待与退出",
+          "summary": "用 Java 对照 fork/exec/wait 的职责划分。",
+          "status": "published",
+          "kind": "code",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 4-5 章",
+            "pdfPageStart": 33,
+            "pdfPageEnd": 51
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-process-api.md",
+          "priority": "now",
+          "codeDirectory": "stages/topics/ostep/examples/ostep_process_api",
+          "packageName": "com.javaroadmap.ostep.ostep_process_api",
+          "className": "App"
+        },
+        {
+          "id": "ostep-cpu-scheduling",
+          "title": "CPU 调度：FIFO、SJF、RR 与多级反馈",
+          "summary": "用模拟器比较周转时间和响应时间。",
+          "status": "published",
+          "kind": "code",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 7-10 章",
+            "pdfPageStart": 62,
+            "pdfPageEnd": 95
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-cpu-scheduling.md",
+          "priority": "next",
+          "codeDirectory": "stages/topics/ostep/examples/ostep_cpu_scheduling",
+          "packageName": "com.javaroadmap.ostep.ostep_cpu_scheduling",
+          "className": "App"
+        }
+      ]
+    },
+    {
+      "id": "ostep-memory-virtualization",
+      "title": "内存虚拟化",
+      "description": "地址空间、转换、分页和替换。",
+      "status": "published",
+      "lessons": [
+        {
+          "id": "ostep-address-space-api",
+          "title": "地址空间与内存 API：从 malloc/free 到 Java 堆",
+          "summary": "理解栈、堆、泄漏和 JVM 内存指标之间的关系。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 13-14 章",
+            "pdfPageStart": 99,
+            "pdfPageEnd": 114
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-address-space-api.md",
+          "priority": "next"
+        },
+        {
+          "id": "ostep-address-translation",
+          "title": "地址转换：基址/界限、分段与保护",
+          "summary": "理解逻辑地址如何被 OS 与硬件映射到物理内存。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 15-17 章",
+            "pdfPageStart": 114,
+            "pdfPageEnd": 146
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-address-translation.md",
+          "priority": "next"
+        },
+        {
+          "id": "ostep-paging-tlb",
+          "title": "分页、页表与 TLB",
+          "summary": "解释虚拟页号、页内偏移和 TLB 命中的作用。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 18-20 章",
+            "pdfPageStart": 146,
+            "pdfPageEnd": 179
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-paging-tlb.md",
+          "priority": "next"
+        },
+        {
+          "id": "ostep-swap-replacement",
+          "title": "交换空间、缺页与替换策略",
+          "summary": "从 FIFO、LRU 和脏页理解内存压力下的行为。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 21-23 章",
+            "pdfPageStart": 179,
+            "pdfPageEnd": 207
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-swap-replacement.md",
+          "priority": "next"
+        }
+      ]
+    },
+    {
+      "id": "ostep-concurrency",
+      "title": "并发",
+      "description": "线程、锁、条件变量、信号量与死锁。",
+      "status": "published",
+      "lessons": [
+        {
+          "id": "ostep-threads-races",
+          "title": "线程、共享数据与竞态",
+          "summary": "复现不可控调度导致的丢失更新。",
+          "status": "published",
+          "kind": "code",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 25-27 章",
+            "pdfPageStart": 210,
+            "pdfPageEnd": 233
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-threads-races.md",
+          "priority": "now",
+          "codeDirectory": "stages/topics/ostep/examples/ostep_threads_races",
+          "packageName": "com.javaroadmap.ostep.ostep_threads_races",
+          "className": "App"
+        },
+        {
+          "id": "ostep-locks-atomics",
+          "title": "锁、自旋与原子操作",
+          "summary": "理解互斥的实现前提、自旋代价和 Java 锁。",
+          "status": "published",
+          "kind": "code",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 28-29 章",
+            "pdfPageStart": 233,
+            "pdfPageEnd": 263
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-locks-atomics.md",
+          "priority": "now",
+          "codeDirectory": "stages/topics/ostep/examples/ostep_locks_atomics",
+          "packageName": "com.javaroadmap.ostep.ostep_locks_atomics",
+          "className": "App"
+        },
+        {
+          "id": "ostep-condition-semaphores",
+          "title": "条件变量、生产者消费者与信号量",
+          "summary": "掌握等待/通知、有界缓冲和资源计数。",
+          "status": "published",
+          "kind": "code",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 30-31 章",
+            "pdfPageStart": 263,
+            "pdfPageEnd": 293
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-condition-semaphores.md",
+          "priority": "now",
+          "codeDirectory": "stages/topics/ostep/examples/ostep_condition_semaphores",
+          "packageName": "com.javaroadmap.ostep.ostep_condition_semaphores",
+          "className": "App"
+        },
+        {
+          "id": "ostep-concurrency-bugs",
+          "title": "并发缺陷、死锁与事件循环",
+          "summary": "从竞态、死锁四条件到事件驱动模型。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 32-34 章",
+            "pdfPageStart": 293,
+            "pdfPageEnd": 315
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-concurrency-bugs.md",
+          "priority": "next"
+        }
+      ]
+    },
+    {
+      "id": "ostep-persistence",
+      "title": "持久性",
+      "description": "I/O 设备、文件系统、崩溃一致性与分布式文件。",
+      "status": "published",
+      "lessons": [
+        {
+          "id": "ostep-io-devices-raid",
+          "title": "I/O 设备、中断、DMA 与 RAID",
+          "summary": "从设备协议和冗余策略理解持久性吞吐与可靠性。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 36-38 章",
+            "pdfPageStart": 317,
+            "pdfPageEnd": 356
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-io-devices-raid.md",
+          "priority": "advanced"
+        },
+        {
+          "id": "ostep-files-directories",
+          "title": "文件、目录、硬链接与 fsync",
+          "summary": "把 POSIX 文件操作对照到 Java Path/Files。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 39 章",
+            "pdfPageStart": 356,
+            "pdfPageEnd": 371
+          },
+          "stageLinks": [
+            "03"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-files-directories.md",
+          "priority": "now"
+        },
+        {
+          "id": "ostep-file-systems",
+          "title": "文件系统实现、FFS 与日志结构",
+          "summary": "从 inode、访问路径到局部性优化理解文件系统设计。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 40、41、43 章",
+            "pdfPageStart": 371,
+            "pdfPageEnd": 421
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-file-systems.md",
+          "priority": "next"
+        },
+        {
+          "id": "ostep-crash-consistency",
+          "title": "崩溃一致性：FSCK 与预写日志",
+          "summary": "解释为什么写两个块可能在断电时留下不一致状态。",
+          "status": "published",
+          "kind": "code",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 42 章",
+            "pdfPageStart": 394,
+            "pdfPageEnd": 409
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-crash-consistency.md",
+          "priority": "next",
+          "codeDirectory": "stages/topics/ostep/examples/ostep_crash_consistency",
+          "packageName": "com.javaroadmap.ostep.ostep_crash_consistency",
+          "className": "App"
+        },
+        {
+          "id": "ostep-data-integrity",
+          "title": "数据完整性：校验和与保护",
+          "summary": "理解扇区错误、单比特翻转和端到端校验。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 44 章",
+            "pdfPageStart": 421,
+            "pdfPageEnd": 431
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-data-integrity.md",
+          "priority": "advanced"
+        },
+        {
+          "id": "ostep-distributed-files",
+          "title": "分布式系统与 NFS/AFS 的核心取舍",
+          "summary": "理解 RPC、无状态服务、缓存一致性与会话语义。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "操作系统导论（本地中文版）",
+            "chapter": "第 47-50 章",
+            "pdfPageStart": 433,
+            "pdfPageEnd": 468
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/ostep/lessons/ostep-distributed-files.md",
+          "priority": "advanced"
+        }
+      ]
+    }
+  ]
+}

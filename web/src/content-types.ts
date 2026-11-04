@@ -145,6 +145,8 @@ export interface GitCommandStep {
   repoStateAfter: string;
 }
 
+export type LessonPriority = "now" | "next" | "advanced";
+
 export interface TopicLesson {
   id: string;
   topicId: string;
@@ -153,6 +155,8 @@ export interface TopicLesson {
   summary: string;
   status: TopicStatus;
   kind: "concept" | "code" | "interactive-lab" | "command-lab";
+  /** 学习优先级只用于导航分层，不构成学习门禁或掌握判定。 */
+  priority?: LessonPriority;
   bookReference?: BookReference;
   stageLinks?: string[];
   markdown: string;

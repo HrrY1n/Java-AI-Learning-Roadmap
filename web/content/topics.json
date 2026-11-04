@@ -1612,105 +1612,49 @@
     {
       "id": "topic-csapp",
       "title": "计算机系统要素 (CS:APP)",
-      "subtitle": "以程序员的视角深入理解计算机体系、内存模型与系统级 I/O",
+      "subtitle": "CSAPP 第三版 Global Edition：程序员视角的系统课",
       "icon": "Cpu",
-      "status": "materials",
-      "description": "基于《Computer Systems: A Programmer's Perspective (3rd Global Edition)》，涵盖程序的机器级表示、指令集、存储器层次结构、链接原理、虚拟内存与系统级 I/O。当前仅建立资料与大纲索引，课程正在规划中。",
+      "status": "building",
+      "description": "按 CSAPP 第 3 版 Global Edition 目录，将表示、机器级程序、性能、存储、链接、OS、网络与并发重构成 Java 可观察课程。",
       "stageLinks": [
         "01",
+        "03",
         "04"
       ],
       "sourceBook": {
         "title": "CS:APP (深入理解计算机系统 第 3 版)",
         "version": "3rd Global Edition",
         "totalPages": 1122,
-        "format": "英文原版教材"
+        "format": "PDF / 经典教材（英文原版）"
       },
-      "modules": [
-        {
-          "id": "csapp-info-rep",
-          "title": "信息的表示与处理",
-          "description": "整数、浮点数编码与溢出特性",
-          "status": "materials",
-          "lessons": []
-        },
-        {
-          "id": "csapp-machine-code",
-          "title": "程序的机器级表示",
-          "description": "汇编指令、控制转移与函数调用栈帧",
-          "status": "materials",
-          "lessons": []
-        },
-        {
-          "id": "csapp-memory-hierarchy",
-          "title": "存储器层次结构与缓存",
-          "description": "局部性原理与 Cache 命中率分析",
-          "status": "materials",
-          "lessons": []
-        },
-        {
-          "id": "csapp-linking",
-          "title": "链接过程揭密",
-          "description": "静态链接、符号解析、重定位与动态链接库",
-          "status": "materials",
-          "lessons": []
-        },
-        {
-          "id": "csapp-virtual-memory",
-          "title": "虚拟内存机制",
-          "description": "页表、TLB、地址翻译与动态内存分配 (malloc)",
-          "status": "materials",
-          "lessons": []
-        }
-      ]
+      "modules": []
     },
     {
       "id": "topic-ostep",
       "title": "操作系统导论 (OSTEP)",
-      "subtitle": "虚拟化、并发与持久性三大支柱原理与实现",
-      "icon": "Terminal",
-      "status": "materials",
-      "description": "基于威斯康星大学经典开源教材《Operating Systems: Three Easy Pieces》，深入剖析进程调度、虚拟内存管理、锁/信号量并发机制与文件系统。当前仅建立资料与大纲索引，课程正在规划中。",
+      "subtitle": "OSTEP 中文版：虚拟化、并发与持久性",
+      "icon": "HardDrive",
+      "status": "building",
+      "description": "按本地中文版目录，把 OSTEP 的 CPU/内存虚拟化、并发同步、I/O、文件系统、崩溃一致性与分布式文件接入 Java 课程。",
       "stageLinks": [
+        "03",
         "04"
       ],
       "sourceBook": {
         "title": "操作系统导论 (OSTEP)",
         "version": "中文译本",
         "totalPages": 498,
-        "format": "开源教材"
+        "format": "PDF / 开源教材"
       },
-      "modules": [
-        {
-          "id": "ostep-virtualization",
-          "title": "虚拟化：CPU 与内存",
-          "description": "进程抽象、分时机制与地址转换",
-          "status": "materials",
-          "lessons": []
-        },
-        {
-          "id": "ostep-concurrency",
-          "title": "并发：线程与同步原语",
-          "description": "临界区、互斥锁、条件变量与死锁避免",
-          "status": "materials",
-          "lessons": []
-        },
-        {
-          "id": "ostep-persistence",
-          "title": "持久性：I/O 与文件系统",
-          "description": "磁盘调度、文件系统元数据与崩溃一致性 (FSCK/日志)",
-          "status": "materials",
-          "lessons": []
-        }
-      ]
+      "modules": []
     },
     {
       "id": "topic-network",
       "title": "计算机网络：自顶向下方法",
-      "subtitle": "从应用层协议到底层数据传输的互联网核心体系",
+      "subtitle": "第 8 版中文版：从 HTTP 到网络安全",
       "icon": "Network",
-      "status": "materials",
-      "description": "基于 Kurose & Ross 经典高校教材《计算机网络：自顶向下方法（原书第 8 版）》，涵盖 HTTP/1.1/2/3、DNS、TCP 可靠数据传输与拥塞控制、IP 寻址路由。当前仅建立资料与大纲索引，课程正在规划中。",
+      "status": "building",
+      "description": "按第 8 版中文版目录，把网络概览、应用层、运输层、网络层、链路层、无线移动与安全接入 Java 课程。",
       "stageLinks": [
         "03",
         "04"
@@ -1719,31 +1663,9 @@
         "title": "计算机网络：自顶向下方法 (原书第 8 版)",
         "version": "原书第 8 版中文版",
         "totalPages": 505,
-        "format": "经典教材"
+        "format": "PDF / 权威高校教材"
       },
-      "modules": [
-        {
-          "id": "net-application",
-          "title": "应用层协议原理",
-          "description": "HTTP 报文结构、Cookie/Session、DNS 域名解析与 Socket 编程",
-          "status": "materials",
-          "lessons": []
-        },
-        {
-          "id": "net-transport",
-          "title": "传输层：TCP 与 UDP",
-          "description": "滑动窗口、三次握手四次挥手、可靠传输状态机与拥塞控制算法",
-          "status": "materials",
-          "lessons": []
-        },
-        {
-          "id": "net-network-layer",
-          "title": "网络层：数据平面与控制平面",
-          "description": "IP 协议、子网划分、NAT 穿透与 OSPF/BGP 路由协议",
-          "status": "materials",
-          "lessons": []
-        }
-      ]
+      "modules": []
     }
   ]
 }

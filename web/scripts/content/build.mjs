@@ -582,6 +582,100 @@ function readJsonSync(contentRoot, relative) {
   return JSON.parse(readFileSync(path.resolve(contentRoot, relative), "utf8"));
 }
 
+/* ---------- 专题课程加载 ---------- */
+
+// 从独立 Markdown 与 Java 示例目录加载专题课程，避免把全部正文长期复制进 topics.json。
+async function buildTopicModules(repoRoot, contentRoot, topics) {
+  let manifests = [];
+  try {
+    const files = await listJsonFiles(contentRoot, "topic-lessons");
+    manifests = await Promise.all(
+      files.map((file) => readJson(contentRoot, `topic-lessons/${file}`)),
+    );
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  if (manifests.length === 0) return;
+
+  const topicById = new Map(topics.map((topic) => [topic.id, topic]));
+  for (const manifest of manifests) {
+    const topic = topicById.get(manifest.topicId);
+    if (!topic)
+      throw contentError(`专题课程清单指向未知 topicId：${manifest.topicId}`, {
+        file: manifest.topicId,
+      });
+    const modules = [];
+    for (const rawModule of manifest.modules ?? []) {
+      const lessons = [];
+      for (const rawLesson of rawModule.lessons ?? []) {
+        const context = {
+          topic: manifest.topicId,
+          module: rawModule.id,
+          lesson: rawLesson.id,
+        };
+        for (const field of ["id", "title", "summary", "status", "kind", "bodyPath"])
+          if (rawLesson[field] === undefined)
+            throw contentError(`专题课程缺少字段 ${field}`, context);
+        if (rawLesson.status !== "published") continue; // 未发布专题课不进入 Catalog
+        const markdown = await readSource(repoRoot, rawLesson.bodyPath, context);
+        let codeFiles = [];
+        if (rawLesson.codeDirectory) {
+          const directoryFiles = await javaFiles(repoRoot, rawLesson.codeDirectory);
+          if (directoryFiles.length === 0)
+            throw contentError("专题 Java 课程目录没有源码", {
+              ...context,
+              codeDirectory: rawLesson.codeDirectory,
+            });
+          const codeContents = [];
+          for (const codePath of directoryFiles) {
+            const code = await readSource(repoRoot, codePath, context);
+            codeContents.push({
+              codePath,
+              code,
+              ...javaIdentity(code, codePath),
+            });
+          }
+          const primary =
+            codeContents.find((item) =>
+              /public\s+static\s+void\s+main/.test(item.code),
+            ) ?? codeContents[0];
+          codeFiles = codeContents;
+          rawLesson.codePath = primary.codePath;
+          rawLesson.code = primary.code;
+          rawLesson.packageName = primary.packageName;
+          rawLesson.className = primary.className;
+        }
+        lessons.push({
+          id: rawLesson.id,
+          topicId: manifest.topicId,
+          moduleId: rawModule.id,
+          title: rawLesson.title,
+          summary: rawLesson.summary,
+          status: rawLesson.status,
+          kind: rawLesson.kind,
+          priority: rawLesson.priority,
+          bookReference: rawLesson.bookReference,
+          stageLinks: rawLesson.stageLinks ?? [],
+          sourcePath: rawLesson.bodyPath,
+          markdown,
+          ...(rawLesson.code ? { code: rawLesson.code } : {}),
+          codePath: rawLesson.codePath,
+          packageName: rawLesson.packageName,
+          className: rawLesson.className,
+          codeFiles: codeFiles.map((item) => ({
+            path: item.codePath,
+            className: item.className,
+            packageName: item.packageName,
+            code: item.code,
+          })),
+        });
+      }
+      modules.push({ ...rawModule, lessons });
+    }
+    topic.modules = modules;
+  }
+}
+
 /* ---------- Catalog 组装 ---------- */
 
 // 从内容清单与仓库权威文档组装只读 Catalog；本函数不写磁盘，
@@ -616,6 +710,7 @@ export async function buildCatalog({
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
   }
+  await buildTopicModules(repoRoot, contentRoot, topics);
   let onJavaLinks = [];
   try {
     const rawOnJava = await readJson(contentRoot, "on_java_mapping.json");

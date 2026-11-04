@@ -18,7 +18,7 @@ interface SearchDialogProps {
 
 interface SearchItem {
   id: string;
-  category: "主线课程" | "算法专题" | "Git专题" | "编程实验" | "权威教材索引";
+  category: string;
   title: string;
   subtitle: string;
   href: string;
@@ -84,7 +84,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
       for (const module of topic.modules ?? []) {
         for (const lesson of module.lessons ?? []) {
           if (lesson.status !== "published") continue;
-          const category = topic.id === "topic-algo" ? "算法专题" : "Git专题";
+          const category = topic.title;
           items.push({
             id: `topic-lesson-${lesson.id}`,
             category,
@@ -244,8 +244,8 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
             filteredItems.map((item, index) => {
               const isSelected = index === selectedIndex;
               let Icon = BookOpen;
-              if (item.category === "算法专题") Icon = Binary;
-              else if (item.category === "Git专题") Icon = GitBranch;
+              if (item.category === "数据结构与算法") Icon = Binary;
+              else if (item.category === "Git 工程实践") Icon = GitBranch;
               else if (item.category === "编程实验") Icon = Code2;
               else if (item.category === "权威教材索引") Icon = Bookmark;
 

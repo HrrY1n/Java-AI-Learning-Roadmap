@@ -5,6 +5,7 @@ import path from "node:path";
 import { generateCatalog } from "./generate-content.mjs";
 
 const catalog = await generateCatalog({ write: false });
+const normalizeNewlines = (text) => text.trim().split(String.fromCharCode(13, 10)).join(String.fromCharCode(10));
 
 test("V1.4 专题数据架构：包含 5 大专题并正确区分已发布与仅有资料状态", () => {
   assert.ok(Array.isArray(catalog.topics));
@@ -27,10 +28,10 @@ test("V1.4 专题数据架构：包含 5 大专题并正确区分已发布与仅
 
   assert.equal(algoTopic.status, "published");
   assert.equal(gitTopic.status, "published");
-  // 门禁：未发布课程不得误标为已发布
-  assert.equal(csappTopic.status, "materials");
-  assert.equal(ostepTopic.status, "materials");
-  assert.equal(netTopic.status, "materials");
+  // 门禁：新书已有可学课程，但专题整体仍保持“建设中”，不得冒充全书建成。
+  assert.equal(csappTopic.status, "building");
+  assert.equal(ostepTopic.status, "building");
+  assert.equal(netTopic.status, "building");
 });
 
 test("V1.4 《Hello 算法》专题：首批已发布课程包含完整教学结构与有效 Java 源码", () => {
@@ -296,6 +297,167 @@ test("V1.4 《Pro Git》专题：首批课程包含真实 Git 行为、状态输
       assert.doesNotMatch(step.command, /push --force|push -f/, "步进命令禁止强推");
     }
   }
+});
+
+test("三本系统教材：新专题课程来源于仓库 Markdown，未完成状态不被虚报", () => {
+  const expected = {
+    "topic-csapp": {
+      count: 14,
+      modules: [
+        "csapp-overview",
+        "csapp-data-representation",
+        "csapp-machine-code",
+        "csapp-processor-performance",
+        "csapp-system-services",
+        "csapp-network-concurrency",
+      ],
+      required: [
+        "csapp-system-tour",
+        "csapp-bits-integers",
+        "csapp-floating-point",
+        "csapp-machine-representation",
+        "csapp-control-procedures",
+        "csapp-processor-pipeline",
+        "csapp-program-optimization",
+        "csapp-memory-hierarchy",
+        "csapp-linking",
+        "csapp-exceptional-control-flow",
+        "csapp-virtual-memory",
+        "csapp-system-io",
+        "csapp-network-programming",
+        "csapp-concurrency",
+      ],
+    },
+    "topic-ostep": {
+      count: 17,
+      modules: [
+        "ostep-cpu-virtualization",
+        "ostep-memory-virtualization",
+        "ostep-concurrency",
+        "ostep-persistence",
+      ],
+      required: [
+        "ostep-os-virtualization",
+        "ostep-process-api",
+        "ostep-cpu-scheduling",
+        "ostep-address-space-api",
+        "ostep-address-translation",
+        "ostep-paging-tlb",
+        "ostep-swap-replacement",
+        "ostep-threads-races",
+        "ostep-locks-atomics",
+        "ostep-condition-semaphores",
+        "ostep-concurrency-bugs",
+        "ostep-io-devices-raid",
+        "ostep-files-directories",
+        "ostep-file-systems",
+        "ostep-crash-consistency",
+        "ostep-data-integrity",
+        "ostep-distributed-files",
+      ],
+    },
+    "topic-network": {
+      count: 11,
+      modules: [
+        "net-overview",
+        "net-application",
+        "net-transport",
+        "net-network-layer",
+        "net-link-mobility-security",
+      ],
+      required: [
+        "net-internet-overview",
+        "net-app-http",
+        "net-dns-cdn",
+        "net-udp-tcp-sockets",
+        "net-reliable-tcp",
+        "net-congestion-control",
+        "net-forwarding-ipv4-ipv6",
+        "net-routing-control-plane",
+        "net-link-layer",
+        "net-wireless-mobile",
+        "net-security-tls",
+      ],
+    },
+  };
+
+  for (const [topicId, spec] of Object.entries(expected)) {
+    const topic = catalog.topics.find((item) => item.id === topicId);
+    assert.ok(topic, `缺少 ${topicId}`);
+    assert.equal(topic.status, "building", `${topicId} 应保持建设状态`);
+    assert.deepEqual(
+      topic.modules.map((item) => item.id),
+      spec.modules,
+      `${topicId} 模块目录错误`,
+    );
+    const lessons = topic.modules.flatMap((item) => item.lessons);
+    assert.equal(lessons.length, spec.count, `${topicId} 课程数错误`);
+    for (const id of spec.required) {
+      const lesson = lessons.find((item) => item.id === id);
+      assert.ok(lesson, `${topicId} 缺少课程 ${id}`);
+      assert.equal(lesson.status, "published", `${id} 必须是可学习状态`);
+      assert.ok(lesson.sourcePath?.startsWith("stages/topics/"), `${id} 必须有仓库 Markdown 来源`);
+      assert.ok(
+        ["now", "next", "advanced"].includes(lesson.priority ?? ""),
+        `${id} 必须有导航优先级`,
+      );
+      assert.ok(lesson.markdown.length > 600, `${id} 正文过短`);
+      for (const heading of [
+        "Scenario：从一个具体问题出发",
+        "Why：为什么这个问题值得系统理解",
+        "Concept：核心概念",
+        "Mental Model：把机制装进一张图",
+        "Minimal Code：最小示例",
+        "Observe：先预测，再运行",
+        "Modify：只改一个有意义的条件",
+        "Exercise：独立完成",
+        "Real Usage：联系 Java 与工程实践",
+        "来源与出处",
+      ]) {
+        assert.ok(lesson.markdown.includes(heading), `${id} 缺少教学段落 ${heading}`);
+      }
+      assert.ok(lesson.bookReference, `${id} 缺少原书引用`);
+      assert.ok(
+        lesson.bookReference.pdfPageStart > 0 &&
+          lesson.bookReference.pdfPageEnd >= lesson.bookReference.pdfPageStart,
+        `${id} 页码非法`,
+      );
+      assert.match(lesson.markdown, /PDF 第 \d+-\d+ 页/, `${id} 正文缺少 PDF 页码`);
+
+      if (lesson.kind === "code") {
+        assert.ok(lesson.code, `${id} 缺少 Java 源码`);
+        assert.ok(lesson.codePath?.startsWith("stages/topics/"), `${id} 缺少源码路径`);
+        assert.match(lesson.packageName, /^com\.javaroadmap\.(csapp|ostep|network)\./);
+        const source = fs.readFileSync(path.resolve("..", lesson.codePath), "utf8");
+        assert.equal(
+          normalizeNewlines(lesson.code),
+          normalizeNewlines(source),
+          `${id} 网站源码与落盘示例不一致`,
+        );
+      }
+    }
+  }
+});
+
+test("三本系统教材索引：使用实际版本目录和物理页码，不把部分上线虚报为全书建成", () => {
+  assert.equal(catalog.booksIndex.length, 6);
+  const byId = Object.fromEntries(catalog.booksIndex.map((b) => [b.id, b]));
+  assert.equal(byId["book-csapp"].totalPages, 1122);
+  assert.equal(byId["book-ostep"].totalPages, 498);
+  assert.equal(byId["book-network"].totalPages, 505);
+  for (const id of ["book-csapp", "book-ostep", "book-network"]) {
+    assert.equal(byId[id].status, "integrated-topic", `${id} 应表示已建专题而非完成掌握`);
+  }
+  const chapters = Object.fromEntries(
+    byId["book-network"].keyChapters.map((item) => [item.chapter, item.pdfPages]),
+  );
+  assert.equal(chapters["第 1 章"], "20-72", "网络第 1 章 PDF 起始页必须为 20");
+  assert.equal(chapters["第 8 章"], "417-473");
+  const csappChapters = Object.fromEntries(
+    byId["book-csapp"].keyChapters.map((item) => [item.chapter, item.pdfPages]),
+  );
+  assert.equal(csappChapters["Chapter 1"], "38-66");
+  assert.equal(csappChapters["Chapter 12"], "1008-1078");
 });
 
 test("V1.4 《On Java 8》补充关联：全部关联对应有效课程并标注现代 JDK 差异", () => {

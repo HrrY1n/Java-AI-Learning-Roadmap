@@ -3,6 +3,9 @@ import {
   Binary,
   GitBranch,
   BookOpen,
+  Cpu,
+  HardDrive,
+  Network,
   ArrowRight,
   ArrowLeft,
   CheckCircle2,
@@ -24,6 +27,15 @@ interface TopicViewProps {
   lessonId?: string;
   state: LearningState;
   onToggleRead: (lessonId: string) => void;
+}
+
+// 图标来自内容元数据，避免新增专题时把所有非算法专题误画成 Git。
+function topicIcon(topic: Topic) {
+  if (topic.icon === "GitBranch") return GitBranch;
+  if (topic.icon === "Cpu") return Cpu;
+  if (topic.icon === "HardDrive") return HardDrive;
+  if (topic.icon === "Network") return Network;
+  return Binary;
 }
 
 // 专题路由入口：按 topicId/lessonId 决定教材索引、专题首页或单课阅读视图。
@@ -53,7 +65,12 @@ export function TopicView({
       }
     }
 
-    if (currentLesson && topic && currentModule) {
+    if (
+      currentLesson &&
+      topic &&
+      currentModule &&
+      currentLesson.status === "published"
+    ) {
       return (
         <TopicLessonReader
           topic={topic}
@@ -98,8 +115,10 @@ function TopicHub({
   const books = catalog.booksIndex ?? [];
 
   const filteredTopics = topics.filter((t) => {
-    if (filter === "published") return t.status === "published";
-    if (filter === "indexed") return t.status === "materials" || t.status === "planned";
+    if (filter === "published")
+      return t.status === "published" || t.status === "building";
+    if (filter === "indexed")
+      return t.status === "materials" || t.status === "planned";
     return true;
   });
 
@@ -128,29 +147,27 @@ function TopicHub({
             className={`hub-filter-btn ${filter === "published" ? "active" : ""}`}
             onClick={() => setFilter("published")}
           >
-            已上线课程 ({topics.filter((t) => t.status === "published").length})
+            已上线课程 ({topics.filter((t) => t.status === "published" || t.status === "building").length})
           </button>
           <button
             type="button"
             className={`hub-filter-btn ${filter === "indexed" ? "active" : ""}`}
             onClick={() => setFilter("indexed")}
           >
-            仅有资料索引 ({topics.filter((t) => t.status !== "published").length})
+            仅有资料索引 ({topics.filter((t) => t.status !== "published" && t.status !== "building").length})
           </button>
         </div>
       </div>
 
       <div className="topics-grid">
         {filteredTopics.map((topic) => {
-          let Icon = Binary;
-          if (topic.id === "topic-git") Icon = GitBranch;
-          else if (topic.id.includes("csapp") || topic.id.includes("ostep"))
-            Icon = BookOpen;
-
+          const Icon = topicIcon(topic);
           const isPublished = topic.status === "published";
+          const isBuilding = topic.status === "building";
           const publishedLessons = topic.modules.flatMap((m) =>
             m.lessons.filter((l) => l.status === "published"),
           );
+          const hasPublishedLessons = publishedLessons.length > 0;
           const publishedModules = topic.modules.filter((m) => m.status === "published");
           const buildingModules = topic.modules.filter((m) => m.status === "building");
           const plannedModules = topic.modules.filter((m) => m.status === "planned" || m.status === "materials");
@@ -164,6 +181,8 @@ function TopicHub({
                 <div className="topic-card-badges">
                   {isPublished ? (
                     <span className="badge badge-published">已发布首批课程</span>
+                  ) : isBuilding ? (
+                    <span className="badge badge-building">课程建设中 · 已有可学内容</span>
                   ) : (
                     <span className="badge badge-materials">仅有教材资料索引</span>
                   )}
@@ -247,7 +266,7 @@ function TopicHub({
 
               <div className="topic-card-footer">
                 <div className="topic-progress-text">
-                  {isPublished ? (
+                  {hasPublishedLessons ? (
                     <div className="topic-stat-block">
                       <div className="stat-main">
                         已发布课程：<strong>{publishedLessons.length}</strong> 节
@@ -261,7 +280,7 @@ function TopicHub({
                   )}
                 </div>
 
-                {isPublished ? (
+                {hasPublishedLessons ? (
                   <a
                     href={`#/topic/${topic.id}/${publishedLessons[0]?.id}`}
                     className="topic-enter-btn"
@@ -447,10 +466,19 @@ function TopicLessonReader({
         </div>
       </div>
 
-      {/* 课程标题与简要 */}
+      {/* 课程标题与简要；优先级仅用于导航，不代表学习门禁或掌握状态 */}
       <div className="topic-lesson-heading">
         <h1 className="topic-lesson-title">{lesson.title}</h1>
         <p className="topic-lesson-summary">{lesson.summary}</p>
+        {lesson.priority && (
+          <div className={`lesson-priority lesson-priority-${lesson.priority}`}>
+            {lesson.priority === "now"
+              ? "现在可接触"
+              : lesson.priority === "next"
+                ? "配合后续主线"
+                : "进阶选读"}
+          </div>
+        )}
       </div>
 
       {/* 课程模式与实操属性标识栏 */}
@@ -470,7 +498,7 @@ function TopicLessonReader({
         {lesson.kind === "command-lab" && (
           <div className="meta-badge-item badge-lab">
             <Terminal size={14} />
-            <span>Git 命令实操课 · 配套命令步进与状态机（命令已在一次性沙箱实测）</span>
+            <span>命令实验课 · 配套命令步进与状态机（请在本机一次性沙箱执行）</span>
           </div>
         )}
       </div>
@@ -516,7 +544,7 @@ function TopicLessonReader({
                   Java 规范源码：{lesson.packageName}.{lesson.className || "App"}
                 </span>
               </div>
-              <span className="code-env-badge">JDK 25 编译验证通过</span>
+              <span className="code-env-badge">Java 示例 · 请本机 JDK 编译运行</span>
             </div>
             <div className="code-card-content">
               <pre className="code-pre">

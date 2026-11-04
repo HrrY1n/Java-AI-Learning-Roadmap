@@ -1,0 +1,257 @@
+{
+  "topicId": "topic-network",
+  "modules": [
+    {
+      "id": "net-overview",
+      "title": "网络概览",
+      "description": "因特网结构、时延与分层。",
+      "status": "published",
+      "lessons": [
+        {
+          "id": "net-internet-overview",
+          "title": "因特网概览：分组、时延与分层",
+          "summary": "建立“边缘—核心—分层—性能”的整体模型。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 1 章",
+            "pdfPageStart": 20,
+            "pdfPageEnd": 72,
+            "printPage": "1-43"
+          },
+          "stageLinks": [
+            "03"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-internet-overview.md",
+          "priority": "now"
+        }
+      ]
+    },
+    {
+      "id": "net-application",
+      "title": "应用层",
+      "description": "HTTP、DNS、CDN 与套接字编程。",
+      "status": "published",
+      "lessons": [
+        {
+          "id": "net-app-http",
+          "title": "HTTP 应用层：请求、状态与连接语义",
+          "summary": "从 Java HttpClient 理解非持续/持续连接、缓存和头部。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 2 章 2.1-2.3 节",
+            "pdfPageStart": 72,
+            "pdfPageEnd": 100,
+            "printPage": "53-81"
+          },
+          "stageLinks": [
+            "03"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-app-http.md",
+          "priority": "now"
+        },
+        {
+          "id": "net-dns-cdn",
+          "title": "DNS、CDN 与名称解析",
+          "summary": "从域名到 IP，再到内容分发路径。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 2 章 2.4-2.6 节",
+            "pdfPageStart": 100,
+            "pdfPageEnd": 121,
+            "printPage": "81-101"
+          },
+          "stageLinks": [
+            "03"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-dns-cdn.md",
+          "priority": "now"
+        }
+      ]
+    },
+    {
+      "id": "net-transport",
+      "title": "运输层",
+      "description": "UDP、TCP、可靠传输与拥塞控制。",
+      "status": "published",
+      "lessons": [
+        {
+          "id": "net-udp-tcp-sockets",
+          "title": "UDP 与 TCP：数据报、字节流和套接字",
+          "summary": "用本机回环实验对比无连接和面向连接。",
+          "status": "published",
+          "kind": "code",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 2.7 节与第 3.1-3.3 节",
+            "pdfPageStart": 121,
+            "pdfPageEnd": 150,
+            "printPage": "102-129"
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-udp-tcp-sockets.md",
+          "priority": "now",
+          "codeDirectory": "stages/topics/network/examples/net_udp_tcp_sockets",
+          "packageName": "com.javaroadmap.network.net_udp_tcp_sockets",
+          "className": "App"
+        },
+        {
+          "id": "net-reliable-tcp",
+          "title": "可靠数据传输与 TCP 语义",
+          "summary": "理解确认、重传、流水线、流量控制和连接状态。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 3.4-3.5 节",
+            "pdfPageStart": 150,
+            "pdfPageEnd": 186,
+            "printPage": "131-167"
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-reliable-tcp.md",
+          "priority": "now"
+        },
+        {
+          "id": "net-congestion-control",
+          "title": "拥塞控制：慢启动、AIMD 与公平性",
+          "summary": "从简化模型理解发送速率如何自适应网络容量。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 3.6-3.8 节",
+            "pdfPageStart": 186,
+            "pdfPageEnd": 205,
+            "printPage": "167-186"
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-congestion-control.md",
+          "priority": "next"
+        }
+      ]
+    },
+    {
+      "id": "net-network-layer",
+      "title": "网络层",
+      "description": "转发、IPv4/IPv6、路由与 SDN。",
+      "status": "published",
+      "lessons": [
+        {
+          "id": "net-forwarding-ipv4-ipv6",
+          "title": "网络层转发：路由器、IPv4、IPv6 与 NAT",
+          "summary": "理解数据报格式、地址划分和转发路径。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 4 章",
+            "pdfPageStart": 217,
+            "pdfPageEnd": 266,
+            "printPage": "198-239"
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-forwarding-ipv4-ipv6.md",
+          "priority": "next"
+        },
+        {
+          "id": "net-routing-control-plane",
+          "title": "控制平面：链路状态、距离向量、OSPF/BGP 与 SDN",
+          "summary": "区分数据平面转发和控制平面计算路由。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 5 章",
+            "pdfPageStart": 266,
+            "pdfPageEnd": 313,
+            "printPage": "247-287"
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-routing-control-plane.md",
+          "priority": "next"
+        }
+      ]
+    },
+    {
+      "id": "net-link-mobility-security",
+      "title": "链路、移动性与安全",
+      "description": "以太网、无线移动和网络安全。",
+      "status": "published",
+      "lessons": [
+        {
+          "id": "net-link-layer",
+          "title": "链路层：差错检测、MAC、交换机与以太网",
+          "summary": "理解主机之间最后一跳的可靠交付与寻址。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 6 章",
+            "pdfPageStart": 313,
+            "pdfPageEnd": 367,
+            "printPage": "294-340"
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-link-layer.md",
+          "priority": "advanced"
+        },
+        {
+          "id": "net-wireless-mobile",
+          "title": "无线与移动网络：WiFi、蜂窝与移动切换",
+          "summary": "从共享介质、接入点和移动路由理解高层影响。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 7 章",
+            "pdfPageStart": 367,
+            "pdfPageEnd": 417,
+            "printPage": "348-393"
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-wireless-mobile.md",
+          "priority": "advanced"
+        },
+        {
+          "id": "net-security-tls",
+          "title": "网络安全：机密性、完整性、TLS 与端点保护",
+          "summary": "从对称/公钥加密到 TLS、防火墙和 IDS。",
+          "status": "published",
+          "kind": "concept",
+          "bookReference": {
+            "bookTitle": "计算机网络（原书第 8 版中文版）",
+            "chapter": "第 8 章",
+            "pdfPageStart": 417,
+            "pdfPageEnd": 473,
+            "printPage": "398-447"
+          },
+          "stageLinks": [
+            "04"
+          ],
+          "bodyPath": "stages/topics/network/lessons/net-security-tls.md",
+          "priority": "advanced"
+        }
+      ]
+    }
+  ]
+}
