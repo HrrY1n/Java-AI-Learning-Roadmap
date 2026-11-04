@@ -14,8 +14,9 @@
   - [notofonts/noto-cjk](https://github.com/notofonts/noto-cjk)（发布标签 `Sans2.004`，提交 `523d033d6cb47f4a80c58a35753646f5c3608a78`）。
   - [google/fonts](https://github.com/google/fonts/tree/main/ofl/notosanssc)（提交 `023eedd8780dd254e5905901473ed55e5475ee73`）。
   - 字形基础源自 Adobe [Source Han Sans（思源黑体）](https://github.com/adobe-fonts/source-han-sans)。
-- **格式与体积**：WOFF2 可变字重（`wght` 100–900），经专业子集化优化后体积约 994 KB。
-- **覆盖范围**：3,800 个 Unicode 字符，包含全部基础 ASCII 字符、Latin-1 Supplement 常用扩展符号、教育部《通用规范汉字表》一级字表全部 3,500 个常用汉字，以及全站课程、习题、预测与文档中出现的全部中文字符与全角/数学符号。
+- **格式与体积**：WOFF2 可变字重（`wght` 100–900），经专业子集化优化后体积约 995 KB。
+- **覆盖范围**：3,803 个 Unicode 码点，保留教育部《通用规范汉字表》一级字表全部 3,500 个常用汉字；同时覆盖当前生成目录、参考内容和界面实际使用的 1,432 个汉字（含课程正文中的“啾”、课程 Java 源码中的“喵”、Entity 与 Service 课程正文中的“癖”），以及基础 ASCII、Latin-1 Supplement 常用扩展符号和全角/数学符号。
+- **覆盖门禁**：`npm run check:fonts` 会从生成目录、参考内容与界面文本重新收集汉字，直接解压并读取字体文件的真实 cmap 后逐个比对；`npm run build`、`npm test` 和 `npm run check:build` 都已接入该检查。新增课程若使用字体子集之外的汉字，构建会直接失败，而不是依赖访客系统字体静默回退。
 - **授权许可证**：[SIL Open Font License 1.1](OFL-1.1.txt)（OFL-1.1）。
 - **版权声明与保留名称**：
   ```text
