@@ -36,6 +36,13 @@ for (const name of ["MonacoEditor-", "editor.worker-"]) {
     `缺少 ${name} 资源`,
   );
 }
+// 验证自托管开源字体产物完整打包进 assets
+for (const name of ["NotoSansSC-Subset-", "NotoSansMono-Subset-"]) {
+  assert(
+    chunks.some((path) => path.startsWith(name) && path.endsWith(".woff2")),
+    `缺少 ${name} 自托管字体资源`,
+  );
+}
 const catalog = JSON.parse(
   await readFile(resolve(webRoot, "src/generated/catalog.json"), "utf8"),
 );
@@ -55,11 +62,13 @@ for (const name of ["README.md", "OFL-1.1.txt", "KaTeX-MIT.txt"]) {
 const fontNotice = await readFile(resolve(dist, "licenses/README.md"), "utf8");
 assert.match(fontNotice, /Design Science, Inc\./);
 assert.match(fontNotice, /Khan Academy/);
+assert.match(fontNotice, /Adobe/);
+assert.match(fontNotice, /The Noto Project Authors/);
 assert.match(fontNotice, /SIL Open Font License, Version 1\.1/);
 const ofl = await readFile(resolve(dist, "licenses/OFL-1.1.txt"), "utf8");
 assert.match(ofl, /SIL OPEN FONT LICENSE Version 1\.1/);
 assert.match(ofl, /PERMISSION & CONDITIONS/);
 assert.match(ofl, /DISCLAIMER/);
 console.log(
-  `构建产物完整：${assets.length}个入口资源、Monaco/worker、${catalog.references.length}个懒加载参考、字体许可资料。`,
+  `构建产物完整：${assets.length}个入口资源、Monaco/worker、自托管开源字体、${catalog.references.length}个懒加载参考、字体许可资料。`,
 );

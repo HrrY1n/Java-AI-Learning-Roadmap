@@ -1,9 +1,29 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Noto Sans SC";
+  src:
+    url("./assets/fonts/NotoSansSC-Subset.woff2") format("woff2-variations"),
+    url("./assets/fonts/NotoSansSC-Subset.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Noto Sans Mono";
+  src:
+    url("./assets/fonts/NotoSansMono-Subset.woff2") format("woff2-variations"),
+    url("./assets/fonts/NotoSansMono-Subset.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   font-family:
-    -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI",
-    "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Segoe UI", "Microsoft YaHei", sans-serif;
   color: var(--ink);
   background: var(--paper);
   font-synthesis: none;
@@ -34,8 +54,8 @@
   --radius: 10px;
   --radius-lg: 14px;
   --mono:
-    "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas,
-    "Liberation Mono", monospace;
+    "Noto Sans Mono", "Noto Sans SC", "Cascadia Code", "SF Mono",
+    Consolas, "Liberation Mono", monospace;
   color-scheme: light;
 }
 :root[data-theme="dark"] {
@@ -5165,8 +5185,6 @@ kbd {
   align-items: flex-start;
   justify-content: center;
   overflow-y: auto;
-}
-.search-dialog[open] {
 }
 .search-dialog::backdrop {
   background: rgba(20, 20, 19, 0.55);

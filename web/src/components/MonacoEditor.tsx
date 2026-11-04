@@ -50,7 +50,7 @@ export default function MonacoEditor({
       minimap: { enabled: false },
       fontSize: 15,
       lineHeight: 25,
-      fontFamily: '"Cascadia Code", Consolas, monospace',
+      fontFamily: '"Noto Sans Mono", "Noto Sans SC", "Cascadia Code", Consolas, monospace',
       padding: { top: 20 },
       scrollBeyondLastLine: false,
       tabSize: 4,
