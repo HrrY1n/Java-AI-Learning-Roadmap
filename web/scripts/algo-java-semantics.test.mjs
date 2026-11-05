@@ -133,6 +133,13 @@ import { collectDeclarations, findMissingDeclarations } from "./lesson-source-ch
 
 const normalize = (s) => s.replace(/\s+/g, " ").trim();
 
+// 行尾归一化：仓库 blob 统一为 LF，topics.json 内联副本可能带 CRLF。
+// Windows 检出（core.autocrlf=true）时工作区与内联恰好同为 CRLF，差异被掩盖；
+// Linux CI 检出为 LF 才暴露内联副本的 CRLF。归一化只统一换行符本身，
+// 缩进、空格与代码内容仍逐字比较。
+const normalizeNewlines = (text) =>
+  text.trim().split(String.fromCharCode(13, 10)).join(String.fromCharCode(10));
+
 function fencedJavaBlocks(markdown) {
   const blocks = [];
   const re = /```java\n([\s\S]*?)```/g;
@@ -249,7 +256,13 @@ test("链表课程展示两个同包源码文件，且正文说明必须一起�
   assert.equal(nodeFile.className, "ListNode");
   assert.equal(nodeFile.packageName, "com.javaroadmap.algo.linkedlist");
   assert.match(nodeFile.code, /public class ListNode/);
-  assert.equal(nodeFile.code.trim(), fs.readFileSync(path.join(repoRoot, nodeFile.path), "utf8").trim());
+  // 比较前对两份源码做一致的 CRLF/CR/LF 归一化，内容仍严格逐字比较。
+  assert.equal(
+    normalizeNewlines(nodeFile.code),
+    normalizeNewlines(
+      fs.readFileSync(path.join(repoRoot, nodeFile.path), "utf8"),
+    ),
+  );
   assert.match(lesson.markdown, /两个同包文件/);
   assert.match(lesson.markdown, /一起编译/);
 });

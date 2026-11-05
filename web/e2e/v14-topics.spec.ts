@@ -527,6 +527,26 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await searchInput.fill("二叉树");
     await page.keyboard.press("Enter");
     await expect(dialog).not.toBeVisible();
+
+    // 9. 回归（V1.9-R）：打开弹窗后立即 Tab 到关闭按钮，焦点不得被延迟定时器抢回输入框。
+    // 此前的 30ms 焦点兜底会在 Tab 之后把焦点拽回 input，用户按 Enter 就命中
+    // 「直达第一项结果」而误跳转。这里打开后不做任何等待直接 Tab，并断言关闭后
+    // 路由保持在第 8 步结束时所在的页面（未被 Enter 误导向任何课程）。
+    const urlBeforeRegression = page.url();
+    for (let round = 0; round < 3; round += 1) {
+      await trigger.click();
+      await expect(dialog).toBeVisible();
+      await page.keyboard.press("Tab");
+      const closeFocused = page.getByRole("button", { name: "关闭搜索面板" });
+      await expect(closeFocused).toBeFocused();
+      // 等过旧实现的 30ms 定时器窗口，确认焦点没有被抢回输入框
+      await page.waitForTimeout(120);
+      await expect(closeFocused).toBeFocused();
+      await expect(searchInput).not.toBeFocused();
+      await page.keyboard.press("Enter");
+      await expect(dialog).not.toBeVisible();
+      await expect(page).toHaveURL(urlBeforeRegression);
+    }
   });
 
   test("Git 课程不同步骤数切换不发生白屏且步进状态安全重置", async ({ page }) => {

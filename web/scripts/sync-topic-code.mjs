@@ -48,6 +48,17 @@ for (const topic of data.topics) {
           console.log(`  注意：${lesson.id} 的 markdown 可能仍含旧片段，请人工确认`);
         }
       }
+      // 同包依赖类（codeFiles）同样来自磁盘源码：逐个按归一化后的行尾同步，
+      // 避免内联副本残留 CRLF（Windows 检出时与工作区一致而掩盖，Linux CI 才暴露）。
+      for (const file of lesson.codeFiles ?? []) {
+        if (!file.path) continue;
+        const fileSource = readFileSync(path.join(repoRoot, file.path), "utf8").replace(/\r\n/g, "\n");
+        if (file.code.trim() !== fileSource.trim()) {
+          file.code = fileSource;
+          changed++;
+          console.log(`synced ${lesson.id} :: ${file.className}`);
+        }
+      }
     }
   }
 }

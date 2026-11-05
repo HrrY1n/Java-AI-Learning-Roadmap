@@ -49,9 +49,11 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
     const opener = document.activeElement;
     const route = location.hash;
     dialog.showModal();
-    const focusTimer = setTimeout(() => inputRef.current?.focus(), 30);
+    // 只在这里同步聚焦一次。此前的 30ms 定时器兜底会迟到抢回焦点：用户/键盘若在
+    // 定时器触发前按 Tab 移到关闭按钮，定时器随后把焦点拽回输入框，此时按 Enter
+    // 就命中输入框的「直达当前高亮结果」，误跳 #/lesson/day01（V1.9-R 实测复现）。
+    inputRef.current?.focus();
     return () => {
-      clearTimeout(focusTimer);
       dialog.close();
       queueMicrotask(() => {
         if (
