@@ -67,6 +67,7 @@ import { SearchDialog } from "./components/SearchDialog";
 import { OnJavaCard } from "./components/OnJavaCard";
 import { TopicView } from "./components/TopicView";
 import { BrandLogo } from "./components/BrandLogo";
+import { SidebarNavigation } from "./components/SidebarNavigation";
 
 type Change = (recipe: (current: LearningState) => LearningState) => void;
 type PageProps = {
@@ -145,128 +146,6 @@ function SectionTitle({
       </h2>
       {action}
     </div>
-  );
-}
-
-// 顶部与移动导航按当前 hash 显示活跃项；所有页面经 props.state 读取同一份持久化快照。
-function Navigation({
-  route,
-  state,
-  currentStage,
-  close,
-}: {
-  route: Route;
-  state: LearningState;
-  currentStage: Stage;
-  close?: () => void;
-}) {
-  const links = [
-    {
-      page: "home",
-      href: "#/home",
-      icon: Home,
-      label: "学习工作台",
-    },
-    {
-      page: "roadmap",
-      href: "#/roadmap",
-      icon: ListTree,
-      label: "学习路线",
-    },
-    {
-      page: "topics",
-      href: "#/topics",
-      icon: Binary,
-      label: "专题学习",
-    },
-    {
-      page: "lab",
-      href: labLink(),
-      icon: Code2,
-      label: "编程实验室",
-    },
-    {
-      page: "review",
-      href: "#/review",
-      icon: FolderOpen,
-      label: "学习记录",
-    },
-  ];
-  return (
-    <>
-      <nav className="primary-nav" aria-label="主要导航">
-        {links.map(({ page, href, icon: Icon, label }) => {
-          const isActive =
-            route.page === page ||
-            (page === "roadmap" && route.page === "lesson") ||
-            (page === "topics" &&
-              (route.page === "topic" || route.page === "topics")) ||
-            (page === "lab" && route.page === "practice");
-
-          return (
-            <a
-              key={page}
-              href={href}
-              onClick={close}
-              className={isActive ? "active" : ""}
-              aria-current={isActive ? "page" : undefined}
-            >
-              <Icon size={19} />
-              <span>{label}</span>
-              {isActive && <span className="nav-dot" />}
-            </a>
-          );
-        })}
-      </nav>
-      <div className="rail-course">
-        <div className="rail-label">
-          正在学习 <span>{currentStage.id}</span>
-        </div>
-        <a href="#/roadmap" className="rail-stage">
-          {currentStage.title} <ArrowUpRight size={15} />
-        </a>
-        <div className="rail-stage-meta">
-          <span className="status-dot" /> {currentStage.status} · 以独立练习验收
-        </div>
-        <details open={route.page === "lesson"}>
-          <summary>
-            {currentStage.modules.find((m) => m.id === "foundations")?.title ??
-              "基础课程"}{" "}
-            <ChevronDown size={14} />
-          </summary>
-          {catalog.lessons
-            .filter(
-              (lesson) =>
-                lesson.stageId === currentStage.id &&
-                lesson.kind === "foundation",
-            )
-            .map((lesson, i) => (
-              <a
-                key={lesson.id}
-                className={`rail-lesson ${route.id === lesson.id ? "selected" : ""}`}
-                href={lessonLink(lesson.id)}
-                onClick={close}
-              >
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                {lesson.title}
-                {state.lessons[lesson.id]?.read && (
-                  <Check size={13} aria-label="已阅读" />
-                )}
-              </a>
-            ))}
-        </details>
-      </div>
-      <a
-        className="rail-principle"
-        href="#/document/teaching-rules"
-        onClick={close}
-      >
-        <Lightbulb size={18} />
-        <span>
-          先思考，再向提示靠近。<small>AI 教你写，不替你写。</small>
-        </span>
-      </a>
-    </>
   );
 }
 
@@ -552,8 +431,12 @@ export default function App() {
             JavaRoadmap <b>LAB</b>
           </span>
         </a>
-        <Navigation route={route} state={state} currentStage={currentStage} />
-        <footer className="rail-footer">
+        <SidebarNavigation
+          route={route}
+          state={state}
+          currentStage={currentStage}
+        />
+        <footer className="rail-footer sidebar-foot">
           <span className="local-status">
             <span className={`status-dot ${storageError ? "warning" : ""}`} />
             本地优先 · 私人学习空间
@@ -682,34 +565,67 @@ export default function App() {
           { page: "topics", href: "#/topics", label: "专题", icon: Binary },
           { page: "lab", href: labLink(), label: "实验室", icon: Code2 },
           { page: "review", href: "#/review", label: "记录", icon: FolderOpen },
-        ].map(({ page, href, label, icon: Icon }) => (
+        ].map(({ page, href, label, icon: Icon }) => {
+          const isActive =
+            route.page === page ||
+            (page === "lesson" && route.page === "lesson") ||
+            (page === "topics" &&
+              (route.page === "topic" || route.page === "topics")) ||
+            (page === "lab" &&
+              (route.page === "lab" || route.page === "practice"));
+          return (
           <a
             key={page}
-            className={
-              route.page === page ||
-              (page === "roadmap" && route.page === "roadmap") ||
-              (page === "lesson" && route.page === "lesson") ||
-              (page === "topics" &&
-                (route.page === "topic" || route.page === "topics")) ||
-              (page === "lab" && route.page === "practice")
-                ? "active"
-                : ""
-            }
+            className={isActive ? "active" : ""}
             href={href}
-            aria-current={route.page === page ? "page" : undefined}
+            aria-current={isActive ? "page" : undefined}
           >
             <Icon size={19} />
             <span>{label}</span>
           </a>
-        ))}
+          );
+        })}
       </nav>
       {mobileNav && (
-        <Dialog title="学习导航" onClose={() => setMobileNav(false)} drawer>
-          <Navigation
+        <Dialog
+          title="学习导航"
+          onClose={() => setMobileNav(false)}
+          drawer
+          drawerSide="left"
+          footer={
+            <div className="drawer-foot-actions">
+              <button
+                className="icon-button"
+                aria-label={dark ? "切换到浅色主题" : "切换到深色主题"}
+                onClick={() =>
+                  change((current) => ({
+                    ...current,
+                    theme: dark ? "light" : "dark",
+                  }))
+                }
+              >
+                {dark ? <Sun size={18} /> : <Moon size={18} />}
+                <span>主题</span>
+              </button>
+              <button
+                className="icon-button"
+                onClick={() => {
+                  setMobileNav(false);
+                  setDataDialog(true);
+                }}
+              >
+                <FileJson size={18} />
+                <span>备份</span>
+              </button>
+            </div>
+          }
+        >
+          <SidebarNavigation
             route={route}
             state={state}
             currentStage={currentStage}
             close={() => setMobileNav(false)}
+            compact
           />
         </Dialog>
       )}

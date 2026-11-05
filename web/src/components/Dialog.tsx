@@ -39,11 +39,15 @@ export function Dialog({
   onClose,
   children,
   drawer = false,
+  drawerSide = "right",
+  footer,
 }: {
   title: string;
   onClose: () => void;
   children: ReactNode;
   drawer?: boolean;
+  drawerSide?: "left" | "right";
+  footer?: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const id = useId();
@@ -64,10 +68,17 @@ export function Dialog({
       });
     };
   }, []);
+  const classes = [
+    "dialog",
+    drawer ? "drawer" : "",
+    drawer && drawerSide === "left" ? "drawer-left" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
   return (
     <dialog
       ref={ref}
-      className={`dialog ${drawer ? "drawer" : ""}`}
+      className={classes}
       aria-labelledby={id}
       onCancel={(event) => {
         event.preventDefault();
@@ -89,6 +100,7 @@ export function Dialog({
         </button>
       </header>
       <div className="dialog-body">{children}</div>
+      {footer && <footer className="dialog-foot">{footer}</footer>}
     </dialog>
   );
 }
