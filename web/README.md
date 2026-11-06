@@ -94,7 +94,7 @@ bash scripts/verify_java.sh
 | `python scripts/check_links.py`（macOS 用 `python3`） | 仓库根 | 检查仓库 Markdown 相对链接 |
 | `git diff --check` | 仓库根 | 检查改动的空白与行尾问题 |
 
-网站 CI 在 Ubuntu / Windows / macOS（Node 24 + Temurin JDK 25）上运行类型检查、测试、生产构建与核心浏览器测试；Java 课程回归在 Windows / macOS × JDK 21 / 25 四组运行，详见[验证脚本说明](../scripts/README.md)。push 到 `main` 后由独立 Pages 工作流构建、部署并执行线上冒烟；完整配置见[工作流目录](../.github/workflows/)。
+网站 CI 在 Ubuntu / Windows / macOS（Node 24 + Temurin JDK 25）上运行类型检查、测试、生产构建与核心浏览器测试；Java 课程回归在 Windows / macOS（JDK 25，两台学习机的实际版本）运行，详见[验证脚本说明](../scripts/README.md)。push 到 `main` 且 `web/` 或 `stages/` 变化时由独立 Pages 工作流构建、部署并执行线上冒烟，README 与 `docs/` 纯文档改动不触发部署；完整配置见[工作流目录](../.github/workflows/)。
 
 ## 静态部署
 

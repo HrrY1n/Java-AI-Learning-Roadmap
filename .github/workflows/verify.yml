@@ -2,7 +2,7 @@ name: verify
 
 on:
   push:
-    branches: [main, 'codex/**']
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -16,9 +16,10 @@ jobs:
       matrix:
         # macos-latest 是 ARM64 运行器；它验证脚本的 macOS 兼容性，
         # 不能替代在自己 Apple Silicon 电脑上的实际运行验证。
-        # JDK 21 是文档声明的 CI 基线；JDK 25 覆盖学习机当前版本。
+        # 两台学习机均为 JDK 25，CI 只跑该版本；文档声明的最低要求
+        # （JDK 17+）以 scripts/README.md 记录的本机验证为准。
         os: [windows-latest, macos-latest]
-        java: ['21', '25']
+        java: ['25']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
