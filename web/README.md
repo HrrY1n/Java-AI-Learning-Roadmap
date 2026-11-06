@@ -85,6 +85,17 @@ bash scripts/verify_java.sh
 
 参考课程回归不生成学生练习证据。具体已经执行的环境、命令、截图与限制见[验收记录](../docs/javaroadmap_lab/validation.md)，此处的可运行命令不代表已经在每种操作系统上实测。
 
+### 其他仓库级命令与 CI 矩阵
+
+| 命令 | 运行位置 | 作用 |
+| --- | --- | --- |
+| `npm run content` | `web/` | 从仓库 Markdown 与 Java 源文件重新生成课程数据 |
+| `npm run verify:practice -- --exercise <id> --source <源码文件> --expect-file <预期输出文件>` | `web/` | 个人练习的单次精确验证；先运行 `npm run content`，替换占位符后按[本地 Java 验证指南](../docs/javaroadmap_lab/local-java.md)生成并导入实测证据 |
+| `python scripts/check_links.py`（macOS 用 `python3`） | 仓库根 | 检查仓库 Markdown 相对链接 |
+| `git diff --check` | 仓库根 | 检查改动的空白与行尾问题 |
+
+网站 CI 在 Ubuntu / Windows / macOS（Node 24 + Temurin JDK 25）上运行类型检查、测试、生产构建与核心浏览器测试；Java 课程回归在 Windows / macOS × JDK 21 / 25 四组运行，详见[验证脚本说明](../scripts/README.md)。push 到 `main` 后由独立 Pages 工作流构建、部署并执行线上冒烟；完整配置见[工作流目录](../.github/workflows/)。
+
 ## 静态部署
 
 GitHub Pages使用独立Actions工作流，从受保护的main自动构建、验证、部署并执行线上冒烟。以 `web/` 为构建工作目录执行 `npm ci`、`npm run build`，仅将 `web/dist/` 上传为Pages Artifact；不会提交构建产物或公开本地Java CLI。不要上传源码树中的用户备份、草稿、证据、`node_modules/` 或系统环境文件。
