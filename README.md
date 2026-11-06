@@ -18,31 +18,36 @@ JavaRoadmap Lab 把一条 14 Stage 的学习路线做成了可以动手验证的
 
 ## 项目预览
 
-学习工作台首页——从当前任务进入课程、预测与练习：
+以下为当前版本（V1.9-R + 场景分组侧边栏）的真实浏览器截图，由本地生产构建经 Playwright 截取，不代表学习者完成证据。当前内容以[在线网站](https://hrry1n.github.io/Java-AI-Learning-Roadmap/)为准。
 
-![学习工作台首页](docs/javaroadmap_lab/v1.4_screenshots/workbench_1440_light.png)
+学习工作台首页——分组导航把 Java 主线、专题课程、动手实践与资料底稿收进同一视图：
 
-| 算法专题阅读 | Git 专题阅读 |
+![学习工作台首页（浅色）](docs/javaroadmap_lab/current_screenshots/home-desktop-light.png)
+
+| 深色主题 | 专题课程阅读（含本节脉络与交互组件） |
 | --- | --- |
-| ![算法专题阅读](docs/javaroadmap_lab/v1.4_screenshots/algo-lesson_1440_light.png) | ![Git 专题阅读](docs/javaroadmap_lab/v1.4_screenshots/git-lesson_1440_light.png) |
+| ![学习工作台首页（深色）](docs/javaroadmap_lab/current_screenshots/home-desktop-dark.png) | ![算法专题课程阅读](docs/javaroadmap_lab/current_screenshots/topic-lesson-desktop.png) |
 
-截图来自 V1.4 专题体系验收记录，当前内容以网站为准（[更多截图](docs/javaroadmap_lab/v1.4_screenshots/)）。
+移动端提供抽屉导航与底部快捷栏：
+
+![移动端学习工作台](docs/javaroadmap_lab/current_screenshots/home-mobile-light.png)
 
 ## 主要功能
 
 | 功能 | 说明 |
 | --- | --- |
+| 场景分组导航 | 侧边栏按「主要入口 / Java 主线 / 专题课程 / 动手实践 / 资料与底稿」分组；深链、浏览器前进后退与全局搜索跳转会自动展开所属分组并定位当前项 |
 | 14 Stage 学习路线 | 完整知识地图驱动站点导航，路线信息与已有材料同时呈现 |
-| 主线课程阅读 | 45 节正式课程（Stage 01×13 + Stage 02×14 + Stage 03×18），支持单文件与多文件 Java 示例展示 |
-| 专题学习体系 (V1.4) | 与 Java 主线并行的计算机学科专题：《Hello 算法》（29 门课，覆盖复杂度、线性结构、哈希表、树堆图与算法策略，V1.7 补齐双端队列、BST/平衡树、建堆 Top-K、二分边界、选择/堆/非比较排序、子集和、背包与编辑距离，含原创 Java 源码与交互组件）与《Pro Git》（19 门课，覆盖三大空间、分支合并、冲突撤销、忽略规则、交互式暂存与变基、worktree、子模块、钩子与历史考古，含临时沙箱实操） |
-| 原著延伸阅读 (V1.4) | 主线课程嵌入《On Java 8》45 条课程关联（覆盖全部已发布课程，含代码校验断言；关联数量不等于全书逐章覆盖），辨析设计取舍并标明 Java 10 var、Java 14 Switch、Java 16 Record 等现代演进 |
-| 全局穿梭搜索 (V1.4) | 快捷键 `⌘K` / `Ctrl+K` 调出 Command Palette，支持主线、算法、Git、编程题与教材索引实时模糊检索与直达 |
+| 主线课程阅读 | 45 节正式课程（Stage 01×13 + Stage 02×14 + Stage 03×18），支持单文件与多文件 Java 示例展示，课程页带本节脉络目录 |
+| 专题学习体系 | 与 Java 主线并行的 5 个学科专题共 91 节：《Hello 算法》29 节、《Pro Git》19 节、CS:APP 14 节、OSTEP 17 节、计算机网络 12 节；原著阅读关联 6 本书索引，并含可运行的 Java 示例与交互组件 |
+| 原著延伸阅读 | 主线课程嵌入《On Java 8》45 条课程关联（覆盖全部已发布课程，含代码校验断言；关联数量不等于全书逐章覆盖），辨析设计取舍并标明 Java 10 var、Java 14 Switch、Java 16 Record 等现代演进 |
+| 全局穿梭搜索 | 快捷键 `⌘K` / `Ctrl+K` 调出 Command Palette，支持主线、专题、编程题与教材索引实时模糊检索与直达 |
 | 输出预测 | 12 道预测题按确定答案本地判定，先写判断再核对语义 |
 | 条件修改 | 6 道开放修改题，在自己的副本上改条件、预测差异、运行验证 |
 | 编程实验室 | 5 道独立编程题，Monaco 编辑器、L1–L4 渐进提示与用例边界 |
 | 本地 Java 验证 | 通过 `verify-practice` 脚本比对输出，生成防伪实测指纹并导入网站 |
 | 学习复盘 | 区分阅读、尝试、提示与实测证据，展示真实能力基线 |
-| 本地优先与隐私安全 | 数据存当前浏览器 IndexedDB，支持带校验的完整 JSON 备份导入、合并与导出 |
+| 本地优先与隐私安全 | 数据存当前浏览器 IndexedDB，支持带校验的完整 JSON 备份导入、合并与导出；明暗双主题与自托管开源字体 |
 
 ## 快速开始
 
