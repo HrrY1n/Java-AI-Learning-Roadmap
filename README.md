@@ -20,12 +20,10 @@
 ## 界面预览
 
 <p align="center">
-  <img src="docs/javaroadmap_lab/current_screenshots/home-desktop-light.png" width="640" alt="桌面端学习工作台（浅色）">
-  &nbsp;&nbsp;&nbsp;
-  <img src="docs/javaroadmap_lab/current_screenshots/home-mobile-light.png" width="185" alt="移动端学习工作台">
+  <img src="docs/javaroadmap_lab/current_screenshots/home-desktop-light.png" width="720" alt="桌面端学习工作台（浅色）">
 </p>
 
-<p align="center"><sub>桌面端 · 学习工作台　　·　　移动端 · 学习工作台</sub></p>
+<p align="center"><sub>桌面端 · 学习工作台</sub></p>
 
 <p align="center">
   <img src="docs/javaroadmap_lab/current_screenshots/home-desktop-dark.png" width="420" alt="桌面端学习工作台（深色）">
