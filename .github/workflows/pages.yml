@@ -3,6 +3,11 @@ name: Deploy JavaRoadmap Lab Pages
 on:
   push:
     branches: [main]
+    # 站点内容只由 web/ 与 stages/（课程源码）决定；
+    # 纯文档改动不触发部署，deployment.json 保持上次站点提交。
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
   workflow_dispatch:
     inputs:
       skip_tests:
