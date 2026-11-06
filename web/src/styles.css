@@ -229,66 +229,6 @@ pre {
   color: var(--accent);
   margin-top: 3px;
 }
-.primary-nav {
-  display: grid;
-  gap: 5px;
-}
-.primary-nav > a {
-  min-height: 57px;
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 8px 13px;
-  border-radius: 9px;
-  color: var(--muted);
-}
-.primary-nav small {
-  font-family: var(--mono);
-  display: block;
-  font-size: 10px;
-  line-height: 1.2;
-  letter-spacing: 0.5px;
-  margin-top: 4px;
-}
-.nav-dot {
-  width: 5px;
-  height: 5px;
-  background: #5e8142;
-  border-radius: 50%;
-  margin-left: auto;
-}
-.rail-course {
-  margin-top: 34px;
-  padding: 24px 8px 0;
-  border-top: 1px solid var(--line);
-}
-.rail-label {
-  color: var(--muted);
-  font-size: 11px;
-  letter-spacing: 2px;
-  display: flex;
-  justify-content: space-between;
-}
-.rail-label span {
-  font-family: var(--mono);
-  letter-spacing: 0;
-}
-.rail-stage {
-  font-size: 15px;
-  font-weight: 650;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 14px;
-}
-.rail-stage-meta {
-  font-size: 10px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 9px;
-}
 .status-dot {
   width: 6px;
   height: 6px;
@@ -300,9 +240,6 @@ pre {
 .status-dot.warning {
   background: #b87d35;
 }
-.rail-course details {
-  margin-top: 19px;
-}
 summary {
   list-style: none;
   cursor: pointer;
@@ -310,48 +247,8 @@ summary {
 summary::-webkit-details-marker {
   display: none;
 }
-.rail-course summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 40px;
-  font-size: 12px;
-  color: var(--muted);
-}
 details[open] > summary > svg:last-child {
   transform: rotate(180deg);
-}
-.rail-lesson {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  min-height: 36px;
-  font-size: 11px;
-  color: var(--muted);
-  padding: 5px 0;
-}
-.rail-lesson > span {
-  font-family: var(--mono);
-}
-.rail-lesson.selected,
-.rail-lesson:hover {
-  color: var(--ink);
-  font-weight: 600;
-}
-.rail-lesson svg {
-  margin-left: auto;
-}
-.rail-principle {
-  margin: 28px 8px 20px;
-  display: flex;
-  gap: 9px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.8;
-}
-.rail-principle small {
-  display: block;
-  font-size: 10px;
 }
 .rail-footer {
   margin-top: auto;
@@ -2622,94 +2519,8 @@ h2 {
   color: var(--accent);
   margin-top: 3px;
 }
-.primary-nav > a {
-  min-height: 50px;
-  gap: 12px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border-left: 2px solid transparent;
-  color: var(--muted);
-}
-.primary-nav > a > span {
-  font-size: 14.5px;
-  font-weight: 600;
-}
-.primary-nav > a > span b {
-  display: block;
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--faint);
-  margin-top: 2px;
-  letter-spacing: 0.4px;
-}
-.primary-nav > a:hover {
-  background: var(--surface-soft);
-  color: var(--ink);
-}
-.primary-nav > a.active {
-  background: var(--selected);
-  border-left-color: var(--accent);
-  color: var(--ink);
-}
-.nav-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--accent);
-  margin-left: auto;
-}
-.rail-course {
-  margin-top: 30px;
-  border-top: 1px solid var(--line);
-  padding-top: 22px;
-}
-.rail-label {
-  font-size: 11px;
-  letter-spacing: 0.28em;
-  color: var(--faint);
-  font-weight: 600;
-}
-.rail-label span {
-  font-size: 11px;
-  color: var(--accent);
-}
-.rail-stage {
-  font-size: 15.5px;
-  font-weight: 750;
-  margin-top: 12px;
-}
-.rail-stage-meta {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 8px;
-}
 .status-dot {
   background: var(--success);
-}
-.rail-lesson {
-  min-height: 34px;
-  font-size: 12px;
-  border-radius: 6px;
-  padding: 5px 8px;
-}
-.rail-lesson > span {
-  color: var(--faint);
-  font-size: 11px;
-}
-.rail-lesson.selected {
-  color: var(--ink);
-  background: var(--selected);
-}
-.rail-lesson.selected > span {
-  color: var(--accent);
-}
-.rail-lesson svg {
-  color: var(--success);
-}
-.rail-principle {
-  border-left: 2px solid var(--accent-soft);
-  padding-left: 12px;
-  margin: 26px 4px 18px;
 }
 .rail-footer {
   border-top: 1px solid var(--line);
@@ -4127,19 +3938,6 @@ h2 {
     width: 36px;
     height: 36px;
   }
-  .rail-course {
-    padding-inline: 9px;
-  }
-  .rail-stage-meta {
-    font-size: 9px;
-  }
-  .primary-nav > a {
-    gap: 11px;
-    padding-inline: 11px;
-  }
-  .primary-nav > a > span {
-    font-size: 12px;
-  }
   .rail-bottom > span {
     font-size: 7px;
   }
@@ -4377,12 +4175,6 @@ h2 {
   .review-grid {
     grid-template-columns: 1.3fr 1fr;
     gap: 24px;
-  }
-  .drawer .primary-nav {
-    margin-top: -6px;
-  }
-  .drawer .rail-course {
-    margin-top: 24px;
   }
 }
 @media (max-width: 699px) {
@@ -7592,13 +7384,6 @@ button.memory-slot.active-slot {
     margin-top: 4px;
     padding-top: 6px;
   }
-}
-
-/* 旧侧栏导航结构隐藏；保留选择器供历史样式安全回退 */
-.primary-nav,
-.rail-course,
-.rail-principle {
-  display: none !important;
 }
 
 @media (max-width: 899px) {

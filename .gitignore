@@ -12,4 +12,5 @@ target/
 *.db
 output/
 reports/*.tmp
+stages/**/reports/quality_report.md
 archive/

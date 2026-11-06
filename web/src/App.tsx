@@ -479,9 +479,7 @@ export default function App() {
                       ? "编程实验室"
                       : route.page === "topics" || route.page === "topic"
                         ? "专题学习体系"
-                        : route.page === "prototype"
-                          ? "双设计原型论证"
-                          : `Stage ${currentStage.id} · ${currentStage.title}`}
+                        : `Stage ${currentStage.id} · ${currentStage.title}`}
               </strong>
             </span>
           </div>

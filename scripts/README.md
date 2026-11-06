@@ -37,6 +37,6 @@ manifest 每列含义见文件头注释；修改课程输出后同步更新对�
 
 ## 平台说明（诚实边界）
 
-- 清单当前含 59 项：40 个原课程/项目入口 + 19 个深化示例。已有 Windows 11 + JDK 25 的 59/59 通过记录；本次集成检查结果另按实际运行记录，不将历史结果当作本次结果。
+- 清单当前含 97 项：Stage 01 18 项、Stage 02 22 项、Stage 03 28 项、专题 29 项。运行结果以每次实际执行的 `verify_java.sh` / `verify_java.ps1` 输出为准，不将历史记录当作本次结果。
 - macOS：脚本按 bash 3.2（macOS 自带版本）编写，但**尚未在 Apple Silicon 实机验证**。Bash 版自行轮询并执行超时终止，不依赖外部 `timeout` 命令，也不降级为无限等待。`.ps1` 保留 UTF-8 BOM，Windows PowerShell 5.1 可正确读取中文；macOS 使用 `.sh` 版。
 - GitHub Actions 工作流见 [verify.yml](../.github/workflows/verify.yml)：`main` / `codex/**` 分支 push、Pull Request 和手动触发均可运行 Windows/macOS × JDK 21/25 四组检查。配置存在不代表已通过，首次推送后必须查看真实结果；云端 macOS 通过也不能替代自己的 MacBook 实机验证。
