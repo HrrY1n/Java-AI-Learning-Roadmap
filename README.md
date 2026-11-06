@@ -20,18 +20,22 @@
 ## 界面预览
 
 <p align="center">
-  <img src="docs/javaroadmap_lab/current_screenshots/home-desktop-light.png" width="720" alt="桌面端学习工作台（浅色）">
+  <img src="docs/javaroadmap_lab/current_screenshots/home-desktop-light.png" width="100%" alt="桌面端学习工作台（浅色）">
 </p>
 
 <p align="center"><sub>桌面端 · 学习工作台</sub></p>
 
 <p align="center">
-  <img src="docs/javaroadmap_lab/current_screenshots/home-desktop-dark.png" width="420" alt="桌面端学习工作台（深色）">
-  &nbsp;&nbsp;&nbsp;
-  <img src="docs/javaroadmap_lab/current_screenshots/topic-lesson-desktop.png" width="420" alt="算法专题课程阅读">
+  <img src="docs/javaroadmap_lab/current_screenshots/home-desktop-dark.png" width="100%" alt="桌面端学习工作台（深色）">
 </p>
 
-<p align="center"><sub>桌面端 · 深色主题　　·　　专题课程 · 阅读页</sub></p>
+<p align="center"><sub>桌面端 · 深色主题</sub></p>
+
+<p align="center">
+  <img src="docs/javaroadmap_lab/current_screenshots/topic-lesson-desktop.png" width="100%" alt="算法专题课程阅读">
+</p>
+
+<p align="center"><sub>专题课程 · 阅读页</sub></p>
 
 ## 快速开始
 
