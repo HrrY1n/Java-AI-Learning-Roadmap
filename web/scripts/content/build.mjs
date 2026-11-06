@@ -437,8 +437,8 @@ async function buildStages(repoRoot, contentRoot) {
       seenModuleIds.add(module.id);
     }
   }
-  const roadmap = await readSource(repoRoot, "统一学习路线.md");
-  const progress = await readSource(repoRoot, "真实学习进度.md");
+  const roadmap = await readSource(repoRoot, "public-roadmap.md");
+  const progress = await readSource(repoRoot, "public-progress.md");
   const progressRows = new Map();
   for (const line of progress.split("\n")) {
     const cells = line
@@ -466,7 +466,7 @@ async function buildStages(repoRoot, contentRoot) {
     if (!entry)
       throw contentError(`Stage ${id} 未在 web/content/stages.json 注册`);
     const progressRow = progressRows.get(id);
-    if (!progressRow) throw contentError(`Stage ${id} 在真实学习进度.md 中缺少状态行`);
+    if (!progressRow) throw contentError(`Stage ${id} 在 public-progress.md 中缺少状态行`);
     const sourcePath = cells[0].match(/\]\(([^)]+)\)/)?.[1];
     stages.push({
       id,
@@ -731,7 +731,7 @@ export async function buildCatalog({
     contentRoot,
     stageEntries,
   );
-  const plan = await readSource(repoRoot, "学习执行计划.md");
+  const plan = await readSource(repoRoot, "public-plan.md");
   const currentSection = plan.split("## CURRENT")[1]?.split("## NEXT")[0] ?? "";
   const currentTasks = [...currentSection.matchAll(/^\d+\.\s+(.+)$/gm)].map(
     (match) => match[1],

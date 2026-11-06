@@ -51,7 +51,7 @@ IntelliJ IDEA 中将具体的 `day*` 目录作为 Sources Root 后运行包内 `
 - `existing_course/examples/legacy_fundamentals/`：集合、异常/IO、Lambda/Stream 的早期最小示例。
 - [实现参考答案](existing_course/answers/)：文件持久化参考答案，完成练习后再看。
 
-`existing_course/` 中的 `summary.md`、`mistakes.md` 等是保留的原课程记录，其中旧目录名和“下一阶段”文字不作为当前路线入口；阶段顺序始终以根目录 [学习执行计划](../../学习执行计划.md) 和 [统一学习路线](../../统一学习路线.md) 为准。
+`existing_course/` 中的 `summary.md`、`mistakes.md` 等是保留的原课程记录，其中旧目录名和“下一阶段”文字不作为当前路线入口；阶段顺序始终以自己私有维护的执行计划 和完整路线为准（均为私有文档，不随公开仓库发布）。
 
 ### 概念深化导航
 
@@ -66,7 +66,7 @@ IntelliJ IDEA 中将具体的 `day*` 目录作为 Sources Root 后运行包内 `
 | [Lambda / Stream 最小示例](existing_course/examples/legacy_fundamentals/lambda_stream/)：流水线何时执行 | [05 Lambda 与 Stream](deep_dives/05_lambda_stream/README.md) |
 | [完整学生系统](existing_course/src/main/java/)：存储替换为什么不改业务 | [06 Repository 演进](deep_dives/06_repository_evolution/README.md) |
 
-个人代码仍按练习验收清单验证；参考代码回归见根目录 [验证说明](../../scripts/README.md)。完成本阶段后，下一项主线以根目录 [学习执行计划](../../学习执行计划.md) 的 NEXT 为准，Stage 04 按并行线推进。
+个人代码仍按练习验收清单验证；参考代码回归见根目录 [验证说明](../../scripts/README.md)。完成本阶段后，下一项主线以自己私有维护的执行计划 的 NEXT 为准，Stage 04 按并行线推进。
 
 ## 推荐学习流程
 
@@ -101,4 +101,4 @@ IntelliJ IDEA 中将具体的 `day*` 目录作为 Sources Root 后运行包内 `
 - [ ] 能解释 `Result<T>`、业务异常、Repository/Service 的职责。
 - [ ] 完成并记录与本阶段相关的哈希、栈/队列代表题；树与 BFS/DFS 按算法并行线继续推进。
 
-上一阶段：[Stage 02](../stage02_java_oop/README.md)　后续阶段见根目录 [统一学习路线.md](../../统一学习路线.md)。
+上一阶段：[Stage 02](../stage02_java_oop/README.md)　后续阶段见自己私有维护的完整路线。

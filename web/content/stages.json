@@ -1,5 +1,5 @@
 {
-  "$comment": "内容发布清单：contentState 描述内容整理程度（published=已正式发布 / materials=已有材料未成课 / draft=草稿 / planned=尚未开始），与学习者在 真实学习进度.md 中的掌握状态是两回事。prerequisites 是教学内容，title/scope/status 一律以 仓库路线与进度文档 为唯一权威来源，这里不得复制。",
+  "$comment": "内容发布清单：contentState 描述内容整理程度（published=已正式发布 / materials=已有材料未成课 / draft=草稿 / planned=尚未开始），与学习者私有维护的掌握状态是两回事。prerequisites 是教学内容，title/scope/status 一律以仓库根目录的 public-roadmap.md 与 public-progress.md 脱敏基线为公开构建来源，这里不得复制。",
   "stages": [
     {
       "id": "01",

@@ -8,7 +8,7 @@
    `my_practices/student_persistence/com/javaroadmap/stage03/practices/studentpersistence/`，并把包声明同步改名（`com.javaroadmap.stage03.practices.studentpersistence`，注意 `common` 与 `exception` 的 import 也要跟随调整，或一并复制这两个包）。
 2. 运行方式不变：目录即源码根，`javac -encoding UTF-8 -d out` + FQCN。
 3. 文件版练习会在工作目录产生 `data/students.txt`——这是运行数据，提交前删除或移走（不入库）。
-4. 完成后在 [真实学习进度](../../../真实学习进度.md) 记录：练习号、坏行/边界用例的实际处理结果。
+4. 完成后在自己私有维护的真实进度里记录：练习号、坏行/边界用例的实际处理结果。
 
 ## 验收方式
 

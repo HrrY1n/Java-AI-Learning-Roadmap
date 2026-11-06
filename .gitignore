@@ -14,3 +14,9 @@ output/
 reports/*.tmp
 stages/**/reports/quality_report.md
 archive/
+
+# 学习者私有文档：保留在本机，不随公开仓库发布
+/学习执行计划.md
+/求职能力矩阵.md
+/真实学习进度.md
+/统一学习路线.md

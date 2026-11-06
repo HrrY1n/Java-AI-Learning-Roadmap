@@ -27,7 +27,7 @@ Markdown 正文 / Java 源码  +  稳定 ID / 关系 / 发布状态  →  校验
    - `draft`：草稿/测试内容；
    - `planned`：尚未开始。
 3. 首次挂课程前补齐 `"slug"`（`stages/` 下的目录名，如 `stage02_java_oop`）与 `"packageNamePrefix"`（如 `com.javaroadmap.lab.stage02`）。
-4. 确认 `统一学习路线.md` 与 `真实学习进度.md` 中已有该 Stage 的行（内容生成器从这两份文档读取标题/状态——它们是唯一权威来源）。
+4. 确认公开基线 `public-roadmap.md` 与 `public-progress.md` 中已有该 Stage 的行（内容生成器从这两份脱敏文档读取标题/中性状态——它们是公开构建的唯一来源；学习者私有文档不参与公开构建）。
 
 ## 2. 在既有 Stage 下新增 Module
 
@@ -120,4 +120,4 @@ npm test && npm run build && npm run test:e2e
 
 ## 10. 教学质量红线
 
-新课程遵守 Scenario → Why → Concept → Mental Model → Minimal Code → Observe → Modify → Exercise → Real Usage（可按主题调整，但必须有可验证的学习动作）；提示四级递进、默认不给完整答案；参考实现与个人练习（`my_practices/`）隔离；内容发布永远不会自动修改 `真实学习进度.md`、用户草稿或练习记录。
+新课程遵守 Scenario → Why → Concept → Mental Model → Minimal Code → Observe → Modify → Exercise → Real Usage（可按主题调整，但必须有可验证的学习动作）；提示四级递进、默认不给完整答案；参考实现与个人练习（`my_practices/`）隔离；内容发布永远不会自动修改学习者私有维护的真实进度、用户草稿或练习记录。

@@ -9,7 +9,7 @@ describe("源课程导航", () => {
         "stages/stage01_java_basics/existing_course/exercises/basic_syntax_exercises.md",
       ),
     ).toBe("#/lesson/deep02");
-    expect(sourceHref("学习执行计划.md", "README.md")).toBe(
+    expect(sourceHref("public-plan.md", "README.md")).toBe(
       "#/document/execution-plan",
     );
     expect(sourceHref("https://example.com/a", "README.md")).toBe(

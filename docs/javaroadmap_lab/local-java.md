@@ -62,4 +62,4 @@ node scripts/verify-practice.mjs --exercise scores --source "$HOME/Downloads/Sco
 - 循环菜单：自己设计包含两次正常操作、非法数字、非数字、退出的完整会话，核对全部输出。
 - 方法重构：分别保存重构前后的源码，用同一预期文件验证两版；方法职责和 main 行数仍需自己 Review。
 
-参考代码回归 `scripts/verify_java.*` 与个人练习是两条独立路径。参考回归不会生成学生练习证据，网站也不会修改[真实学习进度](../../真实学习进度.md)。
+参考代码回归 `scripts/verify_java.*` 与个人练习是两条独立路径。参考回归不会生成学生练习证据，网站也不会修改学习者私有维护的真实进度。

@@ -92,6 +92,6 @@ java -cp out com.javaroadmap.stage02.day01classobject.App
 - [ ] 能解释封装、继承、多态、抽象类和接口的适用场景。
 - [ ] 完成一个 OOP 综合练习及边界测试。
 - [ ] 能对现有学生/图书/银行示例指出有证据的可改进点并说明取舍。
-- [ ] 在根目录 [`真实学习进度.md`](../../真实学习进度.md) 写入自己的实现路径和复盘结论。
+- [ ] 在自己私有维护的真实进度 写入自己的实现路径和复盘结论。
 
 上一阶段：[Stage 01](../stage01_java_basics/README.md)　下一阶段：[Stage 03：Java 核心能力](../stage03_java_core/README.md)

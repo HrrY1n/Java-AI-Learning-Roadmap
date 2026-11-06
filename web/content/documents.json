@@ -1,9 +1,9 @@
 {
   "$comment": "只读文档视图清单：id 稳定（参与 Hash 路由），sourcePath 为仓库相对路径的权威 Markdown。",
   "documents": [
-    { "id": "execution-plan", "sourcePath": "学习执行计划.md" },
-    { "id": "roadmap-source", "sourcePath": "统一学习路线.md" },
-    { "id": "progress-source", "sourcePath": "真实学习进度.md" },
+    { "id": "execution-plan", "sourcePath": "public-plan.md" },
+    { "id": "roadmap-source", "sourcePath": "public-roadmap.md" },
+    { "id": "progress-source", "sourcePath": "public-progress.md" },
     { "id": "stage01-guide", "sourcePath": "stages/stage01_java_basics/README.md" },
     { "id": "teaching-rules", "sourcePath": "docs/教学协作细则.md" },
     { "id": "environment", "sourcePath": "docs/环境搭建.md" },

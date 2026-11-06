@@ -1,5 +1,5 @@
 {
-  "$comment": "工作台固定入口：currentTaskRoutes 与 学习执行计划.md CURRENT 列表逐项对应；reviewPicks 是首页『值得再看一遍』的推荐课程 ID。",
+  "$comment": "工作台固定入口：currentTaskRoutes 与公开 public-plan.md 的 CURRENT 列表逐项对应；reviewPicks 是首页『值得再看一遍』的推荐课程 ID。",
   "currentTaskRoutes": [
     "#/document/environment",
     "#/lesson/day01",

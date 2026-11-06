@@ -25,17 +25,17 @@ async function makeRepo({ stage02State = "published", withRegistry = true } = {}
     return `| ${id} Stage ${id} | ${i === 0 ? "学习中" : "未开始"} | 证据 | 缺口 |`;
   }).join("\n");
   await writeFile(
-    path.join(repoRoot, "统一学习路线.md"),
+    path.join(repoRoot, "public-roadmap.md"),
     `# 路线\n\n## 统一 14 Stage 知识地图\n\n| Stage | 能力范围 | 材料/学习状态快照 | 可核验产出 |\n| --- | --- | --- | --- |\n${roadmapRows}\n\n未开始的阶段不创建空目录。\n`,
     "utf8",
   );
   await writeFile(
-    path.join(repoRoot, "真实学习进度.md"),
+    path.join(repoRoot, "public-progress.md"),
     `# 进度\n\n| Stage | 状态 | 审计证据 | 缺口 |\n| --- | --- | --- | --- |\n${progressRows}\n`,
     "utf8",
   );
   await writeFile(
-    path.join(repoRoot, "学习执行计划.md"),
+    path.join(repoRoot, "public-plan.md"),
     "# 计划\n\n## CURRENT\n\n1. 示例任务一。\n2. 示例任务二。\n\n## NEXT\n\n1. 后续。\n",
     "utf8",
   );

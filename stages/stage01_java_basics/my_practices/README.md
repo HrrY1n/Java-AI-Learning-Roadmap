@@ -12,7 +12,7 @@
    my_practices/score_statistics/com/javaroadmap/stage01/practices/scorestatistics/ScoreStats.java
    ```
    package 用 `com.javaroadmap.stage01.practices.<题目名>`（小写无下划线），保证 IDEA 整体构建不与其他课冲突。
-2. 完成后在 [真实学习进度](../../../真实学习进度.md) 记一行：做了什么、验证命令、结果、踩的坑。
+2. 完成后在自己私有维护的真实进度里记一行：做了什么、验证命令、结果、踩的坑。
 3. 长期未完成的练习可以保留半成品——它反映真实状态，不要删除伪装完成。
 
 ## 验收方式

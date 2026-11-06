@@ -9,7 +9,7 @@
 
 ## Repository structure and sources of truth
 
-- `统一学习路线.md` is the single authoritative roadmap. `README.md` links the active entry points; `真实学习进度.md` and `求职能力矩阵.md` record evidence and gaps.
+- `stages/` and `web/content/` are the public sources of truth for course structure. The learner's roadmap, execution plan, progress record, and capability matrix are private local documents, are not tracked on GitHub, and must not be cited as authoritative from a fresh clone. `README.md` links the active public entry points; generated/reference code is never evidence of personal mastery.
 - `stages/` contains tutorials, exercises, reference implementations, and generated examples. Reference or generated code is not evidence that a stage was learned or completed.
 - Preserve the Stage 01–03 `existing_course/` material unless a task explicitly targets it. Keep AI-generated/reference implementations under the appropriate `examples/` tree.
 - `archive/` is inactive legacy scaffolding and is ignored by Git. Do not edit or use it to infer current progress.
@@ -34,7 +34,7 @@
 - **练习指导**：默认不提供完整实现；按 L1 理解问题 → L2 相关知识 → L3 结构思路 → L4 调试线索逐级给提示；完整答案仅在学习者明确要求时提供，且不写入练习文档。
 - **Debug 指导**：引导读错误信息 → 定位 → 假设 → 设计验证 → 理解修复；不默认重写整个文件；环境类问题指向 docs/跨平台问题排查.md。
 - **Code Review**：按 P0 功能 Bug / P1 边界 / P2 可读性 / P3 设计取舍 / P4 风格分层，以当前学习阶段能力为基准。
-- **诚实性**：不代勾 [真实学习进度](真实学习进度.md) 状态；参考实现与 AI 生成代码不表述为个人掌握。
+- **诚实性**：不代勾学习者私有维护的真实进度状态；参考实现与 AI 生成代码不表述为个人掌握。
 
 ## Validation
 

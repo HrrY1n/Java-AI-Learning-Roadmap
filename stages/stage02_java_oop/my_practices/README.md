@@ -11,7 +11,7 @@
    my_practices/library/com/javaroadmap/stage02/practices/library/LibraryApp.java
    ```
 2. Entity / Service / App 分三个文件，不要全塞进一个 App（[职责深化课](../deep_dives/06_entity_service/README.md) 的三层判断法）。
-3. 完成后在 [真实学习进度](../../../真实学习进度.md) 记录：功能、验证会话（输入→输出）、与参考实现的 Review 结论。
+3. 完成后在自己私有维护的真实进度里记录：功能、验证会话（输入→输出）、与参考实现的 Review 结论。
 
 ## 验收方式
 

@@ -11,7 +11,7 @@
 3. 发布后另起无Pages写权限的smoke job，访问部署Action返回的正式HTTPS URL；先核对 `deployment.json` 的公开提交SHA，再执行桌面与手机模拟Chromium测试。
 4. 验证日志、JSON、HTML、失败trace与25张代表截图以 `pages-preflight-*` / `pages-online-*` Artifact保存14天。部署成功与线上冒烟分别看deploy、smoke job；Workflow文件存在不代表上线成功。
 
-默认 `base: './'` 保持，页面使用Hash导航。动态导入与Monaco worker经Vite打包，参考JSON按相对BASE_URL按需加载；不需要为课程设置404重写或改绝对根路径。`deployment.json`只含提交SHA与公开run ID，不含密钥或用户数据。
+默认 `base: './'` 保持，页面使用Hash导航。动态导入与Monaco worker经Vite打包，参考JSON按相对BASE_URL按需加载；不需要为课程设置404重写或改绝对根路径。`deployment.json`只含提交SHA与公开run ID，不含密钥或用户数据。公开构建从仓库根目录的 `public-*.md` 脱敏基线生成课程数据；学习者私有的路线、计划、进度与能力矩阵文档不随仓库发布，也不参与 CI / Pages 构建。
 
 ## 复现线上检查
 

@@ -800,7 +800,7 @@ function HomePage({ state }: PageProps) {
                   {String(index).padStart(2, "0")}
                 </span>
                 <div>
-                  <Markdown text={task} sourcePath="学习执行计划.md" />
+                  <Markdown text={task} sourcePath="public-plan.md" />
                 </div>
                 <a
                   className="icon-button"
