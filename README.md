@@ -19,10 +19,21 @@
 
 ## 界面预览
 
-| 桌面端 | 移动端 / 专题阅读 |
-| --- | --- |
-| ![学习工作台首页（浅色）](docs/javaroadmap_lab/current_screenshots/home-desktop-light.png) | ![移动端学习工作台](docs/javaroadmap_lab/current_screenshots/home-mobile-light.png) |
-| ![学习工作台首页（深色）](docs/javaroadmap_lab/current_screenshots/home-desktop-dark.png) | ![算法专题课程阅读](docs/javaroadmap_lab/current_screenshots/topic-lesson-desktop.png) |
+<p align="center">
+  <img src="docs/javaroadmap_lab/current_screenshots/home-desktop-light.png" width="640" alt="桌面端学习工作台（浅色）">
+  &nbsp;&nbsp;&nbsp;
+  <img src="docs/javaroadmap_lab/current_screenshots/home-mobile-light.png" width="185" alt="移动端学习工作台">
+</p>
+
+<p align="center"><sub>桌面端 · 学习工作台　　·　　移动端 · 学习工作台</sub></p>
+
+<p align="center">
+  <img src="docs/javaroadmap_lab/current_screenshots/home-desktop-dark.png" width="420" alt="桌面端学习工作台（深色）">
+  &nbsp;&nbsp;&nbsp;
+  <img src="docs/javaroadmap_lab/current_screenshots/topic-lesson-desktop.png" width="420" alt="算法专题课程阅读">
+</p>
+
+<p align="center"><sub>桌面端 · 深色主题　　·　　专题课程 · 阅读页</sub></p>
 
 ## 快速开始
 
