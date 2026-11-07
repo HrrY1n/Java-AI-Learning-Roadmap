@@ -317,7 +317,7 @@ export default function App() {
     content = (
       <div className="loading-state" role="status">
         <div className="brand-mark loading-brand-mark">
-          <BrandLogo size={52} />
+          <BrandLogo variant="icon" height={52} />
         </div>
         <p>正在打开你的学习空间…</p>
       </div>
@@ -424,12 +424,8 @@ export default function App() {
       </a>
       <aside className="sidebar">
         <a href="#/home" className="brand" aria-label="JavaRoadmap Lab 首页">
-          <div className="brand-mark">
-            <BrandLogo size={40} />
-          </div>
-          <span>
-            JavaRoadmap <b>LAB</b>
-          </span>
+          <BrandLogo variant="nav" height={48} className="brand-lockup" />
+          <BrandLogo variant="icon" height={44} className="brand-lockup-icon" />
         </a>
         <SidebarNavigation
           route={route}

@@ -7391,3 +7391,41 @@ button.memory-slot.active-slot {
     display: none !important;
   }
 }
+
+/* ==========================================================================
+   V1.9-R 品牌 Logo 集成（Knowledge × Code，仅品牌区，不改布局与 token）
+   资产：public/brand/*.svg（Logo Kit 矢量源），浅/深由主题属性切换。
+   ========================================================================== */
+/* 基础容器规则必须先于变体隐藏规则，避免同特异性覆盖 */
+.brand-logo {
+  display: inline-block;
+  line-height: 0;
+}
+.brand-lockup {
+  display: block;
+  line-height: 0;
+  min-width: 0;
+}
+.brand-lockup-icon {
+  display: none;
+}
+.brand-asset {
+  display: block;
+}
+.brand-asset-dark {
+  display: none;
+}
+:root[data-theme="dark"] .brand-asset-light {
+  display: none;
+}
+:root[data-theme="dark"] .brand-asset-dark {
+  display: block;
+}
+@media (max-width: 1279px) {
+  .brand-lockup {
+    display: none;
+  }
+  .brand-lockup-icon {
+    display: block;
+  }
+}
