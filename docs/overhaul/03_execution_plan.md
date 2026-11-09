@@ -21,7 +21,7 @@
 | R7 | 参考答案达标化（S01 ScoreStatistics/loop）+ day01/03/04 注释补齐 + S02 src 反面教材标注 | [ ] |
 | R8 | topics 小修：溢出注记 / fib 上界 / topic-content cwd 统一（println 重构与 git 薄课移交 08） | [x] |
 | R9 | UX 浏览器实测走查（新增 search.spec 锁定正文搜索；visual/core E2E 全过） | [x] |
-| R10 | 独立评审（评审代理对全部 diff 复核）+ 全量回归 + 评分复核 | [ ] |
+| R10 | 独立评审（评审代理对全部 diff 复核）+ 全量回归 + 评分复核 | [x] |
 | R11+ | 按评审结果修复回归；预算内的追加改进 | [ ] |
 
 ## 每轮固定动作

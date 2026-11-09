@@ -86,7 +86,7 @@
 ## Round 8 · topics 小修与测试健壮性（2026-11-10）
 
 - **做了**：
-  - algo-complexity-eval：sumConstant 补溢出边界注记（long 下 n>4.3e9 溢出——O(1) 只描述步数），topics.json markdown/code 与落盘源码三处同步（源码同步门禁验证）。
+  - algo-complexity-eval：sumConstant 补溢出边界注记（long 下 n*(n+1) 约 n≥3.04e9 绕回为负——R10 评审更正，初稿误写 4.3e9），topics.json markdown/code 与落盘源码三处同步（源码同步门禁验证）。
   - algo-iteration-recursion：fib 复杂度表述改为「指数阶，上界 O(2^n)，真值 O(φ^n)」（同为三处同步）。
   - topic-content.test.mjs 移除 `path.resolve("..")` cwd 依赖，统一 import.meta.url 推导（与 algo-java-semantics 同约定），跨目录运行不再误报。
 - **证据**：topic-content + algo-semantics 21/21；`verify_java.sh` 99/99；`npm test` 全过。
@@ -100,3 +100,16 @@
   - 既有 visual.spec 14/14 过：多分辨率（1440/720/390）、明暗双主题、axe AA 对比度扫描、键盘 Tab 导航、提示抽屉与手机编辑区截图。
 - **证据**：search.spec 3/3 · visual.spec 14/14 · core.spec 21/21。
 - **结论**：网站核心学习闭环、导航、搜索、响应式与可访问性在本次改动后无回归；审计 P1-2（搜索名不副实）已闭环并有 E2E 锁定。
+
+## Round 10 · 独立评审与修复（2026-11-10）
+
+- **做了**：独立评审代理（与开发角色分离）对 main..HEAD 全部 8 提交做对抗式复核（JDK 实测 + 全量重跑），发现并修复：
+  - **P0-1** `e2e/core.spec.ts` 三处计数断言在 R6 后未同步（49→51、Stage02 14→15、stage01 foundation 6→7），新鲜构建下 `npm run test:e2e` 必失败。根因：R6 后未重跑 core E2E（本地 reuseExistingServer 复用陈旧 dev server 掩盖）。修复后完整 E2E 49/49 过。
+  - **P1-2** sumConstant 溢出注记张冠李戴（开发轮自称"实测"但未数值验证——评审以 BigInteger+实跑双验证纠正）：`n*(n+1)` 在 long 下从 n=3,037,000,500 起绕回为负（精确临界 ≈3.04e9），4.3e9 是**和值** n(n+1)/2 的溢出点（循环版失效点）。三处同步修正。教训：数值结论必须数值验证，估算不是实测。
+  - **P1-3** day07 独立练习前提错误：12!=479,001,600 在 int 内不溢出，首次溢出在 13!（精确值 6,227,020,800，int 版绕回 1,932,053,504）。练习改用 13! 并给出两值对照。
+  - **P2-4** B1 解析精确化：取余 10%3.0=1.0 只是显示变化（值仍为 1），值真正变的只有除法。
+  - **P2-5** 迭代日志中的错误结论以更正条目修正（保留轨迹）。
+  - **P2-6** validation.md 为 2026-10-30 历史快照，不篡改数据，追加带日期的状态补记指向 07 回归报告。
+- **评审确认通过项**：B1/B3/S03 六题/两门新课全部技术断言 JDK 实测吻合；learning-store 兼容改动四项安全检查全过（缺失拒绝/危险键/memo 不吞回调/文档一致）；搜索无未发布内容泄露；registry 零删 ID；练习骨架零答案；IndexedDB 结构零变更。
+- **证据**：完整 E2E 49/49 · `npm test` 77/0 · `verify_java.sh` 99/99 · links ALL OK · build 2.33s。
+- **结论**：P0/P1 全部清零，达到交付门槛。

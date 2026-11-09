@@ -22,7 +22,7 @@ public class App {
     }
 
     // 算法 B：高斯公式求和 O(1)
-    // 边界提醒：n*(n+1) 在 long 下约 n > 4.3e9 就会溢出——O(1) 只描述步数，不代表任意输入都安全
+    // 边界提醒：n*(n+1) 在 long 下 n ≥ 3,037,000,500（约 3.04e9）就绕回为负——O(1) 只描述步数，不代表任意输入都安全
     public static long sumConstant(long n) {
         return n * (n + 1) / 2;
     }
