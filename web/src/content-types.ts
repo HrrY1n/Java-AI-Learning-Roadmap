@@ -68,6 +68,8 @@ export interface Prediction {
   explanation: string;
   lessonIds: string[];
   modifiedAnswer?: string;
+  /** 修改后的代码（V2.1 起显式提供；缺省时 UI 用历史 replace 兜底） */
+  modifiedCode?: string;
 }
 
 export interface Modification {

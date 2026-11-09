@@ -24,7 +24,13 @@ for (int i = 0; i < 3; i++) {
 }
 System.out.println();
 ```
-预测输出；然后只把 `<` 改成 `<=`，再预测一次。
+预测输出；然后只把 `<` 改成 `<=`，再预测一次。修改后的代码：
+```java
+for (int i = 0; i <= 3; i++) {
+    System.out.print(i);
+}
+System.out.println();
+```
 
 ### A4 continue 与 break 的接力
 ```java

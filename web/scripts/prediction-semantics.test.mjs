@@ -31,7 +31,10 @@ test("all objective predictions match real Java output, including the modified l
             {
               ...prediction,
               id: `${prediction.id}modified`,
-              code: prediction.code.replace("i < 3", "i <= 3"),
+              // V2.1：优先显式 modifiedCode；replace 仅为未迁移历史数据的兜底
+              code:
+                prediction.modifiedCode ??
+                prediction.code.replace("i < 3", "i <= 3"),
               answer: prediction.modifiedAnswer,
             },
           ]

@@ -152,6 +152,13 @@ test("prediction answers use the first answer block; modified outputs are distin
       (prediction) => prediction.explanation.length > 10,
     ),
   );
+  // V2.1：变体题必须显式携带修改后代码（兜底 replace 只服务未迁移历史数据）
+  assert.ok(
+    catalog.predictions.every(
+      (prediction) =>
+        !prediction.modifiedAnswer || prediction.modifiedCode,
+    ),
+  );
   assert.ok(
     catalog.predictions.every(
       (prediction) => !prediction.prompt.includes("## B."),

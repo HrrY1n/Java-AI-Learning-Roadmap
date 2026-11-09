@@ -1726,7 +1726,9 @@ function PredictionCard({
       <Code
         code={
           modified
-            ? prediction.code.replace("i < 3", "i <= 3")
+            ? // V2.1：优先用题面显式给出的修改后代码；replace 仅为历史数据兜底
+              (prediction.modifiedCode ??
+              prediction.code.replace("i < 3", "i <= 3"))
             : prediction.code
         }
       />
@@ -1746,7 +1748,7 @@ function PredictionCard({
               onSelect(nextId);
             }}
           />
-          修改一个条件：将 &lt; 改为 &lt;=，再预测一次
+          修改一个条件：按题面说明修改代码后再预测一次
         </label>
       )}
       <label className="field-label" htmlFor="prediction-answer">

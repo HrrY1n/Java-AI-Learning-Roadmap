@@ -368,7 +368,13 @@ async function buildPredictionsAndModifications(
         const textBlocks = [
           ...(answerBody ?? "").matchAll(/```text\n([\s\S]*?)```/g),
         ].map((match) => match[1].trimEnd());
-        const code = body.match(/```java\n([\s\S]*?)```/)?.[1].trimEnd();
+        // V2.1：变体题的"修改后代码"显式化——题面含第二个 java 块即为 modifiedCode；
+        // 缺省时 UI 保留 replace("i < 3","i <= 3") 的历史兜底（仅未迁移旧数据会走到）。
+        const javaBlocks = [
+          ...body.matchAll(/```java\n([\s\S]*?)```/g),
+        ].map((match) => match[1].trimEnd());
+        const code = javaBlocks[0];
+        const modifiedCode = javaBlocks[1];
         if (!code || !textBlocks[0])
           throw contentError(`预测题 ${id} 缺少题面代码或答案块`, context);
         const explanation = answerBody.includes("为什么：")
@@ -384,6 +390,7 @@ async function buildPredictionsAndModifications(
           explanation,
           lessonIds: config.lessonIds ?? [],
           ...(config.modifiedAnswer ? { modifiedAnswer: textBlocks[1] } : {}),
+          ...(config.modifiedAnswer && modifiedCode ? { modifiedCode } : {}),
         });
       } else {
         const config = manifest.modifications[id];
