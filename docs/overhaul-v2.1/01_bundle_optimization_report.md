@@ -25,16 +25,16 @@
 
 | 指标 | 改动前 | 改动后 | 变化 |
 |---|---:|---:|---|
-| 主 JS（raw） | 1,892 KB | **1,086 KB** | **-42.6%** |
-| 主 JS（gzip） | 552 KB | **307 KB** | **-44.4%** |
-| content-bodies | — | 569 KB（懒） | 仅阅读/文档/搜索打开时加载 |
+| 主 JS（raw） | 1,892 KB | **1,121 KB**（HEAD 终态；P1 提交时 1,086，其后 +Stage04 四课正文） | **-40.8%** |
+| 主 JS（gzip） | 552 KB | **315 KB**（HEAD 终态） | **-42.9%** |
+| content-bodies | — | 584 KB（懒） | 仅阅读/文档/搜索打开时加载 |
 | rehype-katex | 打进主包 | 261 KB（懒） | 仅数学页加载 |
 | Monaco/worker | 2,641+297 KB（本就懒） | 不变 | — |
 
 ## 正确性验证
 
 - `npm run typecheck` 通过；`npm test` 全过（node 77/0 + vitest 41/41）。
-- 完整 Playwright E2E 49/49（v14-topics 21 场景=专题阅读页懒加载链路、search.spec 3 场景=正文搜索）。
+- 完整 Playwright E2E 49/49（core 21 + v14-topics 16 + sidebar + stage02 + search 3；default 配置，pages 配置的 18 个场景属 CI 职责本轮未跑）。
 - `slug-heading.test.ts` 改读 bodies 文件——锚点唯一性不变量不变，仅数据源适配。
 - 字体覆盖门禁自动扫描 `src/generated/*.json`（含新 bodies 文件），全部汉字在 cmap。
 - 无循环依赖：content-bodies.ts 只被组件层导入，不反向依赖 catalog。

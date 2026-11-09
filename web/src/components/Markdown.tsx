@@ -16,6 +16,13 @@ hljs.registerLanguage("java", java);
 // 加载完成前含公式的页面显示占位，避免闪现原始 TeX。
 const MATH_PATTERN =
   /(?:\$\$[\s\S]+?\$\$|\$[^$\n]+\$|\\\[[\s\S]+?\\\]|\\\([\s\S]+?\\\))/;
+const FENCED_BLOCK = /```[\s\S]*?```/g;
+
+// 数学检测前剔除代码围栏：fence 里的 "$VAR" / "$env:" 不是公式，
+// 误触发会让非数学文档整页先渲染占位（评审实测 environment 等 2 篇）。
+function hasMathOutsideFences(text: string): boolean {
+  return MATH_PATTERN.test(text.replace(FENCED_BLOCK, ""));
+}
 
 let katexPromise: Promise<Pluggable> | null = null;
 function loadKatex(): Promise<Pluggable> {
@@ -80,7 +87,7 @@ export const Markdown = memo(function Markdown({
 }) {
   const headingIds = new Map<string, number>();
   // 含公式的页面先挂占位，等 KaTeX 就绪后一次性渲染（不闪原始 TeX）
-  const needsKatex = MATH_PATTERN.test(text);
+  const needsKatex = hasMathOutsideFences(text);
   const [katexPlugin, setKatexPlugin] = useState<Pluggable | null>(null);
   useEffect(() => {
     if (!needsKatex || katexPlugin) return;
