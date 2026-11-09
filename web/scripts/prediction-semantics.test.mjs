@@ -79,8 +79,8 @@ test("all objective predictions match real Java output, including the modified l
         item.id,
       );
     }
-    // A1-A8 + S02A1/A2/A3/A5（draft 的 S02A4 不在目录）；A3modified 使 entries 多 1
-    assert.equal(entries.length, 13);
+    // A1-A8 + S02A1/A2/A3/A5（draft 的 S02A4 不在目录）+ S03A1-A6；A3modified 使 entries 多 1
+    assert.equal(entries.length, 19);
   } finally {
     if (
       dirname(temporary) === resolve(tmpdir()) &&

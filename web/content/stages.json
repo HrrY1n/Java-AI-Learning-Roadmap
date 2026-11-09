@@ -119,9 +119,14 @@
           ]
         }
       ],
-      "referenceRoots": [],
+      "referenceRoots": [
+        "stages/stage03_java_core/existing_course/examples/legacy_fundamentals",
+        "stages/stage03_java_core/existing_course/src/main/java"
+      ],
       "referenceDocuments": [],
-      "building": true
+      "building": true,
+      "packageNamePrefix": "com.javaroadmap.lab.stage03",
+      "slug": "stage03_java_core"
     },
     {
       "id": "04",

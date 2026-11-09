@@ -30,3 +30,15 @@
 - **证据**：`sidebar-navigation.test.ts` + `catalog.test.ts` 6/6 过（新顺序通过导航测试）；新 App.java javac 编译 + 运行输出核对；Java 回归 97/97（含 day03 新预期）。
 - **提升**：S02 衔接维度 +2（顺序矛盾清零）；S01 day03 与 A8 的「先看课再做题」链路恢复；S03 hashset 去重失败根因可跳转。
 
+
+## Round 3 · Stage03 实践接入（2026-11-10）
+
+- **做了**：
+  - `stages/stage03_java_core/practice/predict_and_modify.md`：题号 A1-A5/B1-B4 → S03 前缀（避开与 Stage01 短编号冲突）；A1 重设计为可运行形式（null/getOrDefault/containsKey 三行，NPE 教学移入解析）；A4 改自包含全类；新增 S03A6（CME 安全写法 removeIf，解析讲清 modCount 失败语义与"ArrayList 删倒数第二个恰不抛"的实测边界）。
+  - `answers.md` 同步重命名并逐题实测（6/6 输出与答案逐字符一致，CME 边界断言经 CmeTest 实证）。
+  - 新建 `practice/s03-exercises.md`（4 个网站交互版练习 + L1-L4，照 s02-exercises 模式）；配套 4 个参考实现写入 `existing_course/answers/.../stage03/answers/`（PascalCase、注释教学、下标循环删除避免 CME），全部用例实测输出逐字符冻结进 JSON。
+  - 接线：`web/content/predictions/stage03.json` + `web/content/exercises/stage03/*.json`×4；18 门课的 predictionIds/exerciseIds 回填；S03A5 跨阶段挂到 s02-string-common-api；stage03 补 packageNamePrefix/slug/referenceRoots（21 个 Java 文件成为站点可懒加载参考，与 Stage01 对齐）。
+  - `--update-registry` 登记 14 个新 ID（83 known IDs）；day01_arraylist 代码补 CME/remove 重载教学注释（输出不变，manifest 断言保持）。
+  - 测试断言随内容状态演进：prediction-semantics 13→19（注释更新）；content.test 计数/答案表/needsInput 清单同步，B1/B3 note 断言反转为"补丁不再回来"（R1 修复的锁定）。
+- **证据**：`npm test` 全过（node 77 pass/0 fail + vitest）；`verify_java.sh` 97/97；目录 5→9 练习、12→18 预测、4→8 修改题。
+- **提升**：Stage03 实践练习维度 0→满（P0-4 清零）；CME 全仓零覆盖问题清零（P1-7）；预测覆盖矩阵新增集合/泛型、异常、文件、并发（删除）四个块。

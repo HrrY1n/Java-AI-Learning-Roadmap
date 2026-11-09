@@ -1,0 +1,79 @@
+{
+  "stageId": "03",
+  "statementSource": "stages/stage03_java_core/practice/predict_and_modify.md",
+  "answerSource": "stages/stage03_java_core/practice/answers.md",
+  "predictions": {
+    "S03A1": {
+      "lessonIds": [
+        "s03-hashmap",
+        "s03-choose-collection"
+      ],
+      "contentState": "published"
+    },
+    "S03A2": {
+      "lessonIds": [
+        "s03-arraylist"
+      ],
+      "contentState": "published"
+    },
+    "S03A3": {
+      "lessonIds": [
+        "s03-stream-basics"
+      ],
+      "contentState": "published"
+    },
+    "S03A4": {
+      "lessonIds": [
+        "s03-exception"
+      ],
+      "contentState": "published"
+    },
+    "S03A5": {
+      "lessonIds": [
+        "s02-string-common-api"
+      ],
+      "contentState": "published"
+    },
+    "S03A6": {
+      "lessonIds": [
+        "s03-arraylist",
+        "s03-hashset"
+      ],
+      "contentState": "published"
+    }
+  },
+  "modifications": {
+    "S03B1": {
+      "lessonIds": [
+        "s03-hashmap"
+      ],
+      "referencePaths": [
+        "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day02_hashmap/com/javaroadmap/stage03/collections/day02hashmap/App.java"
+      ]
+    },
+    "S03B2": {
+      "lessonIds": [
+        "s03-exception"
+      ],
+      "referencePaths": [
+        "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day01_exception/com/javaroadmap/stage03/exceptionsio/day01exception/App.java"
+      ]
+    },
+    "S03B3": {
+      "lessonIds": [
+        "s03-utf8-io"
+      ],
+      "referencePaths": [
+        "stages/stage03_java_core/existing_course/src/main/java/com/javaroadmap/stage03/student/FileStudentRepository.java"
+      ]
+    },
+    "S03B4": {
+      "lessonIds": [
+        "s03-stream-basics"
+      ],
+      "referencePaths": [
+        "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day03_stream_collect/com/javaroadmap/stage03/lambdastream/day03streamcollect/App.java"
+      ]
+    }
+  }
+}

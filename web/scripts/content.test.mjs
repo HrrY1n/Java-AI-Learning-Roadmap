@@ -25,18 +25,42 @@ test("catalog mirrors the actual Stage 01 learning assets", () => {
     7,
   );
   assert.equal(
-    catalog.exercises.filter((exercise) => !exercise.id.startsWith("s02-"))
+    catalog.exercises.filter(
+      (exercise) =>
+        !exercise.id.startsWith("s02-") && !exercise.id.startsWith("s03-"),
+    ).length,
+    4,
+  );
+  assert.equal(
+    catalog.predictions.filter(
+      (prediction) =>
+        !prediction.id.startsWith("S02") && !prediction.id.startsWith("S03"),
+    ).length,
+    8,
+  );
+  assert.equal(
+    catalog.modifications.filter(
+      (modification) =>
+        !modification.id.startsWith("S02") &&
+        !modification.id.startsWith("S03"),
+    ).length,
+    4,
+  );
+  // 深度重构 R3：Stage 03 练习/预测/修改接入目录
+  assert.equal(
+    catalog.exercises.filter((exercise) => exercise.id.startsWith("s03-"))
       .length,
     4,
   );
   assert.equal(
-    catalog.predictions.filter((prediction) => !prediction.id.startsWith("S02"))
+    catalog.predictions.filter((prediction) => prediction.id.startsWith("S03"))
       .length,
-    8,
+    6,
   );
   assert.equal(
-    catalog.modifications.filter((modification) => !modification.id.startsWith("S02"))
-      .length,
+    catalog.modifications.filter((modification) =>
+      modification.id.startsWith("S03"),
+    ).length,
     4,
   );
   assert.equal(catalog.stages.length, 14);
@@ -85,7 +109,11 @@ test("exercise core implementations stay empty and hints stay outside statements
 test("prediction answers use the first answer block; modified outputs are distinct", () => {
   const answers = Object.fromEntries(
     catalog.predictions
-      .filter((prediction) => !prediction.id.startsWith("S02"))
+      .filter(
+        (prediction) =>
+          !prediction.id.startsWith("S02") &&
+          !prediction.id.startsWith("S03"),
+      )
       .map((prediction) => [prediction.id, prediction.answer]),
   );
   assert.deepEqual(answers, {
@@ -97,6 +125,20 @@ test("prediction answers use the first answer block; modified outputs are distin
     A6: "5",
     A7: "66\nB",
     A8: "安全",
+  });
+  // 深度重构 R3：Stage 03 预测题答案（全部经 prediction-semantics 实测）
+  const s03Answers = Object.fromEntries(
+    catalog.predictions
+      .filter((prediction) => prediction.id.startsWith("S03"))
+      .map((prediction) => [prediction.id, prediction.answer]),
+  );
+  assert.deepEqual(s03Answers, {
+    S03A1: "null\n0\nfalse",
+    S03A2: "[10, 30]",
+    S03A3: "main 继续",
+    S03A4: "finally 执行了\n1",
+    S03A5: "java",
+    S03A6: "[小明, 小刚]",
   });
   assert.equal(
     catalog.predictions.find((prediction) => prediction.id === "A3")
@@ -195,13 +237,15 @@ test("known source inconsistencies are surfaced beside affected tasks", () => {
     catalog.exercises.find((exercise) => exercise.id === "menu").note,
     /静默/,
   );
-  assert.match(
+  // 深度重构 R1 已把 B1/B3 题面与源码同步（answers.md 逐行对照 / return 语义），
+  // 历史 note 补丁随之移除；此处锁定"补丁不再回来"而不是反向要求 note 存在。
+  assert.equal(
     catalog.modifications.find((modification) => modification.id === "B3").note,
-    /return/,
+    undefined,
   );
-  assert.match(
+  assert.equal(
     catalog.modifications.find((modification) => modification.id === "B1").note,
-    /加减乘除/,
+    undefined,
   );
 });
 
@@ -332,7 +376,14 @@ test("V1.3 修补：Java 包名合法、用例契约完整、stdin 标记正确"
     }
     assert.equal(
       exercise.needsInput,
-      ["calculator", "menu", "s02-bank-account"].includes(exercise.id),
+      [
+        "calculator",
+        "menu",
+        "s02-bank-account",
+        "s03-delete-student",
+        "s03-update-score",
+        "s03-email-csv",
+      ].includes(exercise.id),
     );
   }
   const bank = catalog.exercises.find((item) => item.id === "s02-bank-account");

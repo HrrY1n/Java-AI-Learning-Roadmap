@@ -11,7 +11,9 @@
     "s03-equals-hashcode"
   ],
   "exerciseIds": [],
-  "predictionIds": [],
+  "predictionIds": [
+    "S03A6"
+  ],
   "steps": [
     {
       "label": "真实场景",

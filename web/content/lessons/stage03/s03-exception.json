@@ -9,8 +9,14 @@
   "relatedLessonIds": [
     "s02-interface-abstract"
   ],
-  "exerciseIds": [],
-  "predictionIds": [],
+  "exerciseIds": [
+    "s03-delete-student",
+    "s03-update-score",
+    "s03-email-csv"
+  ],
+  "predictionIds": [
+    "S03A4"
+  ],
   "steps": [
     {
       "label": "真实场景",

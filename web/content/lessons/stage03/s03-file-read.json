@@ -9,7 +9,9 @@
   "relatedLessonIds": [
     "s03-exception"
   ],
-  "exerciseIds": [],
+  "exerciseIds": [
+    "s03-email-csv"
+  ],
   "predictionIds": [],
   "steps": [
     {

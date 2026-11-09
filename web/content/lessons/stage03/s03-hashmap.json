@@ -10,7 +10,9 @@
     "s02-polymorphism-basics"
   ],
   "exerciseIds": [],
-  "predictionIds": [],
+  "predictionIds": [
+    "S03A1"
+  ],
   "steps": [
     {
       "label": "真实场景",

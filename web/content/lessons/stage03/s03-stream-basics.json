@@ -9,8 +9,12 @@
   "relatedLessonIds": [
     "s03-lambda"
   ],
-  "exerciseIds": [],
-  "predictionIds": [],
+  "exerciseIds": [
+    "s03-excellent-stats"
+  ],
+  "predictionIds": [
+    "S03A3"
+  ],
   "steps": [
     {
       "label": "真实场景",

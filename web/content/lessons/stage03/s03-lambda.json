@@ -9,7 +9,9 @@
   "relatedLessonIds": [
     "s02-polymorphism-basics"
   ],
-  "exerciseIds": [],
+  "exerciseIds": [
+    "s03-excellent-stats"
+  ],
   "predictionIds": [],
   "steps": [
     {

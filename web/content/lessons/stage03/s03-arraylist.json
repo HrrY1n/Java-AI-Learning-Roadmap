@@ -9,8 +9,14 @@
   "relatedLessonIds": [
     "s03-generics"
   ],
-  "exerciseIds": [],
-  "predictionIds": [],
+  "exerciseIds": [
+    "s03-delete-student",
+    "s03-update-score"
+  ],
+  "predictionIds": [
+    "S03A2",
+    "S03A6"
+  ],
   "steps": [
     {
       "label": "真实场景",

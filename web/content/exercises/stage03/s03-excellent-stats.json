@@ -1,0 +1,41 @@
+{
+  "id": "s03-excellent-stats",
+  "stageId": "03",
+  "title": "优秀名单双版本",
+  "className": "ExcellentStatsLab",
+  "order": 3,
+  "contentState": "published",
+  "lessonIds": [
+    "s03-stream-basics",
+    "s03-lambda"
+  ],
+  "statementSource": "stages/stage03_java_core/practice/s03-exercises.md",
+  "statementAnchor": "练习 3",
+  "hintSource": "stages/stage03_java_core/practice/s03-exercises.md",
+  "todo": "用 Stream 与普通 for 各实现一遍优秀名单（分数 >= 90），两版输出必须一致。",
+  "cases": [
+    {
+      "label": "正常名单（边界 90 入选）",
+      "input": "names={张三,小红,小刚,小雪} scores={88,95,55,90}",
+      "expected": "Stream 版：[小红, 小雪]\nfor 版：[小红, 小雪]",
+      "kind": "normal"
+    },
+    {
+      "label": "全部低于 90",
+      "input": "names={张三,小红,小刚} scores={88,59,89}",
+      "expected": "Stream 版：[]\nfor 版：[]",
+      "kind": "boundary"
+    },
+    {
+      "label": "空数组",
+      "input": "names={} scores={}",
+      "expected": "Stream 版：[]\nfor 版：[]",
+      "kind": "invalid"
+    }
+  ],
+  "referenceFiles": [
+    "ExcellentStatsLabAnswer.java"
+  ],
+  "packageSegment": "excellent_stats",
+  "note": "本题无标准输入：input 列描述需要写入源码的平行数组取值，改完数组重新编译运行，核对两版输出。"
+}

@@ -1,0 +1,48 @@
+{
+  "id": "s03-update-score",
+  "stageId": "03",
+  "title": "修改分数",
+  "className": "ScoreUpdateLab",
+  "order": 2,
+  "contentState": "published",
+  "lessonIds": [
+    "s03-arraylist",
+    "s03-exception"
+  ],
+  "statementSource": "stages/stage03_java_core/practice/s03-exercises.md",
+  "statementAnchor": "练习 2",
+  "hintSource": "stages/stage03_java_core/practice/s03-exercises.md",
+  "todo": "实现带三段校验的改分入口：三种失败消息精确不同，改分后及格名单随之变化。",
+  "cases": [
+    {
+      "label": "改分并查看及格名单",
+      "input": "1\n2\n95\n2\n0\n",
+      "expected": "1=改分 2=及格名单 0=退出\n已更新：2 新分数：95\n1=改分 2=及格名单 0=退出\n及格名单：[张三/88, 小红/95]\n1=改分 2=及格名单 0=退出\n程序结束。",
+      "kind": "normal"
+    },
+    {
+      "label": "边界分数 0 与 100",
+      "input": "1\n1\n0\n1\n3\n100\n0\n",
+      "expected": "1=改分 2=及格名单 0=退出\n已更新：1 新分数：0\n1=改分 2=及格名单 0=退出\n已更新：3 新分数：100\n1=改分 2=及格名单 0=退出\n程序结束。",
+      "kind": "boundary"
+    },
+    {
+      "label": "三种失败消息不同",
+      "input": "1\n-1\n60\n1\n99\n60\n1\n2\n150\n0\n",
+      "expected": "1=改分 2=及格名单 0=退出\nid 非法：-1\n1=改分 2=及格名单 0=退出\n学生不存在：99\n1=改分 2=及格名单 0=退出\n分数必须在 0 到 100 之间：150\n1=改分 2=及格名单 0=退出\n程序结束。",
+      "kind": "invalid"
+    },
+    {
+      "label": "改分影响及格名单",
+      "input": "1\n3\n60\n2\n0\n",
+      "expected": "1=改分 2=及格名单 0=退出\n已更新：3 新分数：60\n1=改分 2=及格名单 0=退出\n及格名单：[张三/88, 小红/95, 小刚/60]\n1=改分 2=及格名单 0=退出\n程序结束。",
+      "kind": "normal"
+    }
+  ],
+  "referenceFiles": [
+    "ScoreUpdateLabAnswer.java"
+  ],
+  "packageSegment": "score_update",
+  "note": "改分总是先读完 id 与分数两行再校验，保证与输入流行序对齐；校验集中在 updateScore 一处。",
+  "needsInput": true
+}

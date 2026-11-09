@@ -10,7 +10,9 @@
     "s02-class-basics"
   ],
   "exerciseIds": [],
-  "predictionIds": [],
+  "predictionIds": [
+    "S03A5"
+  ],
   "steps": [
     {
       "label": "真实场景",

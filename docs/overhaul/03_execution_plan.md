@@ -14,7 +14,7 @@
 |---|---|---|
 | R1 | 内容 P0 修复：S02 ReferenceStateDemo 矛盾 / S01 answers.md B1+B2 / ScannerGuardDemo / predict_and_modify 题面同步（删 note 补丁）/ algo-ds-basics 标签 | [x] |
 | R2 | 课序与断链：stages.json lessonOrder（S02 两处顺序）+ relatedLessonIds 补链 + day03 逻辑运算符示例 | [x] |
-| R3 | Stage03 实践接入：S03 前缀改名 + predictions/stage03.json + exercises/stage03 + 回填 IDs + CME 预测题 + registry 登记 | [ ] |
+| R3 | Stage03 实践接入：S03 前缀改名 + predictions/stage03.json + exercises/stage03 + 回填 IDs + CME 预测题 + registry 登记 | [x] |
 | R4 | 挂载与上站：S02A4/S02B1 转 published 挂多态课 + stage03 深化课 4 篇上站 + hashmap entrySet + concurrency 可见性 | [ ] |
 | R5 | web 工程：learning-store 未知字段宽容（带测试）/ Markdown memo / 滚动写回解耦 / 搜索正文与文档索引 | [ ] |
 | R6 | 新课补充：s02-static-lifecycle + stage01 day07-numeric-types（新 ID 登记 + manifest 回归） | [ ] |
