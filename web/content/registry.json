@@ -34,6 +34,10 @@
     "S03B2",
     "S03B3",
     "S03B4",
+    "S04A1",
+    "S04A2",
+    "S04B1",
+    "S04B2",
     "calculator",
     "day01",
     "day02",
@@ -93,6 +97,10 @@
     "s03-type-information",
     "s03-update-score",
     "s03-utf8-io",
+    "s04-synchronized-mutex",
+    "s04-thread-basics",
+    "s04-thread-pool",
+    "s04-visibility-volatile",
     "scores"
   ],
   "suspended": [
