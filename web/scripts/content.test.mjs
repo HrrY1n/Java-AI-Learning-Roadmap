@@ -226,7 +226,7 @@ test("answers and complete reference applications require explicit lazy loading"
   );
   assert.doesNotMatch(
     JSON.stringify(catalog),
-    /public class (?:ScoreStatisticsAnswer|SimpleCalculatorAnswer|ScoreStatisticsApp|SimpleCalculatorApp|MenuDemoApp|GuessNumberApp|GuessNumber|loop|method)\s*\{/,
+    /public class (?:ScoreStatisticsAnswer|LearningMenuAnswer|SimpleCalculatorAnswer|ScoreStatisticsApp|SimpleCalculatorApp|MenuDemoApp|GuessNumberApp|GuessNumber|loop|method)\s*\{/,
   );
 });
 

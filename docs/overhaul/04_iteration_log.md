@@ -71,3 +71,14 @@
   - 两个示例均进 verify_manifest（99 项回归），registry 显式登记 day07/s02-static-lifecycle/A9，测试断言随内容演进（S01 foundation 7 门、S02 15 门、预测 21 题实测）。
 - **证据**：`npm test` 全过（node 77/0 + vitest 41/41）；`verify_java.sh` 99/99；目录 51 课/20 预测。
 - **未做（披露）**：Stage01 的 do-while/二维数组/三目、Stage02 的 equals/toString 重写、Optional/Comparator 路标——按 02 设计以小改形式处理或留 Stage04+（08 披露）。
+
+## Round 7 · 参考答案达标化与教学代码补齐（2026-11-10）
+
+- **做了**：
+  - 新增达标参考 `LearningMenuAnswer.java`（PascalCase）：hasNext/捕获+消费坏记号双防线，非法数字与非数字同一提示语，退出措辞与 menu.json 用例逐字一致（3 组用例实测）；删除崩溃且措辞不符的旧 `loop.java`，menu.json referenceFiles/note 与 deep07 README 引用同步。
+  - 重写 `ScoreStatisticsAnswer.java`：求和/平均/最值/计数拆独立方法 + 空数组先处理（`暂无成绩数据`），与 scores.json 三组用例实测逐字符一致——参考答案现在满足练习自身验收（P1-4 清零）。
+  - day01 App 补七步卡对应的注释头与教学注释，硬编码拼音样例改为有意义的中文样例（淄博→济南：子集字体缺「淄」，经 cmap 探针选择已覆盖城市——字体覆盖门禁实测通过 1430 字）；day04 删除无教学增量的冗余 `jian` while，补 for/while 心智模型注释与"删 count-- 会怎样"修改实验（P2 清零）。
+  - deep dive 06 README 显式标注 src 参考代码两处"故意的旧风格"（setScore 静默降级、Service println）为反面教材，与练习"指出可改进点"形成结业检查（P1-5 清零）。
+  - content.test 懒加载守卫名单加入 LearningMenuAnswer。
+- **证据**：`npm test` 全过（node 77/0 + vitest）；`verify_java.sh` 99/99；字体覆盖通过；links ALL OK。
+- **方法记录**：字体覆盖门禁拦下新字符是有效防线；缺字时优先"选已覆盖的表达"而不是重新子集化（无源字体，增量加字不可行）。
