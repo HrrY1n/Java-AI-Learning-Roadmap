@@ -10,7 +10,9 @@
     "s02-inheritance-basics"
   ],
   "exerciseIds": [],
-  "predictionIds": [],
+  "predictionIds": [
+    "S02A4"
+  ],
   "steps": [
     {
       "label": "真实场景",

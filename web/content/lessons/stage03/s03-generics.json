@@ -7,7 +7,8 @@
   "summary": "ArrayList<Object> 什么都装也什么都可能错；泛型把类型检查提前到编译期。",
   "contentState": "published",
   "relatedLessonIds": [
-    "s03-arraylist"
+    "s03-arraylist",
+    "s03-generics-why"
   ],
   "exerciseIds": [],
   "predictionIds": [],

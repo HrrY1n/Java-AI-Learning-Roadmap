@@ -32,7 +32,7 @@ stages/stage02_java_oop/existing_course/mini_projects/early_console_projects/pro
 stages/stage02_java_oop/existing_course/mini_projects/early_console_projects/project03_simple_bank_system	com.javaroadmap.stage02.earlyprojects.project03simplebanksystem.App	fixtures/bank_system.txt	out	存钱成功	取钱成功	的当前余额：100.0	感谢使用
 stages/stage02_java_oop/existing_course/mini_projects/early_console_projects/project04_library_manager	com.javaroadmap.stage02.earlyprojects.project04librarymanager.App	fixtures/library_manager.txt	out	添加成功	程序结束
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day01_arraylist	com.javaroadmap.stage03.collections.day01arraylist.App	-	out	列表长度：3	第一个名字：小明
-stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day02_hashmap	com.javaroadmap.stage03.collections.day02hashmap.App	-	out	小明的分数：90	找到了小红
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day02_hashmap	com.javaroadmap.stage03.collections.day02hashmap.App	-	out	小明的分数：90	找到了小红	李雷的分数（默认 0）：0
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day03_hashset	com.javaroadmap.stage03.collections.day03hashset.App	-	out	集合大小：2	是否包含小明：true
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day04_generic	com.javaroadmap.stage03.collections.day04generic.App	-	out	Java 学习	100
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day05_student_management_list	com.javaroadmap.stage03.collections.day05studentmanagement.App	-	out	姓名：小红，分数：96
@@ -98,6 +98,6 @@ stages/stage03_java_core/advanced/inner_classes	com.javaroadmap.stage03.advanced
 stages/stage03_java_core/advanced/enums	com.javaroadmap.stage03.advanced.enums.App	-	out	NEW 可取消：true	PAID 可取消：true	SHIPPED 可取消：false	当前状态：PAID，序号：1
 stages/stage03_java_core/advanced/annotations	com.javaroadmap.stage03.advanced.annotations.App	-	out	syncRemote 需要重试 5 次	未标注 Retry
 stages/stage03_java_core/advanced/type_information	com.javaroadmap.stage03.advanced.typeinfo.App	-	out	Circle 面积：12.566370614359172	Square 面积：9.0	圆的半径：2.0	反射创建的实例：Square
-stages/stage03_java_core/advanced/concurrency_basics	com.javaroadmap.stage03.advanced.concurrencybasics.App	-	out	同步后的计数：2000（期望 2000）
+stages/stage03_java_core/advanced/concurrency_basics	com.javaroadmap.stage03.advanced.concurrencybasics.App	-	out	同步后的计数：2000（期望 2000）	可见性是另一回事
 stages/stage03_java_core/advanced/design_patterns	com.javaroadmap.stage03.advanced.designpatterns.App	-	out	zip:report.txt.zip	gzip:report.txt.gz	销售数据 -> 表格
 stages/stage03_java_core/advanced/assertions	com.javaroadmap.stage03.advanced.assertions.App	-	out	断言状态：关闭（用 java -ea 重新运行观察区别）	最小自测：2 个用例，失败 0 个	√2 ≈ 1.414213562373095	前置条件拦截：体重与身高必须为正数：-50.0, 1.7

@@ -7,7 +7,8 @@
   "summary": "匿名类的轻量写法，让“策略”的表达从三行变一行。",
   "contentState": "published",
   "relatedLessonIds": [
-    "s02-polymorphism-basics"
+    "s02-polymorphism-basics",
+    "s03-lambda-stream"
   ],
   "exerciseIds": [
     "s03-excellent-stats"

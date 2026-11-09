@@ -57,7 +57,9 @@
           ]
         }
       ],
-      "referenceRoots": [],
+      "referenceRoots": [
+        "stages/stage02_java_oop/existing_course/day05_polymorphism"
+      ],
       "referenceDocuments": [
         "stages/stage02_java_oop/practice/answers.md"
       ],
@@ -115,7 +117,11 @@
           "title": "概念深化",
           "lessonOrder": [
             "s03-choose-collection",
-            "s03-utf8-io"
+            "s03-generics-why",
+            "s03-exception-design",
+            "s03-utf8-io",
+            "s03-lambda-stream",
+            "s03-repository-evolution"
           ]
         }
       ],

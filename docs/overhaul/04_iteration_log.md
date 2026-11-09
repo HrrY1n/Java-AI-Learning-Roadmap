@@ -42,3 +42,14 @@
   - 测试断言随内容状态演进：prediction-semantics 13→19（注释更新）；content.test 计数/答案表/needsInput 清单同步，B1/B3 note 断言反转为"补丁不再回来"（R1 修复的锁定）。
 - **证据**：`npm test` 全过（node 77 pass/0 fail + vitest）；`verify_java.sh` 97/97；目录 5→9 练习、12→18 预测、4→8 修改题。
 - **提升**：Stage03 实践练习维度 0→满（P0-4 清零）；CME 全仓零覆盖问题清零（P1-7）；预测覆盖矩阵新增集合/泛型、异常、文件、并发（删除）四个块。
+
+## Round 4 · 挂载与上站（2026-11-10）
+
+- **做了**：
+  - S02A4（多态分发）自包含化（Animal/Dog 完整定义，实测输出 `旺财 狗啃骨头`）+ 答案 text 块补齐 → 转 published 挂到 s02-polymorphism-basics；S02B1（多态调用顺序）转 published 挂到 s02-polymorphism-mechanism（referencePath 指向 day05_polymorphism/App.java，stage02 增加最小 referenceRoot 使其可懒加载）。多态考点预测链从 0→1。
+  - stage03 深化课 4 篇上站（s03-generics-why / s03-exception-design / s03-lambda-stream / s03-repository-evolution，bodyPath 机制），deep-dives 模块声明 lessonOrder（按 README 编号），基础课补反向链接（s03-generics → 泛型深化等 4 处）；练习验收引用的深化课全部可跳转。课程总数 45→49，stage03 README 导航表承诺与网站一致（P1-9 清零）。
+  - day02_hashmap 补遍历三方式演示（entrySet/values 注释 + entrySet 代码 + getOrDefault 确定性行，manifest 断言 `李雷的分数（默认 0）：0`）；P1-11"先考后教"清零。
+  - concurrency_basics 补可见性讲解：value() 注释讲 join 的 happens-before、输出新增四行讲 volatile/AtomicInteger 路标（manifest 断言同步）；课程卡"为什么需要"步骤补可见性一段。P1-10 清零。
+  - 顺手发现并确认：stage02 answers.md 并无重复 S02B1 段（审计分片的 grep 拼接误报），未做无谓改动。
+- **证据**：`npm test` 全过（node 77/0 + vitest）；`verify_java.sh` 97/97（含 hashmap/concurrency 新断言）；`check_links.py` ALL OK；目录 49 课/19 预测。
+- **提升**：S02 评分预计 84→88+（多态预测链、src 反面教材待 R7）；S03 评分预计 84→88+（深化课全上站、Map 遍历、可见性）。

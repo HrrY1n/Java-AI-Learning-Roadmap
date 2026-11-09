@@ -7,7 +7,8 @@
   "summary": "try/catch/finally 让“哪里出错、怎么兜底、如何收尾”各有其位。",
   "contentState": "published",
   "relatedLessonIds": [
-    "s02-interface-abstract"
+    "s02-interface-abstract",
+    "s03-exception-design"
   ],
   "exerciseIds": [
     "s03-delete-student",

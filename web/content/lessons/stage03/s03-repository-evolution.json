@@ -1,0 +1,20 @@
+{
+  "id": "s03-repository-evolution",
+  "stageId": "03",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "Repository 演进：接口这一步买到了什么",
+  "summary": "同一套业务代码分别跑在内存仓库与文件仓库上：从数组到 List 再到接口，每一步各解决什么问题。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-arraylist",
+    "s03-file-read"
+  ],
+  "exerciseIds": [
+    "s03-delete-student"
+  ],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage03_java_core/deep_dives/06_repository_evolution/README.md",
+  "codeDirectory": "stages/stage03_java_core/deep_dives/06_repository_evolution"
+}

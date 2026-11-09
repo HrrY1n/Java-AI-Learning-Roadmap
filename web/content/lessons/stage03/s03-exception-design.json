@@ -1,0 +1,19 @@
+{
+  "id": "s03-exception-design",
+  "stageId": "03",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "异常体系：什么错误用异常，什么错误不用",
+  "summary": "用\"预期失败/编程错误/外部故障\"三分法为失败场景选择正确的表达方式，覆盖返回 null、Result 与异常的边界。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-exception"
+  ],
+  "exerciseIds": [
+    "s03-email-csv"
+  ],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage03_java_core/deep_dives/03_exception_design/README.md",
+  "codeDirectory": "stages/stage03_java_core/deep_dives/03_exception_design"
+}

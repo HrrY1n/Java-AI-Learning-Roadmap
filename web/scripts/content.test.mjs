@@ -318,10 +318,11 @@ test("V1.3：Stage 02 首批课程接入且与 Stage 01 命名空间零冲突", 
       .filter((item) => item.id.startsWith("S02"))
       .map((item) => item.id),
   );
-  assert.equal(stage02Ids.size, 6);
+  // 深度重构 R4：S02A4/S02B1 转 published 后共 8 题
+  assert.equal(stage02Ids.size, 8);
   for (const id of stage02Ids) assert.ok(!stage01Ids.has(id));
-  // 草稿内容被门禁拦截（S02A4 多态、S02B3 综合练习、S02B1 多态修改题属后续批次）
-  for (const draftId of ["S02A4", "S02B3", "S02B1"])
+  // 草稿内容被门禁拦截（S02B3 综合练习属后续批次；S02A4/S02B1 已于 R4 发布）
+  for (const draftId of ["S02B3"])
     assert.ok(!stage02Ids.has(draftId), draftId);
 });
 
