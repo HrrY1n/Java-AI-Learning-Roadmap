@@ -1,0 +1,49 @@
+{
+  "id": "s04-thread-pool",
+  "stageId": "04",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "线程池与 Executor",
+  "summary": "复用线程而不是随用随造；提交任务到队列，池内工人数量有上限。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s04-synchronized-mutex",
+    "s03-design-patterns"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [
+    "S04A2"
+  ],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "每来一个请求 new 一个 Thread 的服务，在高峰期会同时存活上千条线程：每条默认约 1MB 栈 + 大量调度开销，内存与 CPU 双双失控。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "线程昂贵且应复用：池 = 少量常驻工人 + 一个任务队列。任务来了不造新工人，而是排队等工人取件。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "ThreadPoolExecutor 四个核心概念：corePoolSize（常驻工人）、maximumPoolSize（工人上限）、工作队列（排队容量）、拒绝策略（全满时怎么办：抛异常/调用者自己跑/丢弃…）。提交顺序：常驻工人有空直接干 → 没空排队 → 队列满且未到上限才加人 → 全满走拒绝策略。shutdown() = 不再接新任务、跑完存量；awaitTermination 等它收尾。"
+    },
+    {
+      "label": "预测运行",
+      "body": "core=2 的池提交 5 个任务（各睡 100ms）：动用几个线程？任务执行顺序由谁决定？运行示例核对 Set 里的线程名。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 newFixedThreadPool(2) 换成 newCachedThreadPool：线程数量随任务涨（60 秒空闲回收）。想一个场景它合适、一个场景它灾难。再想：为什么工程规约常禁用 Executors.newFixedThreadPool？（提示：看它的队列参数。）"
+    },
+    {
+      "label": "独立练习",
+      "body": "用 ThreadPoolExecutor(corePoolSize=2, maximumPoolSize=4, keepAliveTime=10 秒, ArrayBlockingQueue(2), AbortPolicy) 提交 8 个任务，记录每个任务由哪个线程执行、哪些被拒绝；用一句话解释“队列满才扩工人”的次序为什么反直觉。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "Tomcat 的工作线程池、Spring @Async 的执行器、定时任务框架——全是 ThreadPoolExecutor 的配置题。读懂这四个参数，就能读懂几乎一切 Java 服务的并发容量配置。"
+    }
+  ],
+  "bodyPath": null,
+  "codeDirectory": "stages/stage04_java_advanced/existing_course/day04_thread_pool/com/javaroadmap/stage04/day04threadpool"
+}

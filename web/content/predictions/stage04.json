@@ -1,0 +1,37 @@
+{
+  "stageId": "04",
+  "statementSource": "stages/stage04_java_advanced/practice/predict_and_modify.md",
+  "answerSource": "stages/stage04_java_advanced/practice/answers.md",
+  "predictions": {
+    "S04A1": {
+      "lessonIds": [
+        "s04-thread-basics"
+      ],
+      "contentState": "published"
+    },
+    "S04A2": {
+      "lessonIds": [
+        "s04-thread-pool"
+      ],
+      "contentState": "published"
+    }
+  },
+  "modifications": {
+    "S04B1": {
+      "lessonIds": [
+        "s04-visibility-volatile"
+      ],
+      "referencePaths": [
+        "stages/stage04_java_advanced/existing_course/day02_visibility_volatile/com/javaroadmap/stage04/day02visibilityvolatile/App.java"
+      ]
+    },
+    "S04B2": {
+      "lessonIds": [
+        "s04-synchronized-mutex"
+      ],
+      "referencePaths": [
+        "stages/stage04_java_advanced/existing_course/day03_synchronized_mutex/com/javaroadmap/stage04/day03synchronizedmutex/App.java"
+      ]
+    }
+  }
+}

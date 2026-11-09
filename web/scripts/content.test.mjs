@@ -37,7 +37,7 @@ test("catalog mirrors the actual Stage 01 learning assets", () => {
       (prediction) =>
         !prediction.id.startsWith("S02") && !prediction.id.startsWith("S03"),
     ).length,
-    9,
+    11,
   );
   assert.equal(
     catalog.modifications.filter(
@@ -45,7 +45,23 @@ test("catalog mirrors the actual Stage 01 learning assets", () => {
         !modification.id.startsWith("S02") &&
         !modification.id.startsWith("S03"),
     ).length,
+    6,
+  );
+  // V2.1：Stage 04 并发基础四课接线
+  assert.equal(
+    catalog.lessons.filter((lesson) => lesson.stageId === "04").length,
     4,
+  );
+  assert.equal(
+    catalog.predictions.filter((prediction) => prediction.id.startsWith("S04"))
+      .length,
+    2,
+  );
+  assert.equal(
+    catalog.modifications.filter((modification) =>
+      modification.id.startsWith("S04"),
+    ).length,
+    2,
   );
   // 深度重构 R3：Stage 03 练习/预测/修改接入目录
   assert.equal(
@@ -127,6 +143,8 @@ test("prediction answers use the first answer block; modified outputs are distin
     A7: "66\nB",
     A8: "安全",
     A9: "-2147483648",
+    S04A1: "执行线程：main\n执行线程：worker",
+    S04A2: "出现过的执行者：[pool-1-thread-1, pool-1-thread-2]\n不同执行者数量：2",
   });
   // 深度重构 R3：Stage 03 预测题答案（全部经 prediction-semantics 实测）
   const s03Answers = Object.fromEntries(

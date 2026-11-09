@@ -137,11 +137,26 @@
     },
     {
       "id": "04",
-      "contentState": "planned",
-      "prerequisites": "Stage 03 之后随主线并行补齐；不阻塞 MySQL。",
-      "modules": [],
-      "referenceRoots": [],
-      "referenceDocuments": []
+      "contentState": "published",
+      "prerequisites": "Stage 03 的集合/异常/Lambda；并发部分从 s03-concurrency-basics 的原子性与可见性路标直接续接。",
+      "modules": [
+        {
+          "id": "foundations",
+          "title": "基础课程",
+          "lessonOrder": [
+            "s04-thread-basics",
+            "s04-visibility-volatile",
+            "s04-synchronized-mutex",
+            "s04-thread-pool"
+          ]
+        }
+      ],
+      "referenceRoots": [
+        "stages/stage04_java_advanced/existing_course"
+      ],
+      "referenceDocuments": [],
+      "packageNamePrefix": "com.javaroadmap.lab.stage04",
+      "slug": "stage04_java_advanced"
     },
     {
       "id": "05",

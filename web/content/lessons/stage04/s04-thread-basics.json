@@ -1,0 +1,49 @@
+{
+  "id": "s04-thread-basics",
+  "stageId": "04",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "线程与执行流",
+  "summary": "main 本身就是线程；start 才开始执行，交错顺序不可控是一切并发问题的根源。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-concurrency-basics",
+    "s04-visibility-volatile"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [
+    "S04A1"
+  ],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "单线程程序在等一个大文件哈希时，用户输入完全没响应。一条执行流同一时刻只能做一件事；把“等待”和“响应用户”放进两条执行流，才能同时进行。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "main 方法本身就跑在一条叫 main 的线程里。new Thread(task) 创建的只是“执行计划”；start() 向调度器登记后才有第二条真正的执行流。两条流共享同一块堆内存——这是力量（共享数据方便），也是一切危险的根源（互相踩踏）。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "把线程想成“两个工人看同一张图纸干活”。调度器决定谁何时上工：交错顺序不可控、每次运行可能不同。getState() 给出生命周期快照：NEW（未 start）→ RUNNABLE → TERMINATED（跑完）。join() = “等这条流跑完我再继续”；没有它，main 可能在 worker 之前结束——但 JVM 要等所有非守护线程结束才退出。"
+    },
+    {
+      "label": "预测运行",
+      "body": "先预测：main 线程名打印什么？worker 的 getState() 三次各是什么？worker 步骤 1/2/3 与“worker 已启动”的相对顺序确定吗？运行两次对比交错模式。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 worker.start() 改成 worker.run()：任务还执行吗？在哪个线程里执行？getState() 还会经过 RUNNABLE 吗？（这道实验就是预测题 S04A1 的内容。）"
+    },
+    {
+      "label": "独立练习",
+      "body": "创建两条线程分别打印 1~50 的奇数与偶数，不使用任何同步；运行三次并记录交错模式有何不同。写一句话回答：为什么“先奇后偶有序输出”做不到？"
+    },
+    {
+      "label": "项目迁移",
+      "body": "Web 服务器每个请求都需要一条执行流——理解了“线程=共享内存的第二执行流、调度不可控”，才能理解为什么下一课的可见性、第三课的互斥是后端服务的日常。"
+    }
+  ],
+  "bodyPath": null,
+  "codeDirectory": "stages/stage04_java_advanced/existing_course/day01_thread_basics/com/javaroadmap/stage04/day01threadbasics"
+}

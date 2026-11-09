@@ -6,7 +6,9 @@
   "title": "并发基础：线程、共享状态与同步",
   "summary": "两个执行流改同一份数据会互相覆盖；synchronized 保证读-改-写的原子性。",
   "contentState": "published",
-  "relatedLessonIds": [],
+  "relatedLessonIds": [
+    "s04-thread-basics"
+  ],
   "exerciseIds": [],
   "predictionIds": [],
   "steps": [

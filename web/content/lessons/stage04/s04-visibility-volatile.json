@@ -1,0 +1,47 @@
+{
+  "id": "s04-visibility-volatile",
+  "stageId": "04",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "可见性与 volatile",
+  "summary": "一个线程的写入，另一个线程不一定看得见；volatile 保可见性，不保原子性。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s04-thread-basics",
+    "s04-synchronized-mutex"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "服务收到停机信号后，后台清理线程靠一个 boolean 判断“该收工了”。如果这个写入对清理线程永远不可见，服务就停不下来——这不是假设，是真实的线上事故模式。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "线程可能把变量缓存在自己的工作内存（寄存器/高速缓存）。没有同步约定时，一个线程的写入何时、是否对其他线程可见是未定义的。s03 并发课的路标在此兑现：原子性之外还有可见性。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "volatile 写 = 立即冲到主存；volatile 读 = 绕过过期缓存。Java 内存模型（JMM）用 happens-before 规则定义可见性保证：对 volatile 变量的写，happens-before 后续对它的读，读方一定能看到这次写以及写之前的所有普通写。**边界**：volatile 不保证原子性——count++ 仍是读-改-写三步。"
+    },
+    {
+      "label": "预测运行",
+      "body": "示例里 watcher 自旋等待 running=false：预测它会不会退出（volatile 版）。两个累加线程各加 100000 次到 volatile int：预测 count 最终值。运行三次，观察丢更新是否每次都发生。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "去掉 running 的 volatile：watcher 还能退出吗？多次运行——你可能发现它“碰巧”总能退出：println 内部自带同步，会顺带刷新可见性。这正是并发 bug 最阴险的形态：加了调试输出就消失。"
+    },
+    {
+      "label": "独立练习",
+      "body": "写一个程序证明“volatile 不保证原子性”：两个线程各对一个 volatile int 累加 100000 次，主线程 join 后打印差值。再解释：为什么换成原子类（AtomicInteger）的 incrementAndGet 差值就恒为 0——它用硬件级“读-改-写一条指令”取代了三步。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "配置热更新标志、优雅停机开关、限流开关——所有“一个线程写、多个线程读”的简单标志位都是 volatile 的主场；而计数器、累加器永远轮不到它。"
+    }
+  ],
+  "bodyPath": null,
+  "codeDirectory": "stages/stage04_java_advanced/existing_course/day02_visibility_volatile/com/javaroadmap/stage04/day02visibilityvolatile"
+}
