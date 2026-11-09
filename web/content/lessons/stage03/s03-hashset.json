@@ -7,7 +7,8 @@
   "summary": "只要“有没有”不要“第几个”时，HashSet 提供平均 O(1) 的唯一性判断。",
   "contentState": "published",
   "relatedLessonIds": [
-    "s03-arraylist"
+    "s03-arraylist",
+    "s03-equals-hashcode"
   ],
   "exerciseIds": [],
   "predictionIds": [],

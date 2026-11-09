@@ -40,16 +40,16 @@
             "s02-inheritance-basics",
             "s02-polymorphism-basics",
             "s02-interface-abstract",
-            "s02-stringbuilder-intro",
-            "s02-string-common-api"
+            "s02-string-common-api",
+            "s02-stringbuilder-intro"
           ]
         },
         {
           "id": "deep-dives",
           "title": "概念深化",
           "lessonOrder": [
-            "s02-object-construction",
             "s02-reference-state",
+            "s02-object-construction",
             "s02-encapsulation-why",
             "s02-inheritance-vs-composition",
             "s02-polymorphism-mechanism",

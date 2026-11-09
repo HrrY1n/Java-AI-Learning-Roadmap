@@ -22,9 +22,10 @@ public class ReferenceStateDemo {
         System.out.println("2) a == b：" + (a == b));            // true：同一扇门
 
         // 第二段：两个变量，两个对象，内容相同。
-        Student c = new Student("小明", 88);
+        // 注意 a 的分数在第一段已被改成 95，所以 c 也要用 95 才叫"内容相同"。
+        Student c = new Student("小明", 95);
         System.out.println("3) a == c：" + (a == c));            // false：不同对象
-        System.out.println("4) 字段内容相同吗：" + sameContent(a, c));
+        System.out.println("4) 字段内容相同吗：" + sameContent(a, c)); // true：内容比较看字段值
 
         // 第三段：把 b 指向别的对象，a 不受影响（呼应 Stage 01 参数传递 case3）。
         b = new Student("小红", 60);

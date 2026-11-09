@@ -89,8 +89,8 @@ System.out.println("安全");
 预测：总分、平均分各变多少？先笔算再运行核对。
 
 ### B3 MenuDemoApp 退出分支
-在 `existing_course/src/` 的 `MenuDemoApp` 里，把 `case 0:` 的打印语句从 `break` 之前移到之后（放回 switch 外、循环内）。
-预测：输入 0 后程序行为有什么变化？（提示：break 只跳出 switch，不跳出 while。）
+在 `existing_course/src/` 的 `MenuDemoApp` 里，把 `case 0:` 中的 `return;` 改成 `break;`（打印与 `scanner.close()` 保留在原处）。
+预测：输入 0 后程序行为有什么变化？它会像原来一样退出吗？（提示：break 只跳出 switch，不跳出 while；注意 close 之后循环还在不在。）
 
 ### B4 计算器加一条规则
 在 `SimpleCalculatorApp` 里给乘法加约束"第二个数不能是 0"。
