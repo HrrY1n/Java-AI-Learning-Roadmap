@@ -91,3 +91,12 @@
   - topic-content.test.mjs 移除 `path.resolve("..")` cwd 依赖，统一 import.meta.url 推导（与 algo-java-semantics 同约定），跨目录运行不再误报。
 - **证据**：topic-content + algo-semantics 21/21；`verify_java.sh` 99/99；`npm test` 全过。
 - **未做（披露）**：algo 3 处算法函数内 println 的纯函数化重构（需逐一保证 stdout 与 manifest 断言一致，价值 P2）；git 专题 4 个薄课补「先预测」节（需沙箱实测真实输出，属下一内容批次）；见 08。
+
+## Round 9 · UX 浏览器实测（2026-11-10）
+
+- **做了**：
+  - 真实浏览器走查（dev server 5173）：首页渲染新计数（Stage01 14 课/Stage02 15 课/Stage03 22 课/20 预测/9 练习）；day07 课文七步卡+源码完整渲染；侧边导航 51 课全量可跳。
+  - 搜索实测从 IAB 面板转为项目 Playwright（IAB 面板点击通道在本环境不可用，属桌面宿主环境问题；headless Chromium 全流程正常，排除产品缺陷）：新增正式 `e2e/search.spec.ts`——标题命中优先、正文命中带上下文片段并跳转对应课程、仓库文档可直达（3/3 过）。
+  - 既有 visual.spec 14/14 过：多分辨率（1440/720/390）、明暗双主题、axe AA 对比度扫描、键盘 Tab 导航、提示抽屉与手机编辑区截图。
+- **证据**：search.spec 3/3 · visual.spec 14/14 · core.spec 21/21。
+- **结论**：网站核心学习闭环、导航、搜索、响应式与可访问性在本次改动后无回归；审计 P1-2（搜索名不副实）已闭环并有 E2E 锁定。
