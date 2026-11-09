@@ -53,3 +53,12 @@
   - 顺手发现并确认：stage02 answers.md 并无重复 S02B1 段（审计分片的 grep 拼接误报），未做无谓改动。
 - **证据**：`npm test` 全过（node 77/0 + vitest）；`verify_java.sh` 97/97（含 hashmap/concurrency 新断言）；`check_links.py` ALL OK；目录 49 课/19 预测。
 - **提升**：S02 评分预计 84→88+（多态预测链、src 反面教材待 R7）；S03 评分预计 84→88+（深化课全上站、Map 遍历、可见性）。
+
+## Round 5 · web 工程修复（2026-11-10）
+
+- **做了**：
+  - **P0-5 learning-store 前向兼容**：`fields()` 从「字段数量完全一致」改为「必要字段齐全即可」，未知额外字段宽容放行、净化保存时按当前版本结构丢弃。未来版本新增字段后旧代码不再整体拒绝、不再把用户打回内存模式。`schemaVersion` 显式门禁与全部值域校验保持不变；`docs/javaroadmap_lab/data-and-services.md` 的行为承诺同步更新（原文承诺"检查未知字段"）。新增测试锁定双语义（宽容未知 + 拒绝缺失）。
+  - **P1-3 渲染性能**：`Markdown` 与 `Code` 组件 `memo` 化（props 均为稳定字符串/setState）。阅读页滚动停止写回位置、编辑器打字存草稿触发的父级重渲染不再引发 ReactMarkdown 全文重解析/整段重新高亮。
+  - **P1-2 搜索补全**：主线课正文（steps + 深化 markdown + 课程源码）、已发布专题正文、54 篇仓库文档全部入索引；标题命中优先于正文命中，正文命中显示上下文片段；与首页宣传语「搜索课程/资料」语义对齐。
+- **证据**：`tsc --noEmit` 通过；vitest 41/41；learning-store 19/19；`playwright e2e/core.spec.ts` 21/21（数据层改动后真实浏览器闭环全过）；`npm test` 全过。
+- **未做（披露）**：catalog 代码分割与 App.tsx/styles.css 拆分经评估触及面大、回归验证成本高，列入 08 遗留；预测题 modifiedCode 字段与路线页硬编码属 P2，后续处理。

@@ -96,11 +96,11 @@ function fields(
   label: string,
 ): Record<string, unknown> {
   const result = object(value, label);
-  if (
-    Object.keys(result).length !== keys.length ||
-    keys.some((key) => !Object.hasOwn(result, key))
-  )
-    invalid(`${label}字段不完整或含未知字段`);
+  // 只要求"必要字段齐全"；未知额外字段宽容放行，避免未来版本新增字段后
+  // 旧版本代码读取快照直接整体失败、把用户打回内存模式（深度重构 R5 的 P0 修复）。
+  // 未知字段在净化后的 state 中不保留——降级保存会丢弃它们，这是可接受的降级语义。
+  if (keys.some((key) => !Object.hasOwn(result, key)))
+    invalid(`${label}缺少必要字段`);
   return result;
 }
 

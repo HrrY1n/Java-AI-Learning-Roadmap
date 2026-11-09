@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+import { memo } from "react";
 import type { ReactNode } from "react";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -22,7 +23,8 @@ function flattenNode(node: ReactNode): string {
 }
 
 // 代码高亮依赖 highlight.js 对源码转义后再写入 innerHTML；未知语言退回纯文本节点。
-export function Code({
+// memo：code/language 不变时跳过整段重新高亮（编辑器打字会频繁触发父级重渲染）。
+export const Code = memo(function Code({
   code,
   language = "java",
 }: {
@@ -46,11 +48,14 @@ export function Code({
       )}
     </pre>
   );
-}
+});
 
 // 把课程 Markdown 渲染为站内链接或“主动解锁”，去掉重复的首个 H1；
 // 数学公式由 KaTeX 接管，任务列表复选框保持只读，查看参考不等于完成练习。
-export function Markdown({
+// memo：课程正文渲染是最重的子树（ReactMarkdown 全文 parse + KaTeX + 高亮）。
+// 阅读页滚动停止写回位置、编辑器打字存草稿都只触发父级状态更新，text/sourcePath/
+// onReference（稳定的 setState）不变时整棵子树直接跳过重渲染，消除全文重复解析。
+export const Markdown = memo(function Markdown({
   text,
   sourcePath = "",
   onReference,
@@ -133,4 +138,4 @@ export function Markdown({
       </ReactMarkdown>
     </div>
   );
-}
+});

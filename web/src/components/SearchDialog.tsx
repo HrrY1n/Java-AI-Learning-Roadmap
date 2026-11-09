@@ -23,6 +23,21 @@ interface SearchItem {
   subtitle: string;
   href: string;
   status?: string;
+  /** 参与全文匹配的正文；title/subtitle/category 命中优先于正文命中。 */
+  body?: string;
+}
+
+// 从正文命中位置截取一段可读上下文，压缩空白后展示在结果副标题里。
+function bodySnippet(body: string, q: string): string {
+  const index = body.toLowerCase().indexOf(q);
+  if (index < 0) return "";
+  const start = Math.max(0, index - 24);
+  const end = Math.min(body.length, index + q.length + 36);
+  const text = body
+    .slice(start, end)
+    .replace(/\s+/g, " ")
+    .trim();
+  return `${start > 0 ? "…" : ""}${text}${end < body.length ? "…" : ""}`;
 }
 
 const isApplePlatform =
@@ -70,18 +85,22 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const allItems = useMemo<SearchItem[]>(() => {
     const items: SearchItem[] = [];
 
-    // 1. 主线课程
+    // 1. 主线课程：标题/摘要之外，正文步骤、深化正文与课程源码都可全文命中
     for (const lesson of catalog.lessons) {
+      const stepBodies = (lesson.steps ?? [])
+        .map((step) => `${step.label} ${step.body}`)
+        .join("\n");
       items.push({
         id: `lesson-${lesson.id}`,
         category: "主线课程",
         title: lesson.title,
         subtitle: `${lesson.stageId ? `Stage ${lesson.stageId} · ` : ""}${lesson.summary || "核心主线课程"}`,
         href: `#/lesson/${lesson.id}`,
+        body: `${lesson.title}\n${lesson.summary}\n${stepBodies}\n${lesson.markdown ?? ""}\n${lesson.code}`,
       });
     }
 
-    // 2. 专题课程 (算法 & Git) - 严格门禁：未发布课程不得入搜索
+    // 2. 专题课程 (算法 & Git) - 严格门禁：未发布课程不得入搜索；已发布课正文入索引
     for (const topic of catalog.topics ?? []) {
       for (const module of topic.modules ?? []) {
         for (const lesson of module.lessons ?? []) {
@@ -94,6 +113,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
             subtitle: `${topic.title} · ${module.title} · ${lesson.summary}`,
             href: `#/topic/${topic.id}/${lesson.id}`,
             status: lesson.status,
+            body: `${lesson.title}\n${lesson.summary}\n${lesson.markdown ?? ""}`,
           });
         }
       }
@@ -122,20 +142,44 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
       });
     }
 
+    // 5. 仓库只读文档：标题、来源路径与正文全部入索引（"搜索课程/资料"的"资料"）
+    for (const doc of catalog.documents ?? []) {
+      items.push({
+        id: `document-${doc.id}`,
+        category: "仓库文档",
+        title: doc.title,
+        subtitle: doc.sourcePath,
+        href: `#/document/${doc.id}`,
+        body: `${doc.title}\n${doc.sourcePath}\n${doc.markdown ?? ""}`,
+      });
+    }
+
     return items;
   }, []);
 
   const filteredItems = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return allItems.slice(0, 8);
-    return allItems
-      .filter(
-        (item) =>
-          item.title.toLowerCase().includes(q) ||
-          item.subtitle.toLowerCase().includes(q) ||
-          item.category.toLowerCase().includes(q),
-      )
-      .slice(0, 12);
+    const titleHits: SearchItem[] = [];
+    const bodyHits: SearchItem[] = [];
+    for (const item of allItems) {
+      const inHeader =
+        item.title.toLowerCase().includes(q) ||
+        item.subtitle.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q);
+      if (inHeader) {
+        titleHits.push(item);
+        continue;
+      }
+      // 正文全文命中：副标题换成命中位置的上下文片段，直达才有意义
+      if (item.body?.toLowerCase().includes(q)) {
+        bodyHits.push({
+          ...item,
+          subtitle: `正文命中 · ${bodySnippet(item.body, q)}`,
+        });
+      }
+    }
+    return [...titleHits, ...bodyHits].slice(0, 12);
   }, [allItems, query]);
 
   // 键盘快捷穿梭：
