@@ -27,7 +27,7 @@ public class App {
         return n + sumByRecursion(n - 1);
     }
 
-    // 斐波那契递归观察（树状调用展开）
+    // 斐波那契递归观察（树状调用展开）：指数阶，上界 O(2^n)，真值 O(φ^n)，φ≈1.618
     public static int fib(int n) {
         if (n <= 0) return 0;
         if (n == 1) return 1;

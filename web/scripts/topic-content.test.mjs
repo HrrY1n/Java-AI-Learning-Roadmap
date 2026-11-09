@@ -2,7 +2,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { generateCatalog } from "./generate-content.mjs";
+
+// 仓库根从本文件位置推导，不依赖进程 cwd（与 algo-java-semantics.test.mjs 同一约定）。
+const repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "..",
+);
 
 const catalog = await generateCatalog({ write: false });
 const normalizeNewlines = (text) => text.trim().split(String.fromCharCode(13, 10)).join(String.fromCharCode(10));
@@ -168,7 +176,6 @@ test("V1.4 源码同步门禁：已发布算法课程代码与 stages/topics/alg
 
   for (const lesson of publishedLessons) {
     if (fileMap[lesson.id]) {
-      const repoRoot = path.resolve("..");
       const filePath = path.join(repoRoot, fileMap[lesson.id]);
       const actualContent = fs
         .readFileSync(filePath, "utf-8")

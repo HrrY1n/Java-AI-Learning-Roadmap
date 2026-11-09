@@ -82,3 +82,12 @@
   - content.test 懒加载守卫名单加入 LearningMenuAnswer。
 - **证据**：`npm test` 全过（node 77/0 + vitest）；`verify_java.sh` 99/99；字体覆盖通过；links ALL OK。
 - **方法记录**：字体覆盖门禁拦下新字符是有效防线；缺字时优先"选已覆盖的表达"而不是重新子集化（无源字体，增量加字不可行）。
+
+## Round 8 · topics 小修与测试健壮性（2026-11-10）
+
+- **做了**：
+  - algo-complexity-eval：sumConstant 补溢出边界注记（long 下 n>4.3e9 溢出——O(1) 只描述步数），topics.json markdown/code 与落盘源码三处同步（源码同步门禁验证）。
+  - algo-iteration-recursion：fib 复杂度表述改为「指数阶，上界 O(2^n)，真值 O(φ^n)」（同为三处同步）。
+  - topic-content.test.mjs 移除 `path.resolve("..")` cwd 依赖，统一 import.meta.url 推导（与 algo-java-semantics 同约定），跨目录运行不再误报。
+- **证据**：topic-content + algo-semantics 21/21；`verify_java.sh` 99/99；`npm test` 全过。
+- **未做（披露）**：algo 3 处算法函数内 println 的纯函数化重构（需逐一保证 stdout 与 manifest 断言一致，价值 P2）；git 专题 4 个薄课补「先预测」节（需沙箱实测真实输出，属下一内容批次）；见 08。
