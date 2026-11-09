@@ -10,6 +10,7 @@ import {
   GitBranch,
 } from "lucide-react";
 import { catalog } from "../catalog";
+import { loadContentBodies, type ContentBodies } from "../content-bodies";
 
 interface SearchDialogProps {
   open: boolean;
@@ -53,6 +54,19 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   // 中文输入法组合输入期间不触发 Enter 直达，避免选字回车误跳转
   const composingRef = useRef(false);
+  // V2.1：正文在懒加载 chunk 中——面板打开后异步载入一次并缓存；
+  // 载入前标题/摘要照常可搜，正文命中随后补全。
+  const [bodies, setBodies] = useState<ContentBodies | null>(null);
+  useEffect(() => {
+    if (!open || bodies) return;
+    let alive = true;
+    loadContentBodies().then((loaded) => {
+      if (alive) setBodies(loaded);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [open, bodies]);
 
   // 原生 <dialog> showModal：焦点圈定在弹窗内、Esc 触发 onCancel、
   // 关闭时把焦点还给打开者——与项目 Dialog 组件同一机制。
@@ -113,7 +127,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
             subtitle: `${topic.title} · ${module.title} · ${lesson.summary}`,
             href: `#/topic/${topic.id}/${lesson.id}`,
             status: lesson.status,
-            body: `${lesson.title}\n${lesson.summary}\n${lesson.markdown ?? ""}`,
+            body: `${lesson.title}\n${lesson.summary}\n${bodies?.topics[lesson.id]?.markdown ?? ""}`,
           });
         }
       }
@@ -150,12 +164,12 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
         title: doc.title,
         subtitle: doc.sourcePath,
         href: `#/document/${doc.id}`,
-        body: `${doc.title}\n${doc.sourcePath}\n${doc.markdown ?? ""}`,
+        body: `${doc.title}\n${doc.sourcePath}\n${bodies?.documents[doc.id] ?? ""}`,
       });
     }
 
     return items;
-  }, []);
+  }, [bodies]);
 
   const filteredItems = useMemo(() => {
     const q = query.trim().toLowerCase();

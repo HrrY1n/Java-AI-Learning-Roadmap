@@ -3,6 +3,11 @@
 import { describe, expect, it } from "vitest";
 import { extractH2Sections, slugifyHeading } from "./slug-heading";
 import { catalog } from "./catalog";
+import bodiesRaw from "../src/generated/content-bodies.json";
+import type { ContentBodies } from "./content-bodies";
+
+// 生成的 JSON 推断为字面量形状；此处按运行时契约宽化为索引类型。
+const bodies = bodiesRaw as ContentBodies;
 
 describe("slugifyHeading", () => {
   it("普通中文标题", () => {
@@ -86,7 +91,8 @@ describe("全量课程锚点唯一性（防 id 冲突回归）", () => {
     for (const topic of catalog.topics) {
       for (const module of topic.modules ?? []) {
         for (const lesson of module.lessons ?? []) {
-          const markdown = lesson.markdown ?? "";
+          // V2.1 起正文在 content-bodies.json（catalog 只含元数据）
+          const markdown = bodies.topics[lesson.id]?.markdown ?? "";
           if (!markdown) continue;
           lessonCount += 1;
           const sections = extractH2Sections(markdown);

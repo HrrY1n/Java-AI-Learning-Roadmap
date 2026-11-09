@@ -48,9 +48,44 @@ export async function generateCatalog({ write = true, updateRegistry = false } =
   if (write) {
     await mkdir(path.join(webRoot, "src/generated"), { recursive: true });
     await mkdir(path.join(webRoot, "public/reference"), { recursive: true });
+    // V2.1 Bundle 优化：元数据与正文分离。catalog.json 只保留导航/路由/门禁所需
+    // 元数据；专题课正文与源码、仓库文档正文写入独立的 content-bodies.json，
+    // 由前端按需动态 import（reading 页/搜索打开时才加载），首屏不再携带 58% 的正文。
+    // 内存中的 catalog 结构保持完整——node 测试与门禁以 buildCatalog 输出为准。
+    const bodyPayload = { topics: {}, documents: {} };
+    for (const topic of catalog.topics ?? []) {
+      for (const module of topic.modules ?? []) {
+        for (const lesson of module.lessons ?? []) {
+          bodyPayload.topics[lesson.id] = {
+            markdown: lesson.markdown ?? "",
+            code: lesson.code ?? "",
+          };
+        }
+      }
+    }
+    for (const document of catalog.documents ?? []) {
+      bodyPayload.documents[document.id] = document.markdown ?? "";
+    }
+    await writeFile(
+      path.join(webRoot, "src/generated/content-bodies.json"),
+      `${JSON.stringify(bodyPayload, null, 2)}\n`,
+      "utf8",
+    );
+    const publishedCatalog = structuredClone(catalog);
+    for (const topic of publishedCatalog.topics ?? []) {
+      for (const module of topic.modules ?? []) {
+        for (const lesson of module.lessons ?? []) {
+          delete lesson.markdown;
+          delete lesson.code;
+        }
+      }
+    }
+    for (const document of publishedCatalog.documents ?? []) {
+      delete document.markdown;
+    }
     await writeFile(
       path.join(webRoot, "src/generated/catalog.json"),
-      `${JSON.stringify(catalog, null, 2)}\n`,
+      `${JSON.stringify(publishedCatalog, null, 2)}\n`,
       "utf8",
     );
     for (const reference of catalog.references) {

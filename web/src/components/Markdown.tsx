@@ -1,16 +1,30 @@
 import ReactMarkdown from "react-markdown";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import "katex/dist/katex.min.css";
+import type { Pluggable } from "unified";
 import hljs from "highlight.js/lib/core";
 import java from "highlight.js/lib/languages/java";
 import { catalog, resolveSourcePath, sourceHref } from "../catalog";
 import { slugifyHeading } from "../slug-heading";
 
 hljs.registerLanguage("java", java);
+
+// KaTeX 只服务数学公式（目前仅专题课使用）。V2.1 起改为按需加载：
+// 文本含数学定界符时才动态载入 rehype-katex 与其 CSS，主包不再携带全量 KaTeX。
+// 加载完成前含公式的页面显示占位，避免闪现原始 TeX。
+const MATH_PATTERN =
+  /(?:\$\$[\s\S]+?\$\$|\$[^$\n]+\$|\\\[[\s\S]+?\\\]|\\\([\s\S]+?\\\))/;
+
+let katexPromise: Promise<Pluggable> | null = null;
+function loadKatex(): Promise<Pluggable> {
+  katexPromise ??= Promise.all([
+    import("rehype-katex"),
+    import("katex/dist/katex.min.css"),
+  ]).then(([plugin]) => plugin.default);
+  return katexPromise;
+}
 
 function flattenNode(node: ReactNode): string {
   if (node === null || node === undefined || typeof node === "boolean") return "";
@@ -65,11 +79,31 @@ export const Markdown = memo(function Markdown({
   onReference?: (path: string) => void;
 }) {
   const headingIds = new Map<string, number>();
+  // 含公式的页面先挂占位，等 KaTeX 就绪后一次性渲染（不闪原始 TeX）
+  const needsKatex = MATH_PATTERN.test(text);
+  const [katexPlugin, setKatexPlugin] = useState<Pluggable | null>(null);
+  useEffect(() => {
+    if (!needsKatex || katexPlugin) return;
+    let alive = true;
+    loadKatex().then((plugin) => {
+      if (alive) setKatexPlugin(plugin);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [needsKatex, katexPlugin]);
+  if (needsKatex && !katexPlugin) {
+    return (
+      <div className="prose">
+        <p className="reader-body-loading">正在载入公式渲染…</p>
+      </div>
+    );
+  }
   return (
     <div className="prose">
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeKatex]}
+        rehypePlugins={katexPlugin ? [katexPlugin] : []}
         components={{
           h2: ({ children }) => {
             const text = flattenNode(children);

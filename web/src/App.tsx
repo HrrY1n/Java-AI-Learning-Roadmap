@@ -61,6 +61,7 @@ import {
   type HintLevel,
 } from "./lib/services";
 import { Markdown, Code } from "./components/Markdown";
+import { LazyDocumentBody } from "./components/LazyDocumentBody";
 import { Dialog, handleTabKeys } from "./components/Dialog";
 import { CodeEditor } from "./components/CodeEditor";
 import { SearchDialog } from "./components/SearchDialog";
@@ -390,8 +391,8 @@ export default function App() {
           <BookOpen size={18} />
           <span>仓库原文只读视图。浏览器记录与仓库学习状态分开保存。</span>
         </div>
-        <Markdown
-          text={doc.markdown}
+        <LazyDocumentBody
+          documentId={doc.id}
           sourcePath={doc.sourcePath}
           onReference={setReference}
         />

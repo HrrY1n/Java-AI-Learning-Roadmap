@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { loadContentBodies, type TopicLessonBody } from "../content-bodies";
 import {
   Binary,
   GitBranch,
@@ -384,6 +385,19 @@ function TopicLessonReader({
 }) {
   const isRead = !!state.lessons[lesson.id]?.read;
 
+  // V2.1：正文与源码在懒加载 chunk 中——标题/导航即时渲染，正文到达后填充。
+  const [lessonBody, setLessonBody] = useState<TopicLessonBody | null>(null);
+  useEffect(() => {
+    let alive = true;
+    setLessonBody(null);
+    loadContentBodies().then((bodies) => {
+      if (alive) setLessonBody(bodies.topics[lesson.id] ?? null);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [lesson.id]);
+
   // 寻找上一节与下一节
   const allLessons = topic.modules.flatMap((m) =>
     m.lessons.filter((l) => l.status === "published"),
@@ -413,9 +427,9 @@ function TopicLessonReader({
 
   // 正文去重：部分课程的 markdown 内嵌了与源码卡片完全相同的完整代码，
   // 渲染时把该 fenced 块替换为指引，避免同屏重复（数据保持原样，不影响一致性测试）。
-  let markdownBody = lesson.markdown;
-  if (lesson.code) {
-    const fullFence = "```java\n" + lesson.code.trim() + "\n```";
+  let markdownBody = lessonBody?.markdown ?? "";
+  if (lessonBody?.code) {
+    const fullFence = "```java\n" + lessonBody.code.trim() + "\n```";
     if (markdownBody.includes(fullFence)) {
       markdownBody = markdownBody.replace(
         fullFence,
@@ -542,9 +556,13 @@ function TopicLessonReader({
         </div>
       )}
 
-      {/* 正文 Markdown（完整源码已去重，保留讲解片段） */}
+      {/* 正文 Markdown（完整源码已去重，保留讲解片段）；正文为懒加载，短暂骨架后填充 */}
       <div className="lesson-markdown-body">
-        <Markdown text={markdownBody} />
+        {lessonBody ? (
+          <Markdown text={markdownBody} />
+        ) : (
+          <p className="reader-body-loading">正在载入正文…</p>
+        )}
       </div>
 
       {/* Git 专用：交互式命令步进器 */}
@@ -553,7 +571,7 @@ function TopicLessonReader({
       )}
 
       {/* Java 课程专用：代码高亮展示（主文件 + 同包依赖文件，需要一起编译） */}
-      {lesson.code && (
+      {lessonBody?.code && (
         <>
           <div className="lesson-code-block-card">
             <div className="code-card-header">
@@ -567,7 +585,7 @@ function TopicLessonReader({
             </div>
             <div className="code-card-content">
               <pre className="code-pre">
-                <code>{lesson.code}</code>
+                <code>{lessonBody.code}</code>
               </pre>
             </div>
           </div>
