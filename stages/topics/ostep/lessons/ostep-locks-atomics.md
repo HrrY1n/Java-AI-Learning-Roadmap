@@ -1,5 +1,7 @@
 # 锁、自旋与原子操作
 
+> 先修路标：建议先读主线 s04-visibility-volatile（JMM 的 happens-before 与 volatile 语义），再来理解锁为什么要用硬件原子指令实现。
+
 ## 1. Scenario：从一个具体问题出发
 加了锁代码正确了，但高并发下吞吐下降。
 
