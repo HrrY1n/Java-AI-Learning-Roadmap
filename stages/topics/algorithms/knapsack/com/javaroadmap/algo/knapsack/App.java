@@ -11,8 +11,9 @@ import java.util.Arrays;
  */
 public class App {
 
-    // 0-1 背包：dp[i][c] = 前 i 件物品、容量 c 下的最大价值
-    static int knapsack01(int[] weights, int[] values, int cap) {
+    // 0-1 背包（纯算法）：dp[i][c] = 前 i 件物品、容量 c 下的最大价值。
+    // 只计算不输出——返回完整 DP 表，最大价值就是最后一格，便于独立测试与复用。
+    static int[][] knapsack01Table(int[] weights, int[] values, int cap) {
         int[][] dp = new int[weights.length + 1][cap + 1];
         for (int i = 1; i <= weights.length; i++) {
             for (int c = 0; c <= cap; c++) {
@@ -23,9 +24,12 @@ public class App {
                 }
             }
         }
-        for (int[] row : dp) {
-            System.out.println("  " + Arrays.toString(row));
-        }
+        return dp;
+    }
+
+    // 最大价值 = DP 表最后一格；打表观察属于入口层职责（见 main）。
+    static int knapsack01(int[] weights, int[] values, int cap) {
+        int[][] dp = knapsack01Table(weights, values, cap);
         return dp[weights.length][cap];
     }
 
@@ -45,6 +49,9 @@ public class App {
         int[] values = {10, 15, 40, 30};
         int cap = 5;
         System.out.println("0-1 背包 DP 表（行=前 i 件物品，列=容量 c）：");
+        for (int[] row : knapsack01Table(weights, values, cap)) {
+            System.out.println("  " + Arrays.toString(row));
+        }
         System.out.println("0-1 背包最大价值：" + knapsack01(weights, values, cap));
 
         int[] w2 = {2, 3};
