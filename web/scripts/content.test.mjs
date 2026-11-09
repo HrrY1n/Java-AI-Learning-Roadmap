@@ -16,9 +16,10 @@ test("catalog mirrors the actual Stage 01 learning assets", () => {
   const stage01Lessons = catalog.lessons.filter(
     (lesson) => lesson.stageId === "01",
   );
+  // 深度重构 R6：day07 数值类型与溢出补齐类型系统断档
   assert.equal(
     stage01Lessons.filter((lesson) => lesson.kind === "foundation").length,
-    6,
+    7,
   );
   assert.equal(
     stage01Lessons.filter((lesson) => lesson.kind === "deep-dive").length,
@@ -36,7 +37,7 @@ test("catalog mirrors the actual Stage 01 learning assets", () => {
       (prediction) =>
         !prediction.id.startsWith("S02") && !prediction.id.startsWith("S03"),
     ).length,
-    8,
+    9,
   );
   assert.equal(
     catalog.modifications.filter(
@@ -125,6 +126,7 @@ test("prediction answers use the first answer block; modified outputs are distin
     A6: "5",
     A7: "66\nB",
     A8: "安全",
+    A9: "-2147483648",
   });
   // 深度重构 R3：Stage 03 预测题答案（全部经 prediction-semantics 实测）
   const s03Answers = Object.fromEntries(
@@ -287,7 +289,8 @@ test("V1.3：Stage 02 首批课程接入且与 Stage 01 命名空间零冲突", 
   const stage02Lessons = catalog.lessons.filter(
     (lesson) => lesson.stageId === "02",
   );
-  assert.equal(stage02Lessons.length, 14);
+  // 深度重构 R6：s02-static-lifecycle 补 static/可见性/对象生命周期断档
+  assert.equal(stage02Lessons.length, 15);
   // V1.3 首批 6 课 + V1.5 On Java 8 补齐 8 课
   for (const id of [
     "s02-class-basics",

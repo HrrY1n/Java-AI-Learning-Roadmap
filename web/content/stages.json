@@ -37,6 +37,7 @@
             "s02-class-basics",
             "s02-constructor-this",
             "s02-encapsulation-basics",
+            "s02-static-lifecycle",
             "s02-inheritance-basics",
             "s02-polymorphism-basics",
             "s02-interface-abstract",

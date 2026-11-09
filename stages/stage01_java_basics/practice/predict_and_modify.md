@@ -78,6 +78,13 @@ System.out.println("安全");
 ```
 预测：会崩溃吗？`&&` 的右边执行了吗？把 `&&` 换成 `&` 再跑一次，对比。
 
+### A9 整型溢出
+```java
+int max = Integer.MAX_VALUE;
+System.out.println(max + 1);
+```
+预测输出（会报错吗？会变大吗？）。参考：[深化课 02](../deep_dives/02_integer_division/README.md)
+
 ## B. 修改题（改一个条件，先预测差异再运行）
 
 ### B1 day02 数据类型

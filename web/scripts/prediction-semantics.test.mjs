@@ -79,8 +79,8 @@ test("all objective predictions match real Java output, including the modified l
         item.id,
       );
     }
-    // A1-A8 + S02A1-A5（R4 起 A4 已发布）+ S03A1-A6；A3modified 使 entries 多 1
-    assert.equal(entries.length, 20);
+    // A1-A9（R6 起 A9 溢出题）+ S02A1-A5 + S03A1-A6；A3modified 使 entries 多 1
+    assert.equal(entries.length, 21);
   } finally {
     if (
       dirname(temporary) === resolve(tmpdir()) &&

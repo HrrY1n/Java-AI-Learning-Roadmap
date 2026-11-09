@@ -62,3 +62,12 @@
   - **P1-2 搜索补全**：主线课正文（steps + 深化 markdown + 课程源码）、已发布专题正文、54 篇仓库文档全部入索引；标题命中优先于正文命中，正文命中显示上下文片段；与首页宣传语「搜索课程/资料」语义对齐。
 - **证据**：`tsc --noEmit` 通过；vitest 41/41；learning-store 19/19；`playwright e2e/core.spec.ts` 21/21（数据层改动后真实浏览器闭环全过）；`npm test` 全过。
 - **未做（披露）**：catalog 代码分割与 App.tsx/styles.css 拆分经评估触及面大、回归验证成本高，列入 08 遗留；预测题 modifiedCode 字段与路线页硬编码属 P2，后续处理。
+
+## Round 6 · 知识断档补课（2026-11-10）
+
+- **做了**：
+  - 新增 Stage01 `day07`（数值类型与溢出）：byte/short/int/long 四档格子模型、字面量后缀 L/f、int 溢出现场实验（实测 `int 最大值 + 1 = -2147483648`）；补审计列出的类型系统最大缺口。新增预测题 A9（溢出预测，挂 day07+deep02，JVM 实测）。
+  - 新增 Stage02 `s02-static-lifecycle`（static、可见性与对象的一生）：static 字段/方法边界（静态上下文无 this）、四档可见性门牌规则（示例类即"包私有"现场）、对象生命周期与 GC 时机不可控；插入 foundations 课序（encapsulation-basics 之后）。
+  - 两个示例均进 verify_manifest（99 项回归），registry 显式登记 day07/s02-static-lifecycle/A9，测试断言随内容演进（S01 foundation 7 门、S02 15 门、预测 21 题实测）。
+- **证据**：`npm test` 全过（node 77/0 + vitest 41/41）；`verify_java.sh` 99/99；目录 51 课/20 预测。
+- **未做（披露）**：Stage01 的 do-while/二维数组/三目、Stage02 的 equals/toString 重写、Optional/Comparator 路标——按 02 设计以小改形式处理或留 Stage04+（08 披露）。

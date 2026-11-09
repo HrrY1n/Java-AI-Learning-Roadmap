@@ -9,6 +9,7 @@ stages/stage01_java_basics/existing_course/day02_data_type_operator	com.javaroad
 stages/stage01_java_basics/existing_course/day03_if_switch	com.javaroadmap.stage01.day03ifswitch.App	-	out	优秀	星期三	短路保护生效
 stages/stage01_java_basics/existing_course/day04_loop	com.javaroadmap.stage01.day04loop.App	-	out	1 到 100 的和：5050
 stages/stage01_java_basics/existing_course/day05_array	com.javaroadmap.stage01.day05array.App	-	out	数组长度：4	平均分：
+stages/stage01_java_basics/existing_course/day07_numeric_types	com.javaroadmap.stage01.day07numerictypes.App	-	out	int 最大值 + 1 = -2147483648	byte 最大：127
 stages/stage01_java_basics/existing_course/day06_method	com.javaroadmap.stage01.day06method.App	-	out	10 + 20 = 30	较大值：15
 stages/stage01_java_basics/existing_course/src/main/java	com.javaroadmap.stage01.console.ScoreStatisticsApp	-	out	总分：402	及格人数：4
 stages/stage01_java_basics/existing_course/src/main/java	com.javaroadmap.stage01.console.SimpleCalculatorApp	fixtures/calculator_basic.txt	out	结果：2.0
@@ -58,6 +59,7 @@ stages/stage02_java_oop/deep_dives/03_encapsulation_why	com.javaroadmap.stage02.
 stages/stage02_java_oop/deep_dives/04_inheritance_composition	com.javaroadmap.stage02.deepdives.inheritance.InheritanceCompositionDemo	-	out	实际：16	车辆出发
 stages/stage02_java_oop/deep_dives/05_polymorphism_interface	com.javaroadmap.stage02.deepdives.polymorphism.PolymorphismDemo	-	out	[旺财] 汪	机器人 R2 上线	我是狗
 stages/stage02_java_oop/deep_dives/06_entity_service	com.javaroadmap.stage02.deepdives.entityservice.EntityServiceDemo	-	out	平均分：	入口层捕获：分数必须在 0 到 100：150	拒绝非法学生后人数：3
+stages/stage02_java_oop/existing_course/day07_static_visibility	com.javaroadmap.stage02.day07staticvisibility.App	-	out	创建前累计人数：0	创建两人后累计人数：2	累计人数仍是：2
 stages/stage03_java_core/deep_dives/01_choose_collection	com.javaroadmap.stage03.deepdives.collectionchoice.CollectionChoiceDemo	-	out	第 2 个是：小红	到馆人数：2
 stages/stage03_java_core/deep_dives/02_generics_why	com.javaroadmap.stage03.deepdives.genericswhy.GenericsWhyDemo	-	out	raw 取出并强转：字符串	7
 stages/stage03_java_core/deep_dives/03_exception_design	com.javaroadmap.stage03.deepdives.exceptiondesign.ExceptionDesignDemo	-	out	2) null	受检异常被处理	除数不能为 0

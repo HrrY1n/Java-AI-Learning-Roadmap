@@ -17,7 +17,7 @@
 | R3 | Stage03 实践接入：S03 前缀改名 + predictions/stage03.json + exercises/stage03 + 回填 IDs + CME 预测题 + registry 登记 | [x] |
 | R4 | 挂载与上站：S02A4/S02B1 转 published 挂多态课 + stage03 深化课 4 篇上站 + hashmap entrySet + concurrency 可见性 | [ ] |
 | R5 | web 工程：learning-store 未知字段宽容（带测试）/ Markdown memo / 搜索正文与文档索引 | [x] |
-| R6 | 新课补充：s02-static-lifecycle + stage01 day07-numeric-types（新 ID 登记 + manifest 回归） | [ ] |
+| R6 | 新课补充：s02-static-lifecycle + stage01 day07-numeric-types（新 ID 登记 + manifest 回归） | [x] |
 | R7 | 参考答案达标化（S01 ScoreStatistics/loop）+ day01/03/04 注释补齐 + S02 src 反面教材标注 | [ ] |
 | R8 | topics 小修：溢出注记 / println 清理 / git 薄课「先预测」节 / /tmp 表述 / topic-content cwd 统一 | [ ] |
 | R9 | UX 浏览器实测走查（多分辨率）+ 修复实测发现的真实问题 | [ ] |
