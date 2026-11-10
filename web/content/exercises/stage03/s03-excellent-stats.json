@@ -7,7 +7,8 @@
   "contentState": "published",
   "lessonIds": [
     "s03-stream-basics",
-    "s03-lambda"
+    "s03-lambda",
+    "s03-lambda-stream"
   ],
   "statementSource": "stages/stage03_java_core/practice/s03-exercises.md",
   "statementAnchor": "练习 3",

@@ -1,5 +1,6 @@
 package com.javaroadmap.stage04.answers;
 
+import java.util.Collections;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -55,8 +56,9 @@ public class SafeCounterLabAnswer {
         SafeCounter counter = new SafeCounter();
         Thread[] workers = new Thread[threads];
         final boolean[] nonMainFlags = new boolean[threads];
-        // 结构不变量：在工作线程内部登记真实执行的线程名（TreeSet 排序去重，输出确定）。
-        Set<String> actualWorkers = new TreeSet<String>();
+        // 结构不变量：在工作线程内部登记真实执行的线程名。多个工作线程并发 add，
+        // 必须包一层 synchronizedSet（TreeSet 只保证排序语义，不保证并发安全），再由 TreeSet 保证输出确定性。
+        Set<String> actualWorkers = Collections.synchronizedSet(new TreeSet<String>());
 
         for (int i = 0; i < threads; i++) {
             final int idx = i;

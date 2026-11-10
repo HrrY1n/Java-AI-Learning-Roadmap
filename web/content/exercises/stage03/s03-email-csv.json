@@ -8,7 +8,8 @@
   "lessonIds": [
     "s03-file-read",
     "s03-utf8-io",
-    "s03-exception"
+    "s03-exception",
+    "s03-exception-design"
   ],
   "statementSource": "stages/stage03_java_core/practice/s03-exercises.md",
   "statementAnchor": "练习 4",

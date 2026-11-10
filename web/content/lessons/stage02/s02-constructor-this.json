@@ -10,7 +10,9 @@
     "s02-object-construction"
   ],
   "exerciseIds": [],
-  "predictionIds": [],
+  "predictionIds": [
+    "S02A5"
+  ],
   "steps": [
     {
       "label": "真实场景",

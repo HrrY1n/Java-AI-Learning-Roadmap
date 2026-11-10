@@ -986,10 +986,16 @@
                   "repoStateAfter": "feature/user-auth 指向新提交；main 仍留在原提交——两分支从此分叉，merge 才有实际工作可做"
                 },
                 {
+                  "command": "git switch main",
+                  "explanation": "回到 main 分支再执行合并——上一步还在 feature/user-auth 上，此时直接 merge 不会发生任何事（或得到 Already up to date）。合并方向永远是\"站在谁身上，把谁合进来\"。",
+                  "repoStateBefore": "位于 feature/user-auth（工作区就是它的提交内容）",
+                  "repoStateAfter": "HEAD 重新指向 main，工作区回到合并前的 main 内容"
+                },
+                {
                   "command": "git merge feature/user-auth",
-                  "explanation": "将特性分支合并至当前分支。若当前分支未分叉则执行 Fast-Forward（仅平移指针）；若分叉则基于共同祖先进行三方合并（Three-way Merge）并生成双父节点的合并提交。",
-                  "repoStateBefore": "位于 main 分支，准备合并 feature/user-auth 分支代码",
-                  "repoStateAfter": "合并完成，代码汇入主线；若为三方合并则产生包含两父节点的独立 merge commit"
+                  "explanation": "站在 main 上合并 feature。本序列里 main 自分叉后没有新提交，所以执行的是 Fast-forward（main 指针直接平移到 feature 的提交，不产生合并提交）。要演示三方合并，需要 main 在分叉后再前进一笔（两个分支各有独有提交）——那时 merge 会生成双父节点的合并提交，冲突处理见\"解决合并冲突\"课。",
+                  "repoStateBefore": "位于 main 分支，main 与 feature/user-auth 已分叉（feature 领先一笔）",
+                  "repoStateAfter": "Fast-forward：main 指针平移到 feature 的提交，两分支重新指向同一提交；若为三方合并则产生双父节点合并提交"
                 }
               ]
             },
@@ -1098,7 +1104,7 @@
               "stageLinks": [
                 "08"
               ],
-              "markdown": "# 解决合并冲突：读懂冲突标记与三方比对\n\n## 1. 业务场景与需要解决的问题\n你和同事同时修改了 `ideas.md` 的同一段落。`git pull` 之后 Git 没有安静地合并，而是把工作交回给你——如何安全地走出冲突？\n\n## 2. 为什么会有冲突\n- 三方合并按“共同祖先 → 我方 → 对方”三方比对：**只有一方**改动的区域 Git 能自动取舍。\n- 两边改了**同一区域**且内容不同，Git 无法替你做语义判断，宁可停下也不猜测——这是安全设计，不是故障。\n\n## 3. 冲突现场长什么样\n\n```text\n<<<<<<< HEAD\n我方（当前分支）写入的段落\n=======\n对方（feature/ideas）写入的段落\n>>>>>>> feature/ideas\n```\n\n## 4. 解决流程\n编辑文件删掉全部标记 → `git add <file>` 声明已解决 → `git commit` 完成合并。中途想放弃用 `git merge --abort`。注意：`git add` 不表示“内容正确”，只表示“冲突已由我处理”。\n\n## 5. 先预测，再运行\n- 在本机新建一次性临时仓库（任意空目录，如 `mkdir git-sandbox && cd git-sandbox && git init`；Windows 的 cmd/PowerShell 没有 /tmp），造一个真冲突并走完流程。解决中途执行 `git status`，`ideas.md` 处于什么状态？\n\n### 沙箱实测（一次真实冲突全程）\n\n`main` 把排期改成\"数据看板\"，`feature/ideas` 把同一段改成\"补充注册\"，`git merge feature/ideas` 直接停下：`git status -s` 输出 `UU ideas.md`（UU = 双方都改、未解决），文件里出现 §3 的标记块。解决中途 `git status` 会把它列在 **Unmerged paths** 下——此时既不在暂存区，也不是干净的工作区文件。删掉标记、写入合并结果、`git add` 后 `git commit`，历史出现双父节点提交：\n\n```text\n*   a4ed201 merge: 综合双方排期\n|| * 2335c4d feature: 排期补充注册\n* | 9556e61 main: 排期改为数据看板\n|/\n* 5a36c5c init ideas\n```\n\n另一个仓库在冲突未解决时执行 `git merge --abort`，`git status -s` 输出为空——完全回到合并前。提交哈希每次实验都会不同，看结构不看数字。\n\n## 6. 来源与出处\n- 《Pro Git (第 2 版)》第 3 章 3.2 节（PDF 第 77-84 页）。",
+              "markdown": "# 解决合并冲突：读懂冲突标记与三方比对\n\n## 1. 业务场景与需要解决的问题\n你和同事同时修改了 `ideas.md` 的同一段落。`git pull` 之后 Git 没有安静地合并，而是把工作交回给你——如何安全地走出冲突？\n\n## 2. 为什么会有冲突\n- 三方合并按“共同祖先 → 我方 → 对方”三方比对：**只有一方**改动的区域 Git 能自动取舍。\n- 两边改了**同一区域**且内容不同，Git 无法替你做语义判断，宁可停下也不猜测——这是安全设计，不是故障。\n\n## 3. 冲突现场长什么样\n\n```text\n<<<<<<< HEAD\n我方（当前分支）写入的段落\n=======\n对方（feature/ideas）写入的段落\n>>>>>>> feature/ideas\n```\n\n## 4. 解决流程\n编辑文件删掉全部标记 → `git add <file>` 声明已解决 → `git commit` 完成合并。中途想放弃用 `git merge --abort`。注意：`git add` 不表示“内容正确”，只表示“冲突已由我处理”。\n\n## 5. 先预测，再运行\n- 在本机新建一次性临时仓库（任意空目录，如 `mkdir git-sandbox && cd git-sandbox && git init`；Windows 的 cmd/PowerShell 没有 /tmp），造一个真冲突并走完流程。解决中途执行 `git status`，`ideas.md` 处于什么状态？\n\n### 沙箱实测（一次真实冲突全程）\n\n`main` 把排期改成\"数据看板\"，`feature/ideas` 把同一段改成\"补充注册\"，`git merge feature/ideas` 直接停下：`git status -s` 输出 `UU ideas.md`（UU = 双方都改、未解决），文件里出现 §3 的标记块。解决中途 `git status` 会把它列在 **Unmerged paths** 下——此时既不在暂存区，也不是干净的工作区文件。删掉标记、写入合并结果、`git add` 后 `git commit`，历史出现双父节点提交：\n\n```text\n*   a4ed201 merge: 综合双方排期\n|\\\n| * 2335c4d feature: 排期补充注册\n* | 9556e61 main: 排期改为数据看板\n|/\n* 5a36c5c init ideas\n```\n\n另一个仓库在冲突未解决时执行 `git merge --abort`，`git status -s` 输出为空——完全回到合并前。提交哈希每次实验都会不同，看结构不看数字。\n\n## 6. 来源与出处\n- 《Pro Git (第 2 版)》第 3 章 3.2 节（PDF 第 77-84 页）。",
               "gitSteps": [
                 {
                   "command": "git merge feature/ideas",
@@ -1583,7 +1589,7 @@
               "stageLinks": [
                 "08"
               ],
-              "markdown": "# 配置体系与对象模型：Git 在磁盘上是什么\n\n## 1. 业务场景与需要解决的问题\n为什么换机器要重设 user.name？为什么 Git 能保证历史不被篡改？答案都在它的底层设计：**三级配置** + **内容寻址对象库**。\n\n## 2. 三级配置，就近生效\n\n```text\n--system  全机所有用户      /etc/gitconfig（安装级）\n--global  当前用户 ~/.gitconfig（个人偏好：姓名、邮箱、编辑器）\n--local   当前仓库 .git/config（团队约定：remote、分支默认）\n读取优先级：local > global > system\n```\n\n## 3. 四类对象构成提交图\n\n```text\nblob    文件内容（不含文件名）\ntree    目录快照：blob 与子 tree 的清单\ncommit  指向根 tree + 父提交 + 作者/时间/说明\ntag     附注标签对象\n引用（refs/heads/*）只是指向提交的可变指针；HEAD 是指向引用的符号引用\n```\n\n## 4. 先预测，再运行\n- 复制 hello.txt 为 copy.txt 后分别 hash-object，两个哈希相同吗？为什么？修改一个字节再 hash，哈希会怎么变？\n\n### 沙箱实测\n\n`git hash-object hello.txt` 对内容 `hello` 输出 `b6fc4c620b67d95f953a5c1c1230aaab5db5a1b0`；复制出的 copy.txt 哈希**逐字相同**——对象库里只有一份内容。改成 `hellp` 再算，哈希变为 `39cc8d82…`：一个字节差异产生全新对象。这两个值在任何机器上可复现（内容相同则哈希必相同，这就是内容寻址）。`git cat-file -t <hash>` 报 `blob`；`git rev-parse HEAD^{tree}` 拿到目录快照（类型 `tree`），`git cat-file -p <tree>` 列出：\n\n```text\n100644 blob 39cc8d82f469e798ce1b8be2483079ee67db92db\thello.txt\n```\n\n提交图就是 commit → tree → blob 的三层引用，引用（refs/heads/*）只是指向提交的可变指针。\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 10 章（PDF 第 420-458 页）。",
+              "markdown": "# 配置体系与对象模型：Git 在磁盘上是什么\n\n## 1. 业务场景与需要解决的问题\n为什么换机器要重设 user.name？为什么 Git 能保证历史不被篡改？答案都在它的底层设计：**三级配置** + **内容寻址对象库**。\n\n## 2. 三级配置，就近生效\n\n```text\n--system  全机所有用户      /etc/gitconfig（安装级）\n--global  当前用户 ~/.gitconfig（个人偏好：姓名、邮箱、编辑器）\n--local   当前仓库 .git/config（团队约定：remote、分支默认）\n读取优先级：local > global > system\n```\n\n## 3. 四类对象构成提交图\n\n```text\nblob    文件内容（不含文件名）\ntree    目录快照：blob 与子 tree 的清单\ncommit  指向根 tree + 父提交 + 作者/时间/说明\ntag     附注标签对象\n引用（refs/heads/*）只是指向提交的可变指针；HEAD 是指向引用的符号引用\n```\n\n## 4. 先预测，再运行\n- 复制 hello.txt 为 copy.txt 后分别 hash-object，两个哈希相同吗？为什么？修改一个字节再 hash，哈希会怎么变？\n\n### 沙箱实测\n\n`git hash-object hello.txt` 对内容 `hello`（实测写入用的是**不带结尾换行**的内容；`echo hello > hello.txt` 会带一个换行，得到的是另一个哈希 `ce013625…`——内容寻址对每个字节都敏感）输出 `b6fc4c620b67d95f953a5c1c1230aaab5db5a1b0`；复制出的 copy.txt 哈希**逐字相同**——对象库里只有一份内容。改成 `hellp` 再算，哈希变为 `39cc8d82…`：一个字节差异产生全新对象。这两个值在任何机器上可复现（内容相同则哈希必相同，这就是内容寻址）。`git cat-file -t <hash>` 报 `blob`；`git rev-parse HEAD^{tree}` 拿到目录快照（类型 `tree`），`git cat-file -p <tree>` 列出：\n\n```text\n100644 blob 39cc8d82f469e798ce1b8be2483079ee67db92db\thello.txt\n```\n\n提交图就是 commit → tree → blob 的三层引用，引用（refs/heads/*）只是指向提交的可变指针。\n\n## 5. 来源与出处\n- 《Pro Git (第 2 版)》第 10 章（PDF 第 420-458 页）。",
               "gitSteps": [
                 {
                   "command": "git config user.name",

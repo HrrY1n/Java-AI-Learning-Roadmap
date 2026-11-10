@@ -7,7 +7,8 @@
   "contentState": "published",
   "lessonIds": [
     "s03-arraylist",
-    "s03-exception"
+    "s03-exception",
+    "s03-repository-evolution"
   ],
   "statementSource": "stages/stage03_java_core/practice/s03-exercises.md",
   "statementAnchor": "练习 1",
