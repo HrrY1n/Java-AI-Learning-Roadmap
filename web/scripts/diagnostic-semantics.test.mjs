@@ -26,10 +26,12 @@ const javaTool = (name) =>
     : name;
 
 test("诊断题集中的所有报错题与运行时输出题在真实 JDK 25 上严格复现", async () => {
-  const md = await readFile(
-    path.join(repoRoot, "stages/practice/diagnostic_and_transfer.md"),
-    "utf8",
-  );
+  const md = (
+    await readFile(
+      path.join(repoRoot, "stages/practice/diagnostic_and_transfer.md"),
+      "utf8",
+    )
+  ).replace(/\r\n?/g, "\n");
   const blocks = [...md.matchAll(/```java\n([\s\S]*?)```/g)].map((m) => m[1]);
   const tagged = blocks.filter((code) =>
     code.startsWith("// diagnostic:"),
