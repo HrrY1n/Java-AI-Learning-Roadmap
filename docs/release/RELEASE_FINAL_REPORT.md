@@ -9,6 +9,7 @@
 | 发布前 main | `6c3ca91` |
 | 发布前 PR #11 head（= V2.4 终态） | `ee94b33` |
 | **Merge commit（发布后 main）** | **`f6e6924c81b8a2bb2347650d3bccde96bbcae246`** |
+| 后续测试修复（PR #12） | `893baeb` → merge `2f7e052e`（最终 main SHA，见下） |
 | 合并时间 | 2026-11-10T22:15:29Z |
 
 ## 二、PR 合并
@@ -54,4 +55,4 @@ Playwright 实访 10 项全部通过，**零 console 错误 / 零 4xx / 零页�
 1. Stage06 课程路线已定稿待开发（docs/consolidation/04）。
 2. E2E CI 覆盖 37/69（方案 B）；全量扩面待所有者决策。
 3. Stage05 真库容器 `jrl-mysql-v22`（Exited）与镜像/卷保留未动，需要时可直接 `docker start` 复验。
-4. main push run 42912866643 中 macos web-core 首跑抖动一次（v14-topics 键盘无障碍用例），rerun --failed 后通过；同一用例在同树的 PR run（ee94b33）与 ubuntu/windows 上均一次通过——已记录为已知偶发，非代码缺陷。
+4. **macos 抖动根因修复（PR #12，已合并）**：后续两次 main push（f6e6924 首跑 + a3ceb98）中同一用例（v14-topics:409 搜索弹窗键盘无障碍）在 macos 上再现失败，确认为系统性竞态而非偶发——`showModal` autofocus 与 Tab 链的渲染竞态。修复：弹窗重开后 Tab 链前锚定初始焦点（PR #12 `893baeb`，本地 5/5 稳定，CI macos 实测通过 2m34s）。合并后 main（2f7e052）三工作流全绿：verify 2m1s / Pages 3m19s（同内容重部署）/ web-core 6m37s（macos 首跑即过）。

@@ -43,3 +43,7 @@
 |/
 * 6c3ca91 发布前 main（Logo Kit 上站）
 ```
+
+## 五、后续增量（PR #12 修复分支生命周期）
+
+`codex/fix-search-focus-race`（893baeb）：创建 → CI 六项全绿（macos web-core 2m34s 实测通过修复）→ merge `2f7e052e` → 远端与本地分支均已按同规则删除。最终本地分支仍为 `main` + `codex/v19-visual-design-lab`。

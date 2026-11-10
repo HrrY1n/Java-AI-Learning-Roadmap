@@ -7,10 +7,10 @@
 | # | 检查 | 命令/证据 | 结果 |
 | --- | --- | --- | --- |
 | 1 | PR #11 已合并 | `gh pr view 11` → `state=MERGED`、mergedAt 2026-11-10T22:15:29Z | ✅ |
-| 2 | merge commit | `f6e6924c81b8a2bb2347650d3bccde96bbcae246`（Merge Commit 策略，46 提交完整入史） | ✅ |
-| 3 | 本地 main = origin/main | `git rev-parse HEAD origin/main` → 两行均为 `f6e6924…`（ff-only 快进） | ✅ |
+| 2 | merge commit | `f6e6924c81b8a2bb2347650d3bccde96bbcae246`（Merge Commit 策略，46 提交完整入史）；后续 PR #12（E2E 竞态修复）merge `2f7e052e` | ✅ |
+| 3 | 本地 main = origin/main | `git rev-parse HEAD origin/main` → 两行均为 `2f7e052…`（ff-only 快进，含 PR #12 修复） | ✅ |
 | 4 | 工作区 | `git status --porcelain` → 仅 3 个受保护用户未跟踪文件（rar 27,885 B / zip 37,840 B / 截图 540K 原样） | ✅ |
-| 5 | 分支收敛 | 本地：`main` + `codex/v19-visual-design-lab`（943f6cc 不在 main，按保留规则保留）；远端：仅 `main`（v2.3 已删，ee94b33 零独有提交核验） | ✅ |
+| 5 | 分支收敛 | 本地：`main` + `codex/v19-visual-design-lab`（943f6cc 不在 main，按保留规则保留）；远端：仅 `main`（v2.3 与修复分支均已删，均经零独有提交核验） | ✅ |
 | 6 | 无 force push / reset --hard / clean -fdx / branch -D / worktree remove --force | 全程未使用（worktree 物理目录删除发生在 Git 注册剪除之后、并先核验并终止了本目录遗留的 vite 进程 PID 55912） | ✅ |
 
 ## 二、GitHub
