@@ -1,5 +1,7 @@
 # 并发编程：进程、线程与共享状态
 
+> 分工路标：Java 语言层的 volatile/锁/线程池请先读主线 Stage 04（s04-visibility-volatile、s04-synchronized-mutex、s04-thread-pool）；锁的实现机制归 OSTEP 第 28-29 章。本课只讲主线与 OSTEP 都没有的硬件视角（TLP 与加速比）。
+
 ## 1. Scenario：从一个具体问题出发
 多个线程更新同一个计数器，结果比期望少。
 

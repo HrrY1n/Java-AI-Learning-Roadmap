@@ -31,7 +31,10 @@ test("all objective predictions match real Java output, including the modified l
             {
               ...prediction,
               id: `${prediction.id}modified`,
-              code: prediction.code.replace("i < 3", "i <= 3"),
+              // V2.1：优先显式 modifiedCode；replace 仅为未迁移历史数据的兜底
+              code:
+                prediction.modifiedCode ??
+                prediction.code.replace("i < 3", "i <= 3"),
               answer: prediction.modifiedAnswer,
             },
           ]
@@ -79,8 +82,8 @@ test("all objective predictions match real Java output, including the modified l
         item.id,
       );
     }
-    // A1-A8 + S02A1/A2/A3/A5（draft 的 S02A4 不在目录）；A3modified 使 entries 多 1
-    assert.equal(entries.length, 13);
+    // A1-A9 + S02A1-A5 + S03A1-A6 + S04A1-A2 + S05A1-A3；A3modified 使 entries 多 1
+    assert.equal(entries.length, 26);
   } finally {
     if (
       dirname(temporary) === resolve(tmpdir()) &&

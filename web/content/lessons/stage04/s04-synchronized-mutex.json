@@ -1,0 +1,41 @@
+{
+  "id": "s04-synchronized-mutex",
+  "stageId": "04",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "synchronized 与互斥",
+  "summary": "每个对象一把锁；临界区让读-改-写不可分割。锁错对象等于没锁。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s04-visibility-volatile",
+    "s04-thread-pool"
+  ],
+  "exerciseIds": [
+    "s04-safe-counter"
+  ],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "两个线程同时给同一账户各存 1000 次，结账时不能出现“碰巧正确”。学完本节应能用 synchronized 保护读写边界、判断实例锁与类锁的作用范围，并用统一加锁顺序预防死锁。"
+    },
+    {
+      "label": "预测运行",
+      "body": "运行前预测三段输出：无同步版本一定小于 2000 吗？synchronized(lock) 版本如何保证必然 2000？ReentrantCounter.addAndLog() 内部调用另一个 synchronized 方法会不会自己把自己锁死？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 increment 里的锁从 lock 换成 otherLock：两把锁各管各的，竞态立刻回来。再思考：若把 static increment 锁与另一个实例方法上的 synchronized 混用，它们互斥吗？"
+    },
+    {
+      "label": "独立练习",
+      "body": "完成编程实验室“线程安全计数器”（s04-safe-counter），并回答：为什么 SafeCounter.get() 也必须加 synchronized？（提示：监视器锁的 unlock happens-before lock 规则。）"
+    },
+    {
+      "label": "项目迁移",
+      "body": "Spring 单例 Bean 默认被所有请求共享——任何可变状态都必须同步保护；而锁粒度（锁整个方法 vs 只锁临界几行）与加锁顺序直接决定服务的吞吐量与防死锁能力。想先在熟悉的数据上练手：把 Stage 05 内存版学生仓库改成线程安全版（synchronized 包住 save/find 等方法）——这就是 Spring 单例 Bean 的日常。"
+    }
+  ],
+  "bodyPath": "stages/stage04_java_advanced/existing_course/day03_synchronized_mutex/README.md",
+  "codeDirectory": "stages/stage04_java_advanced/existing_course/day03_synchronized_mutex/com/javaroadmap/stage04/day03synchronizedmutex"
+}

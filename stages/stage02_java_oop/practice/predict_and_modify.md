@@ -55,10 +55,37 @@ public class DefaultValueDemo {
 
 ### S02A4 多态分发
 ```java
-Animal a = new Dog("旺财");
-a.eat();
+class Animal {
+    String name;
+
+    Animal(String name) {
+        this.name = name;
+    }
+
+    void eat() {
+        System.out.println(name + " 动物进食");
+    }
+}
+
+class Dog extends Animal {
+    Dog(String name) {
+        super(name);
+    }
+
+    @Override
+    void eat() {
+        System.out.println(name + " 狗啃骨头");
+    }
+}
+
+public class PolymorphismDispatchDemo {
+    public static void main(String[] args) {
+        Animal a = new Dog("旺财");
+        a.eat();
+    }
+}
 ```
-（Animal/Dog 用 day04/day05 里的定义。）
+（片段自包含：复制到 `PolymorphismDispatchDemo.java` 即可编译运行。）
 预测调用的是谁的 eat？依据是什么（编译时看什么，运行时看什么）？
 
 ### S02A5 构造顺序

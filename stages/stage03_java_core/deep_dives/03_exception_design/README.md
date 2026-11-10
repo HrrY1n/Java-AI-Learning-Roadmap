@@ -24,7 +24,8 @@ Java 的错误表达有三种，判据是**调用方能不能处理、以及"失
 **两条硬纪律**：
 
 1. **catch 只捕你能（有方案）处理的异常**。空 catch 块是代码里的黑洞——错误消失了，问题还在。
-2. **转换异常类型时保留原因**：`new ParseException(msg, 0)` 应带 cause（示例简化了；生产写法 `new XxxException(msg, e)`），否则底层堆栈丢失，排错断线索。
+2. **转换异常类型时保留原因**：如示例 `parseAge` 里 `ParseException` 构造器不接收 `cause`，所以必须调用 `parsed.initCause(e)`；自定义异常则直接提供 `(String, Throwable)` 构造器传 `e`（见 `BusinessException(message, cause)`），否则底层堆栈丢失，排错断线索。
+3. **区分业务失败与系统故障**：`FileStudentRepository` 遇到 `IOException` 时应保留 cause 抛出 `IllegalStateException`（系统故障），不能伪装成 `BusinessException` 被 `StudentService` 当成“学号重复”一类的业务校验失败吞掉。
 
 ## 理解原理：checked 与 unchecked 的机制差异
 

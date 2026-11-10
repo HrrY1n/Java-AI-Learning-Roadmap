@@ -13,7 +13,9 @@
     "calculator",
     "menu"
   ],
-  "predictionIds": [],
+  "predictionIds": [
+    "A8"
+  ],
   "steps": [],
   "bodyPath": "stages/stage01_java_basics/deep_dives/07_scanner_input/README.md",
   "codeDirectory": "stages/stage01_java_basics/deep_dives/07_scanner_input/com/javaroadmap/stage01/deepdives/scanner"

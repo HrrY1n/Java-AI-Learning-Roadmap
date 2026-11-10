@@ -22,15 +22,15 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "类是图纸，对象是按图纸造出的房子。字段是房子里的状态，方法是房子能做的事。访问字段用 student.name，调用方法用 student.sayHello()。"
+      "body": "类是图纸，对象是按图纸造出的房子；一个源文件最多一个 public 顶层类且类名须与文件名一致。字段在 new 时自动赋默认值（数值 0 / boolean false / 引用 null），而方法里的局部变量没有默认值，未赋值不能读。若引用变量为 null 时调用方法（如 s.sayHello()），运行时会抛 NullPointerException。"
     },
     {
       "label": "预测运行",
-      "body": "先预测 main 会打印什么。再说明 student.name = \"小明\" 改的是哪一个对象的状态。"
+      "body": "先预测 s1 与 s2 各输出什么、改 s2.age 后 s1.age 变不变，以及第三个未赋值对象的默认 name/age 值。再运行核对。"
     },
     {
       "label": "修改一个条件",
-      "body": "再 new 一个 Student 并赋不同字段：两个对象的状态会互相影响吗？先预测再运行（答案在配套深化课）。"
+      "body": "在 main 末尾加上 Student s3 = null; s3.sayHello(); 运行观察 NullPointerException 报错堆栈如何定位到精确行号。"
     },
     {
       "label": "独立练习",

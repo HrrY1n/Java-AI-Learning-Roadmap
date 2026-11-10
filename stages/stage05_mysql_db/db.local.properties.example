@@ -1,0 +1,6 @@
+# 复制本文件为同目录下的 db.local.properties（已加入 .gitignore，不会提交）
+# 或直接通过环境变量传入：JRL_MYSQL_URL / JRL_MYSQL_USER / JRL_MYSQL_PASSWORD
+# 注意：务必使用专门的测试库（如 javaroadmap_lab_test），绝不要指向生产或已有个人业务库！
+url=jdbc:mysql://127.0.0.1:3307/javaroadmap_lab_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+user=root
+password=YOUR_LOCAL_TEST_PASSWORD

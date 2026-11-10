@@ -6,7 +6,10 @@
   "title": "继承入门：is-a 关系与方法复用",
   "summary": "子类自动获得父类的能力，再用新增方法表达差异。",
   "contentState": "published",
-  "relatedLessonIds": [],
+  "relatedLessonIds": [
+    "s02-inheritance-vs-composition",
+    "s02-object-construction"
+  ],
   "exerciseIds": [],
   "predictionIds": [],
   "steps": [

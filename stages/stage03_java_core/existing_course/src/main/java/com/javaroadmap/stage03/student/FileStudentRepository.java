@@ -1,7 +1,5 @@
 package com.javaroadmap.stage03.student;
 
-import com.javaroadmap.stage03.exception.BusinessException;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -66,7 +64,9 @@ public class FileStudentRepository implements StudentRepository {
 
             return students;
         } catch (IOException e) {
-            throw new BusinessException("读取学生文件失败：" + e.getMessage());
+            // IO 故障属于系统/外部环境错误，不应伪装成 BusinessException 被业务层当普通校验失败吞掉；
+            // 保留原始 cause 向上抛出，让入口层或日志系统看到真实根因。
+            throw new IllegalStateException("读取学生文件失败：" + filePath, e);
         }
     }
 
@@ -83,7 +83,7 @@ public class FileStudentRepository implements StudentRepository {
 
             Files.write(filePath, lines, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new BusinessException("写入学生文件失败：" + e.getMessage());
+            throw new IllegalStateException("写入学生文件失败：" + filePath, e);
         }
     }
 }

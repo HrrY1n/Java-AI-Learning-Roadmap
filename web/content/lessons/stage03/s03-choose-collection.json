@@ -10,7 +10,9 @@
     "s03-arraylist"
   ],
   "exerciseIds": [],
-  "predictionIds": [],
+  "predictionIds": [
+    "S03A1"
+  ],
   "steps": [],
   "bodyPath": "stages/stage03_java_core/deep_dives/01_choose_collection/README.md",
   "codeDirectory": "stages/stage03_java_core/deep_dives/01_choose_collection"

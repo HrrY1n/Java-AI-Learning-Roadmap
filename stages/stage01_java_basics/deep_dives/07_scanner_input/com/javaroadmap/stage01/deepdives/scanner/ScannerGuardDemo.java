@@ -29,7 +29,10 @@ public class ScannerGuardDemo {
             System.out.println("下一个记号是整数吗：" + scanner.hasNextInt());
             System.out.println("原样读出：" + scanner.next());
         } else {
-            System.out.println("现在输入 10 / 0：");
+            System.out.println("输入两个整数（试试 10 和 5）：");
+            // 注意：本演示只捕获"输入不是整数"。如果第二个数真的输入 0，
+            // a / b 会抛 ArithmeticException（int 除法没有"无穷"）——那属于另一层防御，
+            // 菜单计算器示例正是为此改用了 double。
             try {
                 int a = scanner.nextInt();
                 int b = scanner.nextInt();

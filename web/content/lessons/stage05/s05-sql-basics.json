@@ -1,0 +1,39 @@
+{
+  "id": "s05-sql-basics",
+  "stageId": "05",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "SQL 基础、数据类型与约束",
+  "summary": "走出文本文件持久化困境：用 MySQL 8.0 表结构、utf8mb4 与主键/唯一/CHECK 约束从存储层拦住脏数据。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-file-read",
+    "s05-relational-design"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "CSV 文件全量读写既容易并发覆盖，又挡不住重复学号与非法成绩。学完本节应能用 MySQL 8.0 建表并配置主键、唯一键、非空与 CHECK 约束（知晓 8.0.16 版本分界），通过 JDBC 捕获真实约束异常。"
+    },
+    {
+      "label": "预测运行",
+      "body": "运行前先预测：当 S2026001 第二次插入或 score=150 插入时，MySQL 分别报什么错误码与 SQLState？最终库内留下几条记录？（提示：先完成环境变量与驱动配置再运行，见本课运行命令与 stages/stage05_mysql_db/README.md。）"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "在 sql/01_constraints.sql 里尝试向 email 字段存一条含生僻字或 emoji 的文本对比 utf8mb4；或把 score 改成 0 和 100 验证 CHECK 边界。"
+    },
+    {
+      "label": "独立练习",
+      "body": "不看示例手写一张商品表 lab_products 的 DDL：含 BIGINT 自增主键、唯一编码 product_code、非空商品名、DECIMAL(10,2) 价格（CHECK >= 0）与 utf8mb4 字符集，在测试库执行并插入合法与非法行检验。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "连续演进项目的第 3 阶段（sql/04_student_system.sql）正是用这里的约束体系把“学生数据规则”沉淀进数据库，不再只靠应用层零散校验。"
+    }
+  ],
+  "bodyPath": "stages/stage05_mysql_db/existing_course/day01_sql_constraints/README.md",
+  "codeDirectory": "stages/stage05_mysql_db/existing_course/day01_sql_constraints"
+}

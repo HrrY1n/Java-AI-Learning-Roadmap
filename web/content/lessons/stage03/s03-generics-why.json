@@ -1,0 +1,17 @@
+{
+  "id": "s03-generics-why",
+  "stageId": "03",
+  "moduleId": "deep-dives",
+  "kind": "deep-dive",
+  "title": "泛型：为什么集合都要带尖括号",
+  "summary": "从 raw 类型与强转的隐患出发，解释泛型把什么错误提前到了编译期，并看懂 Result<T>、List<Student> 这类声明。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-generics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [],
+  "bodyPath": "stages/stage03_java_core/deep_dives/02_generics_why/README.md",
+  "codeDirectory": "stages/stage03_java_core/deep_dives/02_generics_why"
+}

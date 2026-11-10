@@ -7,9 +7,12 @@
   "summary": "匿名类的轻量写法，让“策略”的表达从三行变一行。",
   "contentState": "published",
   "relatedLessonIds": [
-    "s02-polymorphism-basics"
+    "s02-polymorphism-basics",
+    "s03-lambda-stream"
   ],
-  "exerciseIds": [],
+  "exerciseIds": [
+    "s03-excellent-stats"
+  ],
   "predictionIds": [],
   "steps": [
     {
@@ -22,7 +25,7 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "(a, b) -> a + b 对应一个只有 add 方法的接口。类型由目标接口推断，所以写起来极短。"
+      "body": "(a, b) -> a + b 对应一个只有 add 方法的接口。类型由目标接口推断，所以写起来极短。lambda 捕获的局部变量必须是 final 或\"有效 final\"（捕获后再改就是编译错）——它抓住的是变量本身而不是拷贝。"
     },
     {
       "label": "预测运行",
@@ -34,7 +37,7 @@
     },
     {
       "label": "独立练习",
-      "body": "独立练习：用 lambda 给线程池提交一个打印 1~5 的任务（Runnable）。"
+      "body": "独立练习：用 lambda 给线程池提交一个打印 1~5 的任务（Runnable）。线程池 API 本身是 Stage 04 的内容——现在可以先照示例模仿写法、体会“把一段行为当参数传进去”的形状，机制到 `s04-thread-pool` 展开。"
     },
     {
       "label": "项目迁移",

@@ -1,5 +1,7 @@
 # 线程、共享数据与竞态
 
+> 分工路标：竞态现象与 Java 层修复已由主线 Stage 03/04 覆盖（s03-concurrency-basics、s04-synchronized-mutex）。本课讲 OS 线程模型视角——线程的状态与寄存器快照、线程 API 的进程亲缘。
+
 ## 1. Scenario：从一个具体问题出发
 两个线程执行 `counter++` 一万次，最终小于两万。
 

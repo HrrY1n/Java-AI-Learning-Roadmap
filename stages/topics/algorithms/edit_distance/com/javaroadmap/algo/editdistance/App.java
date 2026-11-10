@@ -11,7 +11,8 @@ import java.util.Arrays;
  */
 public class App {
 
-    static int editDistance(String s, String t) {
+    // 编辑距离（纯算法）：返回完整 DP 表，dp[m][n] 即最少操作数；只计算不输出。
+    static int[][] editDistanceTable(String s, String t) {
         int m = s.length(), n = t.length();
         // dp[i][j] = s 的前 i 个字符变成 t 的前 j 个字符的最少操作数
         int[][] dp = new int[m + 1][n + 1];
@@ -27,13 +28,19 @@ public class App {
                 }
             }
         }
-        for (int[] row : dp) {
-            System.out.println("  " + Arrays.toString(row));
-        }
-        return dp[m][n];
+        return dp;
+    }
+
+    static int editDistance(String s, String t) {
+        int[][] dp = editDistanceTable(s, t);
+        return dp[s.length()][t.length()];
     }
 
     public static void main(String[] args) {
+        // 打表观察属于入口层职责：先看 DP 表怎么长出来，再看最终答案。
+        for (int[] row : editDistanceTable("horse", "ros")) {
+            System.out.println("  " + Arrays.toString(row));
+        }
         System.out.println("horse → ros 的编辑距离：" + editDistance("horse", "ros"));
     }
 }

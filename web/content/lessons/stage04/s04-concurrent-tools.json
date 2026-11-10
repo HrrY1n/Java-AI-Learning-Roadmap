@@ -1,0 +1,42 @@
+{
+  "id": "s04-concurrent-tools",
+  "stageId": "04",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "并发工具：原子类、Future 与并发集合",
+  "summary": "用 AtomicInteger 做无锁计数、用 Callable/Future 取回异步结果、用 ConcurrentHashMap 避免手写粗粒度锁。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s04-thread-pool",
+    "s04-synchronized-mutex"
+  ],
+  "exerciseIds": [
+    "s04-safe-counter",
+    "s04-thread-pool-lab"
+  ],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "统计接口总访问次数、提交异步任务取回返回值、多线程并发写同一张 Map——这三类高频需求有标准并发工具可用。学完本节应能据场景选用 CAS 原子类、Future 与 ConcurrentHashMap，避开复合操作与桶锁死锁陷阱。"
+    },
+    {
+      "label": "预测运行",
+      "body": "先预测示例中三行输出：AtomicInteger 10 万 × 2 线程是否保证 200000？Future 异步计算 1..100 的结果是多少？ConcurrentHashMap 用 merge 累计 1000 × 2 次结果是多少？运行核对。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把示例里 hits.merge(\"api\", 1, Integer::sum) 改成两步写法：Integer cur = hits.get(\"api\"); hits.put(\"api\", cur == null ? 1 : cur + 1); 运行三次观察计数是否丢更新——复现“单步安全 != 组合安全”。"
+    },
+    {
+      "label": "独立练习",
+      "body": "完成编程实验室“线程池任务执行与优雅关闭”（s04-thread-pool-lab）与“线程安全计数器”（s04-safe-counter）；对比手写 synchronized 与 AtomicInteger 的代码量与适用边界。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "高并发限流计数选 AtomicLong / LongAdder；多路异步查下游接口选 ExecutorService+Future 或 CompletableFuture；本地缓存选 ConcurrentHashMap.computeIfAbsent（记住禁止 null 键值且回调内不可再改同表）。学生仓库同样适用：并发版学生仓库的读写名册就是 ConcurrentHashMap 的典型场景（练习见 s04-exercises.md 选做任务 4）。"
+    }
+  ],
+  "bodyPath": "stages/stage04_java_advanced/existing_course/day05_concurrent_tools/README.md",
+  "codeDirectory": "stages/stage04_java_advanced/existing_course/day05_concurrent_tools/com/javaroadmap/stage04/day05concurrenttools"
+}

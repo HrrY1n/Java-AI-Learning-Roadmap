@@ -1,0 +1,41 @@
+{
+  "id": "s05-transactions-acid",
+  "stageId": "05",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "事务、ACID 与隔离级别",
+  "summary": "关闭自动提交、用 commit/rollback 保住多步写库原子性，实测 MySQL InnoDB REPEATABLE READ 的 MVCC 快照读。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s05-relational-design",
+    "s05-indexes-explain"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [
+    "S05A3"
+  ],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "两步 UPDATE 中间失败就会把数据留在半残状态。学完本节应掌握 JDBC 事务提交/回滚模板，区分 READ COMMITTED 与 MySQL 默认 REPEATABLE READ 隔离行为。"
+    },
+    {
+      "label": "预测运行",
+      "body": "重点预测实验二：tx2 已经 commit 提交了转账，为什么老事务 readerOldTx 再次查询小明余额时依然打印 100 而不是 70？运行双连接实验核对。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "在 App.java 的实验一里把 catch 中的 tx1.rollback() 注释掉再跑（或再开连接查询），体会没有回滚时异常与状态撕裂的风险；再把 readerOldTx 改成 READ_COMMITTED 级别对比输出变化。"
+    },
+    {
+      "label": "独立练习",
+      "body": "打开 stages/stage05_mysql_db/practice/skeleton/ScholarshipTransferLab.java，复制到 my_practices/ 后独立完成 transferQuota（切记校验 executeUpdate() == 1，否则目标不存在时不报错却平白扣掉源院系名额！）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "连续项目 JdbcStudentRepository.saveBatchAtomically 正是用本节事务模式实现“整批导入失败时全量回滚”；Stage 06 的 Spring @Transactional 底层就是今天这段代码。"
+    }
+  ],
+  "bodyPath": "stages/stage05_mysql_db/existing_course/day03_transactions_acid/README.md",
+  "codeDirectory": "stages/stage05_mysql_db/existing_course/day03_transactions_acid"
+}

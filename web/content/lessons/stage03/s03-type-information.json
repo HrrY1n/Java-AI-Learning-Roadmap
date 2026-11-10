@@ -22,7 +22,7 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "getClass().getSimpleName() 看运行时类型；instanceof 做安全向下转型；Class.forName + newInstance 按名字实例化。反射绕过编译期检查，性能与安全都需谨慎。"
+      "body": "getClass().getSimpleName() 看运行时类型；instanceof 做安全向下转型；Class.forName + getDeclaredConstructor().newInstance() 按名字实例化。反射绕过编译期检查，性能与安全都需谨慎。"
     },
     {
       "label": "预测运行",

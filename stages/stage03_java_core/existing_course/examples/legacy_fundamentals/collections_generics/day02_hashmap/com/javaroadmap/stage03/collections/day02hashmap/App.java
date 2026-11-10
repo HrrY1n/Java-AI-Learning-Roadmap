@@ -1,6 +1,7 @@
 package com.javaroadmap.stage03.collections.day02hashmap;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 参考示例 / Concept Card：HashMap 按 key 查找。
@@ -28,6 +29,15 @@ public class App {
         for (String name : scores.keySet()) {
             System.out.println(name + " -> " + scores.get(name));
         }
+
+        // 遍历三方式：keySet+get（取值要二次查找）、entrySet（一次拿到键值对）、values（只要值）。
+        // "键和值都要"时 entrySet 是惯用写法。
+        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+            System.out.println("entry：" + entry.getKey() + "/" + entry.getValue());
+        }
+
+        // 取不到的键要有兜底：getOrDefault 返回默认值，避免 null 拆箱崩溃（预测题 S03A1）。
+        System.out.println("李雷的分数（默认 0）：" + scores.getOrDefault("李雷", 0));
 
         // HashMap 不承诺 keySet 的遍历顺序；需要稳定顺序时应重新选择结构或显式排序。
     }

@@ -13,8 +13,7 @@
     "scores"
   ],
   "predictionIds": [
-    "A5",
-    "A8"
+    "A5"
   ],
   "steps": [],
   "bodyPath": "stages/stage01_java_basics/deep_dives/03_array_memory/README.md",

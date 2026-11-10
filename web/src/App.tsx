@@ -61,6 +61,7 @@ import {
   type HintLevel,
 } from "./lib/services";
 import { Markdown, Code } from "./components/Markdown";
+import { LazyDocumentBody } from "./components/LazyDocumentBody";
 import { Dialog, handleTabKeys } from "./components/Dialog";
 import { CodeEditor } from "./components/CodeEditor";
 import { SearchDialog } from "./components/SearchDialog";
@@ -68,6 +69,7 @@ import { OnJavaCard } from "./components/OnJavaCard";
 import { TopicView } from "./components/TopicView";
 import { BrandLogo } from "./components/BrandLogo";
 import { SidebarNavigation } from "./components/SidebarNavigation";
+import { extractH2Sections } from "./slug-heading";
 
 type Change = (recipe: (current: LearningState) => LearningState) => void;
 type PageProps = {
@@ -236,13 +238,16 @@ export default function App() {
     return () => query.removeEventListener("change", handle);
   }, []);
   useEffect(() => {
+    // 首帧主题交给 index.html 的引导脚本（读 localStorage 与 prefers-color-scheme），
+    // 等 IndexedDB 学习记录加载完成后 React 再接管——否则会先写默认值造成深色闪变。
+    if (!ready) return;
     document.documentElement.dataset.theme = dark ? "dark" : "light";
     try {
       localStorage.setItem("jrl-theme", state.theme);
     } catch {
       /* 主题缓存只是首屏优化，权威值仍以 IndexedDB 中的学习记录为准。 */
     }
-  }, [dark, state.theme]);
+  }, [dark, state.theme, ready]);
   useEffect(() => {
     if (!ready || !canSave) return;
     const current = ++sequence.current;
@@ -390,8 +395,8 @@ export default function App() {
           <BookOpen size={18} />
           <span>仓库原文只读视图。浏览器记录与仓库学习状态分开保存。</span>
         </div>
-        <Markdown
-          text={doc.markdown}
+        <LazyDocumentBody
+          documentId={doc.id}
           sourcePath={doc.sourcePath}
           onReference={setReference}
         />
@@ -711,9 +716,23 @@ function HomePage({ state }: PageProps) {
             <span className="dot-separator">/</span>
             {lesson.summary}
           </p>
-          <a className="button accent" href={lessonLink(lesson.id)}>
-            继续学习 <ArrowRight size={18} />
-          </a>
+          <div className="continue-cta">
+            <a className="button accent" href={lessonLink(lesson.id)}>
+              继续学习 <ArrowRight size={18} />
+            </a>
+            {(() => {
+              if (!state.lastLessonId || !state.lessons[lesson.id]?.read) return null;
+              const currentIndex = catalog.lessons.findIndex((item) => item.id === lesson.id);
+              const nextLesson = currentIndex >= 0 && currentIndex < catalog.lessons.length - 1
+                ? catalog.lessons[currentIndex + 1]
+                : null;
+              return nextLesson ? (
+                <a className="button subtle" href={lessonLink(nextLesson.id)}>
+                  下一节：{nextLesson.title} <ArrowRight size={16} />
+                </a>
+              ) : null;
+            })()}
+          </div>
           <div className="continue-meta">
             <BookOpen size={15} />
             {state.lastLessonId
@@ -1001,7 +1020,7 @@ function RoadmapPage() {
           {groups.map((group, index) => (
             <section key={group.title} className="stage-group">
               <div className="group-label">
-                <span>0{index + 1}</span>
+                <span>{String(index + 1).padStart(2, "0")}</span>
                 <h2>{group.title}</h2>
                 <small>{group.note}</small>
               </div>
@@ -1191,8 +1210,19 @@ function LessonPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lesson.id]);
   const index = catalog.lessons.indexOf(lesson);
-  const primary = lesson.steps.slice(0, 3);
-  const observe = lesson.steps.slice(3);
+  // V2.2 P5：按步骤教学角色分界（实践/观察步骤落在示例代码之后），不再死硬按 3 切分，
+  // 让拥有 bodyPath 连续讲义的课程无需为凑 7 个短卡片而机械拆段；同时 7 步课自然落在第 3 步完全兼容。
+  const splitIndex = (() => {
+    const idx = lesson.steps.findIndex((step) =>
+      /^(?:预测|修改|独立练习|项目迁移|动手|验证|学习验收)/.test(step.label),
+    );
+    return idx >= 0 ? idx : Math.min(3, lesson.steps.length);
+  })();
+  const primary = lesson.steps.slice(0, splitIndex);
+  const observe = lesson.steps.slice(splitIndex);
+  const bodySections = lesson.markdown
+    ? extractH2Sections(lesson.markdown)
+    : [];
   const exercise = catalog.exercises.find(
     (item) => item.id === lesson.exerciseIds[0],
   );
@@ -1308,7 +1338,7 @@ function LessonPage({
           {primary.map((step, i) => (
             <section className="lesson-step" id={`step-${i}`} key={step.label}>
               <h2>
-                <span>0{i + 1}</span>
+                <span>{String(i + 1).padStart(2, "0")}</span>
                 {step.label}
               </h2>
               <Markdown
@@ -1319,11 +1349,13 @@ function LessonPage({
             </section>
           ))}
           {lesson.markdown && (
-            <Markdown
-              text={lesson.markdown}
-              sourcePath={lesson.sourcePath}
-              onReference={onReference}
-            />
+            <div className="lesson-deep-prose">
+              <Markdown
+                text={lesson.markdown}
+                sourcePath={lesson.sourcePath}
+                onReference={onReference}
+              />
+            </div>
           )}
           <section className="lesson-code" id="minimal-code">
             <div className="code-caption">
@@ -1351,7 +1383,11 @@ function LessonPage({
                     <FileCode2 size={16} />
                     {file.className}.java
                   </span>
-                  <Badge>同包依赖类</Badge>
+                  <Badge>
+                    {file.packageName === lesson.packageName
+                      ? "同包依赖类"
+                      : "跨包依赖类"}
+                  </Badge>
                 </div>
                 <Code code={file.code} />
               </section>
@@ -1362,7 +1398,11 @@ function LessonPage({
               在本地 JDK 运行本节源码 <ChevronDown size={16} />
             </summary>
             <p>
-              在包含 <code>com/</code> 的课程源码根目录中执行：
+              在包含 <code>com/</code> 的课程源码根目录中执行
+              {lesson.stageId === "05"
+                ? "（Stage 05 需额外在 -cp 中附上 MySQL Connector/J 驱动 JAR，并通过环境变量或 db.local.properties 提供测试库连接信息）"
+                : ""}
+              ：
             </p>
             <Code
               language="text"
@@ -1371,7 +1411,11 @@ function LessonPage({
                   (file) =>
                     file.path.slice(file.path.indexOf("/com/") + 1),
                 )
-                .join(" ")}\njava -cp out ${lesson.packageName}.${lesson.className}`}
+                .join(" ")}\njava -cp ${
+                lesson.stageId === "05"
+                  ? '"out:/path/to/mysql-connector-j-8.4.0.jar" # Windows PowerShell 请将冒号改为分号'
+                  : "out"
+              } ${lesson.packageName}.${lesson.className}`}
             />
             <p className="source-path">仓库来源：{lesson.codePath}</p>
             <a href="#/document/environment" className="text-link">
@@ -1381,11 +1425,11 @@ function LessonPage({
           {observe.map((step, i) => (
             <section
               className={`lesson-step ${i === 0 ? "observe-step" : ""}`}
-              id={`step-${i + 3}`}
+              id={`step-${splitIndex + i}`}
               key={step.label}
             >
               <h2>
-                <span>0{i + 4}</span>
+                <span>{String(splitIndex + i + 1).padStart(2, "0")}</span>
                 {step.label}
               </h2>
               <Markdown
@@ -1484,7 +1528,7 @@ function LessonPage({
           <div className="margin-sticky">
             <Eyebrow>本节脉络</Eyebrow>
             <div className="margin-toc">
-              {lesson.steps.map((step, i) => (
+              {primary.map((step, i) => (
                 <button
                   key={step.label}
                   onClick={() =>
@@ -1501,6 +1545,23 @@ function LessonPage({
                   {step.label}
                 </button>
               ))}
+              {bodySections.map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() =>
+                    document.getElementById(section.id)?.scrollIntoView({
+                      behavior: matchMedia("(prefers-reduced-motion: reduce)")
+                        .matches
+                        ? "instant"
+                        : "smooth",
+                      block: "start",
+                    })
+                  }
+                >
+                  <span>§</span>
+                  {section.text}
+                </button>
+              ))}
               <button
                 onClick={() =>
                   document
@@ -1511,6 +1572,25 @@ function LessonPage({
                 <Braces size={14} />
                 源码与本地运行
               </button>
+              {observe.map((step, i) => (
+                <button
+                  key={step.label}
+                  onClick={() =>
+                    document
+                      .getElementById(`step-${splitIndex + i}`)
+                      ?.scrollIntoView({
+                        behavior: matchMedia("(prefers-reduced-motion: reduce)")
+                          .matches
+                          ? "instant"
+                          : "smooth",
+                        block: "start",
+                      })
+                  }
+                >
+                  <span>{String(splitIndex + i + 1).padStart(2, "0")}</span>
+                  {step.label}
+                </button>
+              ))}
             </div>
             <div className="margin-deep">
               <Lightbulb size={20} />
@@ -1725,7 +1805,9 @@ function PredictionCard({
       <Code
         code={
           modified
-            ? prediction.code.replace("i < 3", "i <= 3")
+            ? // V2.1：优先用题面显式给出的修改后代码；replace 仅为历史数据兜底
+              (prediction.modifiedCode ??
+              prediction.code.replace("i < 3", "i <= 3"))
             : prediction.code
         }
       />
@@ -1745,7 +1827,7 @@ function PredictionCard({
               onSelect(nextId);
             }}
           />
-          修改一个条件：将 &lt; 改为 &lt;=，再预测一次
+          修改一个条件：按题面说明修改代码后再预测一次
         </label>
       )}
       <label className="field-label" htmlFor="prediction-answer">
@@ -1941,7 +2023,7 @@ function LabPage({
             className={item.id === exercise.id ? "active" : ""}
             key={item.id}
           >
-            <span>0{index + 1}</span>
+            <span>{String(index + 1).padStart(2, "0")}</span>
             {item.title}
             {state.drafts[item.id] && (
               <span className="draft-dot" aria-label="有草稿" />
@@ -2688,7 +2770,7 @@ function TutorDialog({
           <ol className="debug-steps">
             {courseTutor.debug(error).map((step, index) => (
               <li key={step}>
-                <span>0{index + 1}</span>
+                <span>{String(index + 1).padStart(2, "0")}</span>
                 <p>{step}</p>
               </li>
             ))}

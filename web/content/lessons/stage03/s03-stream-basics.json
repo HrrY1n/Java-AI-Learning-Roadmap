@@ -7,10 +7,15 @@
   "summary": "filter/map 把“遍历+判断+转换”的循环压缩成一句声明式流水线。",
   "contentState": "published",
   "relatedLessonIds": [
-    "s03-lambda"
+    "s03-lambda",
+    "s03-lambda-stream"
   ],
-  "exerciseIds": [],
-  "predictionIds": [],
+  "exerciseIds": [
+    "s03-excellent-stats"
+  ],
+  "predictionIds": [
+    "S03A3"
+  ],
   "steps": [
     {
       "label": "真实场景",

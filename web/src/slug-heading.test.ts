@@ -3,6 +3,11 @@
 import { describe, expect, it } from "vitest";
 import { extractH2Sections, slugifyHeading } from "./slug-heading";
 import { catalog } from "./catalog";
+import bodiesRaw from "../src/generated/content-bodies.json";
+import type { ContentBodies } from "./content-bodies";
+
+// 生成的 JSON 推断为字面量形状；此处按运行时契约宽化为索引类型。
+const bodies = bodiesRaw as ContentBodies;
 
 describe("slugifyHeading", () => {
   it("普通中文标题", () => {
@@ -65,12 +70,14 @@ describe("extractH2Sections", () => {
     ]);
   });
 
-  it("与 Markdown 渲染侧 slug 一致：原始行内记号不影响 id", () => {
+  it("与 Markdown 渲染侧 slug 一致：原始行内记号不影响 id，且展示文本剥除反引号", () => {
     // 渲染侧对 flatten 后的纯文本（无记号）调 slug；提取侧对原始行调 slug。
     // 两侧都只保留文字与数字，因此相等。
     const raw = "## 用 `origin/main` 追踪分支";
     const renderedText = "用 origin/main 追踪分支";
-    expect(extractH2Sections(raw)[0].id).toBe(slugifyHeading(renderedText));
+    const [section] = extractH2Sections(raw);
+    expect(section.id).toBe(slugifyHeading(renderedText));
+    expect(section.text).toBe(renderedText);
   });
 
   it("没有小节的课程返回空数组（目录自然隐藏，不报错）", () => {
@@ -86,7 +93,8 @@ describe("全量课程锚点唯一性（防 id 冲突回归）", () => {
     for (const topic of catalog.topics) {
       for (const module of topic.modules ?? []) {
         for (const lesson of module.lessons ?? []) {
-          const markdown = lesson.markdown ?? "";
+          // V2.1 起正文在 content-bodies.json（catalog 只含元数据）
+          const markdown = bodies.topics[lesson.id]?.markdown ?? "";
           if (!markdown) continue;
           lessonCount += 1;
           const sections = extractH2Sections(markdown);

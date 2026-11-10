@@ -1,0 +1,49 @@
+{
+  "id": "s03-delete-student",
+  "stageId": "03",
+  "title": "删除学生",
+  "className": "StudentDeleteLab",
+  "order": 1,
+  "contentState": "published",
+  "lessonIds": [
+    "s03-arraylist",
+    "s03-exception",
+    "s03-repository-evolution"
+  ],
+  "statementSource": "stages/stage03_java_core/practice/s03-exercises.md",
+  "statementAnchor": "练习 1",
+  "hintSource": "stages/stage03_java_core/practice/s03-exercises.md",
+  "todo": "实现按 id 删除学生：id 非法、删除成功、学生不存在三种结果互不重叠且都不抛异常。",
+  "cases": [
+    {
+      "label": "删除并查看名单",
+      "input": "1\n2\n2\n0\n",
+      "expected": "1=删除 2=名单 0=退出\n已删除：2\n1=删除 2=名单 0=退出\n学生名单：[1:张三/88, 3:小刚/55]\n1=删除 2=名单 0=退出\n程序结束。",
+      "kind": "normal"
+    },
+    {
+      "label": "重复删除同一 id",
+      "input": "1\n2\n1\n2\n0\n",
+      "expected": "1=删除 2=名单 0=退出\n已删除：2\n1=删除 2=名单 0=退出\n学生不存在：2\n1=删除 2=名单 0=退出\n程序结束。",
+      "kind": "boundary"
+    },
+    {
+      "label": "非法 id 不影响数据",
+      "input": "1\n0\n1\n-1\n2\n0\n",
+      "expected": "1=删除 2=名单 0=退出\nid 非法：0\n1=删除 2=名单 0=退出\nid 非法：-1\n1=删除 2=名单 0=退出\n学生名单：[1:张三/88, 2:小红/95, 3:小刚/55]\n1=删除 2=名单 0=退出\n程序结束。",
+      "kind": "invalid"
+    },
+    {
+      "label": "删除不存在的 id",
+      "input": "1\n99\n0\n",
+      "expected": "1=删除 2=名单 0=退出\n学生不存在：99\n1=删除 2=名单 0=退出\n程序结束。",
+      "kind": "invalid"
+    }
+  ],
+  "referenceFiles": [
+    "StudentDeleteLabAnswer.java"
+  ],
+  "packageSegment": "student_delete",
+  "note": "题面里的 id 校验属于入口层；仓库内的系统扩展版（StudentRepository.deleteById）要求把\"不存在\"做成返回 false，语义一致。",
+  "needsInput": true
+}

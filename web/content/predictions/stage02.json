@@ -22,8 +22,10 @@
       "contentState": "published"
     },
     "S02A4": {
-      "lessonIds": [],
-      "contentState": "draft"
+      "lessonIds": [
+        "s02-polymorphism-basics"
+      ],
+      "contentState": "published"
     },
     "S02A5": {
       "lessonIds": [
@@ -35,8 +37,13 @@
   },
   "modifications": {
     "S02B1": {
-      "lessonIds": [],
-      "contentState": "draft"
+      "lessonIds": [
+        "s02-polymorphism-mechanism"
+      ],
+      "contentState": "published",
+      "referencePaths": [
+        "stages/stage02_java_oop/existing_course/day05_polymorphism/com/javaroadmap/stage02/day05polymorphism/App.java"
+      ]
     },
     "S02B2": {
       "lessonIds": [

@@ -66,6 +66,7 @@ class Student {
 
 /** Service：业务里的"事情"。它可以从控制台换成 Web 接口，规则不动。 */
 class StudentService {
+    // List 容器的正式教学在 Stage 03；这里先把它当"能自动变长的名单格子"用，重构课会把它换成接口。
     private java.util.ArrayList<Student> students = new java.util.ArrayList<Student>();
 
     void add(Student student) {

@@ -8,14 +8,14 @@ async function saved(page: Page) {
 
 test.describe("V1.4 专题学习体系与导航交互验证", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://127.0.0.1:4173/");
+    await page.goto("./");
     await page.waitForLoadState("networkidle");
   });
 
   test("专题 Hub：如实呈现已发布课时与模块规划状态（拒绝虚假100%完成）", async ({
     page,
   }) => {
-    await page.goto("http://127.0.0.1:4173/#/topics");
+    await page.goto("./#/topics");
 
     // 1. 检查 Hub 标语
     await expect(
@@ -79,7 +79,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-linkedlist");
+    await page.goto("./#/topic/topic-algo/algo-linkedlist");
 
     // 主文件与依赖文件都要展示
     await expect(page.locator(".lesson-code-block-card").first()).toContainText(
@@ -112,7 +112,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
       ["topic-algo/algo-dynamic-programming", "动态规划", "转移方程"],
     ];
     for (const [route, title, keyword] of checks) {
-      await page.goto(`http://127.0.0.1:4173/#/topic/${route}`);
+      await page.goto(`./#/topic/${route}`);
       await expect(
         page.locator(".topic-lesson-title").filter({ hasText: title.split("：")[0] }),
       ).toBeVisible();
@@ -133,7 +133,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
       ["topic-git/git-internals-basics", "配置体系与对象模型", "blob"],
     ];
     for (const [route, title, keyword] of checks) {
-      await page.goto(`http://127.0.0.1:4173/#/topic/${route}`);
+      await page.goto(`./#/topic/${route}`);
       await expect(
         page.locator(".topic-lesson-title").filter({ hasText: title.split("：")[0] }),
       ).toBeVisible();
@@ -144,7 +144,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
   test("KaTeX 数学公式渲染：行内公式、块级 LaTeX、求和与分式在深浅主题中正常渲染且代码块不受干扰", async ({
     page,
   }) => {
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-complexity-eval");
+    await page.goto("./#/topic/topic-algo/algo-complexity-eval");
 
     // 1. 验证 KaTeX 行内公式元素正常生成（例如 $n$ 与 $O(n)$）
     const inlineMath = page.locator(".prose .katex");
@@ -157,7 +157,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(codeBlock).toContainText("public static long sumLinear(long n)");
 
     // 3. 访问包含块级公式的章节（algo-time-complexity）
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-time-complexity");
+    await page.goto("./#/topic/topic-algo/algo-time-complexity");
     const displayMath = page.locator(".prose .katex-display");
     await expect(displayMath.first()).toBeVisible();
 
@@ -166,7 +166,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(displayMath.first().locator(".katex-html")).toContainText("O(n!)");
 
     // 4. 访问包含分式与求和符号的章节，验证 LaTeX 符号生成
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-complexity-eval");
+    await page.goto("./#/topic/topic-algo/algo-complexity-eval");
     const sumFormula = page.locator(".prose .katex").filter({ hasText: "∑" });
     await expect(sumFormula).toBeVisible();
 
@@ -176,7 +176,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
 
     // 6. 移动端 390px 视口无横向溢出验证
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-time-complexity");
+    await page.goto("./#/topic/topic-algo/algo-time-complexity");
     await page.waitForLoadState("networkidle");
     const isOverflowing = await page.evaluate(
       () => document.documentElement.scrollWidth > window.innerWidth,
@@ -188,7 +188,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-complexity-eval");
+    await page.goto("./#/topic/topic-algo/algo-complexity-eval");
     const ladder = page.locator(".visualizer-card").filter({ hasText: "大 O 渐近复杂度增长断崖" });
     await expect(ladder).toBeVisible();
 
@@ -215,14 +215,14 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
 
   test("数组寻址图解标注模拟地址；环形队列图解标明预留空位法并与源码实现区分", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-array");
+    await page.goto("./#/topic/topic-algo/algo-array");
     const addressing = page.locator(".visualizer-card").filter({ hasText: "连续内存寻址推导" });
     await expect(addressing).toContainText("简化教学模型");
     await expect(addressing).toContainText("模拟地址");
     await expect(addressing).not.toContainText("物理内存地址 0x");
 
     // 队列图解：真实交互验证——入队到预留空位法上限后按钮禁用
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-queue");
+    await page.goto("./#/topic/topic-algo/algo-queue");
     const queueCard = page
       .locator(".visualizer-card")
       .filter({ hasText: "预留空位法演示" });
@@ -247,7 +247,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-complexity-eval");
+    await page.goto("./#/topic/topic-algo/algo-complexity-eval");
 
     // 面包屑导航
     await expect(page.locator(".reader-breadcrumbs")).toContainText("数据结构与算法");
@@ -296,7 +296,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
 
   test("Pro Git 课程阅读：明确澄清实操功能边界（演示 vs 本机沙箱实操）", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-git/git-intro-basics");
+    await page.goto("./#/topic/topic-git/git-intro-basics");
 
     // 原书来源
     await expect(page.locator(".lesson-book-reference")).toContainText(
@@ -333,7 +333,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
   test("主线课程阅读：《On Java 8》原著延伸卡片与现代 JDK 差异展示", async ({
     page,
   }) => {
-    await page.goto("http://127.0.0.1:4173/#/lesson/day01");
+    await page.goto("./#/lesson/day01");
 
     // On Java 8 卡片
     const onJavaCard = page.locator(".on-java-card");
@@ -346,7 +346,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
 
   test("全局快捷检索与点击穿梭：消灭双重 Hash 与未发布课程门禁", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("http://127.0.0.1:4173/#/home");
+    await page.goto("./#/home");
 
     // 1. 点击顶栏搜索按钮打开 Command Palette
     await page.getByRole("button", { name: "全局快速检索" }).click();
@@ -395,18 +395,20 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     const targetRow = page.locator("#book-pro-git");
     await expect(targetRow).toBeVisible();
 
-    // 5. 未发布课程门禁：搜索未上线的内容（如旅行商专题课）不会出现可跳转正文
+    // 5. 未发布课程门禁：搜索未上线的内容不会出现可跳转正文
+    //    （V2.2：正文搜索上线后"旅行商"在 algo-time-complexity 正文里可命中，
+    //     改用真正未发布的探针——building 专题里只出现在未发布课文的概念词）
     await page.keyboard.press("Control+k");
     await expect(searchModal).toBeVisible();
-    await input.fill("旅行商");
+    await input.fill("微架构分支预测器");
     const emptyNotice = page.locator(".search-empty");
     await expect(emptyNotice).toBeVisible();
-    await expect(emptyNotice).toContainText("没有找到与 \"旅行商\" 相关的课程或材料");
+    await expect(emptyNotice).toContainText("没有找到与 \"微架构分支预测器\" 相关的课程或材料");
   });
 
   test("搜索弹窗焦点圈定、Tab与Enter分工、Escape关闭与焦点返回（键盘无障碍）", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("http://127.0.0.1:4173/#/home");
+    await page.goto("./#/home");
     const trigger = page.getByRole("button", { name: "全局快速检索" });
     await trigger.click();
     const dialog = page.locator("dialog.search-dialog");
@@ -555,7 +557,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     page.on("pageerror", (err) => errors.push(err.message));
 
     // 1. 打开含 5 步命令演示的课程
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-git/git-hooks-automation");
+    await page.goto("./#/topic/topic-git/git-hooks-automation");
     const viewer = page.locator(".git-steps-viewer");
     await expect(viewer).toBeVisible();
 
@@ -591,7 +593,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
 
   test("专题课程前后切换自动置顶，不残留上一节底部滚动位置", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-git/git-intro-basics");
+    await page.goto("./#/topic/topic-git/git-intro-basics");
     await page.waitForLoadState("networkidle");
 
     // 滚动到页面底部以点击“下一节”
@@ -613,7 +615,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     // 验证 max-width: 374px 下 visualizer-card 实际计算 padding 生效为 14px 12px，
     // 在大于 374px（如 390px）下保持 20px
     await page.setViewportSize({ width: 320, height: 700 });
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-time-complexity");
+    await page.goto("./#/topic/topic-algo/algo-time-complexity");
     await page.waitForLoadState("networkidle");
     const padding320 = await page.locator(".visualizer-card").evaluate((el) => {
       const cs = window.getComputedStyle(el);
@@ -649,7 +651,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
         "#/review",
       ];
       for (const route of routes) {
-        await page.goto("http://127.0.0.1:4173/" + route);
+        await page.goto("./" + route);
         await page.waitForLoadState("networkidle");
         // 强制启用纵向滚动条以测试占位式滚动条极限
         await page.evaluate(() => {
@@ -684,11 +686,11 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
   test("路由与历史堆栈：前进后退与刷新保持页面状态", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     // 依次访问三个不同体系的页面
-    await page.goto("http://127.0.0.1:4173/#/home");
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-algo/algo-complexity-eval");
+    await page.goto("./#/home");
+    await page.goto("./#/topic/topic-algo/algo-complexity-eval");
     await expect(page.getByRole("heading", { name: "算法效率评估与渐近复杂度" })).toBeVisible();
 
-    await page.goto("http://127.0.0.1:4173/#/topic/topic-git/git-intro-basics");
+    await page.goto("./#/topic/topic-git/git-intro-basics");
     await expect(page.locator(".git-steps-viewer")).toBeVisible();
 
     // 浏览器后退

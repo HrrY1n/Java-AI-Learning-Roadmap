@@ -9,7 +9,9 @@
   "relatedLessonIds": [
     "s03-file-read"
   ],
-  "exerciseIds": [],
+  "exerciseIds": [
+    "s03-email-csv"
+  ],
   "predictionIds": [],
   "steps": [],
   "bodyPath": "stages/stage03_java_core/deep_dives/04_utf8_io/README.md",

@@ -1,0 +1,50 @@
+{
+  "id": "s03-email-csv",
+  "stageId": "03",
+  "title": "email 持久化（CSV 解析）",
+  "className": "StudentCsvLab",
+  "order": 4,
+  "contentState": "published",
+  "lessonIds": [
+    "s03-file-read",
+    "s03-utf8-io",
+    "s03-exception",
+    "s03-exception-design"
+  ],
+  "statementSource": "stages/stage03_java_core/practice/s03-exercises.md",
+  "statementAnchor": "练习 4",
+  "hintSource": "stages/stage03_java_core/practice/s03-exercises.md",
+  "todo": "解析 id,name,score,email 四字段 CSV：坏行单独提示计数，不拖垮整个仓库。",
+  "cases": [
+    {
+      "label": "两行合法数据",
+      "input": "3,小刚,82,gang@school.cn\n1,张三,88,a@school.cn\n",
+      "expected": "读取：3:小刚/82/gang@school.cn\n读取：1:张三/88/a@school.cn\n共 2 条，坏行 0 条",
+      "kind": "normal"
+    },
+    {
+      "label": "占位 - 与行尾空格",
+      "input": "4,小明,90,-\n2,小红,95, x@school.cn \n",
+      "expected": "读取：4:小明/90/-\n读取：2:小红/95/x@school.cn\n共 2 条，坏行 0 条",
+      "kind": "boundary"
+    },
+    {
+      "label": "字段不足与非数字 id",
+      "input": "5,小红\nabc,小红,90,-\n1,张三,88,a@school.cn\n",
+      "expected": "坏行：5,小红\n坏行：abc,小红,90,-\n读取：1:张三/88/a@school.cn\n共 1 条，坏行 2 条",
+      "kind": "invalid"
+    },
+    {
+      "label": "score 非数字",
+      "kind": "invalid",
+      "input": "6,小红,九十分,-\n",
+      "expected": "坏行：6,小红,九十分,-\n共 0 条，坏行 1 条"
+    }
+  ],
+  "referenceFiles": [
+    "StudentCsvLabAnswer.java"
+  ],
+  "packageSegment": "student_csv",
+  "note": "每行自成一个事务：字段数校验 → 数字解析单独捕获 NumberFormatException → email 非空校验（题面\"允许任何非空值\"，空串计坏行）→ 成功打印或计入坏行。",
+  "needsInput": true
+}

@@ -1,0 +1,49 @@
+{
+  "id": "s04-safe-counter",
+  "stageId": "04",
+  "title": "线程安全计数器",
+  "className": "SafeCounterLab",
+  "order": 2,
+  "contentState": "published",
+  "lessonIds": [
+    "s04-visibility-volatile",
+    "s04-synchronized-mutex",
+    "s04-concurrent-tools"
+  ],
+  "statementSource": "stages/stage04_java_advanced/practice/s04-exercises.md",
+  "statementAnchor": "练习 2",
+  "hintSource": "stages/stage04_java_advanced/practice/s04-exercises.md",
+  "todo": "封装私有状态的 SafeCounter（同一把锁保护 increment 与 get），并发启动多线程累加后校验总数。",
+  "note": "volatile 不能保护 read-modify-write 原子性；SafeCounter 需用 synchronized 保护读写。注意即使单次未加锁碰巧跑对也不代表线程安全。",
+  "cases": [
+    {
+      "label": "四线程各五万次并发累加",
+      "input": "4 50000\n",
+      "expected": "线程数：4，每线程次数：50000\n工作线程均非main：true\n实际累加线程（排序去重）：[counter-worker-1, counter-worker-2, counter-worker-3, counter-worker-4]\n最终计数：200000",
+      "kind": "normal"
+    },
+    {
+      "label": "零次累加边界",
+      "input": "1 0\n",
+      "expected": "线程数：1，每线程次数：0\n工作线程均非main：true\n实际累加线程（排序去重）：[counter-worker-1]\n最终计数：0",
+      "kind": "boundary"
+    },
+    {
+      "label": "非法线程数拒绝",
+      "input": "0 100\n",
+      "expected": "线程数必须大于 0",
+      "kind": "invalid"
+    },
+    {
+      "label": "负数累加次数拒绝",
+      "input": "2 -10\n",
+      "expected": "累加次数不能为负",
+      "kind": "invalid"
+    }
+  ],
+  "referenceFiles": [
+    "SafeCounterLabAnswer.java"
+  ],
+  "packageSegment": "safecounter",
+  "needsInput": true
+}

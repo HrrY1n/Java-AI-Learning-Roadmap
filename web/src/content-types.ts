@@ -68,6 +68,8 @@ export interface Prediction {
   explanation: string;
   lessonIds: string[];
   modifiedAnswer?: string;
+  /** 修改后的代码（V2.1 起显式提供；缺省时 UI 用历史 replace 兜底） */
+  modifiedCode?: string;
 }
 
 export interface Modification {
@@ -112,7 +114,8 @@ export interface SourceDocument {
   id: string;
   title: string;
   sourcePath: string;
-  markdown: string;
+  /** 正文在 content-bodies.json（V2.1 起懒加载） */
+  markdown?: string;
 }
 
 export interface ReferenceResource {
@@ -159,7 +162,8 @@ export interface TopicLesson {
   priority?: LessonPriority;
   bookReference?: BookReference;
   stageLinks?: string[];
-  markdown: string;
+  /** 正文在 content-bodies.json（V2.1 起懒加载）；元数据 catalog 中不携带，阅读页经 loadContentBodies 获取 */
+  markdown?: string;
   code?: string;
   /** 主源码文件的仓库相对路径（code 存在时提供，多文件编译命令用） */
   codePath?: string;

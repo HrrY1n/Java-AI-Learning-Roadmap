@@ -212,7 +212,7 @@
           "title": "异常、进程与系统调用：Java 异常之外的控制流",
           "summary": "区分语言异常、信号、系统调用错误和进程生命周期。",
           "status": "published",
-          "kind": "concept",
+          "kind": "code",
           "bookReference": {
             "bookTitle": "CS:APP（第 3 版 Global Edition）",
             "chapter": "Chapter 8",
@@ -223,7 +223,10 @@
             "04"
           ],
           "bodyPath": "stages/topics/csapp/lessons/csapp-exceptional-control-flow.md",
-          "priority": "next"
+          "priority": "next",
+          "codeDirectory": "stages/topics/csapp/examples/csapp_exceptional_control_flow",
+          "packageName": "com.javaroadmap.csapp.csapp_exceptional_control_flow",
+          "className": "App"
         },
         {
           "id": "csapp-virtual-memory",

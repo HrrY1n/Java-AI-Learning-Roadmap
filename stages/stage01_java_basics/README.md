@@ -69,6 +69,8 @@ java -cp out com.javaroadmap.stage01.day01outputvariable.App
 
 | 基础课程 / 遇到的问题 | 对应深化课 |
 | --- | --- |
+
+> deep 的编号不代表学习顺序或配对关系——以课程页的「相关课」链接为准；另外，本地提交练习要用到的版本管理入门（init/add/commit/diff）见专题体系的 Git 课前四门（init/add/commit/diff），不必等到 Stage 08。
 | [day01 输出与变量](existing_course/day01_output_variable/)：编译成功却不能启动 | [01 main 与 JVM](deep_dives/01_main_and_jvm/README.md) |
 | [day02 类型与运算](existing_course/day02_data_type_operator/)：平均分丢失小数 | [02 整数除法与类型转换](deep_dives/02_integer_division/README.md) |
 | [day05 数组](existing_course/day05_array/)：下标越界、共享数组 | [03 数组与内存](deep_dives/03_array_memory/README.md) |

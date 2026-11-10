@@ -2,7 +2,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { generateCatalog } from "./generate-content.mjs";
+
+// 仓库根从本文件位置推导，不依赖进程 cwd（与 algo-java-semantics.test.mjs 同一约定）。
+const repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "..",
+);
 
 const catalog = await generateCatalog({ write: false });
 const normalizeNewlines = (text) => text.trim().split(String.fromCharCode(13, 10)).join(String.fromCharCode(10));
@@ -168,7 +176,6 @@ test("V1.4 源码同步门禁：已发布算法课程代码与 stages/topics/alg
 
   for (const lesson of publishedLessons) {
     if (fileMap[lesson.id]) {
-      const repoRoot = path.resolve("..");
       const filePath = path.join(repoRoot, fileMap[lesson.id]);
       const actualContent = fs
         .readFileSync(filePath, "utf-8")
@@ -492,6 +499,19 @@ test("三本系统教材配套示例：关键行为在源码中真实可观察",
   assert.match(httpStatus, /200/, "HTTP 实验必须有 200");
   assert.match(httpStatus, /404/, "HTTP 实验必须有 404");
   assert.match(httpStatus, /ConnectException/, "HTTP 实验必须区分连接失败");
+
+  // V2.2 P6 三专题优先升级守卫：
+  const locks = topicLessonSource("topic-ostep", "ostep-locks-atomics");
+  assert.match(locks, /SpinLock/, "OSTEP 锁实验必须手写 SpinLock");
+  assert.match(locks, /compareAndSet/, "OSTEP 锁实验必须基于 CAS 原语");
+
+  const rdt = topicLessonSource("topic-network", "net-reliable-tcp");
+  assert.match(rdt, /TcpReceiverSim/, "网络可靠传输实验必须模拟序号去重与累计确认");
+  assert.match(rdt, /IdempotentOrderService/, "网络可靠传输实验必须区分业务幂等边界");
+
+  const ecf = topicLessonSource("topic-csapp", "csapp-exceptional-control-flow");
+  assert.match(ecf, /destroyForcibly/, "CSAPP 异常控制流实验必须含超时强杀回收");
+  assert.match(ecf, /redirectErrorStream/, "CSAPP 实验必须处理输出流防管道写满死锁");
 });
 
 test("三本系统教材：页码修正由 PDF 书签核对驱动且不被回退", () => {

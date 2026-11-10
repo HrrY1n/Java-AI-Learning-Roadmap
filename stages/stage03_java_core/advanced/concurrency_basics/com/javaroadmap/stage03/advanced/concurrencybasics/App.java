@@ -18,6 +18,9 @@ public class App {
             value++;
         }
 
+        // main 是在两个 join() 之后才读 value()：join 建立了“工作线程的动作
+        // 先于 main 继续执行”的顺序保证，所以这里不加同步也能看到最终值。
+        // 若换成“边跑边读”（自己轮询一个标志位），既可能读到旧值也可能读到中间值。
         int value() {
             return value;
         }
@@ -51,5 +54,8 @@ public class App {
         System.out.println("synchronized 让每次累加都完整进行，所以 2000 次累加一次也不会丢。");
         System.out.println("如果不加 synchronized，结果通常小于 2000，但也可能恰好等于 2000——");
         System.out.println("竞争是否发生取决于线程调度，这种“碰巧正确”比出错更难排查。");
+        System.out.println("可见性是另一回事：main 能读到 2000，靠的是 join() 的顺序保证，不是巧合；");
+        System.out.println("没有这种保证的跨线程读写（轮询标志、后台状态），一个线程的写入可能长期不可见，");
+        System.out.println("那时需要 volatile（只保证可见性）或 AtomicInteger / synchronized（可见性+原子性）。");
     }
 }

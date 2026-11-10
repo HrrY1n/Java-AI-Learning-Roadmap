@@ -16,27 +16,95 @@ test("catalog mirrors the actual Stage 01 learning assets", () => {
   const stage01Lessons = catalog.lessons.filter(
     (lesson) => lesson.stageId === "01",
   );
+  // 深度重构 R6：day07 数值类型与溢出补齐类型系统断档
   assert.equal(
     stage01Lessons.filter((lesson) => lesson.kind === "foundation").length,
-    6,
+    7,
   );
   assert.equal(
     stage01Lessons.filter((lesson) => lesson.kind === "deep-dive").length,
     7,
   );
   assert.equal(
-    catalog.exercises.filter((exercise) => !exercise.id.startsWith("s02-"))
+    catalog.exercises.filter(
+      (exercise) =>
+        !exercise.id.startsWith("s02-") &&
+        !exercise.id.startsWith("s03-") &&
+        !exercise.id.startsWith("s04-"),
+    ).length,
+    4,
+  );
+  assert.equal(
+    catalog.predictions.filter(
+      (prediction) =>
+        !prediction.id.startsWith("S02") &&
+        !prediction.id.startsWith("S03") &&
+        !prediction.id.startsWith("S04") &&
+        !prediction.id.startsWith("S05"),
+    ).length,
+    9,
+  );
+  assert.equal(
+    catalog.modifications.filter(
+      (modification) =>
+        !modification.id.startsWith("S02") &&
+        !modification.id.startsWith("S03") &&
+        !modification.id.startsWith("S04") &&
+        !modification.id.startsWith("S05"),
+    ).length,
+    4,
+  );
+  // V2.1：Stage 04 并发基础四课接线；V2.2 补齐三道结构化练习
+  assert.equal(
+    catalog.lessons.filter((lesson) => lesson.stageId === "04").length,
+    5,
+  );
+  assert.equal(
+    catalog.exercises.filter((exercise) => exercise.id.startsWith("s04-")).length,
+    3,
+  );
+  assert.equal(
+    catalog.predictions.filter((prediction) => prediction.id.startsWith("S04"))
+      .length,
+    2,
+  );
+  assert.equal(
+    catalog.modifications.filter((modification) =>
+      modification.id.startsWith("S04"),
+    ).length,
+    2,
+  );
+  // V2.2：Stage 05 MySQL 5 课 + 3 预测 + 2 修改
+  assert.equal(
+    catalog.lessons.filter((lesson) => lesson.stageId === "05").length,
+    5,
+  );
+  assert.equal(
+    catalog.predictions.filter((prediction) => prediction.id.startsWith("S05"))
+      .length,
+    3,
+  );
+  assert.equal(
+    catalog.modifications.filter((modification) =>
+      modification.id.startsWith("S05"),
+    ).length,
+    2,
+  );
+  // 深度重构 R3：Stage 03 练习/预测/修改接入目录
+  assert.equal(
+    catalog.exercises.filter((exercise) => exercise.id.startsWith("s03-"))
       .length,
     4,
   );
   assert.equal(
-    catalog.predictions.filter((prediction) => !prediction.id.startsWith("S02"))
+    catalog.predictions.filter((prediction) => prediction.id.startsWith("S03"))
       .length,
-    8,
+    6,
   );
   assert.equal(
-    catalog.modifications.filter((modification) => !modification.id.startsWith("S02"))
-      .length,
+    catalog.modifications.filter((modification) =>
+      modification.id.startsWith("S03"),
+    ).length,
     4,
   );
   assert.equal(catalog.stages.length, 14);
@@ -85,7 +153,11 @@ test("exercise core implementations stay empty and hints stay outside statements
 test("prediction answers use the first answer block; modified outputs are distinct", () => {
   const answers = Object.fromEntries(
     catalog.predictions
-      .filter((prediction) => !prediction.id.startsWith("S02"))
+      .filter(
+        (prediction) =>
+          !prediction.id.startsWith("S02") &&
+          !prediction.id.startsWith("S03"),
+      )
       .map((prediction) => [prediction.id, prediction.answer]),
   );
   assert.deepEqual(answers, {
@@ -97,6 +169,26 @@ test("prediction answers use the first answer block; modified outputs are distin
     A6: "5",
     A7: "66\nB",
     A8: "安全",
+    A9: "-2147483648",
+    S04A1: "执行线程：main\n执行线程：worker",
+    S04A2: "出现过的执行者：[pool-1-thread-1, pool-1-thread-2]\n不同执行者数量：2",
+    S05A1: "执行查询\n关闭：ResultSet\n关闭：PreparedStatement\n关闭：Connection",
+    S05A2: "SELECT * FROM users WHERE username = '' OR '1'='1'\ntrue\nfalse",
+    S05A3: "捕获异常：划转数量必须大于 0：-5\n扣减成功并提交：70",
+  });
+  // 深度重构 R3：Stage 03 预测题答案（全部经 prediction-semantics 实测）
+  const s03Answers = Object.fromEntries(
+    catalog.predictions
+      .filter((prediction) => prediction.id.startsWith("S03"))
+      .map((prediction) => [prediction.id, prediction.answer]),
+  );
+  assert.deepEqual(s03Answers, {
+    S03A1: "null\n0\nfalse",
+    S03A2: "[10, 30]",
+    S03A3: "main 继续",
+    S03A4: "finally 执行了\n1",
+    S03A5: "java",
+    S03A6: "[小明, 小刚]",
   });
   assert.equal(
     catalog.predictions.find((prediction) => prediction.id === "A3")
@@ -106,6 +198,13 @@ test("prediction answers use the first answer block; modified outputs are distin
   assert.ok(
     catalog.predictions.every(
       (prediction) => prediction.explanation.length > 10,
+    ),
+  );
+  // V2.1：变体题必须显式携带修改后代码（兜底 replace 只服务未迁移历史数据）
+  assert.ok(
+    catalog.predictions.every(
+      (prediction) =>
+        !prediction.modifiedAnswer || prediction.modifiedCode,
     ),
   );
   assert.ok(
@@ -182,7 +281,7 @@ test("answers and complete reference applications require explicit lazy loading"
   );
   assert.doesNotMatch(
     JSON.stringify(catalog),
-    /public class (?:ScoreStatisticsAnswer|SimpleCalculatorAnswer|ScoreStatisticsApp|SimpleCalculatorApp|MenuDemoApp|GuessNumberApp|GuessNumber|loop|method)\s*\{/,
+    /public class (?:ScoreStatisticsAnswer|LearningMenuAnswer|SimpleCalculatorAnswer|ScoreStatisticsApp|SimpleCalculatorApp|MenuDemoApp|GuessNumberApp|GuessNumber|ThreadOrderLabAnswer|SafeCounterLabAnswer|ThreadPoolLabAnswer|loop|method)\s*\{/,
   );
 });
 
@@ -195,13 +294,15 @@ test("known source inconsistencies are surfaced beside affected tasks", () => {
     catalog.exercises.find((exercise) => exercise.id === "menu").note,
     /静默/,
   );
-  assert.match(
+  // 深度重构 R1 已把 B1/B3 题面与源码同步（answers.md 逐行对照 / return 语义），
+  // 历史 note 补丁随之移除；此处锁定"补丁不再回来"而不是反向要求 note 存在。
+  assert.equal(
     catalog.modifications.find((modification) => modification.id === "B3").note,
-    /return/,
+    undefined,
   );
-  assert.match(
+  assert.equal(
     catalog.modifications.find((modification) => modification.id === "B1").note,
-    /加减乘除/,
+    undefined,
   );
 });
 
@@ -243,7 +344,8 @@ test("V1.3：Stage 02 首批课程接入且与 Stage 01 命名空间零冲突", 
   const stage02Lessons = catalog.lessons.filter(
     (lesson) => lesson.stageId === "02",
   );
-  assert.equal(stage02Lessons.length, 14);
+  // 深度重构 R6：s02-static-lifecycle 补 static/可见性/对象生命周期断档
+  assert.equal(stage02Lessons.length, 15);
   // V1.3 首批 6 课 + V1.5 On Java 8 补齐 8 课
   for (const id of [
     "s02-class-basics",
@@ -274,10 +376,11 @@ test("V1.3：Stage 02 首批课程接入且与 Stage 01 命名空间零冲突", 
       .filter((item) => item.id.startsWith("S02"))
       .map((item) => item.id),
   );
-  assert.equal(stage02Ids.size, 6);
+  // 深度重构 R4：S02A4/S02B1 转 published 后共 8 题
+  assert.equal(stage02Ids.size, 8);
   for (const id of stage02Ids) assert.ok(!stage01Ids.has(id));
-  // 草稿内容被门禁拦截（S02A4 多态、S02B3 综合练习、S02B1 多态修改题属后续批次）
-  for (const draftId of ["S02A4", "S02B3", "S02B1"])
+  // 草稿内容被门禁拦截（S02B3 综合练习属后续批次；S02A4/S02B1 已于 R4 发布）
+  for (const draftId of ["S02B3"])
     assert.ok(!stage02Ids.has(draftId), draftId);
 });
 
@@ -332,7 +435,17 @@ test("V1.3 修补：Java 包名合法、用例契约完整、stdin 标记正确"
     }
     assert.equal(
       exercise.needsInput,
-      ["calculator", "menu", "s02-bank-account"].includes(exercise.id),
+      [
+        "calculator",
+        "menu",
+        "s02-bank-account",
+        "s03-delete-student",
+        "s03-update-score",
+        "s03-email-csv",
+        "s04-thread-order",
+        "s04-safe-counter",
+        "s04-thread-pool-lab",
+      ].includes(exercise.id),
     );
   }
   const bank = catalog.exercises.find((item) => item.id === "s02-bank-account");

@@ -38,7 +38,7 @@
     },
     {
       "label": "项目迁移",
-      "body": "日志拼装、SQL 拼接、JSON 组装——工程里凡循环拼接都用 StringBuilder。"
+      "body": "日志拼装、SQL 拼接、JSON 组装——工程里凡循环拼接都用 StringBuilder。想继续深入时回头看两个点：容量增长策略（append 时数组何时扩容）与 javac 对 + 号拼接的自动 StringBuilder 改写——它们解释了为什么循环里用 + 也能得到“正确但慢”的结果。"
     }
   ],
   "codeDirectory": "stages/stage02_java_oop/existing_course/examples/common_api/day02_stringbuilder"

@@ -1,0 +1,41 @@
+{
+  "id": "s04-visibility-volatile",
+  "stageId": "04",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "可见性与 volatile",
+  "summary": "一个线程的写入，另一个线程不一定看得见；volatile 保可见性，不保原子性。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s04-thread-basics",
+    "s04-synchronized-mutex"
+  ],
+  "exerciseIds": [
+    "s04-safe-counter"
+  ],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "后台清理线程靠一个 boolean 判断“该收工了”，如果写入对它永远不可见，服务就停不下来。学完本节应能用缓存与 JIT 循环提升解释可见性失效，说清 happens-before 传递性，并证明 volatile 不保证原子性。"
+    },
+    {
+      "label": "预测运行",
+      "body": "示例里 watcher 自旋等待 running=false（注意循环内刻意没写 println）：预测它能否退出（volatile 版）。两个累加线程各加 100000 次到 volatile int：预测 count 最终值，运行三次观察丢更新。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "① 去掉 running 的 volatile 再跑（若一直等待可按 Ctrl+C 终止）：没有 volatile 时 JIT 循环提升可能把 while (running) 优化成死循环；② 再把循环体里临时加一句 System.out.println(spins) 观察——println 内部的锁同步反而“碰巧”刷新了可见性，让你理解为什么加了调试日志并发 bug 就消失。"
+    },
+    {
+      "label": "独立练习",
+      "body": "完成编程实验室“线程安全计数器”（s04-safe-counter），并用“先写 volatile 版复现丢更新 → 再改 synchronized/AtomicInteger 精确输出 200000”验证两种原语的根本差异。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "配置热更新标志、优雅停机开关、限流开关——所有“一写多读”的简单标志位及 DCL 单例防半初始化都是 volatile 的主场；计数器、余额增减永远轮不到它。"
+    }
+  ],
+  "bodyPath": "stages/stage04_java_advanced/existing_course/day02_visibility_volatile/README.md",
+  "codeDirectory": "stages/stage04_java_advanced/existing_course/day02_visibility_volatile/com/javaroadmap/stage04/day02visibilityvolatile"
+}

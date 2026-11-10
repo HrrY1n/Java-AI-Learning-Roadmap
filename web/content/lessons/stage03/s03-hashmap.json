@@ -7,39 +7,35 @@
   "summary": "键值对场景（名字→分数）用 HashMap 实现一步定位，替代遍历查找。",
   "contentState": "published",
   "relatedLessonIds": [
-    "s02-polymorphism-basics"
+    "s03-equals-hashcode",
+    "s03-choose-collection"
   ],
   "exerciseIds": [],
-  "predictionIds": [],
+  "predictionIds": [
+    "S03A1"
+  ],
   "steps": [
     {
-      "label": "真实场景",
-      "body": "成绩表按名字查分数。用两个平行数组或遍历 List 查找都别扭——数据天然是“键→值”。"
-    },
-    {
-      "label": "为什么需要",
-      "body": "HashMap 用哈希把键映射到桶（算法专题哈希表一课的工业版），put/get 平均 O(1)。"
-    },
-    {
-      "label": "概念与心智模型",
-      "body": "put(key, value) 写入，get(key) 读取，containsKey 判断存在。键唯一，重复 put 是覆盖。"
+      "label": "学习目标与场景",
+      "body": "按姓名查成绩、按学号查对象时，遍历列表效率太低。学完本节应掌握 HashMap 桶定位与树化演进、遍历三方式，并规避 null 自动拆箱 NPE 与 key 可变失效。"
     },
     {
       "label": "预测运行",
-      "body": "预测 get(\"小明\") 的返回；再把 get 的实参换成一个不存在的名字，预测它是报错还是返回 null——改完运行验证。"
+      "body": "运行前预测 get(\"小明\")、getOrDefault(\"李雷\", 0) 与 entrySet 遍历的输出；若把 getOrDefault 换成 scores.get(\"李雷\") + 1 会发生什么？"
     },
     {
       "label": "修改一个条件",
-      "body": "把小明的分数 put 两次（值不同），观察最终 get 的结果——验证覆盖语义。"
+      "body": "把小明的分数 put 两次（值不同），观察 entry 数量与值变化（覆盖语义）；再试试 put(null, 0) 验证 HashMap 对 null 键的支持。"
     },
     {
       "label": "独立练习",
-      "body": "独立练习：存 3 个学生的年龄，再遍历打印全部键值对（提示：entrySet 或 keySet）。"
+      "body": "用 HashMap 统计一段英文单词出现的次数（使用 merge 或 getOrDefault），最后通过 entrySet 打印词频结果。"
     },
     {
       "label": "项目迁移",
-      "body": "配置项、缓存、ID→对象映射，全部依赖 HashMap。"
+      "body": "配置索引、缓存映射、内存 Repository（如 InMemoryStudentRepository）全部依赖 HashMap；如需保留插入顺序选 LinkedHashMap，多线程写选 ConcurrentHashMap。"
     }
   ],
+  "bodyPath": "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day02_hashmap/README.md",
   "codeDirectory": "stages/stage03_java_core/existing_course/examples/legacy_fundamentals/collections_generics/day02_hashmap"
 }

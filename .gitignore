@@ -14,6 +14,9 @@ output/
 reports/*.tmp
 stages/**/reports/quality_report.md
 archive/
+# Stage 05 本地数据库凭据与驱动缓存（绝不提交真实密码或二进制 JAR）
+db.local.properties
+*.jar
 
 # 学习者私有文档：保留在本机，不随公开仓库发布
 /学习执行计划.md

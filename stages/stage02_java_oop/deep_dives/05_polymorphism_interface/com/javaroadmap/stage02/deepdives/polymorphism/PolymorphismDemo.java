@@ -37,6 +37,8 @@ public class PolymorphismDemo {
 
 abstract class Animal {
     String name;
+    // 供 FieldShadowDemo 演示字段遮蔽：父类与子类各有一份同名字段。
+    String label = "Animal 的 label";
 
     Animal(String name) {
         this.name = name;
@@ -52,6 +54,9 @@ abstract class Animal {
 }
 
 class Dog extends Animal implements Introducible {
+    // 遮蔽（不是覆盖）：与 Animal.label 同名，两个字段都真实存在，按引用的静态类型决定读到哪份。
+    String label = "Dog 的 label";
+
     Dog(String name) {
         super(name);
     }

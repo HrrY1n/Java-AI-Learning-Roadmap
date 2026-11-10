@@ -37,19 +37,20 @@
             "s02-class-basics",
             "s02-constructor-this",
             "s02-encapsulation-basics",
+            "s02-static-lifecycle",
             "s02-inheritance-basics",
             "s02-polymorphism-basics",
             "s02-interface-abstract",
-            "s02-stringbuilder-intro",
-            "s02-string-common-api"
+            "s02-string-common-api",
+            "s02-stringbuilder-intro"
           ]
         },
         {
           "id": "deep-dives",
           "title": "概念深化",
           "lessonOrder": [
-            "s02-object-construction",
             "s02-reference-state",
+            "s02-object-construction",
             "s02-encapsulation-why",
             "s02-inheritance-vs-composition",
             "s02-polymorphism-mechanism",
@@ -57,7 +58,9 @@
           ]
         }
       ],
-      "referenceRoots": [],
+      "referenceRoots": [
+        "stages/stage02_java_oop/existing_course/day05_polymorphism"
+      ],
       "referenceDocuments": [
         "stages/stage02_java_oop/practice/answers.md"
       ],
@@ -115,29 +118,75 @@
           "title": "概念深化",
           "lessonOrder": [
             "s03-choose-collection",
-            "s03-utf8-io"
+            "s03-generics-why",
+            "s03-exception-design",
+            "s03-utf8-io",
+            "s03-lambda-stream",
+            "s03-repository-evolution"
           ]
         }
       ],
-      "referenceRoots": [],
+      "referenceRoots": [
+        "stages/stage03_java_core/existing_course/examples/legacy_fundamentals",
+        "stages/stage03_java_core/existing_course/src/main/java"
+      ],
       "referenceDocuments": [],
-      "building": true
+      "building": true,
+      "packageNamePrefix": "com.javaroadmap.lab.stage03",
+      "slug": "stage03_java_core"
     },
     {
       "id": "04",
-      "contentState": "planned",
-      "prerequisites": "Stage 03 之后随主线并行补齐；不阻塞 MySQL。",
-      "modules": [],
-      "referenceRoots": [],
-      "referenceDocuments": []
+      "contentState": "published",
+      "prerequisites": "Stage 03 的集合/异常/Lambda；并发部分从 s03-concurrency-basics 的原子性与可见性路标直接续接。",
+      "modules": [
+        {
+          "id": "foundations",
+          "title": "基础课程",
+          "lessonOrder": [
+            "s04-thread-basics",
+            "s04-visibility-volatile",
+            "s04-synchronized-mutex",
+            "s04-thread-pool",
+            "s04-concurrent-tools"
+          ]
+        }
+      ],
+      "referenceRoots": [
+        "stages/stage04_java_advanced/existing_course"
+      ],
+      "referenceDocuments": [
+        "stages/practice/answers/diagnostic_solutions.md"
+      ],
+      "packageNamePrefix": "com.javaroadmap.lab.stage04",
+      "slug": "stage04_java_advanced"
     },
     {
       "id": "05",
-      "contentState": "planned",
-      "prerequisites": "Java Core 基础；准备项目 A 的业务与数据约束。",
-      "modules": [],
-      "referenceRoots": [],
-      "referenceDocuments": []
+      "contentState": "published",
+      "prerequisites": "Stage 01–03 的集合、异常、接口与文件持久化基础（不要求先学完 Stage 04 并发全部内容）。",
+      "modules": [
+        {
+          "id": "foundations",
+          "title": "核心基础",
+          "lessonOrder": [
+            "s05-sql-basics",
+            "s05-relational-design",
+            "s05-transactions-acid",
+            "s05-indexes-explain",
+            "s05-jdbc-dao"
+          ]
+        }
+      ],
+      "referenceRoots": [
+        "stages/stage05_mysql_db/existing_course/src/main/java",
+        "stages/stage05_mysql_db/existing_course/day04_indexes_explain"
+      ],
+      "referenceDocuments": [
+        "stages/stage05_mysql_db/practice/answers.md"
+      ],
+      "packageNamePrefix": "com.javaroadmap.lab.stage05",
+      "slug": "stage05_mysql_db"
     },
     {
       "id": "06",

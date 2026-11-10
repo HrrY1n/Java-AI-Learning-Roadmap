@@ -1,0 +1,47 @@
+{
+  "id": "s04-thread-order",
+  "stageId": "04",
+  "title": "线程启动与阶段汇合",
+  "className": "ThreadOrderLab",
+  "order": 1,
+  "contentState": "published",
+  "lessonIds": [
+    "s04-thread-basics"
+  ],
+  "statementSource": "stages/stage04_java_advanced/practice/s04-exercises.md",
+  "statementAnchor": "练习 1",
+  "hintSource": "stages/stage04_java_advanced/practice/s04-exercises.md",
+  "todo": "先全 start() 再统一 join()：并发计算两段正整数累加和，校验工作线程非 main 后按槽位汇总。",
+  "note": "并发交错顺序不确定；输出只在两线程都 join() 后由主线程汇总，故结果与线程名不变量均 100% 确定。",
+  "cases": [
+    {
+      "label": "两个正整数区间汇合",
+      "input": "100 200\n",
+      "expected": "任务1线程非main：true，结果：5050\n任务2线程非main：true，结果：20100\n汇总完成：25150",
+      "kind": "normal"
+    },
+    {
+      "label": "大上界防 int 溢出",
+      "input": "100000 100000\n",
+      "expected": "任务1线程非main：true，结果：5000050000\n任务2线程非main：true，结果：5000050000\n汇总完成：10000100000",
+      "kind": "boundary"
+    },
+    {
+      "label": "非正上界参数校验",
+      "input": "-5 10\n",
+      "expected": "任务参数无效：上界必须为正整数",
+      "kind": "invalid"
+    },
+    {
+      "label": "非整数输入不崩溃",
+      "input": "abc 10\n",
+      "expected": "任务参数无效：请输入两个整数",
+      "kind": "invalid"
+    }
+  ],
+  "referenceFiles": [
+    "ThreadOrderLabAnswer.java"
+  ],
+  "packageSegment": "threadorder",
+  "needsInput": true
+}

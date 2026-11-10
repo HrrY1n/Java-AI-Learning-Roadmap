@@ -96,6 +96,8 @@ node scripts/create-lesson.mjs --stage 02 --kind deep-dive --slug encapsulation 
 
 答案与解析只存在于 answers 文件（懒加载），不进入默认练习内容。
 
+**变体题（V2.1 起的 modifiedCode 契约）**：manifest 里 `modifiedAnswer: true` 的题，题面必须提供**第二个 ```java 块**作为"修改后的代码"（build 会解析为 `modifiedCode`；`content.test` 强断言所有变体题显式携带）。因此变体题题面里**不要放其他 java 块**——第二个块会被当作修改后代码。无变体的普通题不受影响（多块会被忽略，只有第一块进 `code`）。
+
 ## 7. 独立编程练习与 L1–L4 提示
 
 练习 = 一个 `web/content/exercises/stageNN/<id>.json`（`statementAnchor` 指向题面 Markdown 的 `## 练习 N` 章节；`cases` 必须覆盖 normal/boundary/invalid；`todo` 只写任务不写答案）+ 题面 Markdown 末尾的 `## 渐进提示`（L1 理解问题 → L2 相关知识 → L3 结构思路 → L4 调试线索，恰好四条）。提示与题面同源，但生成器自动保证提示不出现在题面文档视图中。

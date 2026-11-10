@@ -11,6 +11,7 @@ import java.util.Arrays;
  */
 public class App {
 
+    // 选择排序（纯算法）：原地升序、不稳定；只排序不输出，结果由调用方检查。
     static void selectionSort(int[] nums) {
         for (int i = 0; i < nums.length - 1; i++) {
             int min = i;
@@ -20,8 +21,24 @@ public class App {
             int tmp = nums[i]; // 一轮只交换一次
             nums[i] = nums[min];
             nums[min] = tmp;
-            System.out.println("第 " + (i + 1) + " 轮选出 " + nums[i] + " 后：" + Arrays.toString(nums));
         }
+    }
+
+    // 教学辅助：边排边记录每轮结束时的快照（第 r 行 = 第 r+1 轮结束后的数组），
+    // 供入口层打表观察"每轮选出最值放到边界"的过程。算法本身与 selectionSort 相同。
+    static int[][] selectionSortRounds(int[] nums) {
+        int[][] rounds = new int[Math.max(0, nums.length - 1)][];
+        for (int i = 0; i < nums.length - 1; i++) {
+            int min = i;
+            for (int j = i + 1; j < nums.length; j++) {
+                if (nums[j] < nums[min]) min = j;
+            }
+            int tmp = nums[i];
+            nums[i] = nums[min];
+            nums[min] = tmp;
+            rounds[i] = nums.clone();
+        }
+        return rounds;
     }
 
     // 大顶堆下沉
@@ -52,7 +69,11 @@ public class App {
 
     public static void main(String[] args) {
         int[] a = {5, 2, 8, 2, 6};
-        selectionSort(a);
+        int[][] rounds = selectionSortRounds(a);
+        for (int r = 0; r < rounds.length; r++) {
+            // 第 r 轮把第 r 小的值固定到下标 r，所以"本轮选出的数"就是快照的 nums[r]。
+            System.out.println("第 " + (r + 1) + " 轮选出 " + rounds[r][r] + " 后：" + Arrays.toString(rounds[r]));
+        }
         System.out.println("选择排序结果：" + Arrays.toString(a)
                 + "（相等元素的相对顺序可能被打乱：不稳定）");
 

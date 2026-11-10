@@ -54,7 +54,7 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium 2>&1 | tee test-artifacts/logs/browser-install.log
       - name: Chromium core E2E against production preview
-        run: npx playwright test e2e/core.spec.ts 2>&1 | tee test-artifacts/logs/e2e.log
+        run: npx playwright test e2e/core.spec.ts e2e/v14-topics.spec.ts 2>&1 | tee test-artifacts/logs/e2e.log
       - name: Upload test reports and failure evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7

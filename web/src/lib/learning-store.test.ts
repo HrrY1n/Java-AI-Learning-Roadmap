@@ -83,6 +83,21 @@ describe("版本化备份验证", () => {
       }),
     ).toThrow("过长");
   });
+  it("宽容未知额外字段：未来版本新增字段不会把旧版本代码打回内存模式", () => {
+    // 深度重构 R5：只要求必要字段齐全；未知额外字段放行但在净化时丢弃，
+    // 使"新版本写入的快照"在旧版本代码里可加载（降级保存丢弃新字段是可接受语义）。
+    const futuristic = {
+      ...createInitialState(),
+      futureField: { whatever: true },
+      drafts: {
+        exercise1: { code: "// 保留", updatedAt: early, note: "未来字段" },
+      },
+    } as unknown;
+    const restored = validateBackup(futuristic);
+    expect(restored.drafts.exercise1!.code).toBe("// 保留");
+    expect(Object.hasOwn(restored, "futureField")).toBe(false);
+    expect(Object.hasOwn(restored.drafts.exercise1!, "note")).toBe(false);
+  });
   it("拒绝危险键、原型对象、重复证据和超量条目", () => {
     const poisoned = JSON.parse(exportBackup(createInitialState())) as Record<
       string,

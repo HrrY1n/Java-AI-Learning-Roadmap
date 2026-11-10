@@ -10,36 +10,31 @@
     "s02-class-basics"
   ],
   "exerciseIds": [],
-  "predictionIds": [],
+  "predictionIds": [
+    "S03A5"
+  ],
   "steps": [
     {
-      "label": "真实场景",
-      "body": "用户输入的用户名要判长度、去空格、比对是否与库里一致——这些都是字符串的日常操作。"
-    },
-    {
-      "label": "为什么需要",
-      "body": "字符串使用频率极高，标准库把它做成了不可变对象并内置丰富方法；而 == 比较的是引用，内容相同也可能返回 false。"
-    },
-    {
-      "label": "概念与心智模型",
-      "body": "String 不可变：每次“修改”都产生新对象。常用 API：length/contains/substring/toUpperCase。equals 比内容，== 比引用。"
+      "label": "学习目标与场景",
+      "body": "用户输入的用户名要判长度、去空格、比对是否与库里一致。学完本节应能利用不可变性避免忘接返回值、用 equals 与常量池模型杜绝 == 比较字符串内容的大坑。"
     },
     {
       "label": "预测运行",
-      "body": "预测：程序打印的“内容是否相同”是什么？再自己补一行打印 a == b（两个 new String 的引用比较）——先预测 true 还是 false 再运行：为什么内容相同、引用却不同？"
+      "body": "运行前写出全部输出：重点看 text.toUpperCase() 后原 text 变不变，以及 s1 == s2（字面量）与 a == b（new String）的真假差异。"
     },
     {
       "label": "修改一个条件",
-      "body": "把 text 改成 \"I love JAVA\" 再调 toUpperCase，自己补一行 System.out.println(text)：打印的是大写还是原样？——String 不可变，toUpperCase 返回的是新串。"
+      "body": "把 s2 改成 new String(\"Java\").intern()（强制回池），预测 s1 == s2 变不变？再把 a = null 后试一试 a.equals(\"Java\") vs \"Java\".equals(a) 的差别。"
     },
     {
       "label": "独立练习",
-      "body": "独立练习：给定邮箱字符串，用 API 取出 @ 之前的部分并转小写（提示：indexOf、substring、toLowerCase）。"
+      "body": "给定邮箱字符串（如 \"  Alice@Example.COM \"），用 API 去除首尾空白、取出 @ 之前的用户名并转小写（提示：trim、indexOf、substring、toLowerCase，注意思考不含 @ 时的边界防护）。"
     },
     {
       "label": "项目迁移",
-      "body": "真实项目比较密码、Token 一律用 equals；字符串拼接频繁时改用 StringBuilder（下一课）。"
+      "body": "真实项目比较密码、Token 一律用 equals（敏感场景用常量时间比较）；字符串循环拼接频繁时改用下一课 StringBuilder。"
     }
   ],
+  "bodyPath": "stages/stage02_java_oop/existing_course/examples/common_api/day01_string/README.md",
   "codeDirectory": "stages/stage02_java_oop/existing_course/examples/common_api/day01_string"
 }

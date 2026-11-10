@@ -18,34 +18,26 @@
   ],
   "steps": [
     {
-      "label": "真实场景",
-      "body": "根据成绩打印评价，并把菜单选项映射成不同的操作。"
-    },
-    {
-      "label": "为什么需要",
-      "body": "程序不能对所有输入做同一件事。分支把业务规则转成可验证的条件与路径。"
-    },
-    {
-      "label": "概念与心智模型",
-      "body": "if-else 从上到下寻找第一个满足条件的分支；switch 按值选择入口。把每条路径想成一条需要单独验证的道路。"
+      "label": "学习目标与场景",
+      "body": "根据成绩打印评价，并把菜单选项映射成不同操作。学完本节应能写出无条件遮蔽的区间分支、利用短路保护前置条件，并避开 switch 穿透陷阱。"
     },
     {
       "label": "预测运行",
-      "body": "先预测 score 为 95、day 为 3 时会走哪些分支。运行后说明为什么其他分支没有执行。"
+      "body": "先预测 score 为 95、count 为 0（右边的 total / count）、day 为 3 时分别走哪些分支。运行后说明为什么其他分支没有执行。"
     },
     {
       "label": "修改一个条件",
-      "body": "只把 score 改成 60，再改成 59；比较 >= 60 与 > 60 的边界。另一次实验只删除一个 break，观察 switch 的变化。"
+      "body": "做两次对照实验：① 把 && 换成单个 & 运行，观察除零异常；② 只删除 case 1 的 break 且把 day 改成 1，观察 switch 贯穿现象。另有边界实验：把 score 分别改成 60 和 59。"
     },
     {
       "label": "独立练习",
-      "body": "实现年龄判断或月份到季节的转换；自己选择 if 或 switch，并补一组非法输入。"
+      "body": "实现年龄分段判断或月份到季节的转换；自己选择 if 或 switch，并补一组非法输入（如负数或 13 月）校验。"
     },
     {
       "label": "项目迁移",
-      "body": "输入校验、权限检查、库存判断都依赖分支。先检查失败条件，再继续计算，可以避免无效数据流入后续步骤。"
+      "body": "输入校验、权限检查、空指针前置防线（obj != null && obj.isValid()）都依赖短路与分支顺序。先拦住失败条件，再进入核心逻辑。"
     }
   ],
-  "bodyPath": null,
+  "bodyPath": "stages/stage01_java_basics/existing_course/day03_if_switch/README.md",
   "codeDirectory": "stages/stage01_java_basics/existing_course/day03_if_switch/com/javaroadmap/stage01/day03ifswitch"
 }
