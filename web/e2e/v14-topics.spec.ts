@@ -395,13 +395,15 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     const targetRow = page.locator("#book-pro-git");
     await expect(targetRow).toBeVisible();
 
-    // 5. 未发布课程门禁：搜索未上线的内容（如旅行商专题课）不会出现可跳转正文
+    // 5. 未发布课程门禁：搜索未上线的内容不会出现可跳转正文
+    //    （V2.2：正文搜索上线后"旅行商"在 algo-time-complexity 正文里可命中，
+    //     改用真正未发布的探针——building 专题里只出现在未发布课文的概念词）
     await page.keyboard.press("Control+k");
     await expect(searchModal).toBeVisible();
-    await input.fill("旅行商");
+    await input.fill("微架构分支预测器");
     const emptyNotice = page.locator(".search-empty");
     await expect(emptyNotice).toBeVisible();
-    await expect(emptyNotice).toContainText("没有找到与 \"旅行商\" 相关的课程或材料");
+    await expect(emptyNotice).toContainText("没有找到与 \"微架构分支预测器\" 相关的课程或材料");
   });
 
   test("搜索弹窗焦点圈定、Tab与Enter分工、Escape关闭与焦点返回（键盘无障碍）", async ({ page }) => {
