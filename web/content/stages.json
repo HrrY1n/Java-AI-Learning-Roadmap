@@ -155,7 +155,9 @@
       "referenceRoots": [
         "stages/stage04_java_advanced/existing_course"
       ],
-      "referenceDocuments": [],
+      "referenceDocuments": [
+        "stages/practice/answers/diagnostic_solutions.md"
+      ],
       "packageNamePrefix": "com.javaroadmap.lab.stage04",
       "slug": "stage04_java_advanced"
     },
