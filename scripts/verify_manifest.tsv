@@ -108,3 +108,6 @@ stages/stage03_java_core/advanced/type_information	com.javaroadmap.stage03.advan
 stages/stage03_java_core/advanced/concurrency_basics	com.javaroadmap.stage03.advanced.concurrencybasics.App	-	out	同步后的计数：2000（期望 2000）	可见性是另一回事
 stages/stage03_java_core/advanced/design_patterns	com.javaroadmap.stage03.advanced.designpatterns.App	-	out	zip:report.txt.zip	gzip:report.txt.gz	销售数据 -> 表格
 stages/stage03_java_core/advanced/assertions	com.javaroadmap.stage03.advanced.assertions.App	-	out	断言状态：关闭（用 java -ea 重新运行观察区别）	最小自测：2 个用例，失败 0 个	√2 ≈ 1.414213562373095	前置条件拦截：体重与身高必须为正数：-50.0, 1.7
+stages/topics/ostep/examples/ostep_locks_atomics	com.javaroadmap.ostep.ostep_locks_atomics.App	-	out	CAS 自旋锁保护后精确计数：200000	竞争期间发生空转自旋次数
+stages/topics/network/examples/net_reliable_tcp	com.javaroadmap.network.net_reliable_tcp.App	-	out	收到重复分组 seq=1 -> 传输层去重丢弃	当前交付序列=[1, 2]	幂等拦截重复请求（key=req-8801）
+stages/topics/csapp/examples/csapp_exceptional_control_flow	com.javaroadmap.csapp.csapp_exceptional_control_flow.App	-	out	正常命令 exitCode=0	是否失败=true	系统调用找不到可执行文件才触发 Java IOException：IOException

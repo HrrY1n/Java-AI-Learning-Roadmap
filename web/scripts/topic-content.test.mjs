@@ -499,6 +499,19 @@ test("三本系统教材配套示例：关键行为在源码中真实可观察",
   assert.match(httpStatus, /200/, "HTTP 实验必须有 200");
   assert.match(httpStatus, /404/, "HTTP 实验必须有 404");
   assert.match(httpStatus, /ConnectException/, "HTTP 实验必须区分连接失败");
+
+  // V2.2 P6 三专题优先升级守卫：
+  const locks = topicLessonSource("topic-ostep", "ostep-locks-atomics");
+  assert.match(locks, /SpinLock/, "OSTEP 锁实验必须手写 SpinLock");
+  assert.match(locks, /compareAndSet/, "OSTEP 锁实验必须基于 CAS 原语");
+
+  const rdt = topicLessonSource("topic-network", "net-reliable-tcp");
+  assert.match(rdt, /TcpReceiverSim/, "网络可靠传输实验必须模拟序号去重与累计确认");
+  assert.match(rdt, /IdempotentOrderService/, "网络可靠传输实验必须区分业务幂等边界");
+
+  const ecf = topicLessonSource("topic-csapp", "csapp-exceptional-control-flow");
+  assert.match(ecf, /destroyForcibly/, "CSAPP 异常控制流实验必须含超时强杀回收");
+  assert.match(ecf, /redirectErrorStream/, "CSAPP 实验必须处理输出流防管道写满死锁");
 });
 
 test("三本系统教材：页码修正由 PDF 书签核对驱动且不被回退", () => {

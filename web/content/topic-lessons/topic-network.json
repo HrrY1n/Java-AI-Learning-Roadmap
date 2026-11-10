@@ -129,7 +129,7 @@
           "title": "可靠数据传输与 TCP 语义",
           "summary": "理解确认、重传、流水线、流量控制和连接状态。",
           "status": "published",
-          "kind": "concept",
+          "kind": "code",
           "bookReference": {
             "bookTitle": "计算机网络（原书第 8 版中文版）",
             "chapter": "第 3.4-3.5 节",
@@ -141,7 +141,10 @@
             "04"
           ],
           "bodyPath": "stages/topics/network/lessons/net-reliable-tcp.md",
-          "priority": "now"
+          "priority": "now",
+          "codeDirectory": "stages/topics/network/examples/net_reliable_tcp",
+          "packageName": "com.javaroadmap.network.net_reliable_tcp",
+          "className": "App"
         },
         {
           "id": "net-congestion-control",
