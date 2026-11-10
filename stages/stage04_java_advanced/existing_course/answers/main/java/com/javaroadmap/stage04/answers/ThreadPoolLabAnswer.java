@@ -2,10 +2,10 @@ package com.javaroadmap.stage04.answers;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -55,7 +55,7 @@ public class ThreadPoolLabAnswer {
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>()
         );
-        Set<String> usedThreads = Collections.synchronizedSet(new HashSet<String>());
+        Set<String> usedThreads = Collections.synchronizedSet(new TreeSet<String>());
         List<Future<Long>> futures = new ArrayList<Future<Long>>();
 
         for (int i = 1; i <= taskCount; i++) {
@@ -79,7 +79,8 @@ public class ThreadPoolLabAnswer {
 
         boolean allFromPool = true;
         for (String name : usedThreads) {
-            if ("main".equals(name)) {
+            // 默认线程工厂把池线程命名为 pool-N-thread-M；手开普通 Thread 无法以 pool- 开头。
+            if (!name.startsWith("pool-")) {
                 allFromPool = false;
                 break;
             }
@@ -89,6 +90,7 @@ public class ThreadPoolLabAnswer {
         System.out.println("任务总数：" + taskCount + "，池大小：" + poolSize);
         System.out.println("任务均由池线程执行：" + allFromPool);
         System.out.println("工作线程数不超上限：" + withinLimit);
+        System.out.println("执行线程名（排序去重）：" + new java.util.ArrayList<String>(usedThreads));
         System.out.println("计算结果：" + results);
         System.out.println("结果总和：" + total);
         System.out.println("线程池已优雅关闭：" + (terminated && pool.isTerminated()));

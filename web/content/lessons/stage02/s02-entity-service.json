@@ -7,7 +7,8 @@
   "summary": "数据类与行为类分开，初探真实项目的分层组织。",
   "contentState": "published",
   "relatedLessonIds": [
-    "s02-interface-abstract"
+    "s02-interface-abstract",
+    "s02-encapsulation-why"
   ],
   "exerciseIds": [],
   "predictionIds": [],

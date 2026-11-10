@@ -28,7 +28,7 @@
 
 ## 运行与验证方式（Windows / macOS 通用）
 
-1. 准备测试库：建议使用隔离的本地 Docker MySQL 8.0 容器（例如端口 `3307`，库 `javaroadmap_lab_test`），**不要动本机已有业务库**。
+1. 准备测试库：建议使用隔离的本地 Docker MySQL 8.0 容器（例如端口 `3307`，库 `javaroadmap_lab_test`），**不要动本机已有业务库**。资源提示：MySQL 容器常驻约占 400–600 MB 内存，8 GB 内存设备跑 Docker Desktop + IDE 会比较吃紧——不用容器时可以先只做纯 `javac` 编译与 String 模拟（`stage05-compile` 测试不依赖数据库），把容器实验集中安排，用完 `docker stop` 释放。
 2. 准备驱动：从 Maven Central 获取官方 `mysql-connector-j-8.4.0.jar` 放在本地（通过 `JRL_MYSQL_JAR` 指定，不要提交到 Git）。
 3. 配置凭据：复制 [db.local.properties.example](db.local.properties.example) 为 `db.local.properties`（已忽略），或设置环境变量 `JRL_MYSQL_URL`、`JRL_MYSQL_USER`、`JRL_MYSQL_PASSWORD`。
 4. 一键可重复验证（编译全部 5 课 + 演进项目并连库实测）：

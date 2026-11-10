@@ -10,17 +10,22 @@
 
 ## 已完成事项
 
-1. **Git 基线**：核实 V2.2 终态 `32ecf59`（= `fca64d2` + 13 份纯文档）；`main`=`origin/main`=`6c3ca91` 未动；V2.0/V2.1/V2.2 三条历史分支与未跟踪用户文件（`docs/javaroadmap_lab/v1.4_screenshots/`、`docs/overhaul-v2.1.rar`、`docs/overhaul-v2.zip`）完好；已建分支 `codex/deep-overhaul-v2.3`。
-2. **干净检出验证**（worktree `C:\Users\Administrator\AppData\Local\Temp\jrl-v23-clean`，全新 `npm ci --offline`，CI=1 强制新启 preview）：Java **107/107**、npm test **80/0**、typecheck/build/check:build/内容生成幂等 **全过**、Pages smoke **10/10**、链接 **325 ALL OK**。默认 E2E：首跑 53 过 + 16 失败（全部 v14-topics，未复现），复跑 **69/69**（3.4m）——已标记为 E2E 稳定性风险待工程轮处理。
-3. **全量课程审计**（6 个只读代理并行完成，61 门主线 + 48 门已发布专题 + 43 门 building 专题核验）：问题清单收敛完毕，详见 `01_FULL_CURRICULUM_AUDIT.md`。
+1. **Git 基线**：核实 V2.2 终态 `32ecf59`（= `fca64d2` + 13 份纯文档）；`main`=`origin/main`=`6c3ca91` 未动；历史分支与未跟踪用户文件完好；已建分支 `codex/deep-overhaul-v2.3`。
+2. **干净检出验证**（worktree `C:\Users\Administrator\AppData\Local\Temp\jrl-v23-clean`，全新 `npm ci --offline`，CI=1 强制新启 preview）：Java 107/107、npm test 80/0、build/Pages 10/10/链接 325 OK 全过。默认 E2E 首跑 16 失败（未复现），复跑 **69/69**——已列为工程轮议题。
+3. **全量课程审计**（6 代理，61 主线 + 48 专题 + 43 building 核验）→ `01_FULL_CURRICULUM_AUDIT.md`（提交 `949cdbc`）。
+4. **修复轮次 R1（内容与准确性）**：
+   - Stage01：B1 答案笔误（13/7/30/3/1）、A8 重写为除零短路版（真 JDK 双路实测）、day01/day07 Modify 注释与代码对齐、calculator 参考答案对齐 7 用例（前缀/文案/非数字防御）、L2 提示契约对齐、练习↔课程↔预测双向关联修复（scores/refactor/deep06/deep02/A8）。
+   - Stage02：polymorphism-basics 独立练习 Robot→Rabbit（消除与深化课反例冲突）、新增 `FieldShadowDemo`（字段不参与多态）+ README 小节 + 概念卡 + manifest 行、String 常量池 `==` 表述按 JLS §3.10.5 修正、reference-state 6 行、3 处 relatedLessonIds 断链、encapsulation-basics 金额、stringbuilder-intro 深化入口、entity-service ArrayList 前向依赖注释。
+   - Stage03：hashset 去重机制（概念卡+代码注释）、lambda effectively final（概念卡+App 捕获实验+deep05 新小节+manifest）、hashmap CME 交叉引用、file-read 关联+相对路径、excellent-stats 答案改 IntStream.range（兑现"无外部可变变量"）、email-csv 答案补 email 非空校验+新增 score 非数字 case、type-information newInstance 措辞。
+   - Stage04/05：s04-safe-counter/thread-pool-lab 输出契约升级为真结构不变量（实际累加线程排序清单 / pool- 前缀判定），答案与用例 12/12 实测同步；thread-basics 补 Thread.start HB+jstack；thread-pool 补 shutdownNow；concurrent-tools 补 Future.cancel/超时；safe-counter 回链 s04-concurrent-tools；Stage05 四课 UNIQUE 多 NULL / EXPLAIN 估算声明 / Connector/J 预编译差异 / 8GB 资源提示；S05B2 referencePaths 补齐。
+   - 专题：algo 转义损坏修复（φ≈1.618）、两课章节号连续化、graph 拆句、git h1/title 对齐 x3、git init -b main、branch-create-merge 补提交步骤、rebase-interactive 计数修正。
+5. **R1 验证**：Java 回归（见下方"最近测试结果"）；exercises/predictions/stage05 语义测试通过；topics.json diff 28 行。
 
 ## 尚未完成事项
 
-- 修复轮次（R1 起）：审计发现的 P1/P2 内容缺陷集中修复。
-- 薄课知识缺口补强（hashset 去重机制、lambda effectively final、字段不参与多态等）。
-- 练习独立验证增强（Stage04 并发结构不变量等）。
-- 学习路径模拟、Stage05 体验完善、工程审计、独立评审、远端 CI（Draft PR）。
-- 交付文档 02–15。
+- R1 最终回归收尾 + 提交 + `02_TEACHING_QUALITY_REMEDIATION.md`。
+- R2：Git 专题 6 门薄课扩写（沙箱实测叙述）+ Stage01 机制成文（for 时序/`new int[n]`/方法声明）。
+- 学习路径模拟（06）、Stage05 体验（07）、工程审计（08）、独立评审（11）、远端 CI Draft PR（12）、交付 09–15。
 
 ## 当前阻断
 
@@ -28,8 +33,9 @@
 
 ## 下一步操作
 
-1. 提交基线文档（00 + 01 + CHECKPOINT）。
-2. 进入修复轮次 R1（按 01 文档【修复清单】执行），每轮后跑回归。
+1. 等 R1 两个后台回归（npm test / verify_java）结束并记录结果。
+2. 写 02_TEACHING_QUALITY_REMEDIATION.md，随 R1 修复一并提交。
+3. 进入 R2（Git 6 门薄课扩写 + Stage01 机制成文）。
 
 ## 最近一次有效测试结果
 

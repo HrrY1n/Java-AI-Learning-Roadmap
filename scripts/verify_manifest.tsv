@@ -42,7 +42,7 @@ stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions
 stages/stage03_java_core/examples/buffered_reader_demo	com.javaroadmap.stage03.examples.bufferedreaderdemo.App	-	out	流式读取完成，总行数：	1: package
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day03_file_write	com.javaroadmap.stage03.exceptionsio.day03filewrite.App	-	out;output.txt	写入成功：
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/exceptions_io/day04_simple_note_app	com.javaroadmap.stage03.exceptionsio.day04simplenote.App	-	out;notes.txt	当前全部笔记：	今天学习了 Java 文件读写。
-stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day01_lambda	com.javaroadmap.stage03.lambdastream.day01lambda.App	-	out	结果：30
+stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day01_lambda	com.javaroadmap.stage03.lambdastream.day01lambda.App	-	out	结果：30	带基数结果：40
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day02_stream_filter_map	com.javaroadmap.stage03.lambdastream.day02streamfiltermap.App	-	out	张三丰	学生：小明
 stages/stage03_java_core/existing_course/examples/legacy_fundamentals/lambda_stream/day03_stream_collect	com.javaroadmap.stage03.lambdastream.day03streamcollect.App	-	out	筛选后的新列表：[小明, 小红, 小刚]
 stages/stage03_java_core/existing_course/src/main/java	com.javaroadmap.stage03.student.StudentManagementApp	-	out;data	平均分：	不重复姓名：	文件版学生管理
@@ -58,6 +58,7 @@ stages/stage02_java_oop/deep_dives/02_constructor_this	com.javaroadmap.stage02.d
 stages/stage02_java_oop/deep_dives/03_encapsulation_why	com.javaroadmap.stage02.deepdives.encapsulation.EncapsulationDemo	-	out	的余额：-500	的余额：120.0
 stages/stage02_java_oop/deep_dives/04_inheritance_composition	com.javaroadmap.stage02.deepdives.inheritance.InheritanceCompositionDemo	-	out	实际：16	车辆出发
 stages/stage02_java_oop/deep_dives/05_polymorphism_interface	com.javaroadmap.stage02.deepdives.polymorphism.PolymorphismDemo	-	out	[旺财] 汪	机器人 R2 上线	我是狗
+stages/stage02_java_oop/deep_dives/05_polymorphism_interface	com.javaroadmap.stage02.deepdives.polymorphism.FieldShadowDemo	-	out	Animal 的 label	[旺财] 汪	Dog 的 label
 stages/stage02_java_oop/deep_dives/06_entity_service	com.javaroadmap.stage02.deepdives.entityservice.EntityServiceDemo	-	out	平均分：	入口层捕获：分数必须在 0 到 100：150	拒绝非法学生后人数：3
 stages/stage02_java_oop/existing_course/day07_static_visibility	com.javaroadmap.stage02.day07staticvisibility.App	-	out	创建前累计人数：0	创建两人后累计人数：2	累计人数仍是：3	跨包子类读 protected 成功
 stages/stage04_java_advanced/existing_course/day04_thread_pool	com.javaroadmap.stage04.day04threadpool.App	-	out	动用的线程数：2	pool-1-thread	任务都在队列里排队，5 个任务只用了 2 个常驻工人

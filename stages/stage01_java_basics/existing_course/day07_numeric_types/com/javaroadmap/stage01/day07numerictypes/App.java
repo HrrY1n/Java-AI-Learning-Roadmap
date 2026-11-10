@@ -4,7 +4,7 @@ package com.javaroadmap.stage01.day07numerictypes;
  * 知识点：Java 八种基本数据类型、编译期常量窄化、整型提升、整数溢出与浮点特殊值。
  *
  * Observe：预测 (max + 1)、byte + byte 的类型归属、1.0 / 0.0 以及 Math.addExact 的输出。
- * Modify：取消"编译报错演示"行注释观察 javac 对整型提升和非常量赋值的保护；去掉 L 试试。
+ * Modify：照 29 行注释把 byteSum 改成 byte 类型，观察整型提升后的编译保护；再把 15 行 long 字面量的 L 去掉试试，看 javac 怎么报错。
  */
 public class App {
     public static void main(String[] args) {

@@ -16,7 +16,8 @@ public class App {
         System.out.println("原 text 仍为：" + text);
         System.out.println("从第 2 个字符开始截取：" + text.substring(2));
 
-        // 1) 字面量入字符串常量池：两个相同的字面量往往复用同一个池对象（== 可能为 true，但不能依赖它！）
+        // 1) 字面量入字符串常量池：相同的字面量保证是同一个池对象（JLS §3.10.5，== 必为 true）。
+        //    但工程上判相等仍然只用 equals——因为 new String(...) 的堆对象内容相同、引用不同，== 是 false。
         String s1 = "Java";
         String s2 = "Java";
         System.out.println("字面量 s1 == s2：" + (s1 == s2));

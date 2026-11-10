@@ -179,7 +179,8 @@
         }
       ],
       "referenceRoots": [
-        "stages/stage05_mysql_db/existing_course/src/main/java"
+        "stages/stage05_mysql_db/existing_course/src/main/java",
+        "stages/stage05_mysql_db/existing_course/day04_indexes_explain"
       ],
       "referenceDocuments": [
         "stages/stage05_mysql_db/practice/answers.md"

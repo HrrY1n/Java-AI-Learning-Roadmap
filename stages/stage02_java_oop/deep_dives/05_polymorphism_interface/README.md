@@ -30,6 +30,19 @@ day05 的 `feed(Animal animal)` 已经让你见过"一个方法喂所有动物"�
 
 **Observe（先预测再运行）**：预测 `speakAll` 的输出（注意 `title()` 是抽象类里的公共实现，Dog/Cat 都用它）；预测第二段循环的输出顺序。
 
+## 字段不参与多态（易踩的坑）
+
+动态绑定只作用于**方法**。字段在编译期按**引用的静态类型**解析：子类的同名字段是"遮蔽"（shadowing），不是覆盖——父类字段仍然存在，只是换一个引用才读得到。运行 `FieldShadowDemo` 对照：
+
+```java
+Animal animal = new Dog("旺财");
+System.out.println(animal.label); // Animal 的 label —— 字段看静态类型
+animal.speak();                   // [旺财] 汪     —— 方法看实际类型
+System.out.println(dog.label);    // Dog 的 label  —— Dog 引用才读到子类字段
+```
+
+**为什么把它当坑讲**：这正是"接口没有实例字段"的技术根源——字段没有多态，跨层级共享状态只能靠继承拿到同一份；想让每个实现"各有各的值"，用方法（或接口契约）而不是公共字段。
+
 ## 动手：修改一个条件
 
 1. 新增 `Bird extends Animal`（speak 打"啾"），把它加进 zoo 数组：确认 `speakAll` 一行未改。再尝试用 if-else 版实现同样效果，数一数要动几处。

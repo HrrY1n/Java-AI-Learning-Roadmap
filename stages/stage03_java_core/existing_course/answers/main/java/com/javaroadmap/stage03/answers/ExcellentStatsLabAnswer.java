@@ -3,6 +3,7 @@ package com.javaroadmap.stage03.answers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * 练习"优秀名单双版本"参考答案：Stream 版与 for 版语义完全等价。
@@ -24,15 +25,11 @@ public class ExcellentStatsLabAnswer {
         System.out.println("for 版：" + listExcellentFor());
     }
 
-    /** Stream 版：filter 保留"分数 >= 90"的下标，映射成姓名后收集。 */
+    /** Stream 版：filter 保留"分数 >= 90"的下标，映射成姓名后收集；无外部可变变量。 */
     static List<String> listExcellentStream() {
-        List<Integer> excellentIndexes = new ArrayList<Integer>();
-        for (int i = 0; i < SCORES.length; i++) {
-            excellentIndexes.add(i);
-        }
-        return excellentIndexes.stream()
+        return IntStream.range(0, SCORES.length)
                 .filter(i -> SCORES[i] >= 90)
-                .map(i -> NAMES[i])
+                .mapToObj(i -> NAMES[i])
                 .collect(Collectors.toList());
     }
 

@@ -76,8 +76,8 @@ System.out.println((char) ('A' + 1));
 
 ### A8 短路求值
 ```java
-int[] arr = new int[2];
-if (arr.length > 2 && arr[2] == 0) {
+int score = 95;
+if (score > 100 && score / 0 == 1) {
     System.out.println("不会走到这里");
 }
 System.out.println("安全");

@@ -28,7 +28,7 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "ThreadPoolExecutor 四个核心概念：corePoolSize（常驻工人）、maximumPoolSize（工人上限）、工作队列（排队容量）、拒绝策略（全满时怎么办：抛异常/调用者自己跑/丢弃…）。提交顺序：常驻工人有空直接干 → 没空排队 → 队列满且未到上限才加人 → 全满走拒绝策略。shutdown() = 不再接新任务、跑完存量；awaitTermination 等它收尾。"
+      "body": "ThreadPoolExecutor 四个核心概念：corePoolSize（常驻工人）、maximumPoolSize（工人上限）、工作队列（排队容量）、拒绝策略（全满时怎么办：抛异常/调用者自己跑/丢弃…）。提交顺序：常驻工人有空直接干 → 没空排队 → 队列满且未到上限才加人 → 全满走拒绝策略。shutdown() = 不再接新任务、跑完存量；awaitTermination 等它收尾。紧急停机用 shutdownNow()：尝试中断在跑任务并返回队列中尚未开始的任务列表——与 shutdown() 的区别是\"是否中断存量\"。"
     },
     {
       "label": "预测运行",

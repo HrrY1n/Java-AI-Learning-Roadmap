@@ -36,7 +36,9 @@
       "lessonIds": [
         "s05-indexes-explain"
       ],
-      "referencePaths": []
+      "referencePaths": [
+        "stages/stage05_mysql_db/existing_course/day04_indexes_explain/com/javaroadmap/stage05/day04indexesexplain/App.java"
+      ]
     }
   }
 }

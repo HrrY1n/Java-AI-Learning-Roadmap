@@ -25,7 +25,7 @@
 
 1. **`PRIMARY KEY`（主键）**：唯一标识一行（非空且不重复），在 InnoDB 中决定整行数据按主键物理聚集存放；单表通常使用自增代理键 `BIGINT AUTO_INCREMENT`。
 2. **`NOT NULL`**：禁止缺失值（`NULL` 在 SQL 里代表“未知”，连 `= NULL` 都不成立，必须写 `IS NULL`）。
-3. **`UNIQUE KEY`**：允许业务键不重（如学号 `student_no`），违约时 MySQL 抛出错误码 **`1062`**（SQLState `23000`）。
+3. **`UNIQUE KEY`**：允许业务键不重（如学号 `student_no`），违约时 MySQL 抛出错误码 **`1062`**（SQLState `23000`）。注意标准 SQL 的 NULL 语义：唯一约束列里**多个 NULL 互不算重复**（NULL 表示未知，未知 ≠ 未知），所以业务键仍必须配 `NOT NULL` 才真正唯一。
 4. **`CHECK`**：**MySQL 版本硬差异**——在 MySQL 5.7 及 8.0.15 之前，`CHECK` 语句会被静默解析并**完全忽略**；**直到 MySQL 8.0.16 才真正强制执行**（违约抛错误码 **`3819`**）。在老版本或复杂规则中仍需应用层与触发器配合。
 5. **`DEFAULT`**：提供安全缺省值（如 `CURRENT_TIMESTAMP`）。
 

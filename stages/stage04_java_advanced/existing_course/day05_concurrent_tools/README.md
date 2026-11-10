@@ -11,7 +11,7 @@
 
 ## 2. `Callable<V>`、`Future<V>` 与 `CompletableFuture` 路标
 
-`Runnable.run()` 没有返回值、也不能向上抛出受检异常。提交 `Callable<V>` 给线程池会立刻拿到一个凭证 **`Future<V>`**，主线程可以继续干别的事，到需要结果时调用 `future.get()` 阻塞取结果（任务若内部抛异常，会被包进 `ExecutionException` 带回主线程）。
+`Runnable.run()` 没有返回值、也不能向上抛出受检异常。提交 `Callable<V>` 给线程池会立刻拿到一个凭证 **`Future<V>`**，主线程可以继续干别的事，到需要结果时调用 `future.get()` 阻塞取结果（任务若内部抛异常，会被包进 `ExecutionException` 带回主线程）。工程上更常用 `get(timeout, unit)` 的超时版防无限等待，以及 `cancel(mayInterruptIfRunning)` 放弃不再需要的任务——本课实验不引入它们，Stage 06 异步实战时再用。
 
 - **必须配对的资源纪律**：像示例里把线程池放进 `try { ... } finally { pool.shutdown(); }`，确保即便 `future.get()` 抛异常，非守护工作线程依然会被安全关闭。
 - **工程后续**：`Future.get()` 仍需要阻塞等待且不便串联多个异步任务；Java 8+ 引入了支持回调链与多路编排的 `CompletableFuture`（在 Stage 06 项目实战中展开）。

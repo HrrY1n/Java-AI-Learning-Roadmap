@@ -18,6 +18,7 @@ ArrayList 按值查找需要逐个扫描（$O(n)$），而 HashMap 把 key 通�
 2. **`get` 找不到返回 `null`（不会报错）**：若值是 `Integer`，直接 `int score = scores.get("李雷");` 或 `scores.get("李雷") + 1` 会触发**自动拆箱 `NullPointerException`**（见预测题 `S03A1`）。防法：用 `scores.getOrDefault("李雷", 0)` 或先 `containsKey` 检查。
 3. **键必须正确重写 `equals` 和 `hashCode` 且尽量不可变**：修改了已放入 `HashMap` 的 key 字段值导致 `hashCode` 变化，该条目就会留在旧桶里再也 `get` 不到（见 `s03-equals-hashcode`）。
 4. **遍历三方式选择**：只要值用 `values()`；既要键又要值用 **`entrySet()`**（一次拿到键值，避免 `keySet()` 里每次再调用 `get(key)` 二次哈希查找）。
+5. **迭代中改结构必踩 CME**：与 List 一样，`entrySet()`/`keySet()` 迭代中直接 `put`/`remove` 会抛 `ConcurrentModificationException`；要么用 `Iterator.remove()`（Map 的 entrySet 迭代器支持），要么收集到后再统一修改（见 ArrayList 课的 CME 对照表）。
 
 ## 学习验收与自我检核
 

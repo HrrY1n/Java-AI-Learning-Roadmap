@@ -7,7 +7,7 @@ package com.javaroadmap.stage01.day01outputvariable;
  * 局部变量必须先声明并赋值后才能读取（否则编译报错），但之后可以重新写入新值。
  *
  * Observe：先预测会打印几行、每次 age 的值以及最后一行 "+" 拼接输出什么，再运行核对。
- * Modify：把 age = 19; 删掉或把赋值移到读取之后，观察 javac 报什么错。
+ * Modify：把 int age = 18; 改成只声明不赋值（int age;），预测 javac 报什么错（JLS §16 明确赋值）；再把 age = 19; 挪到第一次读取之前，看错误何时消失、输出怎么变。
  */
 public class App {
     public static void main(String[] args) {

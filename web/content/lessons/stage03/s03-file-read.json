@@ -7,7 +7,8 @@
   "summary": "逐行读取文本文件，并对“文件不存在”做异常处理。",
   "contentState": "published",
   "relatedLessonIds": [
-    "s03-exception"
+    "s03-exception",
+    "s03-utf8-io"
   ],
   "exerciseIds": [
     "s03-email-csv"
@@ -32,7 +33,7 @@
     },
     {
       "label": "修改一个条件",
-      "body": "换一个更长的数据文件，观察“总行数”的值如何随之变化——readAllLines 把行存进集合，行数就是集合大小。"
+      "body": "换一个更长的数据文件，观察“总行数”的值如何随之变化——readAllLines 把行存进集合，行数就是集合大小。注意：相对路径按\"进程启动目录\"解析——从仓库根和从源码目录运行，同一个路径可能一个成功一个走失败分支（深化课 04 有完整解释）。"
     },
     {
       "label": "独立练习",

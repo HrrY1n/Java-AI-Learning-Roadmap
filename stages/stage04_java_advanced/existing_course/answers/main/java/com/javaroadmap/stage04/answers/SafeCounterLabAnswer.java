@@ -1,6 +1,8 @@
 package com.javaroadmap.stage04.answers;
 
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Stage 04 练习 2"线程安全计数器"参考答案。
@@ -53,11 +55,14 @@ public class SafeCounterLabAnswer {
         SafeCounter counter = new SafeCounter();
         Thread[] workers = new Thread[threads];
         final boolean[] nonMainFlags = new boolean[threads];
+        // 结构不变量：在工作线程内部登记真实执行的线程名（TreeSet 排序去重，输出确定）。
+        Set<String> actualWorkers = new TreeSet<String>();
 
         for (int i = 0; i < threads; i++) {
             final int idx = i;
             workers[i] = new Thread(() -> {
                 nonMainFlags[idx] = !"main".equals(Thread.currentThread().getName());
+                actualWorkers.add(Thread.currentThread().getName());
                 for (int step = 0; step < perThread; step++) {
                     counter.increment();
                 }
@@ -81,6 +86,7 @@ public class SafeCounterLabAnswer {
 
         System.out.println("线程数：" + threads + "，每线程次数：" + perThread);
         System.out.println("工作线程均非main：" + allWorkersNonMain);
+        System.out.println("实际累加线程（排序去重）：" + new java.util.ArrayList<String>(actualWorkers));
         System.out.println("最终计数：" + counter.get());
     }
 }

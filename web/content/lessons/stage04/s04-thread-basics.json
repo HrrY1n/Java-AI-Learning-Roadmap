@@ -27,7 +27,7 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "把线程想成“两个工人看同一张图纸干活”。调度器决定谁何时上工：交错顺序不可控、每次运行可能不同。Thread.State 共有 6 种状态：NEW（未 start）→ RUNNABLE（含就绪与正在执行）→ 阻塞等待（BLOCKED 等锁 / WAITING 无限等 / TIMED_WAITING 超时等）→ TERMINATED（结束）。注意：同一 Thread 对象重复调用 start() 会直接抛 IllegalThreadStateException；join() = “等这条流跑完我再继续”，且建立 happens-before 内存可见性。"
+      "body": "把线程想成“两个工人看同一张图纸干活”。调度器决定谁何时上工：交错顺序不可控、每次运行可能不同。Thread.State 共有 6 种状态：NEW（未 start）→ RUNNABLE（含就绪与正在执行）→ 阻塞等待（BLOCKED 等锁 / WAITING 无限等 / TIMED_WAITING 超时等）→ TERMINATED（结束）。注意：同一 Thread 对象重复调用 start() 会直接抛 IllegalThreadStateException；join() = “等这条流跑完我再继续”，且建立 happens-before 内存可见性。两条 happens-before 别漏：Thread.start() 调用前的代码 happens-before 新线程内一切动作；join() 返回前子线程的全部动作 happens-before 主线程后续代码。排查真实交错问题时用 jstack <pid>（或 IDEA 线程面板）抓线程转储，对照这里的 6 态定位每条线程卡在哪。"
     },
     {
       "label": "预测运行",

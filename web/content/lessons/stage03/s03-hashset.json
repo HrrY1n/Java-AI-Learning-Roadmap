@@ -25,7 +25,7 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "add、contains、size。元素无序：不能像 List 一样用下标访问。"
+      "body": "add、contains、size。元素无序：不能像 List 一样用下标访问。去重不是魔法：add 先用元素的 hashCode 决定放进哪个桶，桶里再用 equals 找有没有相等元素。所以自定义类不重写这两个方法时，每个 new 出来的对象都会被当成\"不同元素\"——本课只用 String 去重，机制在 equals/hashCode 课展开。"
     },
     {
       "label": "预测运行",

@@ -13,9 +13,7 @@
     "refactor",
     "scores"
   ],
-  "predictionIds": [
-    "A6"
-  ],
+  "predictionIds": [],
   "steps": [],
   "bodyPath": "stages/stage01_java_basics/deep_dives/06_method_scope/README.md",
   "codeDirectory": "stages/stage01_java_basics/deep_dives/06_method_scope/com/javaroadmap/stage01/deepdives/methods"

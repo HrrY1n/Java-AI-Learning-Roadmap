@@ -39,6 +39,11 @@ public class StudentCsvLabAnswer {
             String name = fields[1].trim();
             int score = Integer.parseInt(fields[2].trim());
             String email = fields[3].trim();
+            // 题面契约：email 允许任何非空值——空串同样是坏行，与占位符 - 区分开。
+            if (email.isEmpty()) {
+                System.out.println("坏行：" + rawLine);
+                return false;
+            }
             System.out.println("读取：" + id + ":" + name + "/" + score + "/" + email);
             return true;
         } catch (NumberFormatException e) {

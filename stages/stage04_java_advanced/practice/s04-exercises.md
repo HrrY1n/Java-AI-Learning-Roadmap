@@ -46,16 +46,18 @@
   - 非整数输入 → 打印 `输入必须是两个整数` 并退出。
 - **结构与同步要求**：
   - 定义独立类 `SafeCounter`：字段 `private long value = 0;`（禁止暴露 `public` 字段直接读写），提供 `increment()` 与 `get()` 方法，并使用同一把锁（如 `synchronized`）保护状态读写。
-  - 启动 `threads` 条工作线程（先全部 `start()`，再全部 `join()`），每条线程调用 `counter.increment()` 共 `perThread` 次，并验证所有工作线程名称均不等于 `"main"`。
+  - 启动 `threads` 条工作线程（先全部 `start()`，再全部 `join()`），每条线程调用 `counter.increment()` 共 `perThread` 次；工作线程统一命名为 `counter-worker-<i>`（`i` 从 1 开始），并验证所有工作线程名称均不等于 `"main"`。
+  - 在线程安全集合中登记**实际执行累加**的线程名（在工作线程内部登记），join 后排序去重打印——这是防"单线程伪装"的结构不变量：实际集合大小必须等于 `threads`。
 - **输出契约**：
   ```text
   线程数：<threads>，每线程次数：<perThread>
   工作线程均非main：true
+  实际累加线程（排序去重）：[<排序后的线程名，如 counter-worker-1, counter-worker-2>]
   最终计数：<threads * perThread>
   ```
 
 **正常示例**：输入 `4 50000` → 最终计数 `200000`。
-**边界示例**：输入 `1 0` → 正常启动并结束 1 条线程，最终计数 `0`。
+**边界示例**：输入 `1 0` → 正常启动并结束 1 条线程，实际累加线程列表为 `[counter-worker-1]`，最终计数 `0`。
 **错误输入（必须处理）**：输入 `0 100` → `线程数必须大于 0`；输入 `2 -10` → `累加次数不能为负`。
 
 **验收条件**
@@ -76,17 +78,19 @@
 - **线程池与收集要求**：
   - 显式创建固定线程上限的 `ThreadPoolExecutor`（core 与 max 均设为 `poolSize`；工作队列可用 `LinkedBlockingQueue` 或有界队列，只要能接纳 `taskCount` 个任务）或 `Executors.newFixedThreadPool(poolSize)`。
   - 提交 `taskCount` 个任务（编号 `1..taskCount`）：第 `i` 个任务计算 `i * i`（`long`）并返回结果（使用 `Callable<Long>` + `Future<Long>` 按提交顺序保存），同时在线程安全集合 `usedThreads` 中登记执行该任务的线程名。
+  - "均由池线程执行"的判定标准是登记的线程名**都以 `pool-` 开头**（默认线程工厂对池线程的命名），而不是简单的不叫 `main`——手开普通 `Thread` 无法通过这一条。
   - 所有任务提交后立即调用 `pool.shutdown()`，再用 `pool.awaitTermination(...)` 等待所有任务完成，并按提交顺序从 `Future` 取出结果列表与求总和。
 - **输出契约**：
   ```text
   任务总数：<taskCount>，池大小：<poolSize>
   任务均由池线程执行：true
   工作线程数不超上限：true
+  执行线程名（排序去重）：[<排序后的实际线程名，如 pool-1-thread-1, pool-1-thread-2>]
   计算结果：<按提交顺序的列表，例如 [1, 4, 9, 16, 25]>
   结果总和：<总和>
   线程池已优雅关闭：<pool.isTerminated()>
   ```
-  注：当 `taskCount == 0` 时，没有任务提交，`任务均由池线程执行` 与 `工作线程数不超上限` 均应为 `true`（集合为空不违反不变量），`计算结果` 为 `[]`，`结果总和` 为 `0`。
+  注：当 `taskCount == 0` 时，没有任务提交，`任务均由池线程执行` 与 `工作线程数不超上限` 均应为 `true`（集合为空不违反不变量），`执行线程名（排序去重）` 为 `[]`，`计算结果` 为 `[]`，`结果总和` 为 `0`。
 
 **正常示例**：输入 `2 5` → 计算结果 `[1, 4, 9, 16, 25]`，总和 `55`，所有检查均为 `true`。
 **边界示例**：输入 `2 0` → 正常 `shutdown` 与 `awaitTermination`，结果 `[]`，总和 `0`，优雅关闭为 `true`。

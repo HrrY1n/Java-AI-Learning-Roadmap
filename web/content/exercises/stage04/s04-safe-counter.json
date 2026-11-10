@@ -7,7 +7,8 @@
   "contentState": "published",
   "lessonIds": [
     "s04-visibility-volatile",
-    "s04-synchronized-mutex"
+    "s04-synchronized-mutex",
+    "s04-concurrent-tools"
   ],
   "statementSource": "stages/stage04_java_advanced/practice/s04-exercises.md",
   "statementAnchor": "练习 2",
@@ -18,13 +19,13 @@
     {
       "label": "四线程各五万次并发累加",
       "input": "4 50000\n",
-      "expected": "线程数：4，每线程次数：50000\n工作线程均非main：true\n最终计数：200000",
+      "expected": "线程数：4，每线程次数：50000\n工作线程均非main：true\n实际累加线程（排序去重）：[counter-worker-1, counter-worker-2, counter-worker-3, counter-worker-4]\n最终计数：200000",
       "kind": "normal"
     },
     {
       "label": "零次累加边界",
       "input": "1 0\n",
-      "expected": "线程数：1，每线程次数：0\n工作线程均非main：true\n最终计数：0",
+      "expected": "线程数：1，每线程次数：0\n工作线程均非main：true\n实际累加线程（排序去重）：[counter-worker-1]\n最终计数：0",
       "kind": "boundary"
     },
     {

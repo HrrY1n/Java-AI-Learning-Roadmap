@@ -32,12 +32,18 @@
       "input": "5,小红\nabc,小红,90,-\n1,张三,88,a@school.cn\n",
       "expected": "坏行：5,小红\n坏行：abc,小红,90,-\n读取：1:张三/88/a@school.cn\n共 1 条，坏行 2 条",
       "kind": "invalid"
+    },
+    {
+      "label": "score 非数字",
+      "kind": "invalid",
+      "input": "6,小红,九十分,-\n",
+      "expected": "坏行：6,小红,九十分,-\n共 0 条，坏行 1 条"
     }
   ],
   "referenceFiles": [
     "StudentCsvLabAnswer.java"
   ],
   "packageSegment": "student_csv",
-  "note": "每行自成一个事务：字段数校验 → 数字解析单独捕获 NumberFormatException → 成功打印或计入坏行。",
+  "note": "每行自成一个事务：字段数校验 → 数字解析单独捕获 NumberFormatException → email 非空校验（题面\"允许任何非空值\"，空串计坏行）→ 成功打印或计入坏行。",
   "needsInput": true
 }

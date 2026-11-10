@@ -7,7 +7,8 @@
   "summary": "抽象类约定“你是什么”，接口约定“你能做什么”。",
   "contentState": "published",
   "relatedLessonIds": [
-    "s02-polymorphism-basics"
+    "s02-polymorphism-basics",
+    "s02-polymorphism-mechanism"
   ],
   "exerciseIds": [],
   "predictionIds": [],

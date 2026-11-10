@@ -17,7 +17,8 @@
   ],
   "predictionIds": [
     "A1",
-    "A7"
+    "A7",
+    "A9"
   ],
   "steps": [],
   "bodyPath": "stages/stage01_java_basics/deep_dives/02_integer_division/README.md",
