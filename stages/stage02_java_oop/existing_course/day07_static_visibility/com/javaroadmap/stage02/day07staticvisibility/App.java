@@ -1,61 +1,37 @@
 package com.javaroadmap.stage02.day07staticvisibility;
 
+import com.javaroadmap.stage02.otherpkg.ExternalCaller;
+import com.javaroadmap.stage02.otherpkg.SubStudent;
+
 /**
- * 知识点：static 成员、可见性四档与对象的一生。
+ * 知识点：static 初始化时机、跨包四档可见性与对象可达性（GC 初步）。
  *
- * 心智模型：
- *   实例字段是"每个对象一份的随身物品"，static 字段是"整个类共用的公告栏"；
- *   可见性是"谁能碰它"的门牌规则：private 只有本类、默认（包私有）同包、
- *   protected 同包+子类、public 任何人。
- *
- * Observe：先预测两处 createdCount 的值，再运行核对。
- * Modify：把 createdCount 的 static 去掉（编译错误：构造器里访问不到"类级"字段——它变成了每个对象各自的）。
+ * Observe：观察 static 初始化块的打印位置、同包 vs 跨包/子类能碰到的成员，以及多别名下的 GC 可达性。
+ * Modify：打开 SubStudent.java 中关于 base.gradeNote 或 internalTag 的注释行，观察 javac 的精确报错。
  */
 public class App {
     public static void main(String[] args) {
-        // static 字段属于类本身：还没有任何对象时它就已经存在。
+        // 首次访问 Student.createdCount 触发类加载与 static {} 初始化（早于任何 new）。
         System.out.println("创建前累计人数：" + Student.createdCount);
 
         Student a = new Student("小明", 88);
         Student b = new Student("小红", 95);
         System.out.println("创建两人后累计人数：" + Student.createdCount);
-        System.out.println("名单：" + a.describe() + "、" + b.describe());
+        System.out.println("同包访问受保护与包私有成员：" + a.gradeNote + " / tag=" + a.internalTag);
+        System.out.println(PackageOnlyHelper.packageTip());
 
-        // 对象的一生：new 出生 → 被引用期间可达 → 引用消失后不可达 → GC 择机回收。
-        // 程序没有"删除对象"的按钮；a 置为 null 只是撤走一个引用。
+        // 跨包调用者与跨包子类实测（SubStudent 继承自 Student，也会使 createdCount +1 变为 3）：
+        System.out.println(ExternalCaller.inspectFromOtherPackage(a));
+        SubStudent sub = new SubStudent("小军", 76);
+        System.out.println(sub.readProtectedViaSub());
+
+        // 对象可达性与 GC：如果还有别的引用 alias 指向同一对象，仅将 a 置 null 对象依然存活！
+        Student alias = a;
         a = null;
-        // createdCount 不减：它统计的是"出生过多少"，回收不回滚历史。
-        System.out.println("a 撤走引用后累计人数仍是：" + Student.createdCount);
+        System.out.println("a 置 null 后 alias 仍可达：" + alias.describe());
+        alias = null; // 至此，原"小明"对象没有任何强引用可达，进入可被 GC 回收状态（何时回收由 JVM 决定）
+        System.out.println("a 撤走引用后累计人数仍是：" + Student.createdCount + "（小明、小红、小军共 3 人）");
 
-        // static 方法属于类：用类名调用，不需要任何实例。
         System.out.println("调用类级方法：" + Student.passLine());
-    }
-}
-
-/**
- * 包私有类（没有 public 修饰）：同包内可用，包外不可见——
- * 本仓库每个示例目录都是一个独立包，这正是"默认可见性"的日常用法。
- */
-class Student {
-    /** static：全类共享一份的计数器；非 final，因为它随构造递增。 */
-    static int createdCount = 0;
-
-    /** private：只有 Student 自己能直接读写——外部要经 describe() 读。 */
-    private final String name;
-    private int score;
-
-    Student(String name, int score) {
-        this.name = name;
-        this.score = score;
-        createdCount++;
-    }
-
-    String describe() {
-        return name + "/" + score;
-    }
-
-    /** static 方法里没有"当前对象"：只能访问 static 成员，不能读 name 这样的实例字段。 */
-    static String passLine() {
-        return "及格线 60（static 方法属于类，读不到实例字段）";
     }
 }

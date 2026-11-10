@@ -3,8 +3,8 @@
   "stageId": "01",
   "moduleId": "foundations",
   "kind": "foundation",
-  "title": "数值类型与溢出",
-  "summary": "八种基本类型的格子宽度：选格子先看数量级，装不下会绕回而不是报错。",
+  "title": "八种基本类型与溢出边界",
+  "summary": "补齐 Java 八种基本类型、常量窄化与整型提升规则，弄清整数绕回、Math.addExact 与浮点 Infinity/NaN 的区别。",
   "contentState": "published",
   "relatedLessonIds": [
     "deep02"
@@ -15,24 +15,16 @@
   ],
   "steps": [
     {
-      "label": "真实场景",
-      "body": "世界人口约 80 亿，int 装不下；游戏血量、文件字节长度各有量级。选错类型的后果是溢出（悄悄出错）或白白浪费内存。"
-    },
-    {
-      "label": "为什么需要",
-      "body": "类型是\"固定宽度的格子\"：byte/short/int/long 是 8/16/32/64 位整数格子，float/double 是 32/64 位小数格子。格子越宽范围越大，但没有自动换格子的机制。"
-    },
-    {
-      "label": "概念与心智模型",
-      "body": "字面量默认按 int / double 读：超过 int 范围的整数要加 L 后缀，float 要加 f。溢出不是报错，而是二进制位\"绕回\"——int 最大值 + 1 直接变成最小值。判断题只有一道：这个数据最大会到什么量级？"
+      "label": "学习目标与场景",
+      "body": "世界人口约 80 亿，int 装不下；金额不能用浮点；byte + byte 居然无法直接赋给 byte。学完本节应能据数据量级选对 8 种基本类型，预测整型提升、编译期常量窄化与整数绕回行为。"
     },
     {
       "label": "预测运行",
-      "body": "先预测 \"int 最大值 + 1\" 输出什么；再预测把 9_000_000_000L 的 L 去掉会发生什么（编译错误还是运行错误？）。运行核对。"
+      "body": "运行前写出答案：① byte x=10, y=20; x+y 的结果类型是什么？② Integer.MAX_VALUE + 1 输出什么？③ Math.addExact(max, 1) 与 1.0 / 0.0 各会发生什么？"
     },
     {
       "label": "修改一个条件",
-      "body": "把 byte 的 127 改成 128 观察编译错误；再把 2_100_000_000 赋给 byte——错误信息会说明\"从 int 到 byte 有损\"，报错发生在编译期正是类型系统在保护你。"
+      "body": "依次尝试：① 把 9_000_000_000L 的 L 去掉；② 把 int byteSum 改成 byte byteSum；③ 把 byte box = 127 改成 128。比较哪几条在编译期就被 javac 拦截。"
     },
     {
       "label": "独立练习",
@@ -40,9 +32,9 @@
     },
     {
       "label": "项目迁移",
-      "body": "数据库 BIGINT 对应 long；金额常用 long 存\"分\"避开浮点误差；任何计数器字段选型前先问\"最坏情况到什么量级\"。JDK 源码里 HashMap 的 size 用 int，所以单表条数有 21 亿上限——真实约束。"
+      "body": "数据库 BIGINT 对应 long；金额常用 long 存“分”或 BigDecimal 避开浮点误差；任何计数器字段选型前先问“最坏情况到什么量级”。JDK 里 HashMap 的 size 用 int，单表条数上限约 21 亿是真实约束。"
     }
   ],
-  "bodyPath": null,
+  "bodyPath": "stages/stage01_java_basics/existing_course/day07_numeric_types/README.md",
   "codeDirectory": "stages/stage01_java_basics/existing_course/day07_numeric_types/com/javaroadmap/stage01/day07numerictypes"
 }

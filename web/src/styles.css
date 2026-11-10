@@ -6985,10 +6985,15 @@ button.memory-slot.active-slot {
   }
 }
 
-/* 3) 目录定位遮挡补偿：专题正文 h2 与主线课 .lesson-step 一致，预留 80px
-      粘性顶栏高度，scrollIntoView 后标题完整可见（V1.9-R 专项验收发现）。 */
-.topic-reader-main .prose h2 {
+/* 3) 目录定位遮挡补偿：专题正文与主线正文 h2/代码块与 .lesson-step 一致，
+      预留 80px 粘性顶栏高度，scrollIntoView 后标题完整可见（V1.9-R / V2.2 P5）。 */
+.topic-reader-main .prose h2,
+.lesson-article .prose h2,
+.lesson-code {
   scroll-margin-top: 80px;
+}
+.lesson-deep-prose {
+  margin-top: 24px;
 }
 
 /* ==========================================================================

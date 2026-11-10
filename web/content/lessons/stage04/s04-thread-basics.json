@@ -27,11 +27,11 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "把线程想成“两个工人看同一张图纸干活”。调度器决定谁何时上工：交错顺序不可控、每次运行可能不同。getState() 给出生命周期快照：NEW（未 start）→ RUNNABLE → TERMINATED（跑完）。join() = “等这条流跑完我再继续”；没有它，main 可能在 worker 之前结束——但 JVM 要等所有非守护线程结束才退出。"
+      "body": "把线程想成“两个工人看同一张图纸干活”。调度器决定谁何时上工：交错顺序不可控、每次运行可能不同。Thread.State 共有 6 种状态：NEW（未 start）→ RUNNABLE（含就绪与正在执行）→ 阻塞等待（BLOCKED 等锁 / WAITING 无限等 / TIMED_WAITING 超时等）→ TERMINATED（结束）。注意：同一 Thread 对象重复调用 start() 会直接抛 IllegalThreadStateException；join() = “等这条流跑完我再继续”，且建立 happens-before 内存可见性。"
     },
     {
       "label": "预测运行",
-      "body": "先预测：main 线程名打印什么？worker 的 getState() 三次各是什么？worker 步骤 1/2/3 与“worker 已启动”的相对顺序确定吗？运行两次对比交错模式。"
+      "body": "先预测：main 线程名打印什么？启动前与 join() 后的 getState() 各是什么？为什么刚调用 start() 后立刻打印 getState() 可能是 RUNNABLE 也可能已经是 TERMINATED？运行两次对比交错模式。"
     },
     {
       "label": "修改一个条件",

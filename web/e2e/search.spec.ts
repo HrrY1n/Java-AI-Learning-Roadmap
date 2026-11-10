@@ -22,8 +22,8 @@ test("正文关键词命中课程并显示上下文片段", async ({ page }) => 
   await page.keyboard.press("Control+k");
   const input = page.getByRole("textbox", { name: "搜索课程与资料" });
   await expect(input).toBeVisible();
-  // 「格子越宽」只出现在 day07 深度正文/概念卡里，不在任何标题中
-  await input.fill("格子越宽");
+  // 「补码绕回」只出现在 day07 深度正文与源码里，不在任何标题或 summary 中
+  await input.fill("补码绕回");
   const items = page.locator(".search-item");
   await expect(items.first()).toBeVisible();
   await expect(page.locator(".search-item").first()).toContainText("正文命中");

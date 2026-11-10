@@ -29,7 +29,7 @@
     },
     {
       "label": "概念与心智模型",
-      "body": "try 包住可能出错代码，catch 捕获具体类型，finally 无论成败都执行（释放资源）。Exception 分层：越具体的越先捕获。"
+      "body": "Java 异常顶层是 Throwable，下分 Error（如 OutOfMemoryError，程序通常无法挽救）与 Exception；Exception 又分为受检异常（编译器强制处理，如 IOException）与非受检异常（RuntimeException 子类，如 NullPointerException/ArithmeticException）。多个 catch 块必须子类在前、父类在后；finally 无论成败必执行，但绝不能在 finally 里写 return（会直接吞掉 try 里正在抛出的异常！）；需要关闭文件等资源时优先使用 try-with-resources。"
     },
     {
       "label": "预测运行",
@@ -41,7 +41,7 @@
     },
     {
       "label": "独立练习",
-      "body": "独立练习：写一个 parseIntSafe(String) 方法，非法输入返回 0 而不崩溃（提示：catch NumberFormatException）。"
+      "body": "独立练习：写一个 parsePositiveScore(String) 方法——先解析整数，若非数字则捕获 NumberFormatException 后抛出带清晰上下文的 IllegalArgumentException(msg, e)，若不在 0~100 也抛 IllegalArgumentException；不要把非法输入静默吞成返回 0。"
     },
     {
       "label": "项目迁移",

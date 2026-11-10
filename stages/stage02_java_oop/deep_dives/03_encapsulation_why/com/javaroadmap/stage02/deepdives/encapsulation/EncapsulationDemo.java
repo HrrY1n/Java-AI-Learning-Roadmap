@@ -1,16 +1,11 @@
 package com.javaroadmap.stage02.deepdives.encapsulation;
 
+import java.util.Arrays;
+
 /**
- * 深化课 03：封装——为什么字段要 private。
+ * 深化课 03：封装——为什么字段要 private（含内部可变引用逃逸反例）。
  *
- * 场景：day03 的 Account 已经把 balance 设为 private 并提供 deposit/withdraw。
- * 本课用"公开字段版"作对照，回答：不加 private 到底会出什么问题？
- *
- * 心智模型：private 字段 + 方法 = 把"所有能改状态的地方"收拢到类里。
- *   公开字段：任何人任何地方都能改，规则散落在每个调用者手里；
- *   封装：修改入口只有几个方法，规则写一次、处处生效、将来可换实现。
- *
- * Observe：预测两段输出；第二段里那行"绕过规则"的代码在封装版下根本编译不过。
+ * Observe：预测三段输出，重点看第 3 段：即使字段是 private，直接返回内部数组引用会怎样？
  */
 public class EncapsulationDemo {
     public static void main(String[] args) {
@@ -27,6 +22,13 @@ public class EncapsulationDemo {
         safe.withdraw(30);
         safe.withdraw(99999);                  // 规则在类内拒绝：余额不足
         safe.show();
+
+        // 第三段：引用逃逸反例——如果 getter 直接把内部可变数组/集合原封不动 return 出去，
+        // 调用方就能绕过所有 setter 在类外直接篡改对象内部状态！
+        LeakyTeam leaky = new LeakyTeam(new int[]{80, 90});
+        int[] leaked = leaky.getScoresUnsafe();
+        leaked[0] = -999;                      // 未经任何守门方法，直接破坏了对象内部状态
+        System.out.println("3) 引用逃逸被篡改：" + Arrays.toString(leaky.getScoresSafe()));
     }
 }
 
@@ -71,5 +73,23 @@ class SafeAccount {
 
     void show() {
         System.out.println("2) 封装版：" + owner + " 的余额：" + balance);
+    }
+}
+
+/** 反例对照：private 数组的引用逃逸与保护性拷贝。 */
+class LeakyTeam {
+    private final int[] scores;
+
+    LeakyTeam(int[] scores) {
+        // 构造器也应复制外部传入的数组，否则调用方改原数组同样会穿透封装。
+        this.scores = scores.clone();
+    }
+
+    int[] getScoresUnsafe() {
+        return scores; // 危险：把内部数组的引用直接交给了外部！
+    }
+
+    int[] getScoresSafe() {
+        return scores.clone(); // 安全：返回防御性副本，外面随便改不影响内部
     }
 }

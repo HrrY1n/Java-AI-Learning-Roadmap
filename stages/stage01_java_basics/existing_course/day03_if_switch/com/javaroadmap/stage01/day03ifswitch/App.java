@@ -1,36 +1,35 @@
 package com.javaroadmap.stage01.day03ifswitch;
 
 /**
- * 知识点：if 判断、switch 选择与逻辑运算符。
+ * 知识点：if-else 决策顺序、短路求值与 switch 选择。
  *
- * 心智模型：if-else 从上到下找第一个满足条件的分支；switch 按值选入口。
- * 每条路径都是一条需要单独验证的道路——修改一个条件，验证一次。
- * Observe：先预测 score=95、day=3 各走哪个分支，再运行核对；
- * 然后做课程"修改一个条件"的两个实验（score 边界 / 删一个 break）。
+ * Observe：预测 score=95、count=0、day=3 各自走哪个分支，再运行核对。
+ * Modify：做两项实验——(1) 把 && 换成单个 & 观察除零崩溃；(2) 删掉 case 1 里的 break 再把 day 改 1。
  */
 public class App {
     public static void main(String[] args) {
         int score = 95;
 
-        // 分支从上到下只走第一条满足的：95 >= 90 命中后，后面的分支不再判断。
+        // if-else 从上到下只命中第一条满足的条件：
+        // 若把 score >= 60 写在 score >= 90 前面，95 分会被"及格"提前截胡（条件遮蔽陷阱）。
         if (score >= 90) {
             System.out.println("优秀");
         } else if (score >= 60) {
-            // 边界实验：把 95 改成 60 和 59，体会 >= 60 与 > 60 的差别。
             System.out.println("及格");
         } else {
             System.out.println("不及格");
         }
 
-        // && 短路：左边为 false 时右边不执行——越界访问根本不会发生
-        //（预测题 A8 验证的正是这个机制；换成单个 & 试试，会抛越界异常）。
-        int[] scores = new int[2];
-        if (scores.length > 2 && scores[2] >= 60) {
-            System.out.println("不会走到这里");
+        // && 短路求值：左边 count > 0 为 false 时，右边 total / count 根本不执行。
+        // 即使还没学数组越界，用纯粹的整数除法就能立刻看见短路保护的意义。
+        int count = 0;
+        int total = 100;
+        if (count > 0 && total / count >= 60) {
+            System.out.println("平均分及格");
         }
-        System.out.println("短路保护生效：越界访问被跳过");
+        System.out.println("短路保护生效：跳过除零运算");
 
-        // switch 按值选入口；break 负责跳出，删掉一个 break 试试"掉"进下一个 case。
+        // switch 按精确值选择入口；记得加 break（或使用 Java 14+ 的箭头语法 case 1 -> ...）。
         int day = 3;
         switch (day) {
             case 1:

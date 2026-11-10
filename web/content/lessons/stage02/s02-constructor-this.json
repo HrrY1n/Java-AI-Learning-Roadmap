@@ -4,7 +4,7 @@
   "moduleId": "foundations",
   "kind": "foundation",
   "title": "构造方法与 this 入门",
-  "summary": "对象出生时就把字段准备好：构造器的参数进、赋值出。",
+  "summary": "对象出生时就带着合法状态：构造器没有返回值类型，this 指向当前正在初始化的实例。",
   "contentState": "published",
   "relatedLessonIds": [
     "s02-object-construction"
@@ -14,23 +14,23 @@
   "steps": [
     {
       "label": "真实场景",
-      "body": "创建 Person 时要求姓名和年龄立刻可用，而不是 new 之后再一个个补字段。"
+      "body": "创建 Person 时要求姓名和年龄立刻可用且年龄不为负，而不是先 new 出空壳再一个个补字段。"
     },
     {
       "label": "为什么需要",
-      "body": "构造方法在 new 时执行，保证对象一出生字段就有值；this 用来区分“这个对象的字段”与“同名的参数”。"
+      "body": "构造方法在 new 时自动执行（绝不能写返回值类型——误写成 public void Person(...) 会变成普通方法而被 new 跳过）；this 用来区分“当前对象的字段”与“同名参数”，也可用于 this(...) 构造器委托或 return this 链式返回。"
     },
     {
       "label": "概念与心智模型",
-      "body": "new 做三件事：分配内存（字段为默认值）→ 调用构造器 → 返回对象地址。this.name 是字段，单独的 name 是参数。"
+      "body": "new 按顺序执行：分配内存并赋默认值 → 隐式/显式调用 super() → 字段显式初始化 → 执行匹配的本类构造器 → 返回新对象引用。一旦手动写了构造器，编译器不再提供默认无参构造器。"
     },
     {
       "label": "预测运行",
-      "body": "预测 show() 打印的姓名与年龄来自哪里；再说出构造器参数与字段各自的作用。"
+      "body": "预测 person 与 freshman（调用单参重载 this(name, 18) 委托后链式 growUp().show()）各自输出什么；再说出两个构造器各自的参数职责。"
     },
     {
       "label": "修改一个条件",
-      "body": "把 this.name = name 改成 name = name：对象状态会怎样？这是构造器最高频的错误。"
+      "body": "尝试两项修改：① 把 this.name = name 改成 name = name（字段成 null）；② 在 Person 构造器前误加 void 关键字或调用 new Person()——观察编译/运行结果。"
     },
     {
       "label": "独立练习",

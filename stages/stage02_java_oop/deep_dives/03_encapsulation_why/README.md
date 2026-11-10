@@ -2,7 +2,7 @@
 
 对应示例：`com/javaroadmap/stage02/deepdives/encapsulation/EncapsulationDemo.java`
 
-**运行后你会看到什么**：3 行输出——第一行余额是 **-500**（合法但荒谬）；第二行是封装版拒绝非法取款的提示；第三行经过规则校验的正确余额。看完本文你应该能回答"封装到底在防什么"并反驳"private 字段 + getter/setter = 封装"的机械写法。
+**运行后你会看到什么**：第一段余额是 **-500.0**（合法但荒谬）；第二段是封装版拒绝非法取款的提示与经过校验的 **120.0**；第三段展示“即使字段 private，getter 直接把内部数组交出去照样被外部改成了 `-999`”。看完本文你应该能回答"封装到底在防什么"并反驳"private 字段 + getter/setter = 封装"的机械写法。
 
 ## 场景
 
@@ -43,7 +43,8 @@ public void setScore(int score) {
 ## 常见错误
 
 - 所有字段 private 后无脑生成全套 getter/setter：等于没封装。
-- getter 返回可变对象的内部引用（本阶段是字段为引用类型时才出现，Stage 03 集合里会真实踩到）。
+- **getter 返回可变对象的内部引用（或构造器直接保存外部传入的数组/集合引用）**：即使字段标了 `private`，调用 `int[] s = team.getScoresUnsafe(); s[0] = -999;` 依然能穿透封装篡改内部数据（见 `EncapsulationDemo` 第 3 段，修复方式是返回 `.clone()` 或不可变视图）。
+- 在资金账户继续用 `double` 而忽略 `0.1 + 0.2` 舍入边界：示例用 `double` 仅作教学简写，真实金额在比较 `money > balance` 时可能受浮点精度影响，工程上应改用 `long`（存“分”）或 `BigDecimal`。
 - 在方法之间通过 public 字段"顺手"传数据：那是在绕过自己刚建的窗口。
 
 ## 独立练习

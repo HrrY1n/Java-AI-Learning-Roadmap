@@ -59,7 +59,7 @@ stages/stage02_java_oop/deep_dives/03_encapsulation_why	com.javaroadmap.stage02.
 stages/stage02_java_oop/deep_dives/04_inheritance_composition	com.javaroadmap.stage02.deepdives.inheritance.InheritanceCompositionDemo	-	out	实际：16	车辆出发
 stages/stage02_java_oop/deep_dives/05_polymorphism_interface	com.javaroadmap.stage02.deepdives.polymorphism.PolymorphismDemo	-	out	[旺财] 汪	机器人 R2 上线	我是狗
 stages/stage02_java_oop/deep_dives/06_entity_service	com.javaroadmap.stage02.deepdives.entityservice.EntityServiceDemo	-	out	平均分：	入口层捕获：分数必须在 0 到 100：150	拒绝非法学生后人数：3
-stages/stage02_java_oop/existing_course/day07_static_visibility	com.javaroadmap.stage02.day07staticvisibility.App	-	out	创建前累计人数：0	创建两人后累计人数：2	累计人数仍是：2
+stages/stage02_java_oop/existing_course/day07_static_visibility	com.javaroadmap.stage02.day07staticvisibility.App	-	out	创建前累计人数：0	创建两人后累计人数：2	累计人数仍是：3	跨包子类读 protected 成功
 stages/stage04_java_advanced/existing_course/day04_thread_pool	com.javaroadmap.stage04.day04threadpool.App	-	out	动用的线程数：2	pool-1-thread	任务都在队列里排队，5 个任务只用了 2 个常驻工人
 stages/stage04_java_advanced/existing_course/day05_concurrent_tools	com.javaroadmap.stage04.day05concurrenttools.App	-	out	AtomicInteger 计数：200000	Future 取回异步和：5050	ConcurrentHashMap 原子累计 api：2000
 stages/stage04_java_advanced/existing_course/day03_synchronized_mutex	com.javaroadmap.stage04.day03synchronizedmutex.App	-	out	synchronized 结果（必然 2000）：2000

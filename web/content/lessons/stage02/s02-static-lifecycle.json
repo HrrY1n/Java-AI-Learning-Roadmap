@@ -14,34 +14,26 @@
   "predictionIds": [],
   "steps": [
     {
-      "label": "真实场景",
-      "body": "要统计\"系统创建过多少个学生对象\"。这个数字不该属于任何一个学生——把它放进实例字段，每个对象都记一份，谁也不知道总数。它属于\"学生\"这个类本身。"
-    },
-    {
-      "label": "为什么需要",
-      "body": "实例字段每个对象一份；计数器、配置常量、工厂方法这类\"全类共享\"的东西需要 static。而谁能读写它，由可见性四档决定：private 本类、默认（不写）同包、protected 同包+子类、public 任何人——这是封装这门牌规则。"
-    },
-    {
-      "label": "概念与心智模型",
-      "body": "static 字段是\"全类共用的公告栏\"；static 方法属于类，没有当前对象，读不到实例字段。对象的一生：new 出生 → 被引用期间可达 → 引用消失后不可达 → GC 择机回收（时机不可控，程序没有\"删除对象\"的按钮）。"
+      "label": "学习目标与场景",
+      "body": "需要统计“创建过多少个学生对象”，还要限制哪些包可以改内部字段、什么时候对象才可以被回收。学完本节应能用多包实验验证四档可见性（含 protected 跨包限制），并区分 static 类级生命周期与对象可达性。"
     },
     {
       "label": "预测运行",
-      "body": "预测两处 createdCount 的输出；再预测 a = null 之后 createdCount 会不会减少。运行核对（示例在本课源码里，注意类 Student 没有 public 修饰——那正是\"默认可见性\"的现场）。"
+      "body": "先预测四段结果：① Student.createdCount 第一次访问前 static {} 何时执行；② 同包与跨包（ExternalCaller、SubStudent）各自能访问哪些字段；③ a = null 后 alias 还能读到吗；④ createdCount 会因对象不再使用而减少吗？运行核对。"
     },
     {
       "label": "修改一个条件",
-      "body": "去掉 createdCount 的 static，观察构造器报什么错（它想访问一个已经\"不属于类\"的字段）。再把 describe() 改成 static 试试——它读了实例字段 name，错误信息会指出 static 上下文没有 this。"
+      "body": "打开 otherpkg/SubStudent.java 中注释掉的 base.gradeNote 与 this.internalTag，分别编译观察 javac 报错信息；再试着在 Student.passLine() 里打印实例字段 name，体会 static 方法为什么没有 this。"
     },
     {
       "label": "独立练习",
-      "body": "给 Student 加 static 方法 average(int[] scores) 计算平均分，并写一句注释说明为什么它不能是实例方法；再给 name 加 private、把 describe() 保持包私有——说明三类调用者（本类/同包/包外）各能碰到什么。"
+      "body": "在 Student 增加包私有方法 internalAudit() 并尝试分别在 App（同包）和 ExternalCaller（跨包）调用；写一个静态工具方法 averageScore(int[] scores) 并解释为何它不依赖任何 Student 实例。"
     },
     {
       "label": "项目迁移",
-      "body": "Spring Bean 默认单例就是\"全类共享一份\"的工程化版本；Math、Collections 全是 static 工具方法；private 字段 + 受控访问方法是封装的最小配置。GC 的\"时机不可控\"解释了为什么关闭文件要 try-with-resources 而不是等回收。"
+      "body": "Spring 默认单例 Bean 与静态工具类（Math/Collections）是类级共享模型；多层分包（controller/service/repository）靠 public 与包私有收敛内部辅助类；GC 时机不可控决定了连接与文件必须用 try-with-resources 显式关闭。"
     }
   ],
-  "bodyPath": null,
-  "codeDirectory": "stages/stage02_java_oop/existing_course/day07_static_visibility/com/javaroadmap/stage02/day07staticvisibility"
+  "bodyPath": "stages/stage02_java_oop/existing_course/day07_static_visibility/README.md",
+  "codeDirectory": "stages/stage02_java_oop/existing_course/day07_static_visibility"
 }

@@ -28,12 +28,12 @@ public class ExceptionDesignDemo {
             System.out.println("3) 受检异常被处理：" + e.getMessage());
         }
 
-        // 分支三：编程错误 -> 非受检异常，不捕获，让它带着完整堆栈炸出来。
+        // 分支三：编程错误 -> 非受检异常。本演示为让程序继续运行而在最外层记录并截停，
+        // 真实业务内部不要吞掉 ArithmeticException（见 README 动手 2：删掉这段 try/catch 观察直接炸出）。
         try {
             divide(10, 0);
         } catch (ArithmeticException e) {
-            // 这里演示"加上下文重新抛出"而不是吞掉。真实代码里多数场景应让它直接炸。
-            System.out.println("4) 非受检异常（演示捕获）：除数不能为 0");
+            System.out.println("4) 非受检异常（最外层统一捕获演示）：除数不能为 0");
         }
     }
 

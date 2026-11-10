@@ -69,6 +69,7 @@ import { OnJavaCard } from "./components/OnJavaCard";
 import { TopicView } from "./components/TopicView";
 import { BrandLogo } from "./components/BrandLogo";
 import { SidebarNavigation } from "./components/SidebarNavigation";
+import { extractH2Sections } from "./slug-heading";
 
 type Change = (recipe: (current: LearningState) => LearningState) => void;
 type PageProps = {
@@ -1192,8 +1193,19 @@ function LessonPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lesson.id]);
   const index = catalog.lessons.indexOf(lesson);
-  const primary = lesson.steps.slice(0, 3);
-  const observe = lesson.steps.slice(3);
+  // V2.2 P5：按步骤教学角色分界（实践/观察步骤落在示例代码之后），不再死硬按 3 切分，
+  // 让拥有 bodyPath 连续讲义的课程无需为凑 7 个短卡片而机械拆段；同时 7 步课自然落在第 3 步完全兼容。
+  const splitIndex = (() => {
+    const idx = lesson.steps.findIndex((step) =>
+      /^(?:预测|修改|独立练习|项目迁移|动手|验证|学习验收)/.test(step.label),
+    );
+    return idx >= 0 ? idx : Math.min(3, lesson.steps.length);
+  })();
+  const primary = lesson.steps.slice(0, splitIndex);
+  const observe = lesson.steps.slice(splitIndex);
+  const bodySections = lesson.markdown
+    ? extractH2Sections(lesson.markdown)
+    : [];
   const exercise = catalog.exercises.find(
     (item) => item.id === lesson.exerciseIds[0],
   );
@@ -1309,7 +1321,7 @@ function LessonPage({
           {primary.map((step, i) => (
             <section className="lesson-step" id={`step-${i}`} key={step.label}>
               <h2>
-                <span>0{i + 1}</span>
+                <span>{String(i + 1).padStart(2, "0")}</span>
                 {step.label}
               </h2>
               <Markdown
@@ -1320,11 +1332,13 @@ function LessonPage({
             </section>
           ))}
           {lesson.markdown && (
-            <Markdown
-              text={lesson.markdown}
-              sourcePath={lesson.sourcePath}
-              onReference={onReference}
-            />
+            <div className="lesson-deep-prose">
+              <Markdown
+                text={lesson.markdown}
+                sourcePath={lesson.sourcePath}
+                onReference={onReference}
+              />
+            </div>
           )}
           <section className="lesson-code" id="minimal-code">
             <div className="code-caption">
@@ -1382,11 +1396,11 @@ function LessonPage({
           {observe.map((step, i) => (
             <section
               className={`lesson-step ${i === 0 ? "observe-step" : ""}`}
-              id={`step-${i + 3}`}
+              id={`step-${splitIndex + i}`}
               key={step.label}
             >
               <h2>
-                <span>0{i + 4}</span>
+                <span>{String(splitIndex + i + 1).padStart(2, "0")}</span>
                 {step.label}
               </h2>
               <Markdown
@@ -1485,7 +1499,7 @@ function LessonPage({
           <div className="margin-sticky">
             <Eyebrow>本节脉络</Eyebrow>
             <div className="margin-toc">
-              {lesson.steps.map((step, i) => (
+              {primary.map((step, i) => (
                 <button
                   key={step.label}
                   onClick={() =>
@@ -1502,6 +1516,23 @@ function LessonPage({
                   {step.label}
                 </button>
               ))}
+              {bodySections.map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() =>
+                    document.getElementById(section.id)?.scrollIntoView({
+                      behavior: matchMedia("(prefers-reduced-motion: reduce)")
+                        .matches
+                        ? "instant"
+                        : "smooth",
+                      block: "start",
+                    })
+                  }
+                >
+                  <span>§</span>
+                  {section.text}
+                </button>
+              ))}
               <button
                 onClick={() =>
                   document
@@ -1512,6 +1543,25 @@ function LessonPage({
                 <Braces size={14} />
                 源码与本地运行
               </button>
+              {observe.map((step, i) => (
+                <button
+                  key={step.label}
+                  onClick={() =>
+                    document
+                      .getElementById(`step-${splitIndex + i}`)
+                      ?.scrollIntoView({
+                        behavior: matchMedia("(prefers-reduced-motion: reduce)")
+                          .matches
+                          ? "instant"
+                          : "smooth",
+                        block: "start",
+                      })
+                  }
+                >
+                  <span>{String(splitIndex + i + 1).padStart(2, "0")}</span>
+                  {step.label}
+                </button>
+              ))}
             </div>
             <div className="margin-deep">
               <Lightbulb size={20} />
