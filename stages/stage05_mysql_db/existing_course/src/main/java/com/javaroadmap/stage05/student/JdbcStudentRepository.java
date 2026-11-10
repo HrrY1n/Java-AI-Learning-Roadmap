@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 第 3-6 阶段：MySQL JDBC 实现（完整 CRUD + 约束异常转化 + 事务原子批量保存 + try-with-resources 防泄漏）。
+ * 第 3-6 阶段：MySQL JDBC 实现（完整 CRUD + 精准异常分类 + 事务原子批量保存 + try-with-resources 防泄漏）。
  */
 public class JdbcStudentRepository implements StudentRepository {
 
@@ -39,39 +39,10 @@ public class JdbcStudentRepository implements StudentRepository {
 
     @Override
     public void save(Student student) {
-        // 注意：不能无脑用 ON DUPLICATE KEY UPDATE——若新 id=10 与旧 id=1 的 student_no 冲突，
-        // ON DUPLICATE KEY UPDATE 会去修改 id=1 那行而不是拒绝冲突！
-        // 正确做法：按主键 id 显式区分更新与插入，让 uk_evo_student_no 唯一约束真正拦住学号冒用。
         try (Connection conn = DbEnv.openConnection()) {
-            boolean exists;
-            try (PreparedStatement check = conn.prepareStatement("SELECT 1 FROM evo_students WHERE id = ?")) {
-                check.setInt(1, student.getId());
-                try (ResultSet rs = check.executeQuery()) {
-                    exists = rs.next();
-                }
-            }
-            if (exists) {
-                try (PreparedStatement ps = conn.prepareStatement(
-                        "UPDATE evo_students SET student_no = ?, name = ?, score = ?, email = ? WHERE id = ?")) {
-                    ps.setString(1, student.getStudentNo());
-                    ps.setString(2, student.getName());
-                    ps.setInt(3, student.getScore());
-                    ps.setString(4, student.getEmail());
-                    ps.setInt(5, student.getId());
-                    ps.executeUpdate();
-                }
-            } else {
-                try (PreparedStatement ps = conn.prepareStatement(
-                        "INSERT INTO evo_students (id, student_no, name, score, email) VALUES (?, ?, ?, ?, ?)")) {
-                    bindStudent(ps, student);
-                    ps.executeUpdate();
-                }
-            }
-        } catch (SQLIntegrityConstraintViolationException e) {
-            // 唯一学号冲突（MySQL errorCode 1062）转为清晰业务提示并保留 cause
-            throw new IllegalArgumentException("数据库唯一约束冲突（学号可能已被占用）：" + student.getStudentNo(), e);
+            upsertOnConnection(conn, student);
         } catch (SQLException e) {
-            throw new IllegalStateException("保存学生失败：id=" + student.getId(), e);
+            throw translateConstraintOrSystemError("保存学生失败", student, e);
         }
     }
 
@@ -135,13 +106,15 @@ public class JdbcStudentRepository implements StudentRepository {
 
     @Override
     public void saveBatchAtomically(List<Student> batch) {
-        String sql = "INSERT INTO evo_students (id, student_no, name, score, email) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DbEnv.openConnection()) {
             conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            Student current = null;
+            try {
+                // 在同一事务连接上复用 upsertOnConnection：保持与内存/文件版相同的"同 id 覆盖"契约，
+                // 同时绝不触发 ON DUPLICATE KEY UPDATE 误改他人学号行。
                 for (Student student : batch) {
-                    bindStudent(ps, student);
-                    ps.executeUpdate();
+                    current = student;
+                    upsertOnConnection(conn, student);
                 }
                 conn.commit();
             } catch (SQLException e) {
@@ -150,11 +123,71 @@ public class JdbcStudentRepository implements StudentRepository {
                 } catch (SQLException suppressed) {
                     e.addSuppressed(suppressed);
                 }
-                throw new IllegalArgumentException("批量写入触发数据库约束，事务已全部回滚：" + e.getMessage(), e);
+                throw translateConstraintOrSystemError("批量写入事务已全部回滚", current, e);
+            } finally {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (SQLException ignored) {
+                    // 连接即将随 try-with-resources 关闭
+                }
             }
         } catch (SQLException e) {
             throw new IllegalStateException("批量事务连接失败", e);
         }
+    }
+
+    /**
+     * 按主键 id 显式区分 UPDATE 与 INSERT：既满足同 id 覆盖语义，
+     * 又让 uk_evo_student_no 唯一约束能真正拦截“换个 id 冒用他人学号”。
+     */
+    private static void upsertOnConnection(Connection conn, Student student) throws SQLException {
+        boolean exists;
+        try (PreparedStatement check = conn.prepareStatement("SELECT 1 FROM evo_students WHERE id = ?")) {
+            check.setInt(1, student.getId());
+            try (ResultSet rs = check.executeQuery()) {
+                exists = rs.next();
+            }
+        }
+        if (exists) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "UPDATE evo_students SET student_no = ?, name = ?, score = ?, email = ? WHERE id = ?")) {
+                ps.setString(1, student.getStudentNo());
+                ps.setString(2, student.getName());
+                ps.setInt(3, student.getScore());
+                ps.setString(4, student.getEmail());
+                ps.setInt(5, student.getId());
+                ps.executeUpdate();
+            }
+        } else {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO evo_students (id, student_no, name, score, email) VALUES (?, ?, ?, ?, ?)")) {
+                bindStudent(ps, student);
+                ps.executeUpdate();
+            }
+        }
+    }
+
+    /**
+     * 精准区分业务数据约束违约（1062 唯一/主键冲突、3819 CHECK 违约）与底层系统故障（网络/权限/死锁），
+     * 绝不把网络断连或 SQL 语法错误吞并成 IllegalArgumentException。
+     */
+    private static RuntimeException translateConstraintOrSystemError(
+            String action, Student student, SQLException e) {
+        if (e instanceof SQLIntegrityConstraintViolationException || e.getErrorCode() == 3819) {
+            String msg = e.getMessage() == null ? "" : e.getMessage();
+            if (msg.contains("PRIMARY")) {
+                return new IllegalArgumentException(
+                        action + "：主键 id 冲突（并发写入或重复主键），id="
+                                + (student != null ? student.getId() : "?") + "，" + msg, e);
+            }
+            if (e.getErrorCode() == 3819) {
+                return new IllegalArgumentException(action + "：数据违反 CHECK 约束，" + msg, e);
+            }
+            return new IllegalArgumentException(
+                    action + "：数据库唯一约束冲突（学号可能已被占用）："
+                            + (student != null ? student.getStudentNo() : "?") + "（" + msg + "）", e);
+        }
+        return new IllegalStateException(action + "（底层 SQL/连接故障）：" + e.getMessage(), e);
     }
 
     private static void bindStudent(PreparedStatement ps, Student s) throws SQLException {

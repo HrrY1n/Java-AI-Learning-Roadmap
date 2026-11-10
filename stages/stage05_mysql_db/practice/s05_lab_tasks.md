@@ -19,9 +19,9 @@
 
 ## 任务 2：独立实现事务转移/奖学金名额分配（TODO 骨架见下）
 
-打开并复制 [skeleton/ScholarshipTransferLab.java](skeleton/ScholarshipTransferLab.java) 到你的 `my_practices/` 目录下独立完成两个方法：
-- `transferQuota(Connection conn, long fromDeptId, long toDeptId, int amount)`：在一个事务中扣减源院系名额并增加目标院系名额；若 `amount <= 0` 或目标院系不存在（`executeUpdate() == 0`！）或扣减后名额不足（`CHECK` 报错），必须**回滚整笔操作**。
-- `assertConsistent(Connection conn)`：查询两院系总名额是否依然守恒。
+打开并复制 [skeleton/ScholarshipTransferLab.java](skeleton/ScholarshipTransferLab.java) 到你的 `my_practices/` 目录下完成并校验：
+- **独立实现** `transferQuota(Connection conn, long fromDeptId, long toDeptId, int amount)`：在一个事务中扣减源院系名额并增加目标院系名额；若 `amount <= 0` 或目标院系不存在（`executeUpdate() == 0`！）或扣减后名额不足（`CHECK` 报错），必须**回滚整笔操作**。
+- **使用已有助手** `sumAllQuota(Connection conn)` 验证划转成功或回滚后两院系总名额依然守恒（`15`）。
 
 **特别常见漏洞（检验你是否真正理解 JDBC UPDATE）**：如果 `UPDATE ... WHERE id = ?` 的目标 `id` 根本不存在，MySQL **不会报错**，它只是正常返回受影响行数 **`executeUpdate() == 0`**！如果你不检查 `rowsAffected == 1` 就直接 `commit()`，源院系扣了钱却没有加给任何人，钱就丢了！
 

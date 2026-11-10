@@ -1366,7 +1366,11 @@ function LessonPage({
                     <FileCode2 size={16} />
                     {file.className}.java
                   </span>
-                  <Badge>同包依赖类</Badge>
+                  <Badge>
+                    {file.packageName === lesson.packageName
+                      ? "同包依赖类"
+                      : "跨包依赖类"}
+                  </Badge>
                 </div>
                 <Code code={file.code} />
               </section>
@@ -1377,7 +1381,11 @@ function LessonPage({
               在本地 JDK 运行本节源码 <ChevronDown size={16} />
             </summary>
             <p>
-              在包含 <code>com/</code> 的课程源码根目录中执行：
+              在包含 <code>com/</code> 的课程源码根目录中执行
+              {lesson.stageId === "05"
+                ? "（Stage 05 需额外在 -cp 中附上 MySQL Connector/J 驱动 JAR，并通过环境变量或 db.local.properties 提供测试库连接信息）"
+                : ""}
+              ：
             </p>
             <Code
               language="text"
@@ -1386,7 +1394,11 @@ function LessonPage({
                   (file) =>
                     file.path.slice(file.path.indexOf("/com/") + 1),
                 )
-                .join(" ")}\njava -cp out ${lesson.packageName}.${lesson.className}`}
+                .join(" ")}\njava -cp ${
+                lesson.stageId === "05"
+                  ? '"out:/path/to/mysql-connector-j-8.4.0.jar" # Windows PowerShell 请将冒号改为分号'
+                  : "out"
+              } ${lesson.packageName}.${lesson.className}`}
             />
             <p className="source-path">仓库来源：{lesson.codePath}</p>
             <a href="#/document/environment" className="text-link">

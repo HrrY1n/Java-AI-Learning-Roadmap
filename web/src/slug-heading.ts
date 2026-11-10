@@ -27,8 +27,9 @@ export function extractH2Sections(markdown: string): {
   const seen = new Map<string, number>();
   const sections: { text: string; id: string }[] = [];
   for (const match of proseOnly.matchAll(/^##\s+(.+)$/gm)) {
-    const text = match[1].trim();
-    sections.push({ text, id: slugifyHeading(text, seen) });
+    const raw = match[1].trim();
+    const text = raw.replace(/`/g, "");
+    sections.push({ text, id: slugifyHeading(raw, seen) });
   }
   return sections;
 }

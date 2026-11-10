@@ -70,12 +70,14 @@ describe("extractH2Sections", () => {
     ]);
   });
 
-  it("与 Markdown 渲染侧 slug 一致：原始行内记号不影响 id", () => {
+  it("与 Markdown 渲染侧 slug 一致：原始行内记号不影响 id，且展示文本剥除反引号", () => {
     // 渲染侧对 flatten 后的纯文本（无记号）调 slug；提取侧对原始行调 slug。
     // 两侧都只保留文字与数字，因此相等。
     const raw = "## 用 `origin/main` 追踪分支";
     const renderedText = "用 origin/main 追踪分支";
-    expect(extractH2Sections(raw)[0].id).toBe(slugifyHeading(renderedText));
+    const [section] = extractH2Sections(raw);
+    expect(section.id).toBe(slugifyHeading(renderedText));
+    expect(section.text).toBe(renderedText);
   });
 
   it("没有小节的课程返回空数组（目录自然隐藏，不报错）", () => {

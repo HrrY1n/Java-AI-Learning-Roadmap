@@ -13,8 +13,8 @@ package com.javaroadmap.stage04.day02visibilityvolatile;
  * count++ 依然是"读-改-写"三步，多线程累加照样丢更新。
  *
  * Observe：先预测 watcher 会不会退出、count 最终是多少，再运行。
- * Modify：去掉 volatile 修饰再跑——watcher 可能退出也可能永不退出（println
- * 内部自带同步会"碰巧"刷新可见性），多次运行对比正是这个实验的教训。
+ * Modify：① 去掉 running 的 volatile 观察是否因 JIT 循环提升死循环；
+ * ② 在 while 循环内临时加入 System.out.println(spins)，体验同步自带锁如何“碰巧”刷新可见性。
  */
 public class App {
     // volatile 保证 main 的写入对工作线程立即可见；去掉试试上面的 Modify 实验。
