@@ -67,6 +67,10 @@
 
 **需要独立思考的部分**：如果把 `synchronized` 加在两个不同对象上（例如每次新建一个 `new Object()` 去锁），会发生什么？如果线程在运行中调用 `get()` 而 `get()` 没有加锁，又可能出现什么问题？
 
+## 选做任务 4：并发学生仓库（不进自动判题）
+
+把 Stage 05 的 `InMemoryStudentRepository`（阶段 1）改造成线程安全版：`save/findById/findAll/updateScore/deleteById` 都可能被多条线程并发调用。自选方案（synchronized 方法、`ReentrantLock` 或把内部 List 换成 `ConcurrentHashMap`），要求：多线程并发注册 100 个学生后总数精确、`findAll` 读到的列表一致。这是练习 1–3 技能的合成应用，也是 Stage 06 Spring 单例 Bean 的预演。完成后在复盘页记录你的锁选型与理由。
+
 ## 练习 3：线程池任务执行与优雅关闭
 
 **任务背景**：高并发服务不能每次请求都 `new Thread()`，必须通过线程池复用线程并控制最大并发数；同时在任务提交完毕后必须正确关闭线程池，防止非守护线程残留导致进程无法退出。

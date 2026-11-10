@@ -6,7 +6,7 @@
 
 | Stage | 基础课 | 配对深化课 | 对齐判定 |
 | --- | --- | --- | --- |
-| 01 | day01–day07（7 门） | deep01–deep07（7 门，一一配对） | ✅ 配对完整；本轮把"只存在于代码注释"的 3 个机制成文进深化课（见第三节） |
+| 01 | day01–day07（7 门） | deep01–deep07（7 门；语义配对 day03↔deep07、day04↔deep05、day05↔deep03、day06↔deep04+deep06、day07↔deep02，编号不代表配对） | ✅ 配对完整（V2.4 整合轮修正"一一配对"表述）；本轮把"只存在于代码注释"的 3 个机制成文进深化课（见第三节） |
 | 02 | 9 门基础 | 6 门深化（object-construction / encapsulation-why / inheritance-vs-composition / polymorphism-mechanism / reference-state / entity-service） | ⚠️→✅ interface-abstract 与 stringbuilder-intro 曾断档：前者本轮补上与 polymorphism-mechanism 的互链（选择标准已在该深化课内）；后者在项目迁移步补深化入口与容量增长/编译器自动 StringBuilder 指引。审计确认配对不重复、不割裂 |
 | 03 | 16 门基础 | 6 门深化（choose-collection / generics-why / exception-design / utf8-io / lambda-stream / repository-evolution） | ⚠️→✅ 审计把候选断档从 13 门修正为 9 门（其余 4 门实有配对）；其中 8 门由高密度示例代码承载可接受，真正不足的 hashset（去重机制）与 lambda（变量捕获）本轮已补机制；file-read↔utf8-io 单向关联已修复 |
 | 04 | 5 门 | 无深化课（长正文 + 练习闭环承接） | ✅ s04-concurrent-tools 兼任深化角色；本轮补 jstack/Thread.start HB/shutdownNow/Future.cancel 后机制覆盖完整 |

@@ -33,7 +33,7 @@
     },
     {
       "label": "项目迁移",
-      "body": "Spring 单例 Bean 默认被所有请求共享——任何可变状态都必须同步保护；而锁粒度（锁整个方法 vs 只锁临界几行）与加锁顺序直接决定服务的吞吐量与防死锁能力。"
+      "body": "Spring 单例 Bean 默认被所有请求共享——任何可变状态都必须同步保护；而锁粒度（锁整个方法 vs 只锁临界几行）与加锁顺序直接决定服务的吞吐量与防死锁能力。想先在熟悉的数据上练手：把 Stage 05 内存版学生仓库改成线程安全版（synchronized 包住 save/find 等方法）——这就是 Spring 单例 Bean 的日常。"
     }
   ],
   "bodyPath": "stages/stage04_java_advanced/existing_course/day03_synchronized_mutex/README.md",

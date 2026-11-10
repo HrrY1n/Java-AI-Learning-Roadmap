@@ -35,7 +35,7 @@ Stage 01 的程序把所有逻辑写在 main 里也能跑。Stage 02 的三个�
 
 "分数 0~100" 放在 Entity（构造器校验）而不在 Service：因为**这是学生自身的天性行为**，无论谁来创建学生都该成立。而"优秀线 90 分"放 Entity 的 `isExcellent()` 或 Service 均可——判断标准是"这是单个学生的属性，还是一组学生的政策"，本例两种都讲得通，**能说出理由比站对位置更重要**。
 
-**Observe（先预测再运行）**：预测 4 行输出；回答：为什么 `try/catch` 放在 main（入口层），而不是让 `StudentService.add` 吞掉异常返回 false？（提示：对比两种做法下，"调用方能否知道失败细节"与"Service 是否绑定了某种呈现方式"。）
+**Observe（先预测再运行）**：预测 4 行输出；回答：为什么 `try/catch` 放在 main（入口层），而不是让 `StudentService.add` 吞掉异常返回 false？（提示：对比两种做法下，"调用方能否知道失败细节"与"Service 是否绑定了某种呈现方式"。`catch` 的完整语法要到 Stage 03 异常课才正式教——本课先把 `try { ... } catch (IllegalArgumentException e) { ... }` 当作"入口层接住业务错误"的固定搭配使用，重点体会它的位置而不是语法。）
 
 ## 动手：修改一个条件
 

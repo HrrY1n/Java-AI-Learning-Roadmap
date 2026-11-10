@@ -6,7 +6,7 @@
 
 JDBC 是 JDK 标准库（`java.sql.*`）定义的统一数据库操作接口。你的业务代码只依赖 `Connection`、`PreparedStatement`、`ResultSet` 这些标准接口；具体连接 MySQL 的网络协议实现（`mysql-connector-j` 驱动 JAR）通过 SPI 在运行时自动加载。
 
-这就解释了为什么 `s03-repository-evolution` 可以保留同一个 `StudentRepository` 接口，把背后的存储从内存、CSV 文件无缝替换成 MySQL！
+这正是 `s03-repository-evolution` "面向接口替换存储"思想的延续——但要诚实地告诉你：Stage 05 的 `StudentRepository` 并不是 Stage 03 那个接口的原样复用，而是**升级后的契约**：方法从 3 个（save/findById/findAll）长到 6 个（新增 updateScore/deleteById/saveBatchAtomically，对应唯一学号、删除与整批事务的需求）；`Student` 也从 3 个字段增到 5 个（新增唯一学号 studentNo 与 email，构造器校验同步升级）。所以演进项目的前两个阶段是**用升级后的模型重演**内存版与文件版——练习时请从本 Stage 的 `student/` 包复制代码起步，直接拿 Stage 03 的旧接口替换会在编译期发现方法对不上。这种"先扩契约、再换存储"的顺序，正是真实项目演进接口的常见节奏。
 
 ## 2. 为什么严禁字符串拼接 SQL？（SQL 注入与 `PreparedStatement`）
 

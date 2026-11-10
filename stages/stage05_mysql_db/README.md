@@ -16,6 +16,8 @@
 
 ## 连续演进项目：学生管理系统（阶段 1 → 6）
 
+> 与 Stage 03 的关系：`StudentRepository`/`Student` 契约在此做了升级（3→6 方法、3→5 字段），阶段 1–2 是用升级后模型的重演而非复用旧代码——详见 day05 课正文的"契约升级说明"。
+
 入口源码：[StudentEvolutionDemo.java](existing_course/src/main/java/com/javaroadmap/stage05/student/StudentEvolutionDemo.java)
 
 沿用同一份 `StudentRepository` 接口，完整走过六个阶段：

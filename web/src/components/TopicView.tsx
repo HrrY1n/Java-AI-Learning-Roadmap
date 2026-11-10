@@ -512,6 +512,16 @@ function TopicLessonReader({
                 : "进阶选读"}
           </div>
         )}
+        {lesson.stageLinks && lesson.stageLinks.length > 0 && (
+          <div className="lesson-stage-links">
+            <span className="stage-links-label">建议学习时点</span>
+            {lesson.stageLinks.map((stageId) => (
+              <a key={stageId} className="stage-link-chip" href="#/roadmap" title="查看主线阶段">
+                Stage {stageId}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 课程模式与实操属性标识栏 */}

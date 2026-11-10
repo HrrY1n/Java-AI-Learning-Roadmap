@@ -7,6 +7,9 @@ import java.util.List;
 
 /**
  * 连续演进项目总演示：同一套 StudentRepository 契约走通内存 → 文件 → MySQL 完整 CRUD + 约束与事务回滚。
+ *
+ * 说明两点：① 本包的 StudentRepository/Student 是 Stage 03 契约的升级版（6 方法/5 字段），阶段 1–2 是重演；
+ * ② 业务流程暂写在 main 里、没有独立 Service 层——这是为聚焦存储层的有意裁剪，Stage 06 Spring 的 @Service 会把它归位。
  */
 public class StudentEvolutionDemo {
     public static void main(String[] args) throws IOException {

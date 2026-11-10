@@ -238,13 +238,16 @@ export default function App() {
     return () => query.removeEventListener("change", handle);
   }, []);
   useEffect(() => {
+    // 首帧主题交给 index.html 的引导脚本（读 localStorage 与 prefers-color-scheme），
+    // 等 IndexedDB 学习记录加载完成后 React 再接管——否则会先写默认值造成深色闪变。
+    if (!ready) return;
     document.documentElement.dataset.theme = dark ? "dark" : "light";
     try {
       localStorage.setItem("jrl-theme", state.theme);
     } catch {
       /* 主题缓存只是首屏优化，权威值仍以 IndexedDB 中的学习记录为准。 */
     }
-  }, [dark, state.theme]);
+  }, [dark, state.theme, ready]);
   useEffect(() => {
     if (!ready || !canSave) return;
     const current = ++sequence.current;
@@ -713,9 +716,23 @@ function HomePage({ state }: PageProps) {
             <span className="dot-separator">/</span>
             {lesson.summary}
           </p>
-          <a className="button accent" href={lessonLink(lesson.id)}>
-            继续学习 <ArrowRight size={18} />
-          </a>
+          <div className="continue-cta">
+            <a className="button accent" href={lessonLink(lesson.id)}>
+              继续学习 <ArrowRight size={18} />
+            </a>
+            {(() => {
+              if (!state.lastLessonId || !state.lessons[lesson.id]?.read) return null;
+              const currentIndex = catalog.lessons.findIndex((item) => item.id === lesson.id);
+              const nextLesson = currentIndex >= 0 && currentIndex < catalog.lessons.length - 1
+                ? catalog.lessons[currentIndex + 1]
+                : null;
+              return nextLesson ? (
+                <a className="button subtle" href={lessonLink(nextLesson.id)}>
+                  下一节：{nextLesson.title} <ArrowRight size={16} />
+                </a>
+              ) : null;
+            })()}
+          </div>
           <div className="continue-meta">
             <BookOpen size={15} />
             {state.lastLessonId
@@ -1003,7 +1020,7 @@ function RoadmapPage() {
           {groups.map((group, index) => (
             <section key={group.title} className="stage-group">
               <div className="group-label">
-                <span>0{index + 1}</span>
+                <span>{String(index + 1).padStart(2, "0")}</span>
                 <h2>{group.title}</h2>
                 <small>{group.note}</small>
               </div>
@@ -2006,7 +2023,7 @@ function LabPage({
             className={item.id === exercise.id ? "active" : ""}
             key={item.id}
           >
-            <span>0{index + 1}</span>
+            <span>{String(index + 1).padStart(2, "0")}</span>
             {item.title}
             {state.drafts[item.id] && (
               <span className="draft-dot" aria-label="有草稿" />
@@ -2753,7 +2770,7 @@ function TutorDialog({
           <ol className="debug-steps">
             {courseTutor.debug(error).map((step, index) => (
               <li key={step}>
-                <span>0{index + 1}</span>
+                <span>{String(index + 1).padStart(2, "0")}</span>
                 <p>{step}</p>
               </li>
             ))}

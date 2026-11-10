@@ -386,6 +386,9 @@ details[open] > summary > svg:last-child {
   justify-content: center;
   width: 44px;
   height: 44px;
+  /* 防止在顶栏 flex 布局里被压缩到 44px 以下（触控目标纪律：>=44x44） */
+  min-width: 44px;
+  flex: none;
   border: 0;
   border-radius: 7px;
   background: transparent;
@@ -484,6 +487,12 @@ details[open] > summary > svg:last-child {
 .dot-separator {
   margin: 0 8px;
   opacity: 0.4;
+}
+.continue-cta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 .continue-meta {
   display: flex;
@@ -4196,14 +4205,17 @@ h2 {
   }
   .topbar-actions .button {
     min-height: 44px;
-    min-width: 40px;
+    min-width: 44px;
     padding: 8px;
   }
   .topbar-actions {
     gap: 2px;
   }
   .topbar-actions .mobile-theme {
-    width: 38px;
+    width: 44px;
+  }
+  .topbar-actions .topbar-kbd {
+    display: none;
   }
   .main-content {
     padding: 26px 20px 32px;
@@ -5808,6 +5820,40 @@ kbd {
 }
 [data-theme="dark"] .lesson-priority-next {
   background: #32231c;
+  border-color: #dd8168;
+  color: #dd8168;
+}
+
+/* V2.4 整合轮：专题课"建议学习时点"chips（激活 stageLinks 数据） */
+.lesson-stage-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.lesson-stage-links .stage-links-label {
+  font-size: 12px;
+  color: #8a8778;
+}
+.lesson-stage-links .stage-link-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px solid #d8d4c4;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #3c3a30;
+  text-decoration: none;
+}
+.lesson-stage-links .stage-link-chip:hover {
+  border-color: #b0642f;
+  color: #b0642f;
+}
+[data-theme="dark"] .lesson-stage-links .stage-link-chip {
+  border-color: #3a3830;
+  color: #b3b0a1;
+}
+[data-theme="dark"] .lesson-stage-links .stage-link-chip:hover {
   border-color: #dd8168;
   color: #dd8168;
 }
@@ -7432,5 +7478,22 @@ button.memory-slot.active-slot {
   }
   .brand-lockup-icon {
     display: block;
+  }
+}
+
+@media (max-width: 489px) {
+  /* 超窄屏：顶栏触控目标加宽后（44x44），收起保存文案并压缩面包屑，避免横向溢出 */
+  .topbar-actions .save-status {
+    display: none;
+  }
+  .breadcrumb {
+    font-size: 0;
+  }
+  .breadcrumb svg {
+    display: none;
+  }
+  .breadcrumb strong {
+    font-size: 10px;
+    max-width: 76px;
   }
 }

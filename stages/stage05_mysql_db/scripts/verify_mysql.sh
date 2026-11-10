@@ -17,6 +17,30 @@ if [ ! -f "$JAR" ]; then
     exit 2
 fi
 
+# ---- 环境前置检查（只读探测；本脚本永不启动 Docker Desktop 或任何容器）----
+# 从 JRL_MYSQL_URL 提取 host:port（jdbc:mysql://host:port/db?...）
+DB_HOST="$(printf '%s' "${JRL_MYSQL_URL:-}" | sed -n 's|^jdbc:mysql://\([^/:?]*\):\([0-9]*\).*|\1|p')"
+DB_PORT="$(printf '%s' "${JRL_MYSQL_URL:-}" | sed -n 's|^jdbc:mysql://\([^/:?]*\):\([0-9]*\).*|\2|p')"
+if [ -z "$DB_HOST" ] || [ -z "$DB_PORT" ]; then
+    echo "错误：无法从 JRL_MYSQL_URL 解析 host:port（当前值：${JRL_MYSQL_URL:-<未设置>}）"
+    exit 2
+fi
+if ! (exec 3<>"/dev/tcp/$DB_HOST/$DB_PORT") 2>/dev/null; then
+    echo "错误：数据库端口不可达：$DB_HOST:$DB_PORT"
+    if command -v docker >/dev/null 2>&1; then
+        CONTAINER_STATE="$(docker ps --filter name=jrl-mysql --format '{{.Names}} {{.Status}}' 2>/dev/null || true)"
+        if [ -z "$CONTAINER_STATE" ]; then
+            echo "提示：jrl-mysql 容器未在运行（docker ps 只读查询结果为空）。"
+        else
+            echo "提示：容器状态：$CONTAINER_STATE（可能刚启动，等待几秒后重试）"
+        fi
+    fi
+    echo "请手动确认 Docker Desktop 与 jrl-mysql 容器已启动后重试——本脚本按设计永不自动启动 Docker。"
+    exit 2
+fi
+exec 3>&- 2>/dev/null || true
+echo "数据库端口可达：$DB_HOST:$DB_PORT"
+
 WORK_DIR="$(mktemp -d)"
 trap 'rm -rf "$WORK_DIR"' EXIT
 OUT_DIR="$WORK_DIR/out"

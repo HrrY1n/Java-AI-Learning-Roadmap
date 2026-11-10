@@ -16,6 +16,33 @@ if (-not (Test-Path $Jar)) {
     exit 2
 }
 
+# ---- 环境前置检查（只读探测；本脚本永不启动 Docker Desktop 或任何容器）----
+$DbHostPort = $null
+if ($env:JRL_MYSQL_URL -match '^jdbc:mysql://([^/:?]+):(\d+)') { $DbHostPort = @{ Host = $Matches[1]; Port = [int]$Matches[2] } }
+if (-not $DbHostPort) {
+    Write-Host ("错误：无法从 JRL_MYSQL_URL 解析 host:port（当前值：{0}）" -f ($(if ($env:JRL_MYSQL_URL) { $env:JRL_MYSQL_URL } else { "<未设置>" })))
+    exit 2
+}
+$Tcp = New-Object System.Net.Sockets.TcpClient
+try {
+    $Connect = $Tcp.BeginConnect($DbHostPort.Host, $DbHostPort.Port, $null, $null)
+    $Success = $Connect.AsyncWaitHandle.WaitOne(3000, $false)
+    if (-not $Success -or -not $Tcp.Connected) { throw "port-unreachable" }
+} catch {
+    Write-Host ("错误：数据库端口不可达：{0}:{1}" -f $DbHostPort.Host, $DbHostPort.Port)
+    if (Get-Command docker -ErrorAction SilentlyContinue) {
+        $Running = (& docker ps --filter "name=jrl-mysql" --format "{{.Names}} {{.Status}}" 2>$null)
+        if (-not $Running) {
+            Write-Host "提示：jrl-mysql 容器未在运行（docker ps 只读查询结果为空）。"
+        } else {
+            Write-Host ("提示：容器状态：{0}（可能刚启动，等待几秒后重试）" -f $Running)
+        }
+    }
+    Write-Host "请手动确认 Docker Desktop 与 jrl-mysql 容器已启动后重试——本脚本按设计永不自动启动 Docker。"
+    exit 2
+} finally { $Tcp.Close() }
+Write-Host ("数据库端口可达：{0}:{1}" -f $DbHostPort.Host, $DbHostPort.Port)
+
 $OutDir = Join-Path ([System.IO.Path]::GetTempPath()) ("jrl-s05-" + [System.Guid]::NewGuid().ToString("N"))
 New-Item -ItemType Directory -Path $OutDir | Out-Null
 

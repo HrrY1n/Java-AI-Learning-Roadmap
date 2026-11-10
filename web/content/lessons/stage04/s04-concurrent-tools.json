@@ -34,7 +34,7 @@
     },
     {
       "label": "项目迁移",
-      "body": "高并发限流计数选 AtomicLong / LongAdder；多路异步查下游接口选 ExecutorService+Future 或 CompletableFuture；本地缓存选 ConcurrentHashMap.computeIfAbsent（记住禁止 null 键值且回调内不可再改同表）。"
+      "body": "高并发限流计数选 AtomicLong / LongAdder；多路异步查下游接口选 ExecutorService+Future 或 CompletableFuture；本地缓存选 ConcurrentHashMap.computeIfAbsent（记住禁止 null 键值且回调内不可再改同表）。学生仓库同样适用：并发版学生仓库的读写名册就是 ConcurrentHashMap 的典型场景（练习见 s04-exercises.md 选做任务 4）。"
     }
   ],
   "bodyPath": "stages/stage04_java_advanced/existing_course/day05_concurrent_tools/README.md",
