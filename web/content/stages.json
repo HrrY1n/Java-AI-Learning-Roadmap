@@ -163,11 +163,29 @@
     },
     {
       "id": "05",
-      "contentState": "planned",
-      "prerequisites": "Java Core 基础；准备项目 A 的业务与数据约束。",
-      "modules": [],
-      "referenceRoots": [],
-      "referenceDocuments": []
+      "contentState": "published",
+      "prerequisites": "Stage 01–03 的集合、异常、接口与文件持久化基础（不要求先学完 Stage 04 并发全部内容）。",
+      "modules": [
+        {
+          "id": "foundations",
+          "title": "核心基础",
+          "lessonOrder": [
+            "s05-sql-basics",
+            "s05-relational-design",
+            "s05-transactions-acid",
+            "s05-indexes-explain",
+            "s05-jdbc-dao"
+          ]
+        }
+      ],
+      "referenceRoots": [
+        "stages/stage05_mysql_db/existing_course/src/main/java"
+      ],
+      "referenceDocuments": [
+        "stages/stage05_mysql_db/practice/answers.md"
+      ],
+      "packageNamePrefix": "com.javaroadmap.lab.stage05",
+      "slug": "stage05_mysql_db"
     },
     {
       "id": "06",

@@ -37,17 +37,22 @@ test("catalog mirrors the actual Stage 01 learning assets", () => {
   assert.equal(
     catalog.predictions.filter(
       (prediction) =>
-        !prediction.id.startsWith("S02") && !prediction.id.startsWith("S03"),
+        !prediction.id.startsWith("S02") &&
+        !prediction.id.startsWith("S03") &&
+        !prediction.id.startsWith("S04") &&
+        !prediction.id.startsWith("S05"),
     ).length,
-    11,
+    9,
   );
   assert.equal(
     catalog.modifications.filter(
       (modification) =>
         !modification.id.startsWith("S02") &&
-        !modification.id.startsWith("S03"),
+        !modification.id.startsWith("S03") &&
+        !modification.id.startsWith("S04") &&
+        !modification.id.startsWith("S05"),
     ).length,
-    6,
+    4,
   );
   // V2.1：Stage 04 并发基础四课接线；V2.2 补齐三道结构化练习
   assert.equal(
@@ -66,6 +71,22 @@ test("catalog mirrors the actual Stage 01 learning assets", () => {
   assert.equal(
     catalog.modifications.filter((modification) =>
       modification.id.startsWith("S04"),
+    ).length,
+    2,
+  );
+  // V2.2：Stage 05 MySQL 5 课 + 3 预测 + 2 修改
+  assert.equal(
+    catalog.lessons.filter((lesson) => lesson.stageId === "05").length,
+    5,
+  );
+  assert.equal(
+    catalog.predictions.filter((prediction) => prediction.id.startsWith("S05"))
+      .length,
+    3,
+  );
+  assert.equal(
+    catalog.modifications.filter((modification) =>
+      modification.id.startsWith("S05"),
     ).length,
     2,
   );
@@ -151,6 +172,9 @@ test("prediction answers use the first answer block; modified outputs are distin
     A9: "-2147483648",
     S04A1: "执行线程：main\n执行线程：worker",
     S04A2: "出现过的执行者：[pool-1-thread-1, pool-1-thread-2]\n不同执行者数量：2",
+    S05A1: "执行查询\n关闭：ResultSet\n关闭：PreparedStatement\n关闭：Connection",
+    S05A2: "SELECT * FROM users WHERE username = '' OR '1'='1'\ntrue\nfalse",
+    S05A3: "捕获异常：划转数量必须大于 0：-5\n扣减成功并提交：70",
   });
   // 深度重构 R3：Stage 03 预测题答案（全部经 prediction-semantics 实测）
   const s03Answers = Object.fromEntries(

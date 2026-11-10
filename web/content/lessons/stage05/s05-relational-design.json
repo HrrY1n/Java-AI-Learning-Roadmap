@@ -1,0 +1,39 @@
+{
+  "id": "s05-relational-design",
+  "stageId": "05",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "关系模型、外键与多表连接",
+  "summary": "用一对多与中间表消除数据冗余，在 INNER JOIN 与 LEFT JOIN 中避开 WHERE 退化陷阱。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s05-sql-basics",
+    "s05-transactions-acid"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "把课程名、学分和学生全部塞进同一张表会造成修改异常。学完本节应能拆出多对多中间表、配置外键约束，并写出不会退化的 LEFT JOIN 查询。"
+    },
+    {
+      "label": "预测运行",
+      "body": "未选课的“小刚”在 INNER JOIN 与 LEFT JOIN 的输出里各自出现几次？向 lab_enrollments 插入不存在的 student_id=9999 会发生什么？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "在 sql/02_relations_and_joins.sql 的 LEFT JOIN 查询末尾加上 WHERE c.course_code = 'JAVA101' 并运行——亲眼观察小刚为什么会消失（LEFT JOIN 退化成 INNER JOIN）。"
+    },
+    {
+      "label": "独立练习",
+      "body": "用 LEFT JOIN + GROUP BY 统计每个学生的选课门数与最高分（未选课的同学选课门数必须显示 0 而不是 1！提示：COUNT(e.id) vs COUNT(*)）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "订单-商品-订单项、用户-角色-权限全部是本课的中间表模型；互联网高并发下对物理外键的取舍也在本节正文给出明确准则。"
+    }
+  ],
+  "bodyPath": "stages/stage05_mysql_db/existing_course/day02_relational_modeling/README.md",
+  "codeDirectory": "stages/stage05_mysql_db/existing_course/day02_relational_modeling"
+}

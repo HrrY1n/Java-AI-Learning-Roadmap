@@ -84,7 +84,8 @@ test("正式子路径：首页、路线、目录与全部正式课程", async ({
   expect(catalog.lessons.filter((lesson) => lesson.stageId === "02")).toHaveLength(15);
   expect(catalog.lessons.filter((lesson) => lesson.stageId === "03")).toHaveLength(22);
   expect(catalog.lessons.filter((lesson) => lesson.stageId === "04")).toHaveLength(5);
-  expect(catalog.lessons).toHaveLength(56);
+  expect(catalog.lessons.filter((lesson) => lesson.stageId === "05")).toHaveLength(5);
+  expect(catalog.lessons).toHaveLength(61);
   for (const lesson of catalog.lessons) {
     await open(page, `lesson/${lesson.id}`);
     await expect(page.getByRole("heading", { level: 1, name: lesson.title, exact: true })).toBeVisible();

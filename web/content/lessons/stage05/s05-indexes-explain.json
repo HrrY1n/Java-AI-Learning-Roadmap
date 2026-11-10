@@ -1,0 +1,39 @@
+{
+  "id": "s05-indexes-explain",
+  "stageId": "05",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "索引、B+ 树原理与 EXPLAIN",
+  "summary": "理解聚簇/二级/覆盖索引与最左前缀原则，用真实 EXPLAIN 输出识别并改写失效的慢 SQL。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s05-transactions-acid",
+    "s05-jdbc-dao"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "数据上万行后查询骤慢，盲目建索引反而拖慢写入。学完本节应能用 B+ 树模型解释回表与覆盖索引，并读懂 EXPLAIN 的 type/key/rows/Extra。"
+    },
+    {
+      "label": "预测运行",
+      "body": "依次预测示例中 5 次 EXPLAIN 各自是否命中索引：尤其是第 3 组跳过最左列、第 4 组覆盖索引 Extra、第 5 组套用 LOWER(...) 函数的结果。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "完成修改题 S05B2：把第 3 组条件改为 WHERE dept_code = 'D3' 观察 type 与 rows 变化；再试着把第 4 组 SELECT 列多加一个 username，观察 Extra 里的 Using index 会不会消失。"
+    },
+    {
+      "label": "独立练习",
+      "body": "将一条慢查询 SELECT id FROM lab_index_bench WHERE score + 5 >= 95 改写为等价且能命中索引的形式，并建合适索引后用 EXPLAIN 验证 rows 明显下降。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "线上慢 SQL 排查三板斧：抓执行计划 EXPLAIN → 检查是否跳过最左前缀或列上做函数/隐式转换 → 评估是否可用覆盖索引消除回表。"
+    }
+  ],
+  "bodyPath": "stages/stage05_mysql_db/existing_course/day04_indexes_explain/README.md",
+  "codeDirectory": "stages/stage05_mysql_db/existing_course/day04_indexes_explain"
+}

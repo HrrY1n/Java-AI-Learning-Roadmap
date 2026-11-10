@@ -38,6 +38,11 @@
     "S04A2",
     "S04B1",
     "S04B2",
+    "S05A1",
+    "S05A2",
+    "S05A3",
+    "S05B1",
+    "S05B2",
     "calculator",
     "day01",
     "day02",
@@ -105,6 +110,11 @@
     "s04-thread-pool",
     "s04-thread-pool-lab",
     "s04-visibility-volatile",
+    "s05-indexes-explain",
+    "s05-jdbc-dao",
+    "s05-relational-design",
+    "s05-sql-basics",
+    "s05-transactions-acid",
     "scores"
   ],
   "suspended": [

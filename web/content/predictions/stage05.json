@@ -1,0 +1,42 @@
+{
+  "stageId": "05",
+  "statementSource": "stages/stage05_mysql_db/practice/predict_and_modify.md",
+  "answerSource": "stages/stage05_mysql_db/practice/answers.md",
+  "predictions": {
+    "S05A1": {
+      "lessonIds": [
+        "s05-jdbc-dao"
+      ],
+      "contentState": "published"
+    },
+    "S05A2": {
+      "lessonIds": [
+        "s05-jdbc-dao"
+      ],
+      "contentState": "published"
+    },
+    "S05A3": {
+      "lessonIds": [
+        "s05-transactions-acid"
+      ],
+      "contentState": "published"
+    }
+  },
+  "modifications": {
+    "S05B1": {
+      "lessonIds": [
+        "s05-jdbc-dao",
+        "s05-sql-basics"
+      ],
+      "referencePaths": [
+        "stages/stage05_mysql_db/existing_course/src/main/java/com/javaroadmap/stage05/student/JdbcStudentRepository.java"
+      ]
+    },
+    "S05B2": {
+      "lessonIds": [
+        "s05-indexes-explain"
+      ],
+      "referencePaths": []
+    }
+  }
+}

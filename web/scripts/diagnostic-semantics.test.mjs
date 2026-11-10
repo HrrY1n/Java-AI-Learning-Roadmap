@@ -153,6 +153,11 @@ test("代表性课程讲义均含学习验收四要素闭环，且诊断解析�
     "s04-visibility-volatile",
     "s04-synchronized-mutex",
     "s04-concurrent-tools",
+    "s05-sql-basics",
+    "s05-relational-design",
+    "s05-transactions-acid",
+    "s05-indexes-explain",
+    "s05-jdbc-dao",
   ];
   for (const id of upgradedLessonIds) {
     const lesson = catalog.lessons.find((item) => item.id === id);

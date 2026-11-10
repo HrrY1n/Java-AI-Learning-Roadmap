@@ -8,7 +8,8 @@
   "contentState": "published",
   "relatedLessonIds": [
     "s03-arraylist",
-    "s03-file-read"
+    "s03-file-read",
+    "s05-jdbc-dao"
   ],
   "exerciseIds": [
     "s03-delete-student"

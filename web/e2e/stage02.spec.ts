@@ -20,7 +20,7 @@ test.describe("Stage 02 首批课程", () => {
     // 课程目录包含 Stage 01 + Stage 02 全部课程
     await page.getByRole("button", { name: "课程目录" }).click();
     // V2.2：目录链接数随目录派生（新增课程不再假红）
-    await expect(page.locator(".chapter-picker a")).toHaveCount(56);
+    await expect(page.locator(".chapter-picker a")).toHaveCount(61);
   });
 
   test("Stage 02 预测题与修改题可用且与 Stage 01 共存", async ({ page }) => {
@@ -65,7 +65,7 @@ test.describe("Stage 02 首批课程", () => {
       "amount > balance",
     );
     // tab 计数来自 catalog 派生（当前 22 预测 + 13 修改）
-    await expect(page.getByRole("tab", { name: /输出预测/ })).toContainText("22");
-    await expect(page.getByRole("tab", { name: /条件修改/ })).toContainText("13");
+    await expect(page.getByRole("tab", { name: /输出预测/ })).toContainText("25");
+    await expect(page.getByRole("tab", { name: /条件修改/ })).toContainText("15");
   });
 });
