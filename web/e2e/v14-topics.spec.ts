@@ -432,6 +432,9 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     // 3. Tab 聚焦到关闭按钮按 Enter：仅关闭弹窗，不误跳转到第一门课程
     await trigger.click();
     await expect(dialog).toBeVisible();
+    // macOS 慢节拍下 showModal 的 autofocus 可能在 visible 之后一帧才生效；
+    // 先锚定初始焦点，否则首枚 Tab 会与 autofocus 竞态导致整条焦点链错位。
+    await expect(searchInput).toBeFocused();
     const closeBtn = page.getByRole("button", { name: "关闭搜索面板" });
     await page.keyboard.press("Tab"); // 从 input Tab 到关闭按钮
     await expect(closeBtn).toBeFocused();
@@ -442,6 +445,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     // 4. Tab 移动到第 2 条搜索结果并按 Enter：正确进入第 2 条结果，而不是被强制覆盖为第 1 条
     await trigger.click();
     await expect(dialog).toBeVisible();
+    await expect(searchInput).toBeFocused();
     const items = page.locator(".search-item");
     const secondItem = items.nth(1);
     const secondItemHref = await secondItem.getAttribute("href");
@@ -459,6 +463,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     // 5. 焦点与方向键同步：Tab 聚焦第 2 条结果后按 ↓，焦点与高亮同步移动至第 3 条，按 Enter 必须打开第 3 条
     await trigger.click();
     await expect(dialog).toBeVisible();
+    await expect(searchInput).toBeFocused();
     const thirdItem = items.nth(2);
     const thirdItemHref = await thirdItem.getAttribute("href");
     expect(thirdItemHref).toBeTruthy();
