@@ -29,7 +29,23 @@ function loadKatex(): Promise<Pluggable> {
   katexPromise ??= Promise.all([
     import("rehype-katex"),
     import("katex/dist/katex.min.css"),
-  ]).then(([plugin]) => plugin.default);
+  ]).then(([plugin]) => {
+    // V2.2 P0 修复：打包后的动态 import 互操作可能让 .default 在某些 chunk 初始化
+    // 顺序下为 undefined（生产构建实测：undefined 插件传入 unified 即抛
+    // "Unexpected value `undefined` for `tree`"，整页崩溃且 dev 模式不复现）。
+    // 防御性兜底：default 缺失时回退到模块命名空间本身（CJS 互操作的另一种合法形态），
+    // 且结果必须可调用——不可调用则显式失败而不是把 undefined 传给渲染管线。
+    const candidate =
+      typeof plugin.default === "function"
+        ? plugin.default
+        : typeof (plugin as unknown) === "function"
+          ? (plugin as unknown as Pluggable)
+          : undefined;
+    if (typeof candidate !== "function") {
+      throw new Error("rehype-katex 动态加载结果不是可调用的插件");
+    }
+    return candidate;
+  });
   return katexPromise;
 }
 
