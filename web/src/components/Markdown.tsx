@@ -1,9 +1,10 @@
 import ReactMarkdown from "react-markdown";
-import { memo, useEffect, useState } from "react";
+import { memo } from "react";
 import type { ReactNode } from "react";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import type { Pluggable } from "unified";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import hljs from "highlight.js/lib/core";
 import java from "highlight.js/lib/languages/java";
 import { catalog, resolveSourcePath, sourceHref } from "../catalog";
@@ -11,9 +12,10 @@ import { slugifyHeading } from "../slug-heading";
 
 hljs.registerLanguage("java", java);
 
-// KaTeX 只服务数学公式（目前仅专题课使用）。V2.1 起改为按需加载：
-// 文本含数学定界符时才动态载入 rehype-katex 与其 CSS，主包不再携带全量 KaTeX。
-// 加载完成前含公式的页面显示占位，避免闪现原始 TeX。
+// KaTeX 静态加载（V2.2 根治）：V2.1 曾把 rehype-katex 改为动态 import 拆 chunk，
+// 但该 chunk 与 react-markdown dep chunk 组合运行时会触发 unified
+// "Unexpected value `undefined` for `tree`" 整页崩溃（dev 与生产均复现）。
+// 确定性优先：插件与 CSS 回归静态 import；无数学页面仍跳过 katex rehype 处理。
 const MATH_PATTERN =
   /(?:\$\$[\s\S]+?\$\$|\$[^$\n]+\$|\\\[[\s\S]+?\\\]|\\\([\s\S]+?\\\))/;
 const FENCED_BLOCK = /```[\s\S]*?```/g;
@@ -22,31 +24,6 @@ const FENCED_BLOCK = /```[\s\S]*?```/g;
 // 误触发会让非数学文档整页先渲染占位（评审实测 environment 等 2 篇）。
 function hasMathOutsideFences(text: string): boolean {
   return MATH_PATTERN.test(text.replace(FENCED_BLOCK, ""));
-}
-
-let katexPromise: Promise<Pluggable> | null = null;
-function loadKatex(): Promise<Pluggable> {
-  katexPromise ??= Promise.all([
-    import("rehype-katex"),
-    import("katex/dist/katex.min.css"),
-  ]).then(([plugin]) => {
-    // V2.2 P0 修复：打包后的动态 import 互操作可能让 .default 在某些 chunk 初始化
-    // 顺序下为 undefined（生产构建实测：undefined 插件传入 unified 即抛
-    // "Unexpected value `undefined` for `tree`"，整页崩溃且 dev 模式不复现）。
-    // 防御性兜底：default 缺失时回退到模块命名空间本身（CJS 互操作的另一种合法形态），
-    // 且结果必须可调用——不可调用则显式失败而不是把 undefined 传给渲染管线。
-    const candidate =
-      typeof plugin.default === "function"
-        ? plugin.default
-        : typeof (plugin as unknown) === "function"
-          ? (plugin as unknown as Pluggable)
-          : undefined;
-    if (typeof candidate !== "function") {
-      throw new Error("rehype-katex 动态加载结果不是可调用的插件");
-    }
-    return candidate;
-  });
-  return katexPromise;
 }
 
 function flattenNode(node: ReactNode): string {
@@ -102,31 +79,15 @@ export const Markdown = memo(function Markdown({
   onReference?: (path: string) => void;
 }) {
   const headingIds = new Map<string, number>();
-  // 含公式的页面先挂占位，等 KaTeX 就绪后一次性渲染（不闪原始 TeX）
+  // V2.2 P0 根治：KaTeX 插件回归静态 import（V2.1 的动态 import chunk 组合在
+  // dev 与生产都会触发 unified "tree undefined" 崩溃，机制见 00_baseline_verification）。
+  // fence 剔除检测保留用于一个轻优化：无数学的页面跳过 rehype 阶段的 katex 处理。
   const needsKatex = hasMathOutsideFences(text);
-  const [katexPlugin, setKatexPlugin] = useState<Pluggable | null>(null);
-  useEffect(() => {
-    if (!needsKatex || katexPlugin) return;
-    let alive = true;
-    loadKatex().then((plugin) => {
-      if (alive) setKatexPlugin(plugin);
-    });
-    return () => {
-      alive = false;
-    };
-  }, [needsKatex, katexPlugin]);
-  if (needsKatex && !katexPlugin) {
-    return (
-      <div className="prose">
-        <p className="reader-body-loading">正在载入公式渲染…</p>
-      </div>
-    );
-  }
   return (
     <div className="prose">
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={katexPlugin ? [katexPlugin] : []}
+        rehypePlugins={needsKatex ? [rehypeKatex] : []}
         components={{
           h2: ({ children }) => {
             const text = flattenNode(children);
