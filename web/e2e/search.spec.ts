@@ -36,10 +36,12 @@ test("仓库文档入索引且可直达", async ({ page }) => {
   await page.keyboard.press("Control+k");
   const input = page.getByRole("textbox", { name: "搜索课程与资料" });
   await expect(input).toBeVisible();
-  // 「合并规则」是数据模型文档正文的独有词
-  await input.fill("合并规则");
+  // 「IndexedDB」是仓库文档正文的独有词（课程正文零命中，正文命中排序不干扰）
+  await input.fill("IndexedDB");
   const items = page.locator(".search-item");
   await expect(items.first()).toContainText("仓库文档");
   await items.first().click();
-  await expect(page.getByRole("heading", { name: /数据模型|本地数据/ }).first()).toBeVisible();
+  // 「IndexedDB」正文首命中是使用指南（lab-user-guide）；直达后校验路由与页面标题
+  await expect(page).toHaveURL(/#\/document\/lab-user-guide/);
+  await expect(page.locator("main h1")).toBeVisible();
 });
