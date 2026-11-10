@@ -1,0 +1,48 @@
+{
+  "id": "s04-thread-pool-lab",
+  "stageId": "04",
+  "title": "线程池任务执行与优雅关闭",
+  "className": "ThreadPoolLab",
+  "order": 3,
+  "contentState": "published",
+  "lessonIds": [
+    "s04-thread-pool",
+    "s04-concurrent-tools"
+  ],
+  "statementSource": "stages/stage04_java_advanced/practice/s04-exercises.md",
+  "statementAnchor": "练习 3",
+  "hintSource": "stages/stage04_java_advanced/practice/s04-exercises.md",
+  "todo": "使用固定上限的线程池提交 Callable 任务，通过 Future 按序收集结果并执行 shutdown + awaitTermination。",
+  "note": "不得把任务执行顺序当成固定契约；使用 List<Future<Long>> 按提交顺序汇总结果，同时检查线程数上限与优雅关闭状态。",
+  "cases": [
+    {
+      "label": "双线程池处理五个平方任务",
+      "input": "2 5\n",
+      "expected": "任务总数：5，池大小：2\n任务均由池线程执行：true\n工作线程数不超上限：true\n计算结果：[1, 4, 9, 16, 25]\n结果总和：55\n线程池已优雅关闭：true",
+      "kind": "normal"
+    },
+    {
+      "label": "零任务池仍正常关闭",
+      "input": "2 0\n",
+      "expected": "任务总数：0，池大小：2\n任务均由池线程执行：true\n工作线程数不超上限：true\n计算结果：[]\n结果总和：0\n线程池已优雅关闭：true",
+      "kind": "boundary"
+    },
+    {
+      "label": "池大小非正拒绝",
+      "input": "0 5\n",
+      "expected": "池大小必须大于 0",
+      "kind": "invalid"
+    },
+    {
+      "label": "负数任务数拒绝",
+      "input": "2 -1\n",
+      "expected": "任务数不能为负",
+      "kind": "invalid"
+    }
+  ],
+  "referenceFiles": [
+    "ThreadPoolLabAnswer.java"
+  ],
+  "packageSegment": "threadpool",
+  "needsInput": true
+}

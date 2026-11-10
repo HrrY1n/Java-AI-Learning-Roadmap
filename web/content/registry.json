@@ -97,9 +97,13 @@
     "s03-type-information",
     "s03-update-score",
     "s03-utf8-io",
+    "s04-concurrent-tools",
+    "s04-safe-counter",
     "s04-synchronized-mutex",
     "s04-thread-basics",
+    "s04-thread-order",
     "s04-thread-pool",
+    "s04-thread-pool-lab",
     "s04-visibility-volatile",
     "scores"
   ],

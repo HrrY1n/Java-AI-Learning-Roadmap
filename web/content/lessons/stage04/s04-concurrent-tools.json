@@ -1,0 +1,50 @@
+{
+  "id": "s04-concurrent-tools",
+  "stageId": "04",
+  "moduleId": "foundations",
+  "kind": "foundation",
+  "title": "并发工具：原子类、Future 与并发集合",
+  "summary": "用 AtomicInteger 做无锁计数、用 Callable/Future 取回异步结果、用 ConcurrentHashMap 避免手写粗粒度锁。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s04-thread-pool",
+    "s04-synchronized-mutex"
+  ],
+  "exerciseIds": [
+    "s04-safe-counter",
+    "s04-thread-pool-lab"
+  ],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "真实场景",
+      "body": "在工程里你很少自己手写底层锁：统计接口总访问次数（单计数器）、提交异步计算后要拿回返回值、多个工作线程同时往一个 Map 里写入统计结果——这三件事都有更顺手、更不容易写错的标准并发工具。"
+    },
+    {
+      "label": "为什么需要",
+      "body": "Runnable.run() 没有返回值也不允许抛受检异常，满足不了“异步算完把结果带回来”；给单个 int 加 synchronized 略显笨重；而普通 HashMap 在多线程并发写时会破坏内部结构甚至导致死循环（历史版本）或数据丢失。"
+    },
+    {
+      "label": "概念与心智模型",
+      "body": "1) AtomicInteger 用硬件级 CAS（比较并替换：先看当前是不是旧值，是才改成新值，不是就重试）实现无锁原子累加；适合单变量计数，不适合跨多个变量的复合不变式。\n2) Callable<V> 是“会返回结果的任务”，Future<V> 是提交到线程池后立刻拿到的“取件凭证”，调用 future.get() 会阻塞等待结果并把任务里的异常包成 ExecutionException 带回调用方。\n3) ConcurrentHashMap 把锁粒度收窄到桶级别（JDK 8+ 采用 CAS + synchronized 桶头节点），单次 put/get 安全；但“先 get 再算再 put”两步组合仍会竞态，必须用 merge / compute 等原子复合方法。"
+    },
+    {
+      "label": "预测运行",
+      "body": "先预测示例中三行输出：AtomicInteger 10 万 × 2 线程是否保证 200000？Future 异步计算 1..100 的结果是多少？ConcurrentHashMap 用 merge 累计 1000 × 2 次结果是多少？运行核对。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把示例里 hits.merge(\"api\", 1, Integer::sum) 改成两步写法：Integer cur = hits.get(\"api\"); hits.put(\"api\", cur == null ? 1 : cur + 1); 运行三次观察计数是否丢更新——这就是“每个方法各自线程安全，组合起来照样出错”的复现实验。"
+    },
+    {
+      "label": "独立练习",
+      "body": "完成编程实验室的“线程池任务执行与优雅关闭”（s04-thread-pool-lab）与“线程安全计数器”（s04-safe-counter）；对比你在计数器练习里手写 synchronized 与这里用 AtomicInteger 的代码量与适用边界。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "后端限流计数器用 AtomicLong/LongAdder；批量并发查下游接口并汇总结果用 CompletableFuture / ExecutorService+Future；本地缓存或指标统计用 ConcurrentHashMap.computeIfAbsent——同时记住它不接受 null 键或 null 值（与 HashMap 不同）。"
+    }
+  ],
+  "bodyPath": null,
+  "codeDirectory": "stages/stage04_java_advanced/existing_course/day05_concurrent_tools/com/javaroadmap/stage04/day05concurrenttools"
+}

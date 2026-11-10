@@ -10,7 +10,9 @@
     "s04-visibility-volatile",
     "s04-thread-pool"
   ],
-  "exerciseIds": [],
+  "exerciseIds": [
+    "s04-safe-counter"
+  ],
   "predictionIds": [],
   "steps": [
     {

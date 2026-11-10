@@ -147,7 +147,8 @@
             "s04-thread-basics",
             "s04-visibility-volatile",
             "s04-synchronized-mutex",
-            "s04-thread-pool"
+            "s04-thread-pool",
+            "s04-concurrent-tools"
           ]
         }
       ],

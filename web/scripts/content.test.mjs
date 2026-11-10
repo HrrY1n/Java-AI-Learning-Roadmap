@@ -28,7 +28,9 @@ test("catalog mirrors the actual Stage 01 learning assets", () => {
   assert.equal(
     catalog.exercises.filter(
       (exercise) =>
-        !exercise.id.startsWith("s02-") && !exercise.id.startsWith("s03-"),
+        !exercise.id.startsWith("s02-") &&
+        !exercise.id.startsWith("s03-") &&
+        !exercise.id.startsWith("s04-"),
     ).length,
     4,
   );
@@ -47,10 +49,14 @@ test("catalog mirrors the actual Stage 01 learning assets", () => {
     ).length,
     6,
   );
-  // V2.1：Stage 04 并发基础四课接线
+  // V2.1：Stage 04 并发基础四课接线；V2.2 补齐三道结构化练习
   assert.equal(
     catalog.lessons.filter((lesson) => lesson.stageId === "04").length,
-    4,
+    5,
+  );
+  assert.equal(
+    catalog.exercises.filter((exercise) => exercise.id.startsWith("s04-")).length,
+    3,
   );
   assert.equal(
     catalog.predictions.filter((prediction) => prediction.id.startsWith("S04"))
@@ -251,7 +257,7 @@ test("answers and complete reference applications require explicit lazy loading"
   );
   assert.doesNotMatch(
     JSON.stringify(catalog),
-    /public class (?:ScoreStatisticsAnswer|LearningMenuAnswer|SimpleCalculatorAnswer|ScoreStatisticsApp|SimpleCalculatorApp|MenuDemoApp|GuessNumberApp|GuessNumber|loop|method)\s*\{/,
+    /public class (?:ScoreStatisticsAnswer|LearningMenuAnswer|SimpleCalculatorAnswer|ScoreStatisticsApp|SimpleCalculatorApp|MenuDemoApp|GuessNumberApp|GuessNumber|ThreadOrderLabAnswer|SafeCounterLabAnswer|ThreadPoolLabAnswer|loop|method)\s*\{/,
   );
 });
 
@@ -412,6 +418,9 @@ test("V1.3 修补：Java 包名合法、用例契约完整、stdin 标记正确"
         "s03-delete-student",
         "s03-update-score",
         "s03-email-csv",
+        "s04-thread-order",
+        "s04-safe-counter",
+        "s04-thread-pool-lab",
       ].includes(exercise.id),
     );
   }

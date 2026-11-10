@@ -10,7 +10,9 @@
     "s04-thread-basics",
     "s04-synchronized-mutex"
   ],
-  "exerciseIds": [],
+  "exerciseIds": [
+    "s04-safe-counter"
+  ],
   "predictionIds": [],
   "steps": [
     {

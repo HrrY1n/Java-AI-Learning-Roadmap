@@ -10,7 +10,9 @@
     "s03-concurrency-basics",
     "s04-visibility-volatile"
   ],
-  "exerciseIds": [],
+  "exerciseIds": [
+    "s04-thread-order"
+  ],
   "predictionIds": [
     "S04A1"
   ],

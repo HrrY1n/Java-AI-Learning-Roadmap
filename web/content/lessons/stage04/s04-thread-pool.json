@@ -8,9 +8,12 @@
   "contentState": "published",
   "relatedLessonIds": [
     "s04-synchronized-mutex",
-    "s03-design-patterns"
+    "s03-design-patterns",
+    "s04-concurrent-tools"
   ],
-  "exerciseIds": [],
+  "exerciseIds": [
+    "s04-thread-pool-lab"
+  ],
   "predictionIds": [
     "S04A2"
   ],

@@ -61,6 +61,7 @@ stages/stage02_java_oop/deep_dives/05_polymorphism_interface	com.javaroadmap.sta
 stages/stage02_java_oop/deep_dives/06_entity_service	com.javaroadmap.stage02.deepdives.entityservice.EntityServiceDemo	-	out	平均分：	入口层捕获：分数必须在 0 到 100：150	拒绝非法学生后人数：3
 stages/stage02_java_oop/existing_course/day07_static_visibility	com.javaroadmap.stage02.day07staticvisibility.App	-	out	创建前累计人数：0	创建两人后累计人数：2	累计人数仍是：2
 stages/stage04_java_advanced/existing_course/day04_thread_pool	com.javaroadmap.stage04.day04threadpool.App	-	out	动用的线程数：2	pool-1-thread	任务都在队列里排队，5 个任务只用了 2 个常驻工人
+stages/stage04_java_advanced/existing_course/day05_concurrent_tools	com.javaroadmap.stage04.day05concurrenttools.App	-	out	AtomicInteger 计数：200000	Future 取回异步和：5050	ConcurrentHashMap 原子累计 api：2000
 stages/stage04_java_advanced/existing_course/day03_synchronized_mutex	com.javaroadmap.stage04.day03synchronizedmutex.App	-	out	synchronized 结果（必然 2000）：2000
 stages/stage04_java_advanced/existing_course/day02_visibility_volatile	com.javaroadmap.stage04.day02visibilityvolatile.App	-	out	watcher 观察到停止信号	count 期望 200000，实际：	volatile 可见性 != 原子性
 stages/stage04_java_advanced/existing_course/day01_thread_basics	com.javaroadmap.stage04.day01threadbasics.App	-	out	main 所在线程：main	：NEW	：TERMINATED	Thread-0	JVM 在所有非守护线程结束后才退出
