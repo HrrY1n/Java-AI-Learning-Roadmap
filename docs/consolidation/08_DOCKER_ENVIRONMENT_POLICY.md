@@ -21,10 +21,10 @@
 ## 三、脚本前置检查实施（方案 ii）
 
 `verify_mysql.sh` 与 `verify_mysql.ps1` 增加只读前置检查（本轮实施）：
-1. 对 `JRL_MYSQL_URL` 的 host:port 做 TCP 探活（bash `/dev/tcp` / PS `Test-NetConnection`）——不调用 docker 命令；
+1. 对 `JRL_MYSQL_URL` 的 host:port 做 TCP 探活（bash `/dev/tcp` / PS `TcpClient.BeginConnect` 异步探测）——不调用 docker 命令；
 2. 仅当 TCP 失败且 `docker` CLI 在 PATH 时，执行**只读** `docker ps --filter name=jrl-mysql --format` 生成定向提示（"容器未运行：请手动 `docker start jrl-mysql-v22` 并确认 Docker Desktop 已启动后重试"）——查询 daemon 不会拉起 Docker Desktop；
 3. 输出显式声明"本脚本永不启动 Docker Desktop"；
-4. 探测端口与 URL 端口不一致时明确指出。
+4. 探测的 host:port 即取自 JRL_MYSQL_URL 本身，保证探测目标与连接目标一致。
 
 ## 四、8GB 内存设备（MacBook Air）约束
 

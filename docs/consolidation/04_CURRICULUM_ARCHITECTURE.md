@@ -8,7 +8,7 @@
 2. **概念断层仅两处轻度前向依赖**：`s02-entity-service` 正文/代码用 try/catch 而异常在 Stage03 才正式教（V2.3 只修了 ArrayList 同类问题，catch 遗漏）；`s03-lambda` 独立练习指向 Stage04 的线程池。→ 本轮各补一句说明。
 3. **Stage01 的 deep01–07 编号不代表配对关系**（实际语义配对 day03↔deep07、day04↔deep05、day05↔deep03、day06↔deep04+deep06、day07↔deep02），且 V2.3 03 文档"一一配对"表述不准确 → 本轮修正导航说明与文档表述。
 4. **专题入口时机失真**：algo 5 门（graph/hash-table/heap-topk/binary-tree/greedy）stageLinks 只挂 '01' 但实际依赖 Stage03 集合；git 19 门全挂 '08' 但前 4 门是 Stage01 就要用的工具课 → 本轮修数据。
-5. **系统性结构缺陷：主线↔专题之间没有任何链接通道**——stageLinks（1 专题级 + 91 小节级）经 `build.mjs:912` 校验后在 web/src **零渲染**（grep 仅命中类型定义）；`relatedLessonIds` 结构上无法挂专题小节。学习者从主线课看不到任何专题延伸入口。→ 本轮实施 TopicView/专题页渲染"建议学习时点"。
+5. **stageLinks 死数据（精确表述）**：5 个专题级 + 91 个小节级 stageLinks 经内容构建校验（build.mjs validateCatalog）后在 web/src **零渲染**（grep 仅命中类型定义）；`relatedLessonIds` 结构上无法挂专题小节。现状下学习者主要靠侧栏常驻的双分组往返主线与专题，但**专题课自身不声明其内容对应的主线学习时点**——本轮实现的是"专题课 → 主线 Stage"的反向通道（TopicView 课头"建议学习时点"chips）；主线课正文内嵌专题延伸链接留作后续增强（侧栏双分组已提供基础通道，非阻断）。
 
 ## 二、连续项目演进评估
 

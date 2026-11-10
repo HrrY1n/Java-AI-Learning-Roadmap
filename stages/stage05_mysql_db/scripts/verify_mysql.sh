@@ -25,7 +25,7 @@ if [ -z "$DB_HOST" ] || [ -z "$DB_PORT" ]; then
     echo "错误：无法从 JRL_MYSQL_URL 解析 host:port（当前值：${JRL_MYSQL_URL:-<未设置>}）"
     exit 2
 fi
-if ! (exec 3<>"/dev/tcp/$DB_HOST/$DB_PORT") 2>/dev/null; then
+if ! timeout 3 bash -c "exec 3<>/dev/tcp/$DB_HOST/$DB_PORT" 2>/dev/null; then
     echo "错误：数据库端口不可达：$DB_HOST:$DB_PORT"
     if command -v docker >/dev/null 2>&1; then
         CONTAINER_STATE="$(docker ps --filter name=jrl-mysql --format '{{.Names}} {{.Status}}' 2>/dev/null || true)"
