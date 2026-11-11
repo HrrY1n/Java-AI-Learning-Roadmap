@@ -453,6 +453,9 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
       .locator(".search-item")
       .filter({ hasText: "Pro Git (第 2 版中文版)" });
     await expect(bookResult).toBeVisible();
+    // 先把指针移出搜索列表：Playwright click 的滚动+悬停会触发 onMouseEnter→setSelectedIndex
+    // →列表重渲染→元素反复 detach 的自持循环（macOS 慢节拍下 30s 不收敛）；移开后重渲染停止。
+    await page.mouse.move(0, 0);
     await bookResult.click();
 
     // 验证路由为规范的单 Hash 路径，消灭 #/topics#book-id 双重 Hash
