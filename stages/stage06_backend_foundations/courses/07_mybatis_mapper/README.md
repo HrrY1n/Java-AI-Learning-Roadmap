@@ -37,7 +37,7 @@ public interface StudentMapper {
 
 ## 3. 读懂本模块的 Mapper（编译验证通过）
 
-`mybatis-lab/` 的 `StudentMapper` 接口包含与 Stage 05 契约对应的语句：按 id 查、全查、插入（含回填自增 id）、更新分数、删除、批量插入。每条 SQL 都可以在 `xml` 或注解里找到原文——**不看懂 SQL 就写不出 Mapper**，这是它与 JPA 的本质区别。
+`mybatis-lab/` 的 `StudentMapper` 接口包含与 Stage 05 契约对应的语句：按 id 查、按学号查（`findByStudentNo`）、全查、插入（含回填自增 id）、更新分数、删除、批量插入——共 7 条。每条 SQL 都可以在 `xml` 或注解里找到原文——**不看懂 SQL 就写不出 Mapper**，这是它与 JPA 的本质区别。
 
 **事务归属**：MyBatis 本身不管事务，Spring 的 `@Transactional` 接管（对应 Stage 05 `saveBatchAtomically` 的"整批回滚"语义——MySQL 版就是真实事务）。批量插入失败 → 事务回滚 → 数据库回到调用前状态，与内存版的快照回滚**语义一致、机制不同**。
 
@@ -50,7 +50,7 @@ mybatis-lab/  （独立 Maven 模块：mybatis + mysql-connector-j 依赖）
 └── src/main/resources/com/javaroadmap/stage06/mybatis/StudentMapper.xml
 ```
 
-验证等级（如实三级）：① **编译验证已通过**（`./mvnw compile`）；② Mapper XML 与接口绑定关系静态核对已做；③ **真实 MySQL 运行验证未执行**（环境阻断）。课内所有"运行后"描述请按"将来接入真实库时"理解。真库接入需要：运行中的 MySQL 8.0 + Stage 05 的 `lab_students` 建表脚本 + `application-mysql.properties` 配置（模板已备）。
+验证等级（如实三级）：① **编译验证已通过**（`./mvnw compile`）；② Mapper XML 与接口绑定关系静态核对已做；③ **真实 MySQL 运行验证未执行**（环境阻断）。课内所有"运行后"描述请按"将来接入真实库时"理解。真库接入需要：运行中的 MySQL 8.0 + Stage 05 的 `lab_students` 建表脚本 + `application-mysql.properties` 配置（本工程尚未提供该文件，配置项清单见 docs/overhaul-v2.5/07_DATABASE_INTEGRATION.md）。
 
 ## 5. 数据访问层的最终形状（课 5 → 课 7 的完整对照）
 
@@ -64,7 +64,7 @@ Controller（不变）→ Service（不变，@Transactional 真事务）→ Stud
 
 ## 6. 排查 SQL 错误（MyBatis 时代的三板斧）
 
-1. **看生成的 SQL**：`log.level.com.javaroadmap=DEBUG` 让 MyBatis 打印"Preparing:"与"Parameters:"两行——90% 的绑定错误当场现形（占位符个数、类型、顺序）。
+1. **看生成的 SQL**：`logging.level.com.javaroadmap.stage06.mybatis=DEBUG`（Spring Boot 的 `logging.level.<包名>` 配置键）让 MyBatis 打印"Preparing:"与"Parameters:"两行——90% 的绑定错误当场现形（占位符个数、类型、顺序）。
 2. **SQL 原文单独执行**：把 Preparing 行的 SQL 拷出来放 MySQL 客户端跑一遍，区分"SQL 错"还是"映射错"。
 3. **读异常链**：`DataAccessException` 的 cause 是 SQLIntegrityConstraintViolationException（约束冲突，如唯一学号 → 1062）还是语法错——Stage 05 的错误码知识（1062/3819/1452）在这里全部适用。
 
@@ -74,7 +74,7 @@ Controller（不变）→ Service（不变，@Transactional 真事务）→ Stud
 
 ## 8. 独立练习与真库接入路线（供拥有 MySQL 环境后执行）
 
-**练习**：对照已实现的 `findByStudentNo`（接口 + XML 两处），给 Mapper 自行补 `countStudents`（`SELECT COUNT(*)`）并把绑定测试的语句断言从 7 条扩到 8 条；完成后再按官方 MyBatis-Spring 文档把真库接入 `student-api` 的 `application-mysql.properties`。
+**练习**：对照已实现的 `findByStudentNo`（接口 + XML 两处），给 Mapper 自行补 `countStudents`（`SELECT COUNT(*)`）并把绑定测试的语句断言从 7 条扩到 8 条；完成后再按官方 MyBatis-Spring 文档把真库接入 `student-api` 的 `application-mysql.properties`。（工程综合任务另见 practice/s06_tasks.md 任务 7：给 student-api 加批量导入与整批回滚。）
 **真库接入步骤**（全部步骤见 07_DATABASE_INTEGRATION.md）：启动隔离 MySQL → 建表（Stage 05 `01_constraints.sql`）→ 配 datasource → `./mvnw test` 跑 `@SpringBootTest` 的 MySQL profile 版契约测试（同一套契约测试换 profile 复跑——这是分层的最终收益）。
 
 ## 9. 常见误区

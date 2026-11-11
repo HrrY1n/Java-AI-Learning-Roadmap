@@ -22,7 +22,7 @@
 - `server.createContext("/api/students", this::handleStudents)`——**路由注册**：一条 context 绑定一个路径前缀。`@RequestMapping("/api/students")` 注解的本质就是这一行。
 - `exchange.getRequestURI().getPath()` + 正则 `/api/students/\d+`——**路径参数解析**。`@PathVariable int id` 的本质是这段字符串抠取 + 类型转换。
 - `Optional.ofNullable(repository.findById(id))` + 404 分支——**"查不到"不是异常而是状态码**：404 表达"资源不存在"，500 表达"服务器自己出错了"。语义混用是 REST 最常见的新手错误。
-- 兜底分支：已知路径 + 不支持的方法 → **405**；未知路径 → 404。课 3 的 selftest 只测了 GET——405 分支留给你在练习里验证。
+- 兜底分支：`/api/students` 前缀下没有分支接住的请求（不支持的方法、或路径形态不匹配）→ **405 + Allow 头**；完全未知路径 → 由 JDK 默认 handler 返回 404。课 3 的 selftest 只测了 GET——405 分支留给你在练习里验证。
 - `try/catch/finally` + `exchange.close()`——**异常兜底**：任何处理异常都变 500，且绝不吞掉（响应体带上异常类名，服务器日志记完整堆栈）。Spring 的 `@RestControllerAdvice` 就是把这段兜底集中到一处。
 
 ## 3. JSON：手写一遍才知道 Jackson 挡了多少
@@ -45,13 +45,13 @@ GET /api/students/1 → 200 {...}
 GET /api/students/999 → 404 {"error":"学生不存在","id":999}
 ```
 
-**修改一个条件**：把 999 那次请求改成 `/api/students/abc`——预测会发生什么？实测 **405**（不是你直觉里的 400 或 500）：路径参数正则 `\d+` 不匹配 `abc`，`parseInt` 根本没执行，请求落进"已知资源 + 不支持方法"的兜底。这说明手写分发器把"路径参数格式错"与"方法不支持"混在了一起——语义上 `abc` 应该是 400。课 5/6 的框架映射（`MethodArgumentTypeMismatchException → 400`）正是对这类粗粒度兜底的精细化。
+**修改一个条件**：把 999 那次请求改成 `/api/students/abc`——预测会发生什么？实测 **405**（不是你直觉里的 400 或 500）：路径参数正则 `\d+` 不匹配 `abc`，`parseInt` 根本没执行，GET 分支接不住它，请求落进分发兜底。这说明手写分发器把"路径参数格式错"与"方法不支持"混在同一个兜底里——语义上 `abc` 应该是 400。课 5/6 的框架映射（`MethodArgumentTypeMismatchException → 400`）正是对这类粗粒度兜底的精细化。
 
 ## 5. 独立练习：给服务加 DELETE /api/students/{id}
 
 **任务**：在分发器里增加 DELETE 分支——存在则删除并返回 204（无响应体），不存在返回 404。
 完成条件：`--selftest` 的 report 里新增一行 `DELETE /api/students/1 → 204`，且再 GET /1 得到 404。
-提示阶梯：L1 看 GET 分支怎么写 respond（204 时 `sendResponseHeaders(status, -1)` 表示无体）；L2 repository.deleteById 已有 false 返回值可复用；L3 selftest 里删除后再 GET /api/students/1 断言 404；L4 若 405 分支吃掉了你的 DELETE，检查 `path.startsWith` 的判断顺序。
+提示阶梯：L1 看 GET 分支怎么写 respond（204 时 `sendResponseHeaders(status, -1)` 表示无体）；L2 repository.deleteById 已有 false 返回值可复用；L3 selftest 里删除后再 GET /api/students/1 断言 404；L4 若 405 兜底吃掉了你的 DELETE，检查分支顺序——DELETE 分支必须放在两个 GET 分支之后、405 兜底之前。
 **参考实现**：`practice/answers/REFERENCE_DELETE.md` 给出分发行与 selftest 行的参考写法（先自己写完再对照）。
 
 ## 6. 常见误区清单

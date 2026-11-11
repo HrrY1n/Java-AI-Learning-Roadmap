@@ -24,7 +24,7 @@ Jackson 反序列化 JSON → @Valid 触发 Hibernate Validator 校验注解
 → 成功：Controller 方法体执行，参数已是"合法 DTO"
 ```
 
-注意注解写的是 `Integer score` 而非 `int`：`null` 表示"未提供"（create 时回落 0 由 Service 处理），`@Min/@Max` 对 null 不触发校验——**null 与越界是两个不同的错误**，语义要分清。邮箱正则末尾的 `|^-# 参数校验与异常处理：把"错误"变成 API 的一等公民
+注意注解写的是 `Integer score` 而非 `int`：`null` 表示"未提供"（create 时回落 0 由 Service 处理），`@Min/@Max` 对 null 不触发校验——**null 与越界是两个不同的错误**，语义要分清。邮箱正则末尾的 `|^-$` 放行占位符 `-`：领域约定"邮箱可以为空但用 `-` 表示"（`Student` 构造器回落规则），校验层必须认识这个业务哨兵值。邮箱正则末尾的 `|^-# 参数校验与异常处理：把"错误"变成 API 的一等公民
 
 > 对应工程：`stages/stage06_backend_foundations/student-api/`
 > 代码：`StudentCreateDto/StudentUpdateDto`（校验注解）、`ApiExceptionHandler`（异常→状态码映射）、`ApiError`（统一错误体）
@@ -58,6 +58,7 @@ Jackson 反序列化 JSON → @Valid 触发 Hibernate Validator 校验注解
 | --- | --- | --- |
 | `MethodArgumentNotValidException`（DTO 校验失败） | 400 + fieldErrors | 请求本身不合法 |
 | `MethodArgumentTypeMismatchException`（路径 id 不是数字） | 400 | 同上，入口问题 |
+| `HttpMessageNotReadableException`（JSON 语法错/字段类型错/缺 body） | 400 | 同上，入口问题（Spring 默认语义，经显式分支声明防 500 兜底吞掉） |
 | `HttpMessageNotReadableException`（JSON 语法错/字段类型错/缺 body） | 400 | 同上，入口问题（Spring 默认语义，经显式分支声明防 500 兜底吞掉） |
 | `StudentNotFoundException` | 404 | 资源不存在 |
 | `DuplicateStudentNoException` | 409 | 与资源当前状态冲突（唯一学号） |

@@ -15,7 +15,7 @@
 - **L3 结构思路**：先 `mvn compile` 让目录骨架跑通，再加 main。
 - **L4 调试线索**：读第一条 `[ERROR]`；"找不到或无法加载主类"多半是 package 声明与目录不一致。
 
-## 任务 2：给 StudentService 写"先红后绿"的测试（课 2）
+## 任务 2：给 StudentService 写"先红后绿"的测试（课 2 方法 · 课 4 工程）
 
 **背景**：把 student-api 的 `StudentService` 契约用你自己的测试钉死。
 **任务**：在 student-api 的 `src/test/java` 下新建你自己的测试类（不要改已有两个测试类），至少覆盖：顺序 id 分配、学号冲突 409 异常、update 缺失 id 异常、score 边界 0/100/150。
@@ -64,7 +64,7 @@
 
 ## 任务 7：给批量导入加事务（课 7 概念 + 内存版实践）
 
-**任务**：给 student-api 新增 `POST /api/students/batch`（接收数组，整批成功 → 201 + Location 数组；任何一条失败 → 409 且全批不存在）。
+**任务**：给 student-api 新增 `POST /api/students/batch`（接收数组，整批成功 → 200/201 二选一并在注释里说明理由——批资源没有单独 URI；任何一条失败 → 409 且全批不存在）。
 **完成条件**：契约测试覆盖"全批成功"与"一条失败整批不存在"两场景，全绿；思考并注释：内存版的回滚与 MySQL 版的回滚分别靠什么实现。
 - **L1**：Repository 已有 saveBatchAtomically（快照回滚）。
 - **L2**：Service 里翻译"整批结果"：成功返回 Response 列表，冲突抛 DuplicateStudentNoException。

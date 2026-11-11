@@ -93,9 +93,13 @@ public class StudentHttpServer {
                 }
                 return;
             }
-            // 分发兜底：/api/students 前缀下已知资源 + 不支持的方法 → 405。
+            // 分发兜底：/api/students 前缀下没有分支接住的请求 → 405。两种来源：
+            // ① 已知资源 + 不支持的方法（如 POST/DELETE）；② 路径形态不匹配（如 /api/students/abc，
+            //    GET 虽受支持但没有分支能接住这个路径）。405 必须携带 Allow 头列出实际支持的方法（RFC 7231）。
             // context 按前缀注册，到达本 handler 的请求必然以 /api/students 开头——
             // 完全未知路径由 JDK 默认 handler 直接 404，不会进入这里（实测）。
+            exchange.getResponseHeaders().set("Allow", "GET");
+            respond(exchange, 405, "{\"error\":\"不支持的方法\",\"method\":\"" + method + "\"}");
         } catch (Exception e) {
             // 分发器的兜底异常处理：绝不吞掉根因——状态码 500 + 消息透传给调用方排查
             respond(exchange, 500, "{\"error\":\"" + e.getClass().getSimpleName() + "\"}");

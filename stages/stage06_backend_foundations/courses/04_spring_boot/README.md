@@ -8,7 +8,7 @@
 - **Spring（Framework）** 提供核心能力：**IoC 容器**（帮你创建和装配对象）与 Spring MVC（Web 层封装）。
 - **Spring Boot** 在 Spring 之上加了"约定 + 自动装配 + 内嵌服务器"：让一个 Web 应用**一条命令就能启动**，而不需要手写几十行 XML 或配置。
 
-一个可核验的对照：课 3 的 `StudentHttpServer` 要自己 `HttpServer.create`、自己分发、自己拼 JSON；本课的 `StudentApiApplication` 只有 6 行——`SpringApplication.run` 之内自动完成了内嵌 Tomcat 启动、路由注册、JSON 编解码、异常映射。
+一个可核验的对照：课 3 的 `StudentHttpServer` 要自己 `HttpServer.create`、自己分发、自己拼 JSON；本课的 `StudentApiApplication` 核心只有 `SpringApplication.run(...)` 一行——它之内自动完成了内嵌 Tomcat 启动、路由注册、JSON 编解码、异常映射。
 
 ## 2. IoC 与依赖注入：从"new"到"要"
 
@@ -16,9 +16,9 @@
 
 1. 你给类打标记：`@Component`/`@Service`（"请把我注册成一个 Bean"）；
 2. Spring 启动时扫描（`@ComponentScan`，`@SpringBootApplication` 自带），创建这些对象放进容器（`ApplicationContext`）；
-3. 谁需要协作对象，**只声明构造器参数**：`public StudentService(InMemoryStudentRepository repository)`——Spring 装配时自动把 Bean 递进来。
+3. 谁需要协作对象，**只声明构造器参数**：`public StudentService(StudentRepository repository)`——Spring 装配时自动把 Bean 递进来。注意注入的是**接口**而非实现：这正是课 7 能把 Repository 背后换成 MyBatis 而上层代码不动的前提。
 
-这就是**构造器注入**。为什么坚持构造器注入而不是字段 `@Autowired`：依赖在编译期可见（看构造器签名就知道要什么）、不可变（final）、不依赖 Spring 也能 new（课 2 的 `StudentServiceTest` 里 `new StudentService(new InMemoryStudentRepository())` 毫秒级跑完——**这就是分层 + 构造器注入换来的可测试性**）。
+这就是**构造器注入**。为什么坚持构造器注入而不是字段 `@Autowired`：依赖在编译期可见（看构造器签名就知道要什么）、不可变（final）、不依赖 Spring 也能 new（student-api 的 `StudentServiceTest` 沿用课 2 的可测试性论证，`new StudentService(new InMemoryStudentRepository())` 毫秒级跑完——**这就是分层 + 构造器注入换来的可测试性**）。
 
 ## 3. 自动配置：为什么一行配置不写就有 Tomcat
 
