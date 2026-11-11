@@ -8,23 +8,14 @@
 - 本地工具链：`.audit-work/tools/apache-maven-3.9.9`（官方 Central 发行包；下载与解压脚本见 `.audit-work/v25/setup-maven.sh`）
 - Docker：引擎未运行 → MyBatis 真库集成 = **阻断记录**（compile-verify only）
 
-## 进度
+## 进度（全部完成 · 终态 `300feb1`，PR #14）
 
-- [x] R0 基线核验 + 00_BASELINE.md
-- [ ] R1 课程设计 01_STAGE06_CURRICULUM.md
-- [ ] R2 maven-lab 工程（pom + wrapper + 学生域 + 构建通过）
-- [ ] R3 JUnit 测试 + 课程 1-2
-- [ ] R4 HttpServerDemo + 课程 3
-- [ ] R5 student-api Spring Boot 骨架 + 课程 4
-- [ ] R6 REST CRUD + 课程 5
-- [ ] R7 Validation/异常 + 课程 6
-- [ ] R8 练习体系（practice/ + L1-L4 + verify 脚本）
-- [ ] R9 网站接入（stages.json published + lessons JSON + registry + E2E）
-- [ ] R10 MyBatis 模块 + 课程 7
-- [ ] R11 文档 02-08
-- [ ] R12 全量回归 + 干净检出
-- [ ] R13 独立 QA 审查 → R14 修复
-- [ ] R15 Draft PR + 最终交付
+- [x] R0 基线 + R1 课程设计 + R2 maven-lab + R3/R4 课 1-3 + R5-R7 student-api/课 4-6 + R8 练习
+- [x] R9 网站接入（68 lessons / registry 120 / E2E 72/72）
+- [x] R10 MyBatis 模块（真库=阻断）+ R11 文档 00-09 + Draft PR #14
+- [x] R13/R14 独立 QA（1 P0 + 6 P1 + 8 P2）全部修复（`e705964`，CI macos 转绿）
+- [x] R12 CI 三系统全绿（run 43069270389）+ 干净检出终态回归全绿
+- [x] R15 文档 10-13 + 最终验收（13_FINAL_ACCEPTANCE.md）
 
 ## 关键决策
 
