@@ -1,4 +1,4 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page, type Locator } from "@playwright/test";
 
 async function saved(page: Page) {
   await expect(page.locator(".topbar .save-status")).toContainText(
