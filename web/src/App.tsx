@@ -910,7 +910,7 @@ function HomePage({ state }: PageProps) {
       <section className="workbench-topics-section">
         <SectionTitle
           index="03"
-          title="专题学习并行通道（V1.4 升级）"
+          title="专题学习并行通道"
           action={
             <a href="#/topics" className="text-link">
               查看全部专题与教材索引 <ArrowUpRight size={14} />
