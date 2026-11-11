@@ -21,11 +21,11 @@ int n = boxed; // 编译时自动变成 boxed.intValue()，运行时立刻 NullP
 
 ### 陷阱二：`IntegerCache`（`-128 ~ 127`）导致的 `==` 错觉
 
-Java 为了复用高频小整数，在 `Integer.valueOf(i)` 时默认缓存 `-128 ~ 127` 之间的对象（JLS §5.1.7）。因此：
-- `Integer a = 100, b = 100; a == b` 为 **`true`**（同一缓存对象）；
-- `Integer x = 200, y = 200; x == y` 为 **`false`**（超出缓存各自 `new` 新对象）。
+Java 为了复用高频小整数，在 `Integer.valueOf(i)` 时默认缓存 `-128 ~ 127` 之间的对象（JLS §5.1.7 保证该范围内的装箱共享同一对象；缓存上界还可由 JVM 参数 `-XX:AutoBoxCacheMax` 调大）。因此：
+- `Integer a = 100, b = 100; a == b` 为 **`true`**（同一缓存对象，规范保证）；
+- `Integer x = 200, y = 200; x == y` 在默认 JVM 配置下为 **`false`**（超出默认缓存各自装箱新对象）——但缓存范围之外的 `==` 结论**不是语言规范的承诺**，调大 `AutoBoxCacheMax` 后可能变回 `true`，不应依赖。
 
-**铁律**：比较两个包装类对象是否数值相等，永远用 `x.equals(y)` 或 `Objects.equals(x, y)`，绝不用 `==`！
+**铁律**：不要依赖缓存巧合——比较两个包装类对象是否数值相等，永远用 `x.equals(y)` 或 `Objects.equals(x, y)`，绝不用 `==`！
 
 ### 陷阱三：`List<Integer>.remove` 的重载碰撞
 
@@ -43,6 +43,6 @@ Java 为了复用高频小整数，在 `Integer.valueOf(i)` 时默认缓存 `-12
 ## 学习验收与自我检核
 
 - **需要掌握什么**：面向 `List` 接口编程；避开 `remove(int)` 重载坑；理解自动装拆箱的 NPE 源头与 `IntegerCache`；掌握安全删除写法（`removeIf` / `Iterator.remove()` / 倒序）。
-- **如何证明理解**：① 不用运行就能指出 `for(i=0...)` 正向删连续 `"X"` 漏掉哪一个；② 能解释为什么 `Integer 100 == 100` 为 true 而 `200 == 200` 为 false；③ 能独立写出不含漏删与 CME 的按条件批量移除代码。
+- **如何证明理解**：① 不用运行就能指出 `for(i=0...)` 正向删连续 `"X"` 漏掉哪一个；② 能解释 `Integer 100 == 100` 为 `true` 是规范保证的缓存复用，而 `200 == 200` 在默认 JVM 下为 `false` 只是实现细节、缓存外对象身份不可依赖；③ 能独立写出不含漏删与 CME 的按条件批量移除代码。
 - **什么情况属于尚未掌握**：以为“只要不用 for-each，普通 for 循环里随便 `remove(i)` 就一定安全”；或把 `Integer` 当成 `int` 用 `==` 判等。
 - **针对错误如何复习**：重载与 CME 回看预测题 `S03A2` 与 `S03A6`；引用比较模型回看 `s02-reference-state`。

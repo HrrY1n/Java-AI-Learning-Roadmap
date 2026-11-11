@@ -25,7 +25,7 @@
     {
       "label": "零次累加边界",
       "input": "1 0\n",
-      "expected": "线程数：1，每线程次数：0\n工作线程均非main：true\n实际累加线程（排序去重）：[counter-worker-1]\n最终计数：0",
+      "expected": "线程数：1，每线程次数：0\n工作线程均非main：true\n实际累加线程（排序去重）：[]\n最终计数：0",
       "kind": "boundary"
     },
     {

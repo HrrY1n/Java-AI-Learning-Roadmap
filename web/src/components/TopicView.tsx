@@ -104,7 +104,13 @@ function TopicHub({
       const timer = setTimeout(() => {
         const el = document.getElementById(targetBookId);
         if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          // 与课程目录跳转保持一致：开启减少动态效果时直接定位，不做平滑滚动。
+          el.scrollIntoView({
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "instant"
+              : "smooth",
+            block: "center",
+          });
           el.classList.add("highlight-target-book");
           setTimeout(() => el.classList.remove("highlight-target-book"), 3500);
         }

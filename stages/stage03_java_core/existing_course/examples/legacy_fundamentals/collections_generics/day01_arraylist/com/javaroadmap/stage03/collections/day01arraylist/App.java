@@ -46,11 +46,12 @@ public class App {
         safe.removeIf(item -> "X".equals(item));
         System.out.println("removeIf 安全删除：" + safe);
 
-        // 3. 包装类缓存陷阱（IntegerCache -128~127）：比较包装类值一律用 equals，不要用 ==。
+        // 3. 包装类缓存陷阱（IntegerCache 默认 -128~127，上界可由 -XX:AutoBoxCacheMax 调整）：
+        //    缓存外的对象身份不属于规范承诺，比较包装类值一律用 equals，不要用 ==。
         Integer c1 = 100, c2 = 100;
         Integer b1 = 200, b2 = 200;
-        System.out.println("Integer 100 == 100（命中缓存）：" + (c1 == c2));
-        System.out.println("Integer 200 == 200（超出缓存，不同对象）：" + (b1 == b2));
+        System.out.println("Integer 100 == 100（命中缓存，规范保证）：" + (c1 == c2));
+        System.out.println("Integer 200 == 200（默认配置下不同对象，勿依赖此结论）：" + (b1 == b2));
         System.out.println("Integer 200 equals 200：" + b1.equals(b2));
     }
 }

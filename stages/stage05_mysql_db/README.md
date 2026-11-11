@@ -12,7 +12,7 @@
 | 02 | [关系模型、外键与多表连接](existing_course/day02_relational_modeling/) | 避免单表冗余更新异常，避开 LEFT JOIN 退化陷阱 | — |
 | 03 | [事务、ACID 与隔离级别](existing_course/day03_transactions_acid/) | 多步写库如何同成同败，MVCC 快照读如何工作 | `s03-exception` / 回滚语义 |
 | 04 | [索引、B+ 树原理与 EXPLAIN](existing_course/day04_indexes_explain/) | 为什么加索引能提速，哪些写法会让索引失效 | 算法专题树查找模型 |
-| 05 | [JDBC 数据访问与防注入](existing_course/day05_jdbc_repository/) | Java 如何连 MySQL、PreparedStatement 如何彻底防注入 | `s03-repository-evolution` |
+| 05 | [JDBC 数据访问与防注入](existing_course/day05_jdbc_repository/) | Java 如何连 MySQL、PreparedStatement 参数绑定如何让数据不再变成语法结构（及其边界） | `s03-repository-evolution` |
 
 ## 连续演进项目：学生管理系统（阶段 1 → 6）
 

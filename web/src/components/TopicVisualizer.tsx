@@ -168,21 +168,26 @@ function ArrayAddressingDemo() {
 }
 
 // 3. 算法：单向链表节点重排
+// 图示三状态与代码语义严格一致：
+//   步骤 0：链表主体 1 → 3，Node(2) 待接入（next ➔ null）；
+//   步骤 1：node2.next = node1.next 后，主体仍为 1 → 3，Node(2) 已指向 Node(3) 但未接入；
+//   步骤 2：node1.next = node2 后，主体变为 1 → 2 → 3。
+// 用「链表主体 + 待接入区」两区域表达：未接入前 Node(2) 绝不出现在主体箭头路径上。
 function LinkedListPointerDemo() {
   const [step, setStep] = useState<number>(0);
 
   const stepsInfo = [
     {
       title: "初始状态",
-      desc: "Node(1) 的 next 指向 Node(3)。现在准备插入 Node(2)。",
+      desc: "链表主体是 Node(1) → Node(3)。Node(2) 是待接入的新节点（next ➔ null），尚未接入链表。",
     },
     {
       title: "第一步：安全挂载新节点",
-      desc: "执行 node2.next = node1.next。Node(2) 现在指向 Node(3)。(若先执行 node1.next = node2 则会导致 Node(3) 丢失！)",
+      desc: "执行 node2.next = node1.next：Node(2) 现在也指向 Node(3)。注意 Node(1) 的 next 仍未改变，链表主体依旧是 1 → 3，Node(2) 还没被接入。（若先执行 node1.next = node2 则会导致 Node(3) 丢失！）",
     },
     {
       title: "第二步：前驱节点指向新节点",
-      desc: "执行 node1.next = node2。链表完成平滑接入：1 -> 2 -> 3。(全过程耗时 O(1))",
+      desc: "执行 node1.next = node2：Node(1) 的 next 改指 Node(2)，链表主体平滑接入为 1 → 2 → 3。（全过程耗时 O(1)）",
     },
   ];
 
@@ -217,26 +222,54 @@ function LinkedListPointerDemo() {
       </div>
 
       <div className="linkedlist-diagram">
-        <div className="ll-node">
-          <div className="ll-val">Node(1)</div>
-          <div className="ll-pointer">next</div>
+        <div
+          className="ll-chain"
+          role="img"
+          aria-label={
+            step < 2
+              ? "链表主体：Node(1) 指向 Node(3)"
+              : "链表主体：Node(1) 指向 Node(2)，Node(2) 指向 Node(3)"
+          }
+        >
+          <div className="ll-node">
+            <div className="ll-val">Node(1)</div>
+            <div className="ll-pointer">next ➔ {step < 2 ? "Node(3)" : "Node(2)"}</div>
+          </div>
+          <div className="ll-arrow">
+            <ArrowRight size={20} />
+          </div>
+          {step < 2 ? (
+            <div className="ll-node">
+              <div className="ll-val">Node(3)</div>
+              <div className="ll-pointer">next ➔ null</div>
+            </div>
+          ) : (
+            <>
+              <div className="ll-node insert-node">
+                <div className="ll-val">Node(2) [新插]</div>
+                <div className="ll-pointer">next ➔ Node(3)</div>
+              </div>
+              <div className="ll-arrow">
+                <ArrowRight size={20} />
+              </div>
+              <div className="ll-node">
+                <div className="ll-val">Node(3)</div>
+                <div className="ll-pointer">next ➔ null</div>
+              </div>
+            </>
+          )}
         </div>
-        <div className="ll-arrow">
-          <ArrowRight size={20} className={step === 2 ? "arrow-redirect" : ""} />
-        </div>
-        {step >= 1 && (
-          <div className="ll-node insert-node">
-            <div className="ll-val">Node(2) [新插]</div>
-            <div className="ll-pointer">next ➔ 3</div>
+        {step < 2 && (
+          <div className="ll-staging" aria-label="待接入区：Node(2) 尚未接入链表主体">
+            <span className="ll-staging-label">
+              {step === 0 ? "待接入" : "已挂载 · 未接入链表"}
+            </span>
+            <div className={`ll-node ${step === 1 ? "insert-node" : "ll-node-pending"}`}>
+              <div className="ll-val">Node(2){step === 1 ? " [新插]" : ""}</div>
+              <div className="ll-pointer">next ➔ {step === 0 ? "null" : "Node(3)"}</div>
+            </div>
           </div>
         )}
-        <div className="ll-arrow">
-          <ArrowRight size={20} />
-        </div>
-        <div className="ll-node">
-          <div className="ll-val">Node(3)</div>
-          <div className="ll-pointer">next ➔ null</div>
-        </div>
       </div>
 
       <div className="step-explain-box">

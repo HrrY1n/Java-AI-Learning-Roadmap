@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 知识点：JDBC 数据访问、PreparedStatement 防 SQL 注入与 try-with-resources 资源关闭。
+ * 知识点：JDBC 数据访问、PreparedStatement 参数绑定防 SQL 注入与 try-with-resources 资源关闭。
  *
  * Observe：对比恶意输入 "' OR '1'='1" 在 SQL 字符串拼接下怎样绕过条件查出全表，
- * 而 PreparedStatement 参数占位符 ? 如何只把它当成普通文本字面量彻底拦截注入。
+ * 而 PreparedStatement 的 ? 占位符如何让绑定值只作为数据参与比较、无法改变语句语法结构。
+ * （边界：? 只保护值的位置，表名/列名/ORDER BY 等结构不能用占位符，需固定选项映射。）
  */
 public class App {
     public static void main(String[] args) throws SQLException {
