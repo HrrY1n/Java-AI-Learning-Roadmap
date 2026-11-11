@@ -28,7 +28,7 @@
 
 ## R10 · MyBatis 模块（课 7 代码）
 - 独立模块（mybatis + mysql-connector-j 依赖）+ Mapper 接口/XML/行对象 + `MyBatisLabApp`（main，无 DB 绑定演示）。
-- **失败案例（无 DB 环境下的三层真实教训）**：① Mapper XML 缺 DOCTYPE → PersistenceException（解析失败）→ 补 DOCTYPE；② `openSession()` 无 environments 会抛错、调用 mapper 方法会触发连库 → 改用 `Configuration.hasStatement` 纯绑定验证；③ 语句双注册（全名+短名）与 `getBoundSql(null)` NPE → 断言按前缀过滤 + `${}` 检查改读 XML 原文。
+- **失败案例（无 DB 环境下的三层真实教训）**：① Mapper XML 缺 DOCTYPE → PersistenceException（解析失败）→ 补 DOCTYPE；② `openSession()` 无 environments 会抛错、调用 mapper 方法会触发连库 → 改用 `getMappedStatementNames()` 纯注册表验证（与 hasStatement 同一注册表，等价且可计数）；③ 语句双注册（全名+短名）与 `getBoundSql(null)` NPE → 断言按前缀过滤 + `${}` 检查改读 XML 原文。
 - 终态：3/3 通过（解析/绑定/注入防护——**无数据库第二级验证**）；verify_stage06.sh 三工程全 PASS。
 
 ## R11–R12 · 文档与回归（进行中）

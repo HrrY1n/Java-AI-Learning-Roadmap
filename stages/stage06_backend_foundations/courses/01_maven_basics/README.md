@@ -57,7 +57,7 @@ Maven 的生命周期是**有序阶段链**：执行某个阶段，它之前的�
 ## 5. 动手：修改一个条件
 
 1. 把 pom.xml 的 `<version>0.1.0</version>` 改成 `0.2.0`，再 `./mvnw package`——预测 jar 文件名怎么变。
-2. 把 `maven.compiler.release` 改成 `8` 再 `./mvnw test`——预测会成功还是失败？改回 21。（提示：源码里用了 `List.of`、文本块吗？没有的话能过，但这正好说明 release 的含义：它决定产物兼容哪个 Java 版本，而不是你现在用什么 JDK。）
+2. 把 `maven.compiler.release` 改成 `8` 再 `./mvnw test`——预测会成功还是失败？实测是 **BUILD FAILURE**：`src/main` 用了 `java.net.http`（JDK 11+）、`src/test` 用了 `List.of`（JDK 9+），目标 release 8 下这些 API 不存在。这正是 release 的含义：**产物目标版本必须 ≥ 源码实际用到的最低 API 版本**，而不是"你现在用什么 JDK 构建"。改回 21。
 3. 删除整个 `target/` 目录再 `./mvnw test`——预测会发生什么？（答案：一切照常。target 是纯产物，这也是它从不进 Git 的原因。）
 
 ## 6. 独立练习

@@ -1,9 +1,9 @@
 package com.javaroadmap.stage06.api.web;
 
 import com.javaroadmap.stage06.api.student.DuplicateStudentNoException;
-import com.javaroadmap.stage06.api.student.InMemoryStudentRepository;
 import com.javaroadmap.stage06.api.student.Student;
 import com.javaroadmap.stage06.api.student.StudentNotFoundException;
+import com.javaroadmap.stage06.api.student.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,10 +19,15 @@ import java.util.List;
 @Service
 public class StudentService {
 
-    private final InMemoryStudentRepository repository;
+    private final StudentRepository repository;
 
-    /** 构造器注入：Spring 在装配时把容器里的 Repository Bean 递进来（课 4）。 */
-    public StudentService(InMemoryStudentRepository repository) {
+    /**
+     * 构造器注入：注入的是 <b>StudentRepository 接口</b>而非具体实现——
+     * 课 7 换 MyBatis/MySQL 实现时本类零改动。⚠️ 并发边界（如实声明）：
+     * nextId 的 max+1 策略在单线程语义下正确，多线程会产生重复 id；
+     * 且删除最大 id 后该 id 会被复用。并发安全版是 Stage 04 任务 7 的实践主题。
+     */
+    public StudentService(StudentRepository repository) {
         this.repository = repository;
     }
 

@@ -45,14 +45,14 @@ GET /api/students/1 → 200 {...}
 GET /api/students/999 → 404 {"error":"学生不存在","id":999}
 ```
 
-**修改一个条件**：把 999 那次请求改成 `/api/students/abc`——预测会发生什么？（`Integer.parseInt` 抛 `NumberFormatException` → 被 catch → 500。但语义上这是**客户端的错**，应该 400。这个"改出来"的不合理，就是课 6 全局异常处理存在的理由，也是真实后端每天要处理的分类问题。）
+**修改一个条件**：把 999 那次请求改成 `/api/students/abc`——预测会发生什么？实测 **405**（不是你直觉里的 400 或 500）：路径参数正则 `\d+` 不匹配 `abc`，`parseInt` 根本没执行，请求落进"已知资源 + 不支持方法"的兜底。这说明手写分发器把"路径参数格式错"与"方法不支持"混在了一起——语义上 `abc` 应该是 400。课 5/6 的框架映射（`MethodArgumentTypeMismatchException → 400`）正是对这类粗粒度兜底的精细化。
 
 ## 5. 独立练习：给服务加 DELETE /api/students/{id}
 
 **任务**：在分发器里增加 DELETE 分支——存在则删除并返回 204（无响应体），不存在返回 404。
 完成条件：`--selftest` 的 report 里新增一行 `DELETE /api/students/1 → 204`，且再 GET /1 得到 404。
 提示阶梯：L1 看 GET 分支怎么写 respond（204 时 `sendResponseHeaders(status, -1)` 表示无体）；L2 repository.deleteById 已有 false 返回值可复用；L3 selftest 里删除后再 GET /api/students/1 断言 404；L4 若 405 分支吃掉了你的 DELETE，检查 `path.startsWith` 的判断顺序。
-**参考实现**：`courses/03_http_server/REFERENCE_DELETE.md` 给出分发行与 selftest 行的参考写法（先自己写完再对照）。
+**参考实现**：`practice/answers/REFERENCE_DELETE.md` 给出分发行与 selftest 行的参考写法（先自己写完再对照）。
 
 ## 6. 常见误区清单
 

@@ -27,7 +27,7 @@
 
 ## 3. id 生成策略：一个被忽视的真实设计点
 
-内存版 `nextId()` = 现有最大 id + 1（`StudentService.create`）。这个策略在单机内存下正确，但课 7 换 MySQL 后会变成 `AUTO_INCREMENT`——**生成主键的责任从 Service 移交给数据库**。这正是"分层后每层可替换"的具体例子：接口 `save(Student)` 不变，变的是 id 从哪来。课程不回避这个差异：内存版返回的 id 是 Service 分配的，MySQL 版返回的 id 是插入后数据库回填的。
+内存版 `nextId()` = 现有最大 id + 1（`StudentService.create`）。这个策略在单机内存下正确，但课 7 换 MySQL 后会变成 `AUTO_INCREMENT`——**生成主键的责任从 Service 移交给数据库**。这正是"分层后每层可替换"的具体例子：接口 `save(Student)` 不变，变的是 id 从哪来。两条如实声明的边界：① `max+1` 非并发安全（多线程会生成重复 id，并发安全版是 Stage 04 任务 7 的实践）；② 删除最大 id 后该 id 会被新学生复用（内存版可接受，数据库自增不复用——这也是两者行为差异之一）。课程不回避这个差异：内存版返回的 id 是 Service 分配的，MySQL 版返回的 id 是插入后数据库回填的。
 
 ## 4. 契约测试：用真 HTTP 断言，而不是 mock 假象
 

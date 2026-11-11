@@ -41,6 +41,13 @@ public class ApiExceptionHandler {
                 .body(ApiError.of(400, "Bad Request", "路径参数类型不正确：" + e.getName()));
     }
 
+    /** 请求体不可读（坏 JSON / 字段类型错 / 缺 body）：客户端错误 → 400，绝不落 500。 */
+    @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleUnreadable(org.springframework.http.converter.HttpMessageNotReadableException e) {
+        return ResponseEntity.badRequest()
+                .body(ApiError.of(400, "Bad Request", "请求体不可读或格式不正确"));
+    }
+
     @ExceptionHandler(StudentNotFoundException.class)
     public ResponseEntity<ApiError> handleNotFound(StudentNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)

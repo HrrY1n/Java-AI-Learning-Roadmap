@@ -30,7 +30,7 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-    <!-- Bean Validation：课 6 的 @NotBlank/@Min/@Max/@Email -->
+    <!-- Bean Validation：课 6 的 @NotBlank/@Min/@Max/@Pattern -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>

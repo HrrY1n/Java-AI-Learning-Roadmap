@@ -37,7 +37,7 @@ Stage05 以来你验证过很多次 StudentRepository——开个 main、跑一�
 
 1. 把 `batchRollbackOnConflict` 里的 `assertTrue(e.getMessage().contains("学号已存在"))` 改成 `assertTrue(e.getMessage().contains("冲突"))`——测试红了：**消息也是契约**。改回去。
 2. 把 `@BeforeEach` 的 `repository = new InMemoryStudentRepository();` 注释掉——预测会发生什么？（NPE：这是生命周期存在的意义。）改回去。
-3. 给 `InMemoryStudentRepository.findAll` 换成 `return store.values().stream().toList();`——测试还绿吗？（`toList()` 也是快照，绿；换成 `List.copyOf(store.values())` 呢？也是快照。）再试试直接 `return (List) store.values();`——红：**防御性拷贝不是风格，是承诺**。
+3. 给 `InMemoryStudentRepository.findAll` 换成 `return store.values().stream().toList();`——测试**红了**（`snapshot.clear()` 抛 `UnsupportedOperationException`）：`toList()`/`List.copyOf` 返回的是**不可变列表**——独立于 store 但不可变，`clear()` 这种"模拟调用方修改副本"的操作直接炸。真正的防御性拷贝是 `new ArrayList<>(store.values())`（可变副本）。再试 `return (List) store.values();`——也红，但机制不同：`values()` 视图被 `clear()` 时**连 store 一起清空**（视图不是拷贝）。两种红的差异正是本实验要教的东西。
 
 ## 5. 独立练习：给 Student 补上"邮箱更新"测试（含异常路径）
 

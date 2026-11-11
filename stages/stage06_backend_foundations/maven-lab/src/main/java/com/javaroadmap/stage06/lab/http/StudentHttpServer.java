@@ -93,12 +93,9 @@ public class StudentHttpServer {
                 }
                 return;
             }
-            // 分发兜底：已知资源 + 不支持的方法 → 405；未知路径 → 404
-            if (path.startsWith("/api/students")) {
-                respond(exchange, 405, "{\"error\":\"暂不支持该方法\",\"method\":\"" + method + "\"}");
-            } else {
-                respond(exchange, 404, "{\"error\":\"未知路径\",\"path\":\"" + path + "\"}");
-            }
+            // 分发兜底：/api/students 前缀下已知资源 + 不支持的方法 → 405。
+            // context 按前缀注册，到达本 handler 的请求必然以 /api/students 开头——
+            // 完全未知路径由 JDK 默认 handler 直接 404，不会进入这里（实测）。
         } catch (Exception e) {
             // 分发器的兜底异常处理：绝不吞掉根因——状态码 500 + 消息透传给调用方排查
             respond(exchange, 500, "{\"error\":\"" + e.getClass().getSimpleName() + "\"}");
