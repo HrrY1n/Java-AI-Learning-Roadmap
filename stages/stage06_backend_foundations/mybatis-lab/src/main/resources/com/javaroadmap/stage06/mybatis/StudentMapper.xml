@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- StudentMapper 的 SQL 原文：与接口同包同名的 MyBatis 约定位置。
+     每条 SQL 都"看得见原文"——这是 Stage 05 "SQL 可见性"主线在 Mapper 时代的延续。 -->
+<mapper namespace="com.javaroadmap.stage06.mybatis.StudentMapper">
+
+    <!-- resultMap 显式声明列↔字段映射（map-underscore-to-camel-case 也可全局开启，这里显式更利于教学） -->
+    <resultMap id="studentMap" type="com.javaroadmap.stage06.mybatis.Student">
+        <id property="id" column="id"/>
+        <result property="studentNo" column="student_no"/>
+        <result property="name" column="name"/>
+        <result property="score" column="score"/>
+        <result property="email" column="email"/>
+    </resultMap>
+
+    <select id="findById" resultMap="studentMap">
+        SELECT id, student_no, name, score, email
+        FROM students
+        WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="studentMap">
+        SELECT id, student_no, name, score, email
+        FROM students
+        ORDER BY id
+    </select>
+
+    <select id="findByStudentNo" resultMap="studentMap">
+        SELECT id, student_no, name, score, email
+        FROM students
+        WHERE student_no = #{studentNo}
+    </select>
+
+    <!-- useGeneratedKeys：INSERT 后数据库回填自增 id 到 student.id（keyProperty 指定回填目标） -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO students (student_no, name, score, email)
+        VALUES (#{studentNo}, #{name}, #{score}, #{email})
+    </insert>
+
+    <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO students (student_no, name, score, email)
+        VALUES
+        <foreach collection="batch" item="student" separator=",">
+            (#{student.studentNo}, #{student.name}, #{student.score}, #{student.email})
+        </foreach>
+    </insert>
+
+    <update id="updateScore">
+        UPDATE students SET score = #{score} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM students WHERE id = #{id}
+    </delete>
+</mapper>

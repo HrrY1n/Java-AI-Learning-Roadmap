@@ -1,0 +1,40 @@
+{
+  "id": "s06-spring-boot-start",
+  "stageId": "06",
+  "moduleId": "backend-foundations",
+  "kind": "foundation",
+  "title": "Spring Boot 入门",
+  "summary": "理解 IoC、依赖注入与自动配置，用构造器注入组装 Controller/Service/Repository 三层骨架。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s06-maven-basics",
+    "s06-http-server-basics",
+    "s02-entity-service"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "Spring 提供核心能力（IoC 容器 + Spring MVC），Spring Boot 在其上加了\"约定 + 自动装配 + 内嵌 Tomcat\"——StudentApiApplication 只有 6 行，却完成了课 3 手写分发器的全部工作。本课讲清 IoC/Bean/构造器注入/自动配置四件事，以及分层包结构（web/ + student/）各自的职责边界。"
+    },
+    {
+      "label": "预测运行",
+      "body": "启动 ./mvnw spring-boot:run，在日志里找三行：Tomcat started on port 8080、Started StudentApiApplication、以及\"什么都没有配却有了 JSON 编码能力\"。然后 curl http://127.0.0.1:8080/api/students——预测初始返回什么？（空数组 [] 还是 404？为什么？）"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 StudentApiController 的构造器注入改成字段 @Autowired——测试还绿吗？绿，但 new StudentApiController(...) 变得不可能：可测试性损失正是课 2 论证的\"构造器注入\"理由。改回。"
+    },
+    {
+      "label": "独立练习",
+      "body": "练习 3（practice/s06_tasks.md）：复现\"字段注入 + 缺失 Bean\"的启动失败，按报错信息用构造器注入修复——读懂 NoSuchBeanDefinitionException 的 Action 提示。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "本课骨架在课 5 长出完整 REST 契约、课 7 把 Repository 的背后换成 MyBatis+MySQL——每一课只动其中一层，分层收益从此可感。"
+    }
+  ],
+  "bodyPath": "stages/stage06_backend_foundations/courses/04_spring_boot/README.md",
+  "codeDirectory": "stages/stage06_backend_foundations/student-api/src/main/java/com/javaroadmap/stage06/api"
+}

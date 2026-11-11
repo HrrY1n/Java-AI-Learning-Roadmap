@@ -1,0 +1,39 @@
+{
+  "id": "s06-validation-errors",
+  "stageId": "06",
+  "moduleId": "backend-foundations",
+  "kind": "foundation",
+  "title": "参数校验与异常处理",
+  "summary": "Bean Validation 双保险 + 类型化业务异常 + @RestControllerAdvice：把\"错误\"变成 API 的一等公民。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s06-rest-crud",
+    "s05-sql-basics"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "同一规则出现在两处不是重复而是纵深防御：DTO 注解在入口拦截（400 + fieldErrors 逐字段说明），领域对象构造器/setScore 守最后的门（绕过 HTTP 的调用路径也被拦）。异常→状态码的完整映射表集中在 @RestControllerAdvice：400/404/409 各有类型化业务异常，未知异常 500 记完整堆栈但响应体只给通用提示。"
+    },
+    {
+      "label": "预测运行",
+      "body": "起服务后逐条打四个错误请求：三字段全错的 POST（预测 fieldErrors 有哪几个键）、学号冲突（409 + Conflict）、/api/students/abc（400 还是 500？映射分支在哪）、以及一个你自造的未知异常（验证 500 响应体不含内部细节）。自动化断言见 validationFailuresReturn400WithFieldErrors。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "注释掉 handleUnexpected 里的 log.error(...) 再造一个 500——响应照样 500，但服务器日志的根因消失。这就是\"吞掉根因\"的事故现场：记日志与给通用提示缺一不可。恢复。"
+    },
+    {
+      "label": "独立练习",
+      "body": "练习 5（practice/s06_tasks.md）：给课 5 独立练习的接口加学号格式校验——注意路径参数校验与 body 校验的异常类型不同（ConstraintViolationException vs MethodArgumentNotValidException），需要新增映射分支，否则会掉进 500。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "课 7 接入 MySQL 后异常家族扩容：DataAccessException、DuplicateKeyException（与内存版 DuplicateStudentNoException 语义对应）——映射表新增行，但集中映射的结构不变。"
+    }
+  ],
+  "bodyPath": "stages/stage06_backend_foundations/courses/06_validation_errors/README.md",
+  "codeDirectory": "stages/stage06_backend_foundations/student-api/src/main/java/com/javaroadmap/stage06/api"
+}

@@ -1,0 +1,38 @@
+{
+  "id": "s06-http-server-basics",
+  "stageId": "06",
+  "moduleId": "backend-foundations",
+  "kind": "foundation",
+  "title": "原生 Java HTTP 服务",
+  "summary": "用 JDK 自带 HttpServer 手写学生服务的路由、状态码与 JSON 输出——拆开看框架到底替你做了什么。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s03-repository-evolution"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "课 5 你会用 Spring 注解十几行写出同样的接口。直接学注解答易记住的是\"咒语\"；本课用纯 JDK 的 com.sun.net.httpserver 手写一遍：路由分发、路径参数解析、状态码语义、JSON 手工拼接与异常兜底——每个注解背后的原始代码你都亲手写过一次。"
+    },
+    {
+      "label": "预测运行",
+      "body": "运行 selftest 模式（./mvnw compile exec:java -Dexec.mainClass=... -Dexec.args=\"--selftest\"），对照三条输出预测：GET 列表返回 200 与 JSON、GET /1 返回 200、GET /999 返回 404 + 错误体。重点体会 404（资源不存在）与 500（服务器出错）的语义分界。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 selftest 的 999 改成 /api/students/abc——NumberFormatException 被 catch 成 500，但语义上这是客户端的错，应该 400。这个\"改出来的不合理\"就是课 6 全局异常处理存在的理由。"
+    },
+    {
+      "label": "独立练习",
+      "body": "练习（practice/s06_tasks.md 课 3 独立练习）：给服务加 DELETE /api/students/{id}——存在返回 204（无体），不存在 404；selftest 增加两行断言。参考实现在 practice/answers/REFERENCE_DELETE.md（先自己写）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "课 4 起同样的接口交给 Spring：路由表变注解、JSON 拼接变 Jackson、异常兜底变 @RestControllerAdvice。学完课 5 请回到本课的 handleStudents 再读一遍——那时你会真正明白\"框架封装了什么\"。"
+    }
+  ],
+  "bodyPath": "stages/stage06_backend_foundations/courses/03_http_server/README.md",
+  "codeDirectory": "stages/stage06_backend_foundations/maven-lab/src/main/java/com/javaroadmap/stage06/lab/http"
+}

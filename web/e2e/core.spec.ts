@@ -79,7 +79,7 @@ test("初访继续学习、完整课程切换与阅读记录保持真实语义",
   await page.getByRole("button", { name: "课程目录" }).click();
   const picker = page.locator(".chapter-picker");
   // 深度重构 R4 起 stage03 深化课 4 篇上站：主线课 45 -> 49
-  await expect(picker.getByRole("link")).toHaveCount(61);
+  await expect(picker.getByRole("link")).toHaveCount(68);
   await picker.getByRole("link", { name: /数据类型与运算符/ }).click();
   await expect(
     page.getByRole("heading", { level: 1, name: "数据类型与运算符" }),

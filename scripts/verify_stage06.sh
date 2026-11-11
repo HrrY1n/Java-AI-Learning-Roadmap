@@ -19,6 +19,7 @@ run_maven_tests() {
 
 run_maven_tests "maven-lab"
 run_maven_tests "student-api"
+run_maven_tests "mybatis-lab"   # 无数据库验证级：SqlSessionFactory 解析 + 语句绑定 + #{} 注入检查
 
 echo ""
 if [ "${#FAILED[@]}" -gt 0 ]; then

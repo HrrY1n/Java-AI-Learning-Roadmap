@@ -4,7 +4,7 @@
   "moduleId": "foundations",
   "kind": "foundation",
   "title": "JDBC 数据访问与防注入",
-  "summary": "用 PreparedStatement 参数绑定让数据值不再变成 SQL 语法结构以消除注入，并认识其边界（模板拼接、表名列名排序方向不能占位），以 try-with-resources 逆序关闭资源，完成 StudentRepository 到 MySQL 的演进。",
+  "summary": "用 PreparedStatement 参数绑定让数据值不再变成 SQL 语法结构以消除注入，并认识其边界（模板拼接、表名/列名/ORDER BY 方向不能占位），以 try-with-resources 逆序关闭资源，完成 StudentRepository 到 MySQL 的演进。",
   "contentState": "published",
   "relatedLessonIds": [
     "s03-repository-evolution",
