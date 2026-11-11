@@ -27,7 +27,7 @@
     },
     {
       "label": "独立练习",
-      "body": "练习 2：给 Student 补 setEmail 并写\"先红后绿\"的测试——测试必须先在错误实现上跑红一次，证明它真的在测东西。规格见 practice/s06_tasks.md 任务 2。"
+      "body": "练习 2：给 Student 补 setEmail 并写\"先红后绿\"的测试——测试必须先在错误实现上跑红一次，证明它真的在测东西。规格见 courses/02_junit_testing/README.md 第 5 节（进阶：给 student-api 的 StudentService 补测试见 practice/s06_tasks.md 任务 2，需要课 4 的工程）。"
     },
     {
       "label": "项目迁移",

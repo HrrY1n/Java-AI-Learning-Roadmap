@@ -16,7 +16,7 @@
   "steps": [
     {
       "label": "学习目标与场景",
-      "body": "Spring 提供核心能力（IoC 容器 + Spring MVC），Spring Boot 在其上加了\"约定 + 自动装配 + 内嵌 Tomcat\"——StudentApiApplication 只有 6 行，却完成了课 3 手写分发器的全部工作。本课讲清 IoC/Bean/构造器注入/自动配置四件事，以及分层包结构（web/ + student/）各自的职责边界。"
+      "body": "Spring 提供核心能力（IoC 容器 + Spring MVC），Spring Boot 在其上加了\"约定 + 自动装配 + 内嵌 Tomcat\"——StudentApiApplication 核心只有一行 SpringApplication.run，却完成了课 3 手写分发器的全部工作。本课讲清 IoC/Bean/构造器注入/自动配置四件事，以及分层包结构（web/ + student/）各自的职责边界。"
     },
     {
       "label": "预测运行",
