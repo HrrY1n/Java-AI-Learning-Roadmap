@@ -79,7 +79,7 @@ test("初访继续学习、完整课程切换与阅读记录保持真实语义",
   await page.getByRole("button", { name: "课程目录" }).click();
   const picker = page.locator(".chapter-picker");
   // 深度重构 R4 起 stage03 深化课 4 篇上站：主线课 45 -> 49
-  await expect(picker.getByRole("link")).toHaveCount(61);
+  await expect(picker.getByRole("link")).toHaveCount(68);
   await picker.getByRole("link", { name: /数据类型与运算符/ }).click();
   await expect(
     page.getByRole("heading", { level: 1, name: "数据类型与运算符" }),
@@ -132,6 +132,44 @@ test("14 阶段路线展示真实材料状态，无课程阶段只显示知识�
     .click();
   await expect(page).toHaveURL(/#\/lesson\/s02-class-basics$/);
   await expect(page.locator("main h1")).toContainText("类与对象入门");
+});
+
+test("阶段状态标注为公开基线，学习记录页区分公开默认状态与浏览器内证据", async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  await open(page, "#/roadmap");
+
+  // 路线页：当前状态行与徽章来自公开基线（status 驱动），并明确声明不代表私有真实进度
+  const stage01Row = page
+    .locator(".stage-row")
+    .filter({ has: page.locator(".stage-index", { hasText: /^01$/ }) });
+  await expect(stage01Row.locator(".stage-state")).toHaveText("学习中");
+  await expect(stage01Row).toContainText("公开基线：学习中");
+  await page
+    .locator(".stage-row")
+    .filter({ has: page.locator(".stage-index", { hasText: /^01$/ }) })
+    .click();
+  await expect(page.locator(".stage-detail .fine-print")).toContainText(
+    "公开基线 public-progress.md",
+  );
+  await expect(page.locator(".stage-detail .fine-print")).toContainText(
+    "不代表学习者私有维护的真实进度",
+  );
+
+  // 学习记录页：通知必须把 Stage 状态归因到公开基线，并把本页记录定位为浏览器内证据
+  await open(page, "#/review");
+  const notice = page.locator(".notice").filter({
+    hasText: "阶段状态以公开基线为准",
+  });
+  await expect(notice).toContainText("Stage 01 · 学习中");
+  await expect(notice).toContainText("公开默认路线状态，不是个人真实进度");
+  await expect(notice).toContainText("浏览器内的阅读、练习与实测证据");
+  await expect(notice).toContainText("不会覆盖或上调阶段状态");
+  // 原文链接仍然指向公开基线文档
+  await expect(
+    notice.getByRole("link", { name: /查看原文/ }),
+  ).toHaveAttribute("href", "#/document/progress-source");
 });
 
 test("7 节基础课与 7 节深化课均可读取原文和源码", async ({ page }) => {

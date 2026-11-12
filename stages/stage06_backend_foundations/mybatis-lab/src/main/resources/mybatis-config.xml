@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MyBatis 全局配置（独立模块，非 Spring 托管）：注册 StudentMapper 并开启驼峰映射。 -->
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- 列名下划线 ↔ 字段驼峰 自动转换（resultMap 已显式声明，这里是全局兜底） -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <mappers>
+        <!-- 注册后 MyBatis 解析 StudentMapper.xml 并把每条语句绑定到接口方法 -->
+        <mapper class="com.javaroadmap.stage06.mybatis.StudentMapper"/>
+    </mappers>
+</configuration>

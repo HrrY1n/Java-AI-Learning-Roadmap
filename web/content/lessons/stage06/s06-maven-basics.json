@@ -1,0 +1,38 @@
+{
+  "id": "s06-maven-basics",
+  "stageId": "06",
+  "moduleId": "backend-foundations",
+  "kind": "foundation",
+  "title": "Maven 工程基础",
+  "summary": "理解坐标、依赖与生命周期三件事，用 Maven Wrapper 在零预装环境下构建可运行的 Java 工程。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s05-jdbc-dao"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "Stage 01–05 一直用 javac + java 直接构建——依赖只有 JDK，这条路是通的。真实后端项目会有上百个第三方库：下载 jar、拼 classpath、统一版本全部失控。Maven 用标准化目录、声明式依赖和标准生命周期解决这三件事；本课在 maven-lab 工程里实际跑通 compile/test/package，并解释仓库里为什么提交了 mvnw 而不是让你预装 Maven。"
+    },
+    {
+      "label": "预测运行",
+      "body": "在 maven-lab 目录执行三连：./mvnw compile（预测 target/classes 出现什么）、./mvnw test（预测 Tests run 是多少、为什么第二次更快）、./mvnw package（预测 jar 文件名）。把每次的实际输出与预测对照——生命周期是流水线而不是三条独立命令，这是本课最重要的体感。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 pom.xml 的 maven.compiler.release 从 21 改成 8 再 ./mvnw test：预测成功还是失败？这个实验会逼你分清\"release 决定产物兼容哪个 Java 版本\"与\"你现在用什么 JDK 构建\"是两件事。改回 21。"
+    },
+    {
+      "label": "独立练习",
+      "body": "练习 1（见 stages/stage06_backend_foundations/practice/s06_tasks.md）：在 my_practices/ 下从零创建一个 Maven 工程并用 java -jar 运行成功。不要复制 maven-lab——从空目录搭一遍，Maven 才是你的。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "student-api 工程的 pom.xml 用了 spring-boot-starter-parent——你会在课 4 看到 dependencyManagement 的现实形态：依赖版本不再逐个声明，而由 parent 统一供给。Maven 的知识从本课开始贯穿整个 Stage 06。"
+    }
+  ],
+  "bodyPath": "stages/stage06_backend_foundations/courses/01_maven_basics/README.md",
+  "codeDirectory": "stages/stage06_backend_foundations/maven-lab/src/main/java/com/javaroadmap/stage06/lab"
+}

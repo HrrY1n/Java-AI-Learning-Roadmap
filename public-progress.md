@@ -11,7 +11,7 @@
 | 03 Java 核心 | 未开始 | 课程与示例已发布 | 完成集合、异常、IO 与 Stream 练习 |
 | 04 Java 进阶/CS | 未开始 | 课程与并发练习已发布 | 完成线程/同步/线程池独立练习 |
 | 05 MySQL | 未开始 | 课程与连续项目已发布 | SQL/表设计/事务/EXPLAIN/JDBC 与演进项目实验 |
-| 06 Spring Boot | 未开始 | 路线已规划 | Maven/HTTP/Spring/MyBatis/REST/校验/异常/事务 |
+| 06 Spring Boot | 未开始 | 课程与工程已发布 | Maven/JUnit/原生 HTTP/Spring/REST/校验/异常/MyBatis 工程与测试 |
 | 07 Redis | 未开始 | 路线已规划 | 数据结构、TTL、缓存/会话、一致性与故障边界 |
 | 08 工程能力 | 未开始 | 入门示例已发布 | 补测试、日志、Linux 排错、Docker、部署和 CI 证据 |
 | 09 项目 A 工程加固 | 未开始 | 路线已规划 | 测试覆盖、文档、部署、观测与复盘 |

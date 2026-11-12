@@ -1,0 +1,39 @@
+{
+  "id": "s06-junit-testing",
+  "stageId": "06",
+  "moduleId": "backend-foundations",
+  "kind": "foundation",
+  "title": "JUnit 自动化测试",
+  "summary": "把 StudentRepository 的每条接口承诺翻译成可复现的 JUnit 测试：正常路径、边界值与异常路径全覆盖。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s05-jdbc-dao",
+    "s03-repository-evolution"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "\"手动跑一遍没问题\"不算验证——它不能重复、只覆盖你想得到的路径、改坏旧功能没人提醒。JUnit 把验证变成代码：本课给 Stage 05 演进来的 StudentRepository 契约建 12 条真实测试，覆盖正常路径、边界值（分数 0/100）与异常路径（学号冲突、批量回滚）。重点不是语法，而是\"一条 @Test 对应一句可执行的承诺\"。"
+    },
+    {
+      "label": "预测运行",
+      "body": "先跑 ./mvnw test 记下 Tests run: 12；再打开 batchRollbackOnConflict——先预测\"批内第二条抛异常后，id=2 的学生存在吗？id=1 的分数是 60 还是 80？\"再读实现里的快照回滚三行代码，最后用测试结果验证你的预测。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "三个失败的实验：把断言消息关键词改错（红：消息也是契约）、注释掉 @BeforeEach 的初始化（红：生命周期存在的意义）、把 findAll 的防御性拷贝改回直接引用（红：快照是承诺不是风格）。每个实验做完改回。"
+    },
+    {
+      "label": "独立练习",
+      "body": "练习 2：给 Student 补 setEmail 并写\"先红后绿\"的测试——测试必须先在错误实现上跑红一次，证明它真的在测东西。规格见 courses/02_junit_testing/README.md 第 5 节（进阶：给 student-api 的 StudentService 补测试见 practice/s06_tasks.md 任务 2，需要课 4 的工程）。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "课 3 的 HTTP 服务会消费这个已被测试钉死的 Repository（只测 HTTP 层自己的逻辑）；课 5 的 @SpringBootTest 会再起一层真实 HTTP 契约测试——三层测试金字塔从这里开始。"
+    }
+  ],
+  "bodyPath": "stages/stage06_backend_foundations/courses/02_junit_testing/README.md",
+  "codeDirectory": "stages/stage06_backend_foundations/maven-lab/src/main/java/com/javaroadmap/stage06/lab"
+}

@@ -190,11 +190,27 @@
     },
     {
       "id": "06",
-      "contentState": "planned",
-      "prerequisites": "Stage 05 的数据模型、SQL 与事务基础。",
-      "modules": [],
+      "contentState": "published",
+      "prerequisites": "Stage 05 的数据模型、SQL、事务与 JDBC 契约；Stage 03 的接口与异常设计。环境要求：JDK 21+（无需预装 Maven——工程自带 Wrapper）。",
+      "modules": [
+        {
+          "id": "backend-foundations",
+          "title": "Java 后端工程化",
+          "lessonOrder": [
+            "s06-maven-basics",
+            "s06-junit-testing",
+            "s06-http-server-basics",
+            "s06-spring-boot-start",
+            "s06-rest-crud",
+            "s06-validation-errors",
+            "s06-mybatis-mapper"
+          ]
+        }
+      ],
       "referenceRoots": [],
-      "referenceDocuments": []
+      "referenceDocuments": [],
+      "slug": "stage06_backend_foundations",
+      "packageNamePrefix": "com.javaroadmap.stage06"
     },
     {
       "id": "07",

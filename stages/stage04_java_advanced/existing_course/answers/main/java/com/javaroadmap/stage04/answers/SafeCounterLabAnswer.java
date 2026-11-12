@@ -56,17 +56,19 @@ public class SafeCounterLabAnswer {
         SafeCounter counter = new SafeCounter();
         Thread[] workers = new Thread[threads];
         final boolean[] nonMainFlags = new boolean[threads];
-        // 结构不变量：在工作线程内部登记真实执行的线程名。多个工作线程并发 add，
-        // 必须包一层 synchronizedSet（TreeSet 只保证排序语义，不保证并发安全），再由 TreeSet 保证输出确定性。
+        // 证据语义：只登记真正执行过 increment() 的线程，名单才单独成立为"实际累加线程"的证据；
+        // perThread=0 时没有任何线程累加，集合保持为空（与最终计数 0 互相印证）。
+        // 多个工作线程并发 add，必须包一层 synchronizedSet（TreeSet 只保证排序语义，不保证并发安全），
+        // 再由 TreeSet 保证输出确定性。
         Set<String> actualWorkers = Collections.synchronizedSet(new TreeSet<String>());
 
         for (int i = 0; i < threads; i++) {
             final int idx = i;
             workers[i] = new Thread(() -> {
                 nonMainFlags[idx] = !"main".equals(Thread.currentThread().getName());
-                actualWorkers.add(Thread.currentThread().getName());
                 for (int step = 0; step < perThread; step++) {
                     counter.increment();
+                    actualWorkers.add(Thread.currentThread().getName());
                 }
             }, "counter-worker-" + (i + 1));
         }

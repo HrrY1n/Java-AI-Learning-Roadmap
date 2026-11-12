@@ -4,7 +4,7 @@
   "moduleId": "foundations",
   "kind": "foundation",
   "title": "JDBC 数据访问与防注入",
-  "summary": "用 PreparedStatement 参数绑定彻底防住 SQL 注入，以 try-with-resources 逆序关闭资源，完成 StudentRepository 到 MySQL 的演进。",
+  "summary": "用 PreparedStatement 参数绑定让数据值不再变成 SQL 语法结构以消除注入，并认识其边界（模板拼接、表名/列名/ORDER BY 方向不能占位），以 try-with-resources 逆序关闭资源，完成 StudentRepository 到 MySQL 的演进。",
   "contentState": "published",
   "relatedLessonIds": [
     "s03-repository-evolution",
@@ -18,7 +18,7 @@
   "steps": [
     {
       "label": "学习目标与场景",
-      "body": "前面 4 课讲清了数据库自身，本节让 Java 业务代码安全高效地读写 MySQL。学完本节应能彻底杜绝 SQL 注入，规范关闭连接资源，并走通内存→文件→MySQL 连续演进项目。"
+      "body": "前面 4 课讲清了数据库自身，本节让 Java 业务代码安全高效地读写 MySQL。学完本节应能让正确绑定的值不再被当作 SQL 语法结构（理解防注入的能力边界），规范关闭连接资源，并走通内存→文件→MySQL 连续演进项目。"
     },
     {
       "label": "预测运行",

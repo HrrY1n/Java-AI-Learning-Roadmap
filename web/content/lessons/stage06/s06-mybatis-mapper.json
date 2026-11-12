@@ -1,0 +1,39 @@
+{
+  "id": "s06-mybatis-mapper",
+  "stageId": "06",
+  "moduleId": "backend-foundations",
+  "kind": "foundation",
+  "title": "MyBatis 数据访问",
+  "summary": "以 Mapper 接口 + SQL 原文延续 SQL 可见性主线：#{} 预编译绑定、自动映射与事务归属，附无数据库的绑定验证。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s05-jdbc-dao",
+    "s06-rest-crud"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "Stage 05 的立场是\"SQL 可见性\"；JPA 把 SQL 藏起来，MyBatis 恰好相反——你在 XML 里写真实 SQL，它只替代 JDBC 的体力活（参数绑定、结果映射、资源管理）。⚠️ 如实声明：本模块验证到\"编译 + 解析 + 语句绑定\"三层，真实 MySQL 集成测试因环境阻断未执行（docs/overhaul-v2.5/07_DATABASE_INTEGRATION.md）。"
+    },
+    {
+      "label": "预测运行",
+      "body": "运行 ./mvnw test 看 StudentMapperBindingTest 的三条验证：SqlSessionFactory 从 XML 构建、7 条语句全部绑定注册（MyBatis 会全名+短名双注册，测试按前缀过滤）、Mapper XML 里不存在 ${} 拼接（注入防护静态检查）。全程无数据库连接——理解为什么 openSession 的连接是惰性的。"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "把 StudentMapper.xml 插入语句的 student_no 列名改成 no（模拟笔误）再 ./mvnw compile——编译照样通过：SQL 字符串编译器不检查，错误要到运行时才炸。改回，并思考真库场景下它会在哪一步暴露（Unknown column）。"
+    },
+    {
+      "label": "独立练习",
+      "body": "练习 7（practice/s06_tasks.md）：给 student-api 增加 POST /api/students/batch（整批 201/冲突 409 全批不存在），并注释内存版快照回滚与 MySQL 版 @Transactional 回滚的机制差异。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "真库接入路线（建表/配置/profile 切换/契约测试复跑）在 docs/overhaul-v2.5/07_DATABASE_INTEGRATION.md——同一套 Controller/Service/DTO/契约测试一行不改，只换 Repository 的背后。"
+    }
+  ],
+  "bodyPath": "stages/stage06_backend_foundations/courses/07_mybatis_mapper/README.md",
+  "codeDirectory": "stages/stage06_backend_foundations/mybatis-lab/src/main/java/com/javaroadmap/stage06/mybatis"
+}

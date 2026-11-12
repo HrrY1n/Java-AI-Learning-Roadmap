@@ -92,7 +92,7 @@
       "pdfPages": "13-18",
       "overlapType": "extension",
       "rationale": "原书提出了至关重要的心智模型：“每个对象都是一个微型服务提供者（Service Provider）”，从单纯的语法定义类跃迁到面向对象的单一职责划分。",
-      "modernJdkDiff": "Java 16+ 引入 Record（记录类），针对纯数据传输对象（DTO）提供不可变、自动生成构造方法、equals 与 hashCode 的紧凑语法。"
+      "modernJdkDiff": "Java 16+ 引入 Record（记录类），针对纯数据传输对象（DTO）提供自动生成构造方法、equals 与 hashCode 的紧凑语法。注意它是「浅不可变」：record 字段本身不可重新赋值，但字段引用的可变对象（如 List、数组）内容仍可能变化，不能直接等同于线程安全。"
     },
     {
       "stageId": "02",

@@ -1,0 +1,39 @@
+{
+  "id": "s06-rest-crud",
+  "stageId": "06",
+  "moduleId": "backend-foundations",
+  "kind": "foundation",
+  "title": "REST API 实战：学生管理",
+  "summary": "实现学生资源的完整 REST 契约（201+Location/404/409/204），用真实 HTTP 契约测试钉死行为。",
+  "contentState": "published",
+  "relatedLessonIds": [
+    "s06-spring-boot-start",
+    "s05-jdbc-dao"
+  ],
+  "exerciseIds": [],
+  "predictionIds": [],
+  "steps": [
+    {
+      "label": "学习目标与场景",
+      "body": "本课实现学生资源的完整 REST 契约：POST 创建（201+Location）、GET 列表/单查（200/404）、PUT 修改（200/404）、DELETE（204）。DTO 与业务对象分工——Create/Update/Response 三个 record 各管一段，学号姓名\"注册后不可变\"直接体现在 Update DTO 没有这两个字段。为什么分层、为什么多写 DTO，用\"契约测试怎么写\"来论证。"
+    },
+    {
+      "label": "预测运行",
+      "body": "运行 ./mvnw test 看 StudentApiControllerTest 的 7 条契约测试：RANDOM_PORT 起真实 Tomcat、TestRestTemplate 走真 HTTP。逐条预测：POST 成功的状态码与 Location 路径？GET 不存在的 404 错误体形状？路径 /api/students/abc 是 400 还是 500？"
+    },
+    {
+      "label": "修改一个条件",
+      "body": "注释掉 StudentApiControllerTest 里的 repository.clear()——预测哪条测试会先红？（id 断言：expected /api/students/1 but was /api/students/3。）这是 Spring 单例 Bean 状态跨测试泄漏的现场，也是 @BeforeEach 重置存在的理由。改回。"
+    },
+    {
+      "label": "独立练习",
+      "body": "练习 4（practice/s06_tasks.md）：新增 GET /api/students/by-no/{studentNo}（200/404 统一错误体契约），并在契约测试里补 2 条断言。"
+    },
+    {
+      "label": "项目迁移",
+      "body": "课 6 把校验失败与异常映射讲透；课 7 换掉 Repository 的背后，Controller/Service/DTO/契约测试一行不改——本课钉死的契约测试是那次\"零改动换存储\"的验收工具。"
+    }
+  ],
+  "bodyPath": "stages/stage06_backend_foundations/courses/05_rest_crud/README.md",
+  "codeDirectory": "stages/stage06_backend_foundations/student-api/src/main/java/com/javaroadmap/stage06/api"
+}

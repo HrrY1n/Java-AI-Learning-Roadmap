@@ -6360,13 +6360,33 @@ kbd {
   color: #f59e0b;
 }
 
-/* 8.3 链表节点重排 */
+/* 8.3 链表节点重排（链表主体 + 待接入区两区域：未接入的节点不出现在主体箭头路径上） */
 .linkedlist-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+.ll-chain {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 20px 0;
   overflow-x: auto;
+  padding-bottom: 2px;
+}
+.ll-staging {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px dashed var(--border-strong, #c8c2b4);
+  border-radius: 6px;
+  width: fit-content;
+}
+.ll-staging-label {
+  font-size: 12px;
+  color: var(--text-muted, #7c776b);
+  white-space: nowrap;
 }
 .ll-node {
   border: 1px solid var(--border-strong, #c8c2b4);
@@ -6374,6 +6394,11 @@ kbd {
   padding: 8px 12px;
   background: var(--paper-50, #fcfbf8);
   text-align: center;
+  transition: border-color 160ms ease, opacity 160ms ease;
+}
+.ll-node-pending {
+  opacity: 0.72;
+  border-style: dashed;
 }
 [data-theme="dark"] .ll-node {
   background: #202024;
@@ -6400,6 +6425,29 @@ kbd {
 }
 [data-theme="dark"] .step-explain-box {
   background: #27272a;
+}
+/* 窄屏（约 390px）：压缩节点内边距与间距，保证三节点链 1 → 2 → 3 一行同时可见 */
+@media (max-width: 480px) {
+  .ll-chain {
+    gap: 6px;
+  }
+  .ll-node {
+    padding: 5px 7px;
+  }
+  .ll-val {
+    font-size: 11px;
+  }
+  .ll-pointer {
+    font-size: 9px;
+  }
+  .ll-arrow svg {
+    width: 14px;
+    height: 14px;
+  }
+  .ll-staging {
+    padding: 6px 8px;
+    gap: 8px;
+  }
 }
 
 /* 8.4 环形队列表盘 */

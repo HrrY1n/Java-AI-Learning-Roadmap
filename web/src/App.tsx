@@ -443,7 +443,9 @@ export default function App() {
             本地优先 · 私人学习空间
           </span>
           <div className="rail-bottom">
-            <span>阶段 01 / 14</span>
+            <span title="侧边栏展示的课程阶段，以公开基线 public-progress.md 为准">
+              阶段 {currentStage.id} / {catalog.stages.length}
+            </span>
             <button
               className="icon-button"
               aria-label={dark ? "切换到浅色主题" : "切换到深色主题"}
@@ -1054,13 +1056,13 @@ function RoadmapPage() {
                     <span className="stage-row-copy">
                       <strong>{item.title}</strong>
                       <small>
-                        {item.id === "01"
-                          ? "当前专注 · 完成独立练习与验收"
+                        {item.status === "学习中"
+                          ? "公开基线：学习中 · 完成独立练习与验收"
                           : item.scope}
                       </small>
                     </span>
                     <span
-                      className={`stage-state ${item.id === "01" ? "current" : ""}`}
+                      className={`stage-state ${item.status === "学习中" ? "current" : ""}`}
                     >
                       {item.status}
                     </span>
@@ -1088,7 +1090,7 @@ function RoadmapPage() {
             选择其他阶段 <ArrowDownToLine size={14} />
           </button>
           <h2>{stage.title}</h2>
-          <Badge tone={stage.id === "01" ? "current" : ""}>
+          <Badge tone={stage.status === "学习中" ? "current" : ""}>
             {stage.status}
           </Badge>
           <dl>
@@ -1101,9 +1103,9 @@ function RoadmapPage() {
             <dt>应留下的证据</dt>
             <dd>{stage.evidence}</dd>
           </dl>
-          {stage.id === "01" ? (
+          {stage.status === "学习中" ? (
             <a href={lessonLink()} className="button primary">
-              进入当前课程 <ArrowRight size={17} />
+              进入本阶段课程 <ArrowRight size={17} />
             </a>
           ) : stageLessons.length > 0 ? (
             <>
@@ -1149,7 +1151,7 @@ function RoadmapPage() {
             </p>
           )}
           <p className="fine-print">
-            阶段状态来自真实学习进度。浏览或运行参考示例不会改变状态。
+            阶段状态来自公开基线 public-progress.md，是公开默认路线状态，不代表学习者私有维护的真实进度。浏览或运行参考示例不会改变状态。
           </p>
         </aside>
       </div>
@@ -2480,6 +2482,10 @@ function ReviewPage({ state, onData }: PageProps & { onData: () => void }) {
   const reflections = Object.entries(state.reflections).sort(
     (a, b) => Date.parse(b[1].updatedAt) - Date.parse(a[1].updatedAt),
   );
+  // 公开基线（public-progress.md 脱敏产物）只是默认路线状态，与浏览器内证据、私有真实进度是三回事。
+  const baselineStage =
+    catalog.stages.find((stage) => stage.status === "学习中") ??
+    catalog.stages[0];
   return (
     <>
       <div className="page-heading">
@@ -2533,8 +2539,11 @@ function ReviewPage({ state, onData }: PageProps & { onData: () => void }) {
       <div className="notice">
         <ShieldCheck size={20} />
         <span>
-          当前阶段始终以仓库为准：<strong>Stage 01 · 学习中</strong>
-          。本页记录不会覆盖真实学习进度，参考代码也不作为个人掌握证据。
+          阶段状态以公开基线为准：public-progress.md 当前标记{" "}
+          <strong>
+            Stage {baselineStage.id} · {baselineStage.status}
+          </strong>{" "}
+          ——这是公开默认路线状态，不是个人真实进度。本页记录的是浏览器内的阅读、练习与实测证据，不会覆盖或上调阶段状态，参考代码也不作为个人掌握证据。
         </span>
         <a href="#/document/progress-source" className="text-link">
           查看原文 <ArrowUpRight size={15} />

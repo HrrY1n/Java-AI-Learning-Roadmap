@@ -23,3 +23,7 @@ db.local.properties
 /求职能力矩阵.md
 /真实学习进度.md
 /统一学习路线.md
+
+# 本地归档与临时测试产物（不入库）：窗口并发工作时的误 add 防线
+*.rar
+/test-results/

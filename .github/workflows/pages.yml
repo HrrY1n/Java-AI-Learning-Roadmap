@@ -3,11 +3,19 @@ name: Deploy JavaRoadmap Lab Pages
 on:
   push:
     branches: [main]
-    # 站点内容只由 web/ 与 stages/（课程源码）决定；
-    # 纯文档改动不触发部署，deployment.json 保持上次站点提交。
-    paths-ignore:
-      - '*.md'
+    # 站点内容由 web/、stages/ 以及 content build 实际消费的文档共同决定：
+    # 根目录 *.md（public-roadmap/progress/plan）与 docs/**（环境搭建、教学协作、
+    # javaroadmap_lab 设计文档等 13 篇）都会经 documents.json/public-*.md 进入构建。
+    # 注意 GitHub Actions 路径匹配里 '*' 不跨目录，'*.md' 只匹配根级 Markdown；
+    # 因此改用 allow-list：凡构建可能消费的目录全部列入。代价是纯报告类文档
+    # （如 docs/release、docs/overhaul-*）也会触发一次部署——宁可偶尔多部署，
+    # 也不能让站点内容静默停留在旧版本。
+    paths:
+      - 'web/**'
+      - 'stages/**'
       - 'docs/**'
+      - '*.md'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
     inputs:
       skip_tests:
