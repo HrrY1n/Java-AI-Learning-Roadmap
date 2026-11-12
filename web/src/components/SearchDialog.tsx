@@ -73,8 +73,6 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!open || !dialog) return;
-    setQuery("");
-    setSelectedIndex(0);
     const opener = document.activeElement;
     const route = location.hash;
     dialog.showModal();
@@ -93,6 +91,15 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
           opener.focus({ preventScroll: true });
       });
     };
+  }, [open]);
+
+  // 查询与高亮在「关闭时」重置，而不是在打开时：打开时 setState 属于被动副作用，
+  // 会排到用户首次输入之后落地——慢渲染下（macOS CI 实测）刚填入的关键词被清空、
+  // 列表退回默认 8 条，点击目标随之消失；关闭时重置没有这个竞态。
+  useEffect(() => {
+    if (open) return;
+    setQuery("");
+    setSelectedIndex(0);
   }, [open]);
 
   // 全量可搜项目集合

@@ -453,8 +453,9 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
       .locator(".search-item")
       .filter({ hasText: "Pro Git (第 2 版中文版)" });
     await expect(bookResult).toBeVisible();
-    // 先把指针移出搜索列表：Playwright click 的滚动+悬停会触发 onMouseEnter→setSelectedIndex
-    // →列表重渲染→元素反复 detach 的自持循环（macOS 慢节拍下 30s 不收敛）；移开后重渲染停止。
+    // 指针先移出搜索列表：慢渲染环境下 hover→setSelectedIndex 的重渲染与 click 的
+    // 稳定性检查会互相竞争；根因（打开弹窗时重置查询的竞态）已在 SearchDialog 修复，
+    // 这里保留移出指针作为防御，避免选中态抖动干扰点击。
     await page.mouse.move(0, 0);
     await bookResult.click();
 
@@ -516,8 +517,8 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
       .locator(".search-item")
       .filter({ hasText: "Pro Git (第 2 版中文版)" });
     await expect(bookResult).toBeVisible();
-    // 指针先移出搜索列表：hover→setSelectedIndex→列表重渲染→元素 detach 的自持循环
-    // 会让 click 在 macOS 慢节拍下反复重试直到超时（与上方"全局快捷检索"用例同一成因）。
+    // 指针先移出搜索列表，避免 hover 触发的选中态更新与点击稳定性检查在慢节拍下竞争；
+    // 导致元素消失的真正根因是打开弹窗时重置查询的竞态，已在 SearchDialog 修复。
     await page.mouse.move(0, 0);
     await bookResult.click();
     await expect(page).toHaveURL(/#\/topics\/book\/book-pro-git$/);
@@ -548,7 +549,7 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(
       page.locator(".search-item").filter({ hasText: "Pro Git (第 2 版中文版)" }),
     ).toBeVisible();
-    // 同上：第二段导航同样先移出指针再点击，避免 macOS 上元素反复 detach
+    // 同上：第二段导航同样先移出指针再点击
     await page.mouse.move(0, 0);
     await bookResult.click();
     await expect(page).toHaveURL(/#\/topics\/book\/book-pro-git$/);
@@ -566,6 +567,30 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
       smoothCall!.behavior,
       "未开启减少动态效果时教材索引跳转应保留平滑滚动",
     ).toBe("smooth");
+  });
+
+  test("搜索弹窗：输入不被副作用清空，关闭后重新打开才复位", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("./#/home");
+    const trigger = page.getByRole("button", { name: "全局快速检索" });
+    const input = page.locator(".search-input");
+    await trigger.click();
+    await expect(input).toBeFocused();
+
+    // 打开后立刻输入并等待副作用与异步正文索引落地：
+    // 旧实现把 setQuery("") 放在「打开」的 effect 里，该更新会排到输入之后落地，
+    // 慢渲染环境下会清空刚输入的关键词（macOS CI 实测：列表退回默认 8 条）。
+    await input.fill("Pro Git");
+    await page.waitForTimeout(400);
+    await expect(input).toHaveValue("Pro Git");
+    await expect(page.locator(".search-item").first()).toContainText("Pro Git");
+
+    // 关闭再打开才复位：查询清空、回到默认列表（关闭时重置的契约）
+    await page.keyboard.press("Escape");
+    await expect(page.locator("dialog.search-dialog")).not.toBeVisible();
+    await trigger.click();
+    await expect(input).toBeVisible();
+    await expect(input).toHaveValue("");
   });
 
   test("搜索弹窗焦点圈定、Tab与Enter分工、Escape关闭与焦点返回（键盘无障碍）", async ({ page }) => {
