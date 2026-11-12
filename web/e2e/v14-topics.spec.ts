@@ -516,6 +516,9 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
       .locator(".search-item")
       .filter({ hasText: "Pro Git (第 2 版中文版)" });
     await expect(bookResult).toBeVisible();
+    // 指针先移出搜索列表：hover→setSelectedIndex→列表重渲染→元素 detach 的自持循环
+    // 会让 click 在 macOS 慢节拍下反复重试直到超时（与上方"全局快捷检索"用例同一成因）。
+    await page.mouse.move(0, 0);
     await bookResult.click();
     await expect(page).toHaveURL(/#\/topics\/book\/book-pro-git$/);
 
@@ -545,6 +548,8 @@ test.describe("V1.4 专题学习体系与导航交互验证", () => {
     await expect(
       page.locator(".search-item").filter({ hasText: "Pro Git (第 2 版中文版)" }),
     ).toBeVisible();
+    // 同上：第二段导航同样先移出指针再点击，避免 macOS 上元素反复 detach
+    await page.mouse.move(0, 0);
     await bookResult.click();
     await expect(page).toHaveURL(/#\/topics\/book\/book-pro-git$/);
     const row2 = page.locator("#book-pro-git");
